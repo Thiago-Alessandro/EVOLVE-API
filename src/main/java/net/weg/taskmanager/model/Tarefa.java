@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data
@@ -22,6 +25,12 @@ public class Tarefa {
     //Mudar datas para Date posteriormente
     private String dataFinal;
     private String dataCriacao;
+
+    @ManyToOne
+    private Status statusAtual;
+    @ManyToMany
+    private Collection<Status> statusPossiveis;
+    //Poder colocar status como "globais" para o projeto inteiro
 
     @ManyToOne
     private Usuario criador;
