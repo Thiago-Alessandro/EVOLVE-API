@@ -17,12 +17,19 @@ public class Tarefa {
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
     private String nome;
+    private Boolean favoritado;
+
+    //Mudar datas para Date posteriormente
+    private String dataFinal;
+    private String dataCriacao;
+
     @ManyToOne
     private Usuario criador;
     @ManyToOne
     private Projeto projeto;
     @ManyToMany
     private Collection<Propriedade> propriedades;
-
+    @OneToMany
+    private Collection<Subtarefa> subtarefas;
 
 }

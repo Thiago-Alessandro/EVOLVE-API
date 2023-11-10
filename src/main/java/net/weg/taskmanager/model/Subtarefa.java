@@ -1,24 +1,23 @@
 package net.weg.taskmanager.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Propriedade {
+@Data
+public class Subtarefa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
     private String nome;
-    private String tipo;
-    //valor e tipo serão tratados no front-end a princípio
-    private String valor;
-    @ManyToOne
-    private Projeto projeto;
+    private Boolean concluido;
 
 }
