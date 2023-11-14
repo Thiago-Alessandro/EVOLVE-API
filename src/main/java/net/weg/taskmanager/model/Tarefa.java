@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity
