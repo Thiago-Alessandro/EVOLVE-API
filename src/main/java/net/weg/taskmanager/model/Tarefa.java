@@ -27,9 +27,9 @@ public class Tarefa {
     private String dataFinal;
     private String dataCriacao;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Status statusAtual;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     private Collection<Status> statusPossiveis;
     //Poder colocar status como "globais" para o projeto inteiro
 
