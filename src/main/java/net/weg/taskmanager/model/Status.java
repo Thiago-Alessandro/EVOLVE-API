@@ -18,5 +18,13 @@ public class Status {
     @GeneratedValue(strategy = GenerationType.TABLE )
     private Integer id;
     private String nome;
+    private String corFundo;
+    private String corTexto;
+
+    public Status(String nome, String corFundo, String corTexto){
+        this.nome = nome;
+        this.corFundo = corFundo;
+        this.corTexto = corTexto;
+    }
 
 }

@@ -22,6 +22,7 @@ public class Usuario {
     private String nome;
 
     @OneToMany(mappedBy = "criador")
+    @JsonIgnore
     private Collection<Tarefa> tarefasCriadas;
     @OneToMany(mappedBy = "lider")
     @JsonIgnore

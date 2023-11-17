@@ -23,5 +23,7 @@ public class Projeto {
     private Collection<Tarefa> tarefas;
     @OneToMany(mappedBy = "projeto")
     private Collection<Propriedade> propriedades;
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Collection<Status> listaStatus;
 
 }

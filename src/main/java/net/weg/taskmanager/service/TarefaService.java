@@ -21,7 +21,11 @@ public class TarefaService {
 
     public void delete(Integer id){tarefaRepository.deleteById(id);}
 
-    public Tarefa create(Tarefa tarefa){return tarefaRepository.save(tarefa);}
-    public Tarefa update(Tarefa tarefa){return tarefaRepository.save(tarefa);}
+    public Tarefa create(Tarefa tarefa){
+//        System.out.println(tarefa);
+        return tarefaRepository.save(tarefa);}
+    public Tarefa update(Tarefa tarefa){
+//        System.out.println(tarefa);
+        return tarefaRepository.save(tarefa);}
 
 }

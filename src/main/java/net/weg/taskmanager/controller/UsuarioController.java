@@ -26,5 +26,7 @@ public class UsuarioController {
     public Usuario create(@RequestBody Usuario usuario){return usuarioService.create(usuario);}
     @PutMapping
     public Usuario update(@RequestBody Usuario usuario){return usuarioService.update(usuario);}
+    @GetMapping("/login/{email}")
+    public Usuario findByEmail(@PathVariable String email){return usuarioService.findByEmail(email);}
 
 }

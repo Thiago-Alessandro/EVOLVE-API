@@ -3,6 +3,7 @@ package net.weg.taskmanager.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Array;
@@ -27,11 +28,13 @@ public class Tarefa {
     private String dataFinal;
     private String dataCriacao;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.ALL)
+    //não é mais cascade persist, esta aqui apenas para fins de testes
     private Status statusAtual;
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    private Collection<Status> statusPossiveis;
-    //Poder colocar status como "globais" para o projeto inteiro
+
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    private Collection<Status> statusPossiveis;
+//    //Poder colocar status como "globais" para o projeto inteiro
 
     @ManyToOne
     private Usuario criador;
@@ -41,5 +44,7 @@ public class Tarefa {
     private Collection<Propriedade> propriedades;
     @OneToMany
     private Collection<Subtarefa> subtarefas;
+    @ManyToMany
+    private Collection<Usuario> associados;
 
 }
