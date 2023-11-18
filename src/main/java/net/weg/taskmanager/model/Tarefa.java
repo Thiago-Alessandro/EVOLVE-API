@@ -32,6 +32,10 @@ public class Tarefa {
     //não é mais cascade persist, esta aqui apenas para fins de testes
     private Status statusAtual;
 
+//    @OneToOne(cascade = CascadeType.ALL)
+    @Enumerated(value = EnumType.ORDINAL)
+    private Prioridade prioridade;
+
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    private Collection<Status> statusPossiveis;
 //    //Poder colocar status como "globais" para o projeto inteiro
