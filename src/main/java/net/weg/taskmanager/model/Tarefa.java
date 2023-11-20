@@ -27,6 +27,7 @@ public class Tarefa {
     //Mudar datas para Date posteriormente
     private String dataFinal;
     private String dataCriacao;
+    private String descricao;
 
     @ManyToOne(cascade = CascadeType.ALL)
     //não é mais cascade persist, esta aqui apenas para fins de testes

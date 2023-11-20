@@ -20,12 +20,15 @@ public class Usuario {
     private String email;
     private String senha;
     private String nome;
+    private String fotoPerfil;
 
     @OneToMany(mappedBy = "criador")
     @JsonIgnore
     private Collection<Tarefa> tarefasCriadas;
-    @OneToMany(mappedBy = "lider")
+    @OneToMany(mappedBy = "administrador")
     @JsonIgnore
-    private Collection<Equipe> equipesLideradas;
+    private Collection<Equipe> equipesAdministradas;
+    @ManyToMany
+    private Collection<Equipe> equipes;
 
 }

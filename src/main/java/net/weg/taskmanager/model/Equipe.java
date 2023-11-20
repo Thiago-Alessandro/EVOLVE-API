@@ -1,5 +1,6 @@
 package net.weg.taskmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,9 +18,13 @@ public class Equipe {
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
     private String nome;
+    private String imagem;
     @ManyToOne
-    private Usuario lider;
+    private Usuario administrador;
     @ManyToMany
     private Collection<Projeto> projetos;
+    @ManyToMany(mappedBy = "equipes")
+    @JsonIgnore
+    private Collection<Usuario> participantes;
 
 }

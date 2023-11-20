@@ -2,7 +2,6 @@ package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Equipe;
-import net.weg.taskmanager.repository.EquipeRepository;
 import net.weg.taskmanager.service.EquipeService;
 import org.springframework.web.bind.annotation.*;
 
