@@ -32,11 +32,15 @@ public class ProjetoService {
 
     private Collection<Status> setStatusPadrao(Projeto projeto){
         Collection<Status> statusPadrao = new HashSet<>();
-        statusPadrao.add(new Status("Pendente","#7CD5F4","#000000"));
-        statusPadrao.add(new Status("Em progresso","#FCEC62","#000000"));
-        statusPadrao.add(new Status("Concluido","#86C19F","#000000"));
-        statusPadrao.add(new Status("Não atribuido","#9CA3AE","#000000"));
+        statusPadrao.add(new Status("pendente","#7CD5F4","#000000"));
+        statusPadrao.add(new Status("em progresso","#FCEC62","#000000"));
+        statusPadrao.add(new Status("concluido","#86C19F","#000000"));
+        statusPadrao.add(new Status("não atribuido","#9CA3AE","#000000"));
         return statusPadrao;
     }
+
+//    private Collection<Status> getAllStatus(){
+//        return projetoRepository.;
+//    }
 
 }

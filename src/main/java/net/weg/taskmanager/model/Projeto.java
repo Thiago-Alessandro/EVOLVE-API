@@ -19,8 +19,8 @@ public class Projeto {
     private Integer id;
     private String nome;
     private String descricao;
-    @OneToMany(mappedBy = "projeto")
-    private Collection<Tarefa> tarefas;
+//    @OneToMany(mappedBy = "projeto")
+//    private Collection<Tarefa> tarefas;
     @OneToMany(mappedBy = "projeto")
     private Collection<Propriedade> propriedades;
     @ManyToMany(cascade = CascadeType.ALL)

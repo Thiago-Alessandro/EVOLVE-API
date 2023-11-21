@@ -21,7 +21,7 @@ public class Equipe {
     private String imagem;
     @ManyToOne
     private Usuario administrador;
-    @ManyToMany
+    @OneToMany
     private Collection<Projeto> projetos;
     @ManyToMany(mappedBy = "equipes")
     @JsonIgnore

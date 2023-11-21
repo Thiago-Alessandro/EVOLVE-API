@@ -2,6 +2,7 @@ package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Projeto;
+import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.service.ProjetoService;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,5 +25,7 @@ public class ProjetoController {
     public Projeto create(@RequestBody Projeto projeto){return projetoService.create(projeto);}
     @PutMapping
     public Projeto update(@RequestBody Projeto projeto){return projetoService.update(projeto);}
+//    @GetMapping("/status")
+//    public Collection<Status> getStatus(){return projetoService.getAllStatus();}
 
 }
