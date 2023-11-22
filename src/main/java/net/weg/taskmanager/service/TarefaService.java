@@ -1,10 +1,7 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Prioridade;
-import net.weg.taskmanager.model.Propriedade;
 import net.weg.taskmanager.model.Tarefa;
-import net.weg.taskmanager.repository.PropriedadeRepository;
 import net.weg.taskmanager.repository.TarefaRepository;
 import org.springframework.stereotype.Service;
 

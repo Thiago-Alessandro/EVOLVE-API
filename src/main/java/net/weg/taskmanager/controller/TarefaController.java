@@ -1,9 +1,7 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Propriedade;
 import net.weg.taskmanager.model.Tarefa;
-import net.weg.taskmanager.service.PropriedadeService;
 import net.weg.taskmanager.service.TarefaService;
 import org.springframework.web.bind.annotation.*;
 

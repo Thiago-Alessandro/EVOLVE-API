@@ -1,9 +1,7 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Projeto;
-import net.weg.taskmanager.model.Propriedade;
-import net.weg.taskmanager.service.PermissaoDeCardsService;
+import net.weg.taskmanager.model.property.Propriedade;
 import net.weg.taskmanager.service.PropriedadeService;
 import org.springframework.web.bind.annotation.*;
 

@@ -4,8 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.property.Propriedade;
+import net.weg.taskmanager.model.property.TarefaProjetoPropriedade;
 
-import java.text.CollationElementIterator;
 import java.util.Collection;
 
 @Entity
@@ -22,7 +23,7 @@ public class Projeto {
 //    @OneToMany(mappedBy = "projeto")
 //    private Collection<Tarefa> tarefas;
     @OneToMany(mappedBy = "projeto")
-    private Collection<Propriedade> propriedades;
+    private Collection<TarefaProjetoPropriedade> propriedades;
     @ManyToMany(cascade = CascadeType.ALL)
     private Collection<Status> listaStatus;
 

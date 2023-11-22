@@ -3,14 +3,11 @@ package net.weg.taskmanager.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.property.Propriedade;
+import net.weg.taskmanager.model.property.TarefaProjetoPropriedade;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @Data
@@ -45,8 +42,10 @@ public class Tarefa {
     private Usuario criador;
     @ManyToOne
     private Projeto projeto;
-    @ManyToMany
-    private Collection<Propriedade> propriedades;
+
+    @OneToMany(mappedBy = "tarefa")
+    private Collection<TarefaProjetoPropriedade> propriedades;
+
     @OneToMany
     private Collection<Subtarefa> subtarefas;
     @ManyToMany

@@ -1,7 +1,6 @@
 package net.weg.taskmanager.repository;
 
-import net.weg.taskmanager.model.Projeto;
-import net.weg.taskmanager.model.Propriedade;
+import net.weg.taskmanager.model.property.Propriedade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
