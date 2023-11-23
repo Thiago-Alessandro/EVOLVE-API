@@ -28,9 +28,9 @@ public class Projeto {
     @ManyToMany(cascade = CascadeType.ALL)
     private Collection<Status> listaStatus;
 
-    @OneToMany(mappedBy = "projeto")
-    @JsonIgnore
-    private Collection<Tarefa> tarefas;
+//    @OneToMany(mappedBy = "projeto")
+//    @JsonIgnore
+//    private Collection<Tarefa> tarefas;
 
     }
 
