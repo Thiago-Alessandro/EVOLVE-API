@@ -30,23 +30,21 @@ public class Tarefa {
     //não é mais cascade persist, esta aqui apenas para fins de testes
     private Status statusAtual;
 
-//    @OneToOne(cascade = CascadeType.ALL)
     @Enumerated(value = EnumType.ORDINAL)
     private Prioridade prioridade;
 
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    private Collection<Status> statusPossiveis;
-//    //Poder colocar status como "globais" para o projeto inteiro
+//    Poder colocar status como "globais" para o projeto inteiro
 
     @ManyToOne
     private Usuario criador;
     @ManyToOne
     private Projeto projeto;
-
-    @OneToMany(mappedBy = "tarefa")
+    @OneToMany(mappedBy = "tarefa", cascade = CascadeType.ALL)
     private Collection<TarefaProjetoPropriedade> propriedades;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private Collection<Subtarefa> subtarefas;
     @ManyToMany
     private Collection<Usuario> associados;

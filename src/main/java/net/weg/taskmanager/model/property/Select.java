@@ -2,24 +2,28 @@ package net.weg.taskmanager.model.property;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.*;
+
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Inheritance(strategy = InheritanceType.JOINED)
-public class Propriedade {
+@AllArgsConstructor
+public class Select {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
 
-    private String nome;
-    @OneToOne(cascade = CascadeType.ALL)
-    private Select select;
+    @OneToMany(cascade = CascadeType.ALL)
+    private Collection<Opcao> opcoesPossiveis;
+
+//    @OneToOne(mappedBy = "select")
+//    @JsonIgnore
+//    private Propriedade propriedade;
+
+    private Boolean valorUnico;
 
 }

@@ -21,7 +21,9 @@ public class TarefaController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id){tarefaService.delete(id);}
     @PostMapping
-    public Tarefa create(@RequestBody Tarefa tarefa){return tarefaService.create(tarefa);}
+    public Tarefa create(@RequestBody Tarefa tarefa){
+        System.out.println("Controller yay");
+        return tarefaService.create(tarefa);}
     @PutMapping
     public Tarefa update(@RequestBody Tarefa tarefa){return tarefaService.update(tarefa);}
 
