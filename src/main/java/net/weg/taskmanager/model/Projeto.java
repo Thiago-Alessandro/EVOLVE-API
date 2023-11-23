@@ -21,6 +21,8 @@ public class Projeto {
     private Integer id;
     private String nome;
     private String descricao;
+    //mudar para Date
+    private String DataFinal;
     @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL)
     private Collection<TarefaProjetoPropriedade> propriedades;
     @ManyToMany(cascade = CascadeType.ALL)
