@@ -1,5 +1,6 @@
 package net.weg.taskmanager.model.property;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +12,7 @@ import java.util.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Select {
+public class SelectPropriedade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)

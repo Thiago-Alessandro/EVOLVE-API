@@ -20,6 +20,6 @@ public class Propriedade {
 
     private String nome;
     @OneToOne(cascade = CascadeType.ALL)
-    private Select select;
+    private SelectPropriedade select;
 
 }

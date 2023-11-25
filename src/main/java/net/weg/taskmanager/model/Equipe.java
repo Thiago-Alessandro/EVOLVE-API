@@ -19,12 +19,13 @@ public class Equipe {
     private Integer id;
     private String nome;
     private String imagem;
+//    private String descricao;
     @ManyToOne
     private Usuario administrador;
     @OneToMany
     private Collection<Projeto> projetos;
-    @ManyToMany(mappedBy = "equipes")
-    @JsonIgnore
+    @ManyToMany()
+//    @JsonIgnore
     private Collection<Usuario> participantes;
 
 }

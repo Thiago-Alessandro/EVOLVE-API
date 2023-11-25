@@ -23,8 +23,11 @@ public class UsuarioService {
 
     public Usuario create(Usuario usuario){return usuarioRepository.save(usuario);}
     public Usuario update(Usuario usuario){
-        System.out.println(usuario);
-        return usuarioRepository.save(usuario);}
+        if(usuario.getId()!=null){
+           return usuarioRepository.save(usuario);
+        }
+        throw new RuntimeException("Id do usuario não pode ser nulo ao atualizar");
+    }
 
     public Usuario findByEmail(String email){
        return usuarioRepository.findByEmail(email);

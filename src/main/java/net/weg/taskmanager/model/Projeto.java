@@ -21,16 +21,24 @@ public class Projeto {
     private Integer id;
     private String nome;
     private String descricao;
+    private String imagem;
+    @ManyToOne
+    private Usuario criador;
+    @ManyToMany
+    private Collection<Usuario> administradores;
     //mudar para Date
     private String DataFinal;
     @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL)
     private Collection<TarefaProjetoPropriedade> propriedades;
     @ManyToMany(cascade = CascadeType.ALL)
     private Collection<Status> listaStatus;
+    @ManyToMany
+    private Collection<Usuario> membros;
 
-//    @OneToMany(mappedBy = "projeto")
-//    @JsonIgnore
-//    private Collection<Tarefa> tarefas;
+    @OneToMany(mappedBy = "projeto")
+    @JsonIgnore
+    private Collection<Tarefa> tarefas;
+
 
     }
 

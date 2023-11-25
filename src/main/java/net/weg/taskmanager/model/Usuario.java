@@ -17,9 +17,9 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
-    private String email;
-    private String senha;
     private String nome;
+    private String senha;
+    private String email;
     private String fotoPerfil;
 
     @OneToMany(mappedBy = "criador")
@@ -28,7 +28,9 @@ public class Usuario {
     @OneToMany(mappedBy = "administrador")
     @JsonIgnore
     private Collection<Equipe> equipesAdministradas;
-    @ManyToMany
+    @ManyToMany(mappedBy = "participantes")
+    //tava na equipe
+    @JsonIgnore
     private Collection<Equipe> equipes;
 
 }
