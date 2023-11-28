@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 
@@ -11,20 +12,18 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Equipe {
+public class Chat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
-    private String nome;
-    private String imagem;
-//    private String descricao;
-    @ManyToOne
-    private Usuario administrador;
+    @OneToOne
+    private Usuario user;
+    @OneToOne
+    private Equipe team;
+    @OneToOne
+    private Projeto project;
     @OneToMany
-    private Collection<Projeto> projetos;
-    @ManyToMany()
-//    @JsonIgnore
-    private Collection<Usuario> participantes;
+    private Collection<Message> messages;
 
 }

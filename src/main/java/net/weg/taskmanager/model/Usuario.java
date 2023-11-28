@@ -20,6 +20,8 @@ public class Usuario {
     private String nome;
     private String senha;
     private String email;
+    @Lob
+    private Byte[] testeImagem;
     private String fotoPerfil;
 
     @OneToMany(mappedBy = "criador")
