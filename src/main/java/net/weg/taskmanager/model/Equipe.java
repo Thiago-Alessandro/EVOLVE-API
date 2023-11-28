@@ -28,4 +28,14 @@ public class Equipe {
 //    @JsonIgnore
     private Collection<Usuario> participantes;
 
+    @Override
+    public String toString() {
+        return "Equipe{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", imagem='" + imagem + '\'' +
+                ", administrador=" + administrador +
+                ", participantes=" + participantes +
+                '}';
+    }
 }

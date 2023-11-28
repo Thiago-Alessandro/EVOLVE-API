@@ -19,6 +19,7 @@ public class ProjetoService {
     private final ProjetoRepository projetoRepository;
     private final TarefaRepository tarefaRepository;
     private final StatusRepository statusRepository;
+    private final EquipeRepository equipeRepository;
     private final TarefaProjetoPropriedadeRepository tarefaProjetoPropriedadeRepository ;
 
     public Projeto findById(Integer id){return projetoRepository.findById(id).get();}
@@ -29,7 +30,8 @@ public class ProjetoService {
         Projeto projeto = findById(id);
         tarefaRepository.deleteAll(projeto.getTarefas());
         statusRepository.deleteAll(projeto.getListaStatus());
-        System.out.println(projeto.getListaStatus());
+        //seria bom ter o atributo equipe no proprio projeto para não ter que pegar na service
+        equipeRepository.findEquipeByProjetosContaining(projeto).getProjetos().remove(projeto);
         projetoRepository.deleteById(id);}
 
     public Projeto create(Projeto projeto){

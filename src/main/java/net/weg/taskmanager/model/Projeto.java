@@ -35,6 +35,9 @@ public class Projeto {
     private Collection<Status> listaStatus;
     @ManyToMany
     private Collection<Usuario> membros;
+    @ManyToOne
+    @JsonIgnore
+    private Equipe equipe;
 
     @OneToMany(mappedBy = "projeto")
     @JsonIgnore
