@@ -30,7 +30,8 @@ public class Projeto {
     private String DataFinal;
     @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL)
     private Collection<TarefaProjetoPropriedade> propriedades;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    // teremos status padrao? seriam os mesmos objetos para todos projetos? ou seria instanciado um novo para cada novo projeto?
     private Collection<Status> listaStatus;
     @ManyToMany
     private Collection<Usuario> membros;

@@ -4,10 +4,9 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.PermissaoDePropriedades;
 import net.weg.taskmanager.model.Projeto;
 import net.weg.taskmanager.model.Status;
+import net.weg.taskmanager.model.Tarefa;
 import net.weg.taskmanager.model.property.TarefaProjetoPropriedade;
-import net.weg.taskmanager.repository.PermissaoDePropriedadesRepository;
-import net.weg.taskmanager.repository.ProjetoRepository;
-import net.weg.taskmanager.repository.TarefaProjetoPropriedadeRepository;
+import net.weg.taskmanager.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -18,13 +17,20 @@ import java.util.HashSet;
 public class ProjetoService {
 
     private final ProjetoRepository projetoRepository;
+    private final TarefaRepository tarefaRepository;
+    private final StatusRepository statusRepository;
     private final TarefaProjetoPropriedadeRepository tarefaProjetoPropriedadeRepository ;
 
     public Projeto findById(Integer id){return projetoRepository.findById(id).get();}
 
     public Collection<Projeto> findAll(){return projetoRepository.findAll();}
 
-    public void delete(Integer id){projetoRepository.deleteById(id);}
+    public void delete(Integer id){
+        Projeto projeto = findById(id);
+        tarefaRepository.deleteAll(projeto.getTarefas());
+        statusRepository.deleteAll(projeto.getListaStatus());
+        System.out.println(projeto.getListaStatus());
+        projetoRepository.deleteById(id);}
 
     public Projeto create(Projeto projeto){
         //Seta os status padrões do projeto

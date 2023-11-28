@@ -11,11 +11,43 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum Prioridade {
 
-    NENHUMA,
-    MiNIMA,
-    BAIXA,
-    MEDIA,
-    ALTA,
-    CRITICA
+    NENHUMA{
+        @Override
+        public Integer getValue() {
+            return 0;
+        }
+    },
+    BAIXISSIMA {
+        @Override
+        public Integer getValue() {
+            return 20;
+        }
+    },
+    BAIXA {
+        @Override
+        public Integer getValue() {
+            return 40;
+        }
+    },
+    MEDIA {
+        @Override
+        public Integer getValue() {
+            return 60;
+        }
+    },
+    ALTA {
+        @Override
+        public Integer getValue() {
+            return 80;
+        }
+    },
+    URGENTE {
+        @Override
+        public Integer getValue() {
+            return 100;
+        }
+    };
+
+    public abstract Integer getValue();
 
 }
