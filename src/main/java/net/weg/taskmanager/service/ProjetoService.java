@@ -56,7 +56,6 @@ public class ProjetoService {
                 tarefaProjetoPropriedadeRepository.save(propriedade);
             }
         }
-        System.out.println("chuá roça");
     }
 
     private Collection<Status> setStatusPadrao(Projeto projeto){
