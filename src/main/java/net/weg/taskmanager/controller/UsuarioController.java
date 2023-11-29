@@ -34,27 +34,14 @@ public class UsuarioController {
     public Usuario update(
 //            @RequestBody Usuario usuario,
 //            @ModelAttribute Usuario usuario,
-              @RequestParam String usuario,
-                          @RequestParam MultipartFile imagem){
+                  @RequestParam String usuarioJson,
+                          @RequestParam MultipartFile fotoPerfil){
 
+//        System.out.println(fotoPerfil.getContentType());
+//        System.out.println(fotoPerfil.getName());
 
-        try {
-            Usuario usuario1 = objectMapper.readValue(usuario, Usuario.class);
-            System.out.println(usuario1);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println(imagem.getContentType());
-        try {
-            System.out.println(imagem.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println(imagem.getName());
-
-        throw new RuntimeException("Foi yay");
-
-//        return usuarioService.update(usuario);
+//        throw new RuntimeException("Foi yay");
+        return usuarioService.update(usuarioJson, fotoPerfil);
     }
     @GetMapping("/login/{email}")
     public Usuario findByEmail(@PathVariable String email){return usuarioService.findByEmail(email);}

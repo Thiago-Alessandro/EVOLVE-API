@@ -21,7 +21,8 @@ public class Usuario {
     private String senha;
     private String email;
     @Lob
-    private Byte[] testeImagem;
+    @Column(length = 999999999)
+    private byte[] testeImagem;
     private String fotoPerfil;
 
     @OneToMany(mappedBy = "criador")
