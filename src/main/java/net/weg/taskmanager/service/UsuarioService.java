@@ -12,6 +12,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Collection;
 
 @Service
@@ -21,7 +22,15 @@ public class UsuarioService {
     private final ObjectMapper objectMapper;
     private final UsuarioRepository usuarioRepository;
 
-    public Usuario findById(Integer id){return usuarioRepository.findById(id).get();}
+    public String addBase64Prefix(String base64Image) {
+        return "data:image/png;base64," + base64Image;
+    }
+
+    public Usuario findById(Integer id){
+        Usuario usuario = usuarioRepository.findById(id).get();
+        //usuario.getTesteImagem() retorna a representação Base64 da imagem
+        usuario.setTesteImagem(addBase64Prefix(usuario.getTesteImagem()));
+        return usuario;}
 
     public Collection<Usuario> findAll(){return usuarioRepository.findAll();}
 
@@ -34,7 +43,12 @@ public class UsuarioService {
             System.out.println(usuario);
             if(fotoPerfil != null && !fotoPerfil.isEmpty()){
                 try {
-                    usuario.setTesteImagem(fotoPerfil.getBytes());
+//                    usuario.setTesteImagem(fotoPerfil.getBytes());
+                    System.out.println(usuario.getTesteImagem());
+                    System.out.println("1111111111111111111111");
+                    usuario.setTesteImagem(Base64.getEncoder().encodeToString(fotoPerfil.getBytes() ) );
+                    System.out.println(usuario.getTesteImagem());
+                    System.out.println("22222222222222222222222");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

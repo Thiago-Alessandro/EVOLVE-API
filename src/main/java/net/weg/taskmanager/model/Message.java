@@ -20,6 +20,11 @@ public class Message {
 //    @Lob
 //    private MultipartFile content;
     // ?????
+    @Lob
+    @Column(length = 999999999)
+    private String content;
+    @ManyToOne
+    private Usuario sender;
     private Date date;
     private MessageStatus status;
 

@@ -1,5 +1,6 @@
 package net.weg.taskmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,5 +27,8 @@ public class Equipe {
     @ManyToMany()
 //    @JsonIgnore
     private Collection<Usuario> participantes;
+    @OneToOne(mappedBy = "team")
+    @JsonIgnore
+    private Chat chat;
 
 }

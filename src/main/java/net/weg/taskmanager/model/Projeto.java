@@ -39,6 +39,10 @@ public class Projeto {
     @JsonIgnore
     private Equipe equipe;
 
+    @OneToOne(mappedBy = "project")
+    @JsonIgnore
+    private Chat chat;
+
     @OneToMany(mappedBy = "projeto")
     @JsonIgnore
     private Collection<Tarefa> tarefas;
