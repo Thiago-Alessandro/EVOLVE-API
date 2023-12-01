@@ -12,14 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Propriedade {
+public class Property {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
 
-    private String nome;
+    private String name;
     @OneToOne(cascade = CascadeType.ALL)
-    private SelectPropriedade select;
+    private SelectProperty select;
 
 }

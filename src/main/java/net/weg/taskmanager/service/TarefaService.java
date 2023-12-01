@@ -2,7 +2,7 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Tarefa;
-import net.weg.taskmanager.model.property.TarefaProjetoPropriedade;
+import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.TarefaProjetoPropriedadeRepository;
 import net.weg.taskmanager.repository.TarefaRepository;
 import org.springframework.stereotype.Service;
@@ -44,9 +44,9 @@ public class TarefaService {
         //Verifica se há alguma propriedade na tarefa
         if(tarefa.getPropriedades() != null && tarefa.getPropriedades().size()>0){
             //Passa pela lista de propriedades da tarefa
-            for(TarefaProjetoPropriedade propriedade : tarefa.getPropriedades()) {
+            for(TaskProjectProperty propriedade : tarefa.getPropriedades()) {
                 //Adiciona a referencia da tarefa na propriedade
-                propriedade.setTarefa(tarefa);
+                propriedade.setTask(tarefa);
                 //Salva a propriedade atualizada com a referencia da tarefa
                 tarefaProjetoPropriedadeRepository.save(propriedade);
             }

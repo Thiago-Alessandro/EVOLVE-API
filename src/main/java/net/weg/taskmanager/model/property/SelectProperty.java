@@ -11,19 +11,19 @@ import java.util.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SelectPropriedade {
+public class SelectProperty {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Collection<Text> opcoesPossiveis;
+    private Collection<Text> possibleOptions;
 
 //    @OneToOne(mappedBy = "select")
 //    @JsonIgnore
 //    private Propriedade propriedade;
 
-    private Boolean valorUnico;
+    private Boolean uniqueValue;
 
 }

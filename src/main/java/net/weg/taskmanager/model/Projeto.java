@@ -5,8 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.property.Propriedade;
-import net.weg.taskmanager.model.property.TarefaProjetoPropriedade;
+import net.weg.taskmanager.model.property.TaskProjectProperty;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -29,8 +28,8 @@ public class Projeto {
     private Collection<Usuario> administradores;
     //mudar para Date
     private String DataFinal;
-    @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL)
-    private Collection<TarefaProjetoPropriedade> propriedades;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private Collection<TaskProjectProperty> propriedades;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     // teremos status padrao? seriam os mesmos objetos para todos projetos? ou seria instanciado um novo para cada novo projeto?
     private Collection<Status> listaStatus;

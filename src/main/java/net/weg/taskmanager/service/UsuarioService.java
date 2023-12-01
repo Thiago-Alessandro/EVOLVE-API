@@ -29,7 +29,7 @@ public class UsuarioService {
     public Usuario findById(Integer id){
         Usuario usuario = usuarioRepository.findById(id).get();
         //usuario.getTesteImagem() retorna a representação Base64 da imagem
-        usuario.setTesteImagem(addBase64Prefix(usuario.getTesteImagem()));
+        usuario.setFotoPerfil(addBase64Prefix(usuario.getFotoPerfil()));
         return usuario;}
 
     public Collection<Usuario> findAll(){return usuarioRepository.findAll();}
@@ -41,28 +41,18 @@ public class UsuarioService {
         try {
             Usuario usuario = objectMapper.readValue(usuarioJson, Usuario.class);
             System.out.println(usuario);
-            if(fotoPerfil != null && !fotoPerfil.isEmpty()){
+            if(fotoPerfil != null && !fotoPerfil.isEmpty()) {
                 try {
 //                    usuario.setTesteImagem(fotoPerfil.getBytes());
-                    System.out.println(usuario.getTesteImagem());
-                    System.out.println("1111111111111111111111");
-                    usuario.setTesteImagem(Base64.getEncoder().encodeToString(fotoPerfil.getBytes() ) );
-                    System.out.println(usuario.getTesteImagem());
-                    System.out.println("22222222222222222222222");
+                    usuario.setFotoPerfil(Base64.getEncoder().encodeToString(fotoPerfil.getBytes()));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-            System.out.println(usuario);
             return usuarioRepository.save(usuario);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-
-//        if(usuario.getId()!=null){
-//           return usuarioRepository.save(usuario);
-//        }
-//        throw new RuntimeException("Id do usuario não pode ser nulo ao atualizar");
     }
 
     public Usuario findByEmail(String email){

@@ -22,7 +22,7 @@ public class Usuario {
     private String email;
     @Lob
     @Column(length = 999999999)
-    private String testeImagem;
+//    private String testeImagem;
     private String fotoPerfil;
 
     @ManyToMany(mappedBy = "users")

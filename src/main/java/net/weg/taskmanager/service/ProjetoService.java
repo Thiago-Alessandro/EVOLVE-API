@@ -1,16 +1,12 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.PermissaoDePropriedades;
 import net.weg.taskmanager.model.Projeto;
-import net.weg.taskmanager.model.Status;
-import net.weg.taskmanager.model.Tarefa;
-import net.weg.taskmanager.model.property.TarefaProjetoPropriedade;
+import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 @Service
 @AllArgsConstructor
@@ -25,13 +21,7 @@ public class ProjetoService {
     public Projeto findById(Integer id){
         Projeto projeto =  projetoRepository.findById(id).get();
 
-        for(TarefaProjetoPropriedade propriedadeFor : projeto.getPropriedades()){
-            switch (propriedadeFor.getTipo()){
-                case INTEGER -> {
 
-                }
-            }
-        }
 
         return projeto ;}
 
@@ -73,9 +63,9 @@ public class ProjetoService {
         //Verifica se há alguma propriedade no projeto
         if(projeto.getPropriedades() != null && projeto.getPropriedades().size()>0){
             //Passa pela lista de propriedades do projeto
-            for(TarefaProjetoPropriedade propriedade : projeto.getPropriedades()) {
+            for(TaskProjectProperty propriedade : projeto.getPropriedades()) {
                 //Adiciona a referencia do projeto na propriedade
-                propriedade.setProjeto(projeto);
+                propriedade.setProject(projeto);
                 //Salva a propriedade atualizada com a referencia do projeto
                 tarefaProjetoPropriedadeRepository.save(propriedade);
             }

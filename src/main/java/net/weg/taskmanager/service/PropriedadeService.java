@@ -1,7 +1,7 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.property.Propriedade;
+import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.repository.PropriedadeRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +13,13 @@ public class PropriedadeService {
 
     private final PropriedadeRepository propriedadeRepository;
 
-    public Propriedade findById(Integer id){return propriedadeRepository.findById(id).get();}
+    public Property findById(Integer id){return propriedadeRepository.findById(id).get();}
 
-    public Collection<Propriedade> findAll(){return propriedadeRepository.findAll();}
+    public Collection<Property> findAll(){return propriedadeRepository.findAll();}
 
     public void delete(Integer id){propriedadeRepository.deleteById(id);}
 
-    public Propriedade create(Propriedade propriedade){return propriedadeRepository.save(propriedade);}
-    public Propriedade update(Propriedade propriedade){return propriedadeRepository.save(propriedade);}
+    public Property create(Property propriedade){return propriedadeRepository.save(propriedade);}
+    public Property update(Property propriedade){return propriedadeRepository.save(propriedade);}
 
 }

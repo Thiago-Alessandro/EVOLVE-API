@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.property.Propriedade;
-import net.weg.taskmanager.model.property.TarefaProjetoPropriedade;
+import net.weg.taskmanager.model.property.Property;
+import net.weg.taskmanager.model.property.TaskProjectProperty;
 
 import java.util.Collection;
 
@@ -40,8 +40,8 @@ public class Tarefa {
     private Usuario criador;
     @ManyToOne
     private Projeto projeto;
-    @OneToMany(mappedBy = "tarefa", cascade = CascadeType.ALL)
-    private Collection<TarefaProjetoPropriedade> propriedades;
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    private Collection<TaskProjectProperty> propriedades;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<Subtarefa> subtarefas;
