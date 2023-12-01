@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Opcao {
+public class Text {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)

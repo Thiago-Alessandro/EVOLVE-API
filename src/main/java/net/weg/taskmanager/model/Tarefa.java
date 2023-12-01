@@ -26,8 +26,7 @@ public class Tarefa {
     private String dataCriacao;
     private String descricao;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    //não é mais cascade persist, esta aqui apenas para fins de testes
+    @ManyToOne()
     private Status statusAtual;
 
     @Enumerated(value = EnumType.ORDINAL)

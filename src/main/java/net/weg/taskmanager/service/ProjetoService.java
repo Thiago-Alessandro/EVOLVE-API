@@ -22,7 +22,18 @@ public class ProjetoService {
     private final EquipeRepository equipeRepository;
     private final TarefaProjetoPropriedadeRepository tarefaProjetoPropriedadeRepository ;
 
-    public Projeto findById(Integer id){return projetoRepository.findById(id).get();}
+    public Projeto findById(Integer id){
+        Projeto projeto =  projetoRepository.findById(id).get();
+
+        for(TarefaProjetoPropriedade propriedadeFor : projeto.getPropriedades()){
+            switch (propriedadeFor.getTipo()){
+                case INTEGER -> {
+
+                }
+            }
+        }
+
+        return projeto ;}
 
     public Collection<Projeto> findAll(){return projetoRepository.findAll();}
 
@@ -30,20 +41,33 @@ public class ProjetoService {
         Projeto projeto = findById(id);
         tarefaRepository.deleteAll(projeto.getTarefas());
         statusRepository.deleteAll(projeto.getListaStatus());
-        //seria bom ter o atributo equipe no proprio projeto para não ter que pegar na service
-        equipeRepository.findEquipeByProjetosContaining(projeto).getProjetos().remove(projeto);
+
+        try {
+            if(equipeRepository.findEquipeByProjetosContaining(projeto)!=null){
+                //seria bom ter o atributo equipe no proprio projeto para não ter que pegar na service
+                equipeRepository.findEquipeByProjetosContaining(projeto).getProjetos().remove(projeto);
+            }
+        } catch (Exception e) {
+            System.out.println("Deu erro lá manin");
+            throw new RuntimeException(e);
+        }
+
         projetoRepository.deleteById(id);}
 
     public Projeto create(Projeto projeto){
-        //Seta os status padrões do projeto
-        projeto.setListaStatus(setStatusPadrao(projeto));
+
         //Adiciona o projeto ao BD para que seja criado o seu Id
         projetoRepository.save(projeto);
+
+        //Seta os status padrões do projeto
+        projeto.setStatusPadrao();
+        propriedadesSetProjeto(projeto);
+
         //Atualiza o projeto adicionando sua referencia nas suas propriedades
         return update(projeto);
     }
     public Projeto update(Projeto projeto){
-        propriedadesSetProjeto(projeto);
+
         return projetoRepository.save(projeto);}
     private void propriedadesSetProjeto(Projeto projeto){
         //Verifica se há alguma propriedade no projeto
@@ -58,13 +82,6 @@ public class ProjetoService {
         }
     }
 
-    private Collection<Status> setStatusPadrao(Projeto projeto){
-        Collection<Status> statusPadrao = new HashSet<>();
-        statusPadrao.add(new Status("pendente","#7CD5F4","#000000"));
-        statusPadrao.add(new Status("em progresso","#FCEC62","#000000"));
-        statusPadrao.add(new Status("concluido","#86C19F","#000000"));
-        statusPadrao.add(new Status("não atribuido","#9CA3AE","#000000"));
-        return statusPadrao;
-    }
+
 
 }

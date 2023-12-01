@@ -4,11 +4,12 @@ import java.util.Collection;
 
 public enum TipoPropriedade {
 
-    SELECT{
-    },
-    TEXTO{
-    };
-
-
+    TEXT,
+    DOUBLE,
+    INTEGER,
+    DATE,
+    MULTISELECT,
+    UNISELECT,
+    ASSOCIATES
 
 }

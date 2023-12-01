@@ -13,25 +13,15 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Chat {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class Chat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
 
-    @ManyToMany()
-    @JsonIgnore
-    private Collection<Usuario> members;
-
-    @OneToOne
-    //ao inserir, atualizar ou remover uma equipe terá de ser criado, atualizado ou excuido seu chat
-    private Equipe team;
-    @OneToOne
-    //ao inserir, atualizar ou remover um projeto terá de ser criado, atualizado ou excuido seu chat
-    private Projeto project;
-
-    @Enumerated(value = EnumType.ORDINAL)
-    private ChatType type;
+//    @Enumerated(value = EnumType.ORDINAL)
+//    private ChatType type;
 
     @OneToMany()
     private Collection<Message> messages;

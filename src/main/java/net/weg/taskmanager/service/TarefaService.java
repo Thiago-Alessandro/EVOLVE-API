@@ -17,6 +17,7 @@ public class TarefaService {
     private final TarefaProjetoPropriedadeRepository tarefaProjetoPropriedadeRepository;
 
     public Tarefa findById(Integer id) {
+
         return tarefaRepository.findById(id).get();
     }
 
@@ -29,11 +30,7 @@ public class TarefaService {
     }
 
     public Tarefa create(Tarefa tarefa) {
-        System.out.println("Oia, vou criar a tarefa hein");
-        System.out.println(tarefa);
         tarefaRepository.save(tarefa);
-        System.out.println("passei e criei a tarefa:");
-        System.out.println(tarefa);
         return update(tarefa);
     }
 

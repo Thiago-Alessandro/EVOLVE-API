@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.Projeto;
 import net.weg.taskmanager.model.Tarefa;
+import net.weg.taskmanager.model.Usuario;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,8 +33,12 @@ public class TarefaProjetoPropriedade {
 
     private String valor;
 
+    @ManyToMany
+    private Collection<Text> usuarios;
+
     @Enumerated()
     private TipoPropriedade tipo;
+
 
 
     //criar getPropriedade na controller do projeto

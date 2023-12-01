@@ -25,8 +25,9 @@ public class Usuario {
     private String testeImagem;
     private String fotoPerfil;
 
-    @ManyToMany(mappedBy = "members")
-    private Collection<Chat> chats;
+    @ManyToMany(mappedBy = "users")
+    @JsonIgnore
+    private Collection<UserChat> chats;
 
     @OneToMany(mappedBy = "criador")
     @JsonIgnore

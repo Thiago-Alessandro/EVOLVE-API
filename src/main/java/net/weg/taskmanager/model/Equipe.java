@@ -27,8 +27,8 @@ public class Equipe {
     @ManyToMany()
 //    @JsonIgnore
     private Collection<Usuario> participantes;
-    @OneToOne(mappedBy = "team")
-    @JsonIgnore
-    private Chat chat;
+//    @OneToOne(mappedBy = "team")
+//    @JsonIgnore
+//    private Chat chat;
 
 }

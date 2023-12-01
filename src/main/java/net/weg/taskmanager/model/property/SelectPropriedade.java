@@ -1,6 +1,5 @@
 package net.weg.taskmanager.model.property;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +18,7 @@ public class SelectPropriedade {
     private Integer id;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Collection<Opcao> opcoesPossiveis;
+    private Collection<Text> opcoesPossiveis;
 
 //    @OneToOne(mappedBy = "select")
 //    @JsonIgnore
