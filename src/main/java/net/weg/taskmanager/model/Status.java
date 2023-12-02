@@ -20,11 +20,13 @@ public class Status {
     private String nome;
     private String corFundo;
     private String corTexto;
+    private Boolean enabled;
 
-    public Status(String nome, String corFundo, String corTexto){
+    public Status(String nome, String corFundo, String corTexto, Boolean enabled){
         this.nome = nome;
         this.corFundo = corFundo;
         this.corTexto = corTexto;
+        this.enabled = enabled;
     }
 
 }

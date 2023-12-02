@@ -1,5 +1,6 @@
 package net.weg.taskmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,6 +40,7 @@ public class Tarefa {
     @ManyToOne
     private Usuario criador;
     @ManyToOne
+    @JsonIgnore
     private Projeto projeto;
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
     private Collection<TaskProjectProperty> propriedades;

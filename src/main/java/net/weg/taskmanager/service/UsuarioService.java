@@ -37,19 +37,21 @@ public class UsuarioService {
     public void delete(Integer id){usuarioRepository.deleteById(id);}
 
     public Usuario create(Usuario usuario){return usuarioRepository.save(usuario);}
-    public Usuario update(String usuarioJson, MultipartFile fotoPerfil){
+    public Usuario update(String jsonUser, MultipartFile profilePhoto){
         try {
-            Usuario usuario = objectMapper.readValue(usuarioJson, Usuario.class);
-            System.out.println(usuario);
-            if(fotoPerfil != null && !fotoPerfil.isEmpty()) {
+            Usuario user = objectMapper.readValue(jsonUser, Usuario.class);
+            System.out.println(user);
+            if(profilePhoto != null && !profilePhoto.isEmpty()) {
                 try {
 //                    usuario.setTesteImagem(fotoPerfil.getBytes());
-                    usuario.setFotoPerfil(Base64.getEncoder().encodeToString(fotoPerfil.getBytes()));
+                    user.setFotoPerfil(Base64.getEncoder().encodeToString(profilePhoto.getBytes()));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+            } else {
+                //excecao aq
             }
-            return usuarioRepository.save(usuario);
+            return usuarioRepository.save(user);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

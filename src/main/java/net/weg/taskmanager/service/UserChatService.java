@@ -1,7 +1,9 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.Message;
 import net.weg.taskmanager.model.UserChat;
+import net.weg.taskmanager.repository.MessageRepository;
 import net.weg.taskmanager.repository.UserChatRepository;
 import net.weg.taskmanager.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,10 @@ public class UserChatService implements IService<UserChat>{
     private final UsuarioRepository userRepository;
 
     private final UserChatRepository userChatRepository;
+
+    private final MessageRepository messageRepository;
+
+    private static Integer count = 1;
 
     @Override
     public UserChat findById(Integer id) {
@@ -41,6 +47,19 @@ public class UserChatService implements IService<UserChat>{
     @Override
     public UserChat update(UserChat obj) {
 //        validaChat(obj);
+
+
+//        for(Message message : obj.getMessages()){
+//            if(message.getId() == null || message.getId() == 0){
+//                message.setId(count);
+//                count++;
+//            }
+//            message = messageRepository.save(message);
+//            message.setChat(obj);
+//            System.out.println(message);
+//        }
+
+
         return userChatRepository.save(obj);
     }
 

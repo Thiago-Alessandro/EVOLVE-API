@@ -32,16 +32,10 @@ public class UsuarioController {
     public Usuario create(@RequestBody Usuario usuario){return usuarioService.create(usuario);}
     @PutMapping
     public Usuario update(
-//            @RequestBody Usuario usuario,
-//            @ModelAttribute Usuario usuario,
-                  @RequestParam String usuarioJson,
-                          @RequestParam MultipartFile fotoPerfil){
+                  @RequestParam String jsonUser,
+                          @RequestParam MultipartFile profilePhoto){
 
-//        System.out.println(fotoPerfil.getContentType());
-//        System.out.println(fotoPerfil.getName());
-
-//        throw new RuntimeException("Foi yay");
-        return usuarioService.update(usuarioJson, fotoPerfil);
+        return usuarioService.update(jsonUser, profilePhoto);
     }
     @GetMapping("/login/{email}")
     public Usuario findByEmail(@PathVariable String email){return usuarioService.findByEmail(email);}

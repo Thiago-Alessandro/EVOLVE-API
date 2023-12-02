@@ -1,5 +1,6 @@
 package net.weg.taskmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,10 @@ public class Message {
     private Usuario sender;
     private Date date;
     private MessageStatus status;
+
+    @ManyToOne
+    @JsonIgnore
+    private Chat chat;
 
 
 }

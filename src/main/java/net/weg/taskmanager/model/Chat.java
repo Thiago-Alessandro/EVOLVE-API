@@ -23,7 +23,7 @@ public abstract class Chat {
 //    @Enumerated(value = EnumType.ORDINAL)
 //    private ChatType type;
 
-    @OneToMany()
+    @OneToMany(cascade = CascadeType.ALL)
     private Collection<Message> messages;
 
 }

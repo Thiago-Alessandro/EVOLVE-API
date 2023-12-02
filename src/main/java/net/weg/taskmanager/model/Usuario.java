@@ -40,4 +40,13 @@ public class Usuario {
     @JsonIgnore
     private Collection<Equipe> equipes;
 
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", senha='" + senha + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }
