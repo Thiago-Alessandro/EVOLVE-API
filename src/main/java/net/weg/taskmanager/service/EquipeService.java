@@ -13,6 +13,8 @@ public class EquipeService {
 
     private final EquipeRepository equipeRepository;
 
+
+
     public Equipe findById(Integer id){return equipeRepository.findById(id).get();}
 
     public Collection<Equipe> findAll(){return equipeRepository.findAll();}
