@@ -14,7 +14,7 @@ import java.util.Collection;
 
 @Service
 @AllArgsConstructor
-public class UsuarioService {
+public class UsuarioService implements IService<Usuario> {
     private final ObjectMapper objectMapper;
     private final UsuarioRepository usuarioRepository;
 
@@ -22,22 +22,35 @@ public class UsuarioService {
         return "data:image/png;base64," + base64Image;
     }
 
-    public Usuario findById(Integer id){
+    public Usuario findById(Integer id) {
         Usuario usuario = usuarioRepository.findById(id).get();
         //usuario.getTesteImagem() retorna a representação Base64 da imagem
         usuario.setFotoPerfil(addBase64Prefix(usuario.getFotoPerfil()));
-        return usuario;}
+        return usuario;
+    }
 
-    public Collection<Usuario> findAll(){return usuarioRepository.findAll();}
+    public Collection<Usuario> findAll() {
+        return usuarioRepository.findAll();
+    }
 
-    public void delete(Integer id){usuarioRepository.deleteById(id);}
+    public void delete(Integer id) {
+        usuarioRepository.deleteById(id);
+    }
 
-    public Usuario create(Usuario usuario){return usuarioRepository.save(usuario);}
-    public Usuario update(String jsonUser, MultipartFile profilePhoto){
+    public Usuario create(Usuario user) {
+        return usuarioRepository.save(user);
+    }
+
+    @Override
+    public Usuario update(Usuario user) {
+        return usuarioRepository.save(user);
+    }
+
+    public Usuario update(String jsonUser, MultipartFile profilePhoto) {
         try {
             Usuario user = objectMapper.readValue(jsonUser, Usuario.class);
             System.out.println(user);
-            if(profilePhoto != null && !profilePhoto.isEmpty()) {
+            if (profilePhoto != null && !profilePhoto.isEmpty()) {
                 try {
 //                    usuario.setTesteImagem(fotoPerfil.getBytes());
                     user.setFotoPerfil(Base64.getEncoder().encodeToString(profilePhoto.getBytes()));
@@ -53,7 +66,7 @@ public class UsuarioService {
         }
     }
 
-    public Usuario findByEmail(String email){
-       return usuarioRepository.findByEmail(email);
+    public Usuario findByEmail(String email) {
+        return usuarioRepository.findByEmail(email);
     }
 }

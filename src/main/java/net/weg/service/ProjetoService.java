@@ -6,15 +6,13 @@ import net.weg.repository.EquipeRepository;
 import net.weg.repository.ProjetoRepository;
 import net.weg.repository.StatusRepository;
 import net.weg.repository.TarefaRepository;
-import net.weg.taskmanager.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 @Service
 @AllArgsConstructor
-public class ProjetoService {
-
+public class ProjetoService implements IService<Projeto> {
     private final ProjetoRepository projetoRepository;
     private final TarefaRepository tarefaRepository;
     private final StatusRepository statusRepository;
@@ -48,7 +46,7 @@ public class ProjetoService {
 
     public Projeto create(Projeto projeto) {
         projetoRepository.save(projeto);
-        projeto.setStatusPadrao();
+        projeto.setStatusStandard();
         projeto.propertySetProject();
         return update(projeto);
     }

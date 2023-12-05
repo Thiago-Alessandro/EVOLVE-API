@@ -9,7 +9,7 @@ import java.util.Collection;
 
 @Service
 @AllArgsConstructor
-public class PermissaoDePropriedadesService {
+public class PermissaoDePropriedadesService implements IService<PermissaoDePropriedades> {
 
     private final PermissaoDePropriedadesRepository permissaoDePropriedadesRepository;
 

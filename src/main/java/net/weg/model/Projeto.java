@@ -19,22 +19,30 @@ public class Projeto {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
+
     private String nome;
     private String descricao;
     private String imagem;
+
     @ManyToOne
     private Usuario criador;
+
     @ManyToMany
     private Collection<Usuario> administradores;
+
     //mudar para Date
     private String DataFinal;
+
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Collection<TaskProjectProperty> propriedades;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     // teremos status padrao? seriam os mesmos objetos para todos projetos? ou seria instanciado um novo para cada novo projeto?
     private Collection<Status> listaStatus;
+
     @ManyToMany
     private Collection<Usuario> membros;
+
     @ManyToOne
     @JsonIgnore
     private Equipe equipe;
@@ -48,7 +56,7 @@ public class Projeto {
     private Collection<Tarefa> tarefas;
 
 
-    public void setStatusPadrao() {
+    public void setStatusStandard() {
         Collection<Status> statusPadrao = new HashSet<>();
         statusPadrao.add(new Status("pendente", "#7CD5F4", "#000000", true));
         statusPadrao.add(new Status("em progresso", "#FCEC62", "#000000", true));
@@ -66,5 +74,4 @@ public class Projeto {
             return;
         }
     }
-
 }

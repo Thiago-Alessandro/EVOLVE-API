@@ -9,7 +9,7 @@ import java.util.Collection;
 
 @Service
 @AllArgsConstructor
-public class PermissaoDeCardsService {
+public class PermissaoDeCardsService implements IService<PermissaoDeCards> {
     private final PermissaoDeCardsRepository permissaoDeCardsRepository;
 
     public PermissaoDeCards findById(Integer id) {

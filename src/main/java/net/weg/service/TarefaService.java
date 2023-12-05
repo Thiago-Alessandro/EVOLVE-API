@@ -9,7 +9,7 @@ import java.util.Collection;
 
 @Service
 @AllArgsConstructor
-public class TarefaService {
+public class TarefaService implements IService<Tarefa> {
 
     private final TarefaRepository tarefaRepository;
 

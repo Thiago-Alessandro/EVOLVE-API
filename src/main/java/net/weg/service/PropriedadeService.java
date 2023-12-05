@@ -9,8 +9,7 @@ import java.util.Collection;
 
 @Service
 @AllArgsConstructor
-public class PropriedadeService {
-
+public class PropriedadeService implements IService<Property>{
     private final PropriedadeRepository propriedadeRepository;
 
     public Property findById(Integer id) {
