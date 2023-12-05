@@ -1,6 +1,7 @@
 package net.weg.controller;
 
 import lombok.AllArgsConstructor;
+import net.weg.exception.ExceptionMissingData;
 import net.weg.model.UserChat;
 import net.weg.service.UserChatService;
 import org.springframework.http.HttpStatus;
@@ -34,12 +35,20 @@ public class UserChatController implements IController<UserChat> {
     }
 
     @Override
-    public ResponseEntity<UserChat> delete(Integer id) {
+    public ResponseEntity delete(Integer id) {
+//        try {
+//            userChatService.delete(id);
+//            return new ResponseEntity<>(HttpStatus.OK);
+//        } catch (NoSuchElementException e) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
         try {
             userChatService.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (ExceptionMissingData e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

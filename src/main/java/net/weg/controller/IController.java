@@ -14,7 +14,7 @@ interface IController<T> {
     ResponseEntity<Collection<T>> findAll();
 
     @DeleteMapping("/{id}")
-    ResponseEntity<T> delete(@PathVariable Integer id);
+    ResponseEntity delete(@PathVariable Integer id);
 
     @PostMapping
     ResponseEntity<T> create(@RequestBody T obj);
