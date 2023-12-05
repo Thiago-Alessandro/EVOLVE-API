@@ -23,4 +23,14 @@ public abstract class Chat {
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<Message> messages;
+
+    public void messageSetChat() {
+        try {
+            for (Message messageFor : this.getMessages()) {
+                messageFor.setChat(this);
+            }
+        } catch (NullPointerException e) {
+            return;
+        }
+    }
 }
