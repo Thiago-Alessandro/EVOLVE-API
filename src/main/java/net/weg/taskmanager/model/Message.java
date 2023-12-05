@@ -30,7 +30,7 @@ public class Message {
     private MessageStatus status;
 
     @ManyToOne
-    @JsonIgnore
+//    @JsonIgnore
     private Chat chat;
 
 
