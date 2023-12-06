@@ -2,6 +2,7 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Projeto;
+import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.*;
 import org.springframework.stereotype.Service;
@@ -57,6 +58,12 @@ public class ProjetoService {
         return update(projeto);
     }
     public Projeto update(Projeto projeto){
+
+        for(Status status : projeto.getListaStatus()){
+            if(status.getId()==0){
+                status.setId(null);
+            }
+        }
 
         return projetoRepository.save(projeto);}
     private void propriedadesSetProjeto(Projeto projeto){

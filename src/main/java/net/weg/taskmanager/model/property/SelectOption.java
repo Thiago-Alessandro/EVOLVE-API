@@ -9,11 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Option {
+public class SelectOption {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
+    private String name;
     private String backgroundColor;
 
 }

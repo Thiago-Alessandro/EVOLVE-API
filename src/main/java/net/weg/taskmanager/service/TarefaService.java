@@ -35,6 +35,7 @@ public class TarefaService {
     }
 
     public Tarefa update(Tarefa tarefa) {
+
         propriedadeSetTarefa(tarefa);
 //        System.out.println(tarefa);
         return tarefaRepository.save(tarefa);
