@@ -8,6 +8,7 @@ import net.weg.taskmanager.repository.TarefaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 @Service
 @AllArgsConstructor
@@ -22,7 +23,16 @@ public class TarefaService {
     }
 
     public Collection<Tarefa> findAll() {
-        return tarefaRepository.findAll();
+        Collection<Tarefa> tarefas = tarefaRepository.findAll();
+
+        for(Tarefa tarefa : tarefas){
+            if(tarefa.getProjeto()!=null){
+              tarefa.getProjeto().setTarefas(null);
+            }
+        }
+
+
+        return tarefas;
     }
 
     public void delete(Integer id) {

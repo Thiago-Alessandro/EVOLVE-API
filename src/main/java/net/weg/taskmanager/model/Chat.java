@@ -23,7 +23,9 @@ public abstract class Chat {
 //    @Enumerated(value = EnumType.ORDINAL)
 //    private ChatType type;
 
-    @OneToMany(cascade = CascadeType.ALL)
+//    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chat")
+
     private Collection<Message> messages;
 
 }

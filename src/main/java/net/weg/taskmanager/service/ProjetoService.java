@@ -3,11 +3,13 @@ package net.weg.taskmanager.service;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Projeto;
 import net.weg.taskmanager.model.Status;
+import net.weg.taskmanager.model.Tarefa;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 @Service
 @AllArgsConstructor
@@ -26,7 +28,16 @@ public class ProjetoService {
 
         return projeto ;}
 
-    public Collection<Projeto> findAll(){return projetoRepository.findAll();}
+    public Collection<Projeto> findAll() {
+        Collection<Projeto> projetos = new HashSet<>();
+        for (Projeto projeto : projetoRepository.findAll()) {
+            for (Tarefa tarefa : projeto.getTarefas()) {
+                tarefa.setProjeto(null);
+            }
+            projetos.add(projeto);
+        }
+        return projetos;
+    }
 
     public void delete(Integer id){
         Projeto projeto = findById(id);
