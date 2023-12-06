@@ -2,7 +2,8 @@ package net.weg.model.property;
 
 import jakarta.persistence.Entity;
 import lombok.*;
-import lombok.Value;
+
+import java.lang.annotation.Annotation;
 
 @Getter
 @AllArgsConstructor

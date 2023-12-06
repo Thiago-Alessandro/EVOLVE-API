@@ -40,7 +40,7 @@ public class TarefaController implements IController<Tarefa> {
 
     @PostMapping
     public ResponseEntity<Tarefa> create(@RequestBody Tarefa tarefa) {
-        return new ResponseEntity<>(tarefaService.create(tarefa), HttpStatus.OK);
+        return new ResponseEntity<>(tarefaService.create(tarefa), HttpStatus.CREATED);
     }
 
     @PutMapping

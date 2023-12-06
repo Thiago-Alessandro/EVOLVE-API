@@ -6,10 +6,7 @@ import net.weg.model.UserChat;
 import net.weg.service.UserChatService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -53,8 +50,8 @@ public class UserChatController implements IController<UserChat> {
     }
 
     @Override
-    public ResponseEntity<UserChat> create(UserChat obj) {
-        return new ResponseEntity<>(userChatService.create(obj), HttpStatus.OK);
+    public ResponseEntity<UserChat> create(@RequestBody UserChat obj) {
+        return new ResponseEntity<>(userChatService.create(obj), HttpStatus.CREATED);
     }
 
     @Override

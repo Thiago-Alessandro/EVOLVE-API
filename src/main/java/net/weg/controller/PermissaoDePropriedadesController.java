@@ -40,7 +40,7 @@ public class PermissaoDePropriedadesController implements IController<PermissaoD
 
     @PostMapping
     public ResponseEntity<PermissaoDePropriedades> create(@RequestBody PermissaoDePropriedades permissaoDePropriedades) {
-        return new ResponseEntity<>(permissaoDePropriedadesService.create(permissaoDePropriedades), HttpStatus.OK);
+        return new ResponseEntity<>(permissaoDePropriedadesService.create(permissaoDePropriedades), HttpStatus.CREATED);
     }
 
     @PutMapping

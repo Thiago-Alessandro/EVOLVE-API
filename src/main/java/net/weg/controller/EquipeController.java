@@ -40,7 +40,7 @@ public class EquipeController implements IController<Equipe> {
 
     @PostMapping
     public ResponseEntity<Equipe> create(@RequestBody Equipe equipe) {
-        return new ResponseEntity<>(equipeService.create(equipe), HttpStatus.OK);
+        return new ResponseEntity<>(equipeService.create(equipe), HttpStatus.CREATED);
     }
 
     @PutMapping

@@ -46,17 +46,16 @@ public class UsuarioController implements IController<Usuario> {
     }
 
     @PutMapping
-    public ResponseEntity<Usuario> update(@RequestBody Usuario user){
-        return new ResponseEntity<>(usuarioService.update(user), HttpStatus.OK);
+    public ResponseEntity<Usuario> update(@RequestBody Usuario user) {
+        return new ResponseEntity<>(usuarioService.update(user), HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<Usuario> update(
-            @RequestParam String jsonUser,
-            @RequestParam MultipartFile profilePhoto) {
-
-        return new ResponseEntity<>(usuarioService.update(jsonUser, profilePhoto), HttpStatus.OK);
-    }
+//    @PutMapping
+//    public ResponseEntity<Usuario> update(
+//            @RequestParam String jsonUser,
+//            @RequestParam MultipartFile profilePhoto) {
+//        return new ResponseEntity<>(usuarioService.update(jsonUser, profilePhoto), HttpStatus.OK);
+//    }
 
     @GetMapping("/login/{email}")
     public ResponseEntity<Usuario> findByEmail(@PathVariable String email) {

@@ -37,11 +37,10 @@ public class TaskProjectProperty {
     //    @Override()
     //estava tipado com Object
     public void setValue(Object value) {
-        this.value = this.property.getType().getNewValue();
+        System.out.println("Acessou o set em TaskProjectProperty");
         ObjectMapper om = new ObjectMapper();
-        ValueText value1 = (ValueText) om.convertValue(value, this.value.getClass());
-        System.out.println(value1);
-        BeanUtils.copyProperties(value1, this.value);
+        this.value = om.convertValue(value, this.property.getType().getNewValue());
+        System.out.println(this.value);
     }
 
 //    public TaskProjectProperty(Property property, Tarefa task, Projeto project, Value value) {

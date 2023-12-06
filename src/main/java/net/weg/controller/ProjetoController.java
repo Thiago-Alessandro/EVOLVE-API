@@ -41,7 +41,9 @@ public class ProjetoController implements IController<Projeto> {
 
     @PostMapping
     public ResponseEntity<Projeto> create(@RequestBody Projeto projeto) {
-        return new ResponseEntity<>(projetoService.create(projeto), HttpStatus.OK);
+        System.out.println("Acessou a controller");
+        System.out.println(projeto);
+        return new ResponseEntity<>(projetoService.create(projeto), HttpStatus.CREATED);
     }
 
     @PutMapping

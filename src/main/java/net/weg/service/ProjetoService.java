@@ -45,6 +45,7 @@ public class ProjetoService implements IService<Projeto> {
     }
 
     public Projeto create(Projeto projeto) {
+        System.out.println("Acessou a Service");
         projetoRepository.save(projeto);
         projeto.setStatusStandard();
         projeto.propertySetProject();

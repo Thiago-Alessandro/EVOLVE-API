@@ -4,46 +4,46 @@ public enum PropertyType {
 
     TEXT {
         @Override
-        Value getNewValue() {
-            return new ValueText();
+        Class<ValueText> getNewValue() {
+            return ValueText.class;
         }
     },
     DOUBLE {
         @Override
-        Value getNewValue() {
-            return new ValueDouble();
+        Class<ValueDouble> getNewValue() {
+            return ValueDouble.class;
         }
     },
     INTEGER {
         @Override
-        Value getNewValue() {
+        Class<Value> getNewValue() {
             return null;
         }
     },
     DATE {
         @Override
-        Value getNewValue() {
+        Class<Value> getNewValue() {
             return null;
         }
     },
     MULTISELECT {
         @Override
-        Value getNewValue() {
+        Class<Value> getNewValue() {
             return null;
         }
     },
     UNISELECT {
         @Override
-        Value getNewValue() {
+        Class<Value> getNewValue() {
             return null;
         }
     },
     ASSOCIATES {
         @Override
-        Value getNewValue() {
+        Class<Value> getNewValue() {
             return null;
         }
     };
 
-    abstract Value getNewValue();
+    abstract Class<? extends Value> getNewValue();
 }

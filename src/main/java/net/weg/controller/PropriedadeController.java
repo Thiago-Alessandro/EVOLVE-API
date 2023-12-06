@@ -43,7 +43,7 @@ public class PropriedadeController implements IController<Property> {
 
     @PostMapping
     public ResponseEntity<Property> create(@RequestBody Property propriedade) {
-        return new ResponseEntity<>(propriedadeService.create(propriedade), HttpStatus.OK);
+        return new ResponseEntity<>(propriedadeService.create(propriedade), HttpStatus.CREATED);
     }
 
     @PutMapping

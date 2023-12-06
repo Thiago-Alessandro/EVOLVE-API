@@ -52,7 +52,6 @@ public class UsuarioService implements IService<Usuario> {
             System.out.println(user);
             if (profilePhoto != null && !profilePhoto.isEmpty()) {
                 try {
-//                    usuario.setTesteImagem(fotoPerfil.getBytes());
                     user.setFotoPerfil(Base64.getEncoder().encodeToString(profilePhoto.getBytes()));
                 } catch (IOException e) {
                     throw new RuntimeException(e);

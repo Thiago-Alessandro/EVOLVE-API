@@ -13,6 +13,7 @@ public abstract class Value {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
+
     public abstract void setValueEspecifico(Object value);
     public abstract Object getValue();
 }

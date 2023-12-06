@@ -40,7 +40,7 @@ public class PermissaoDeCardsController implements IController<PermissaoDeCards>
 
     @PostMapping
     public ResponseEntity<PermissaoDeCards> create(@RequestBody PermissaoDeCards permissaoDeCards) {
-        return new ResponseEntity<>(permissaoDeCardsService.create(permissaoDeCards), HttpStatus.OK);
+        return new ResponseEntity<>(permissaoDeCardsService.create(permissaoDeCards), HttpStatus.CREATED);
     }
 
     @PutMapping
