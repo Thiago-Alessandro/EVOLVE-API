@@ -1,6 +1,7 @@
 package net.weg.taskmanager.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,14 +40,13 @@ public class Projeto {
     @JsonIgnore
     private Equipe equipe;
 
-//    @OneToOne(mappedBy = "project")
+    @OneToOne()
 //    @JsonIgnore
-//    private Chat chat;
+    private Chat chat;
 
     @OneToMany(mappedBy = "projeto")
 //    @JsonIgnore
     private Collection<Tarefa> tarefas;
-
 
     public void setStatusPadrao() {
         Collection<Status> statusPadrao = new HashSet<>();

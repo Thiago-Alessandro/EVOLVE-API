@@ -11,13 +11,11 @@ import lombok.NoArgsConstructor;
 import java.util.Collection;
 
 @Entity
-@AllArgsConstructor
+//@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class UserChat extends Chat{
 
-    @ManyToMany
-    @Column(unique = true, nullable = false)
-    private Collection<Usuario> users;
+
 
 }

@@ -24,8 +24,12 @@ public abstract class Chat {
 //    private ChatType type;
 
 //    @OneToMany(cascade = CascadeType.ALL)
-    @OneToMany(mappedBy = "chat")
 
+    @OneToMany(mappedBy = "chat")
     private Collection<Message> messages;
+
+    @ManyToMany
+    @Column(unique = true, nullable = false)
+    private Collection<Usuario> users;
 
 }

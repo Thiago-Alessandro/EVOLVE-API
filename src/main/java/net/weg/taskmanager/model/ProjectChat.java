@@ -18,12 +18,8 @@ import java.util.Collection;
 @Data
 public class ProjectChat extends Chat{
 
-    @OneToOne
+    @OneToOne(mappedBy = "chat")
     //ao inserir, atualizar ou remover um projeto terá de ser criado, atualizado ou excuido seu chat
     private Projeto project;
-
-    @ManyToMany()
-    @JsonIgnore
-    private Collection<Usuario> users;
 
 }

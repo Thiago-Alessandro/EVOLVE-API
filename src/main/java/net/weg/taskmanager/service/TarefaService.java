@@ -1,6 +1,7 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.ResolveStackOverflow;
 import net.weg.taskmanager.model.Tarefa;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.TarefaProjetoPropriedadeRepository;
@@ -18,17 +19,16 @@ public class TarefaService {
     private final TarefaProjetoPropriedadeRepository tarefaProjetoPropriedadeRepository;
 
     public Tarefa findById(Integer id) {
-
-        return tarefaRepository.findById(id).get();
+        Tarefa tarefa = tarefaRepository.findById(id).get();
+        ResolveStackOverflow.getObjectWithoutStackOverflow(tarefa);
+        return tarefa;
     }
 
     public Collection<Tarefa> findAll() {
         Collection<Tarefa> tarefas = tarefaRepository.findAll();
 
         for(Tarefa tarefa : tarefas){
-            if(tarefa.getProjeto()!=null){
-              tarefa.getProjeto().setTarefas(null);
-            }
+            ResolveStackOverflow.getObjectWithoutStackOverflow(tarefa);
         }
 
 

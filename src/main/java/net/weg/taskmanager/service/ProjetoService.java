@@ -23,18 +23,19 @@ public class ProjetoService {
 
     public Projeto findById(Integer id){
         Projeto projeto =  projetoRepository.findById(id).get();
-
+        for(Tarefa tarefa : projeto.getTarefas()){
+            tarefa.setProjeto(null);
+        }
 
 
         return projeto ;}
 
     public Collection<Projeto> findAll() {
-        Collection<Projeto> projetos = new HashSet<>();
-        for (Projeto projeto : projetoRepository.findAll()) {
+        Collection<Projeto> projetos =  projetoRepository.findAll();
+        for (Projeto projeto : projetos) {
             for (Tarefa tarefa : projeto.getTarefas()) {
                 tarefa.setProjeto(null);
             }
-            projetos.add(projeto);
         }
         return projetos;
     }

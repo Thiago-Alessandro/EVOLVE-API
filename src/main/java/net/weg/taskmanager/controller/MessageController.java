@@ -2,39 +2,44 @@ package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Message;
+import net.weg.taskmanager.model.MessageDTO;
+import net.weg.taskmanager.service.MessageService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
 @RequestMapping("message")
 @AllArgsConstructor
 @RestController
-public class MessageController implements IController<Message>{
-    @Override
-    public ResponseEntity<Message> findById(Integer id) {
+public class MessageController{
+    private final MessageService messageService;
+
+//    @Override
+    public ResponseEntity<MessageDTO> findById(Integer id) {
         return null;
     }
 
-    @Override
+//    @Override
+    @GetMapping
     public ResponseEntity<Collection<Message>> findAll() {
         return null;
     }
 
-    @Override
-    public ResponseEntity<Message> delete(Integer id) {
+//    @Override
+    public ResponseEntity<MessageDTO> delete(Integer id) {
         return null;
     }
 
-    @Override
-    public ResponseEntity<Message> create(Message obj) {
-        return null;
+//    @Override
+    @PostMapping
+    public ResponseEntity<Message> create(@RequestBody MessageDTO obj) {
+        return ResponseEntity.ok(messageService.create(obj));
     }
 
-    @Override
-    public ResponseEntity<Message> update(Message obj) {
+//    @Override
+    public ResponseEntity<MessageDTO> update(MessageDTO obj) {
         return null;
     }
 }

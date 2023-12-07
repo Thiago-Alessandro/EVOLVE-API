@@ -22,13 +22,13 @@ public class Equipe {
 //    private String descricao;
     @ManyToOne
     private Usuario administrador;
-    @OneToMany
+    @OneToMany(mappedBy = "equipe")
     private Collection<Projeto> projetos;
     @ManyToMany()
 //    @JsonIgnore
     private Collection<Usuario> participantes;
-//    @OneToOne(mappedBy = "team")
+    @OneToOne(cascade = CascadeType.ALL)
 //    @JsonIgnore
-//    private Chat chat;
+    private Chat chat;
 
 }

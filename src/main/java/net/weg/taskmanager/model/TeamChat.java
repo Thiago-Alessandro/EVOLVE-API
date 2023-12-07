@@ -16,12 +16,8 @@ import java.util.Collection;
 @Data
 public class TeamChat extends Chat{
 
-    @OneToOne
+    @OneToOne(mappedBy = "chat")
     //ao inserir, atualizar ou remover uma equipe terá de ser criado, atualizado ou excuido seu chat
     private Equipe team;
-
-    @ManyToMany()
-    @JsonIgnore
-    private Collection<Usuario> users;
 
 }
