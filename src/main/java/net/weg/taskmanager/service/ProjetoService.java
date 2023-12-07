@@ -71,11 +71,11 @@ public class ProjetoService {
     }
     public Projeto update(Projeto projeto){
 
-        for(Status status : projeto.getListaStatus()){
-            if(status.getId()==0){
-                status.setId(null);
-            }
-        }
+//        for(Status status : projeto.getListaStatus()){
+//            if(status.getId()==0){
+//                status.setId(null);
+//            }
+//        }
 
         return projetoRepository.save(projeto);}
     private void propriedadesSetProjeto(Projeto projeto){

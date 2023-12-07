@@ -54,6 +54,10 @@ public class Projeto {
         statusPadrao.add(new Status("em progresso", "#FCEC62", "#000000",true));
         statusPadrao.add(new Status("concluido", "#86C19F", "#000000",true));
         statusPadrao.add(new Status("não atribuido", "#9CA3AE", "#000000",true));
-        this.getListaStatus().addAll(statusPadrao);
+        if(this.getListaStatus()!=null){
+            this.getListaStatus().addAll(statusPadrao);
+        } else{
+            this.setListaStatus((statusPadrao));
+        }
     }
 }
