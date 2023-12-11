@@ -3,6 +3,7 @@ package net.weg.taskmanager.service;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Message;
 import net.weg.taskmanager.model.MessageDTO;
+import net.weg.taskmanager.model.ResolveStackOverflow;
 import net.weg.taskmanager.repository.ChatRepository;
 import net.weg.taskmanager.repository.MessageRepository;
 import org.springframework.beans.BeanUtils;
@@ -45,11 +46,14 @@ private final ChatRepository chatRepository;
     public Message create(MessageDTO obj) {
         System.out.println(obj);
         Message message = new Message();
+
         BeanUtils.copyProperties(obj, message);
-        System.out.println(message);
+//        System.out.println(message);
+
         message.setChat(chatRepository.findById(obj.getChatId()).get());
-        System.out.println(message);
-        return messageRepository.save(message);
+//        System.out.println(message);
+
+        return ResolveStackOverflow.getObjectWithoutStackOverflow(messageRepository.save(message));
     }
 
 //    @Override

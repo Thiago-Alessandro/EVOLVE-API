@@ -2,6 +2,7 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Message;
+import net.weg.taskmanager.model.ResolveStackOverflow;
 import net.weg.taskmanager.model.UserChat;
 import net.weg.taskmanager.repository.MessageRepository;
 import net.weg.taskmanager.repository.UserChatRepository;
@@ -30,7 +31,11 @@ public class UserChatService implements IService<UserChat>{
 
     @Override
     public Collection<UserChat> findAll() {
-        return userChatRepository.findAll();
+        Collection<UserChat> chats = userChatRepository.findAll();
+        for(UserChat chat :  chats){
+            ResolveStackOverflow.getObjectWithoutStackOverflow(chat);
+        }
+        return chats;
     }
 
     @Override
@@ -60,11 +65,15 @@ public class UserChatService implements IService<UserChat>{
 //        }
 
 
-        return userChatRepository.save(obj);
+        return ResolveStackOverflow.getObjectWithoutStackOverflow(userChatRepository.save(obj));
     }
 
     public Collection<UserChat> getChatsByUserId(Integer id){
-        return userChatRepository.findUserChatsByUsersContaining(userRepository.findById(id).get());
+        Collection<UserChat> chats = userChatRepository.findUserChatsByUsersContaining(userRepository.findById(id).get());
+        for(UserChat chat : chats){
+            ResolveStackOverflow.getObjectWithoutStackOverflow(chat);
+        }
+        return chats;
     }
 
 //    private void validaChat (Chat chat){

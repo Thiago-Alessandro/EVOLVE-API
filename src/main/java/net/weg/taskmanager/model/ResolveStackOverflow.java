@@ -1,26 +1,39 @@
 package net.weg.taskmanager.model;
 
+import org.hibernate.collection.spi.PersistentBag;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 
 
 public class ResolveStackOverflow {
 
-    public static <T> void getObjectWithoutStackOverflow(T obj) {
+    public static <T> T getObjectWithoutStackOverflow(T obj) {
 
         if (obj != null) {
+            System.out.println("a");
             resolveObjectIfContainsGeneric(obj,Projeto.class,"getProjeto");
+
+            System.out.println("b");
             resolveObjectIfContainsGeneric(obj, Collection.class ,"getProjetos");
+
+            System.out.println("c");
+            resolveObjectIfContainsGeneric(obj, Collection.class, "getMessages" );
+
+            System.out.println("d");
+            resolveObjectIfContainsGeneric(obj, Chat.class, "getChat" );
+
 //            resolveObjectIfContainsProject(obj);
 //            resolveObjectIfContainsProjectCollection(obj);
-
-//            resolveObjectIfContainsGeneric(obj, new UserChat(),"getChat");
         }
+        return obj;
     }
 
     private static void resolveProject(Projeto projeto, String objClassName) {
-        System.out.println("estou qaqui");
+
+
         if(projeto.getTarefas()!=null){
             if(objClassName.equals("Tarefa")){
                 projeto.setTarefas(null);
@@ -54,49 +67,31 @@ public class ResolveStackOverflow {
             case "Projeto" -> resolveProject((Projeto) atribute, objectClassName);
             //aparentemente PersistentBag é para toda Collection entao não necessariamente seria projeto, ou seja, tem que pensar em alguma lógica para garantir que seja uma colleção de projetos
             case "PersistentBag" -> {
-                for(Projeto projeto:(Collection<Projeto>)atribute){
-                    resolveProject(projeto, objectClassName);
+                for(Message message:(Collection<Message>)atribute){
+                    resolveMessage(message, objectClassName);
                 }
+//                for(Projeto projeto:(Collection<Projeto>)atribute){
+//                    resolveProject(projeto, objectClassName);
+//                }
             }
+            case "UserChat" -> resolveChat( (Chat) atribute, objectClassName);
+//            case "Message" ->
             default -> System.out.println(atribute.getClass().getSimpleName());
         }
     }
 
 
-//    private static void resolveObjectIfContainsProject(Object obj){
-//        try {
-//            // Supondo que o objeto genérico T possui um método getProjeto()
-//            Method getProjetoMethod = obj.getClass().getMethod("getProjeto");
-//            if (getProjetoMethod != null) {
-//                Object projetoObj = getProjetoMethod.invoke(obj);
-//                if (projetoObj instanceof Projeto) {
-//                    Projeto projeto = (Projeto) projetoObj;
-//                    ResolveProject(projeto,obj.getClass());
-//                }
-//            }
-//        }catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e){
-//
-//        }
-//    }
-//
-//    private static void resolveObjectIfContainsProjectCollection(Object obj){
-//        try {
-//            // Supondo que o objeto genérico T possui um método getListaProjetos()
-//            Method getListaProjetosMethod = obj.getClass().getMethod("getProjetos");
-//            if (getListaProjetosMethod != null) {
-//                Object listaProjetosObj = getListaProjetosMethod.invoke(obj);
-//                if (listaProjetosObj instanceof Collection<?>) {
-//                    Collection<Projeto> listaProjetos =  (Collection<Projeto>) listaProjetosObj;
-//                    for (Projeto projeto : listaProjetos) {
-//                        ResolveProject(projeto,obj.getClass());
-//                    }
-//                }
-//            }
-//        }catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e){
-//
-//        }
-//    }
+    private static void resolveChat(Chat chat, String objClassName){
+        chat.setMessages(null);
+    }
 
-
-
+    private static void resolveMessage(Message message,String objClassName){
+        if(message.getChat()!=null){
+            if(objClassName.equals("UserChat")){
+                message.setChat(null);
+            } else {
+                message.getChat().setMessages(null);
+            }
+        }
+    }
 }

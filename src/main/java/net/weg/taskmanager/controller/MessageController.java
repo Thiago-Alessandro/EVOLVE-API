@@ -24,7 +24,7 @@ public class MessageController{
 //    @Override
     @GetMapping
     public ResponseEntity<Collection<Message>> findAll() {
-        return null;
+        return ResponseEntity.ok(messageService.findAll());
     }
 
 //    @Override
