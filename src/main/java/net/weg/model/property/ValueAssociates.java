@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.model.Usuario;
 
 import java.util.*;
 
@@ -12,16 +13,16 @@ import java.util.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ValueMultiselect extends Value {
+public class ValueAssociates extends Value {
 
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Collection<SelectOption> values;
+    private Collection<Usuario> values;
 
     @Override
     public void setValueEspecifico(Object value) {
         ObjectMapper om = new ObjectMapper();
-        this.values = (Collection<SelectOption>) om.convertValue(value, Collection.class);
+        this.values = (Collection<Usuario>) om.convertValue(value, Collection.class);
     }
 
     @Override

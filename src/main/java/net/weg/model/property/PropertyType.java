@@ -16,32 +16,32 @@ public enum PropertyType {
     },
     INTEGER {
         @Override
-        Class<Value> getNewValue() {
-            return null;
+        Class<ValueInteger> getNewValue() {
+            return ValueInteger.class;
         }
     },
     DATE {
         @Override
-        Class<Value> getNewValue() {
-            return null;
+        Class<ValueDate> getNewValue() {
+            return ValueDate.class;
         }
     },
     MULTISELECT {
         @Override
-        Class<Value> getNewValue() {
-            return null;
+        Class<ValueMultiselect> getNewValue() {
+            return ValueMultiselect.class;
         }
     },
     UNISELECT {
         @Override
-        Class<Value> getNewValue() {
-            return null;
+        Class<ValueUniselect> getNewValue() {
+            return ValueUniselect.class;
         }
     },
     ASSOCIATES {
         @Override
-        Class<Value> getNewValue() {
-            return null;
+        Class<ValueAssociates> getNewValue() {
+            return ValueAssociates.class;
         }
     };
 

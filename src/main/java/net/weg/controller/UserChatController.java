@@ -27,6 +27,7 @@ public class UserChatController implements IController<UserChat> {
     }
 
     @Override
+    @GetMapping
     public ResponseEntity<Collection<UserChat>> findAll() {
         return new ResponseEntity<>(userChatService.findAll(), HttpStatus.OK);
     }

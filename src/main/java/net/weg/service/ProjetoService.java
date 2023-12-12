@@ -2,6 +2,8 @@ package net.weg.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.model.Projeto;
+import net.weg.model.Status;
+import net.weg.model.Tarefa;
 import net.weg.repository.EquipeRepository;
 import net.weg.repository.ProjetoRepository;
 import net.weg.repository.StatusRepository;
@@ -54,5 +56,9 @@ public class ProjetoService implements IService<Projeto> {
 
     public Projeto update(Projeto projeto) {
         return projetoRepository.save(projeto);
+    }
+
+    public Collection<Tarefa> getTarefasProjeto(Projeto projeto) {
+        return tarefaRepository.findTarefasByProjeto(projeto);
     }
 }

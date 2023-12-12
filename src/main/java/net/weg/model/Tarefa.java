@@ -41,7 +41,7 @@ public class Tarefa {
     private Usuario criador;
 
     @ManyToOne
-    @JsonIgnore
+//    @JsonIgnore
     private Projeto projeto;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)

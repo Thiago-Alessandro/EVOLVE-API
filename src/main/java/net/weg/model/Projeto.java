@@ -52,7 +52,7 @@ public class Projeto {
 //    private Chat chat;
 
     @OneToMany(mappedBy = "projeto")
-//    @JsonIgnore
+    @JsonIgnore
     private Collection<Tarefa> tarefas;
 
 
@@ -62,7 +62,11 @@ public class Projeto {
         statusPadrao.add(new Status("em progresso", "#FCEC62", "#000000", true));
         statusPadrao.add(new Status("concluido", "#86C19F", "#000000", true));
         statusPadrao.add(new Status("não atribuido", "#9CA3AE", "#000000", true));
-        this.getListaStatus().addAll(statusPadrao);
+        try {
+            this.getListaStatus().addAll(statusPadrao);
+        } catch (NullPointerException e) {
+            this.setListaStatus(statusPadrao);
+        }
     }
 
     public void propertySetProject() {

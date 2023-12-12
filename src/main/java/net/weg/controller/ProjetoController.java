@@ -3,9 +3,9 @@ package net.weg.controller;
 import lombok.AllArgsConstructor;
 import net.weg.exception.ExceptionMissingData;
 import net.weg.model.Projeto;
+import net.weg.model.Tarefa;
 import net.weg.service.ProjetoService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,6 +50,15 @@ public class ProjetoController implements IController<Projeto> {
     public ResponseEntity<Projeto> update(@RequestBody Projeto projeto) {
         return new ResponseEntity<>(projetoService.update(projeto), HttpStatus.OK);
     }
+
+    @GetMapping("/{id}/tarefa")
+    public ResponseEntity<Collection<Tarefa>> getTarefasProjeto(@PathVariable Integer id){
+        Projeto projeto = projetoService.findById(id);
+        return new ResponseEntity<>(projetoService.getTarefasProjeto(projeto), HttpStatus.OK);
+    }
+
 //    @GetMapping("/status")
-//    public Collection<Status> getStatus(){return projetoService.getAllStatus();}
+//    public Collection<Status> getStatus(@RequestBody Projeto projeto){
+//        return projeto.getListaStatus();
+//    }
 }
