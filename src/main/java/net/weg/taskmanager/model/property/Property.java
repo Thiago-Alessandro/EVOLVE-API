@@ -1,10 +1,12 @@
-package net.weg.taskmanager.model.property;
+package net.weg.model.property;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Collection;
 
 @Entity
 @Data
@@ -19,7 +21,11 @@ public class Property {
     private Integer id;
 
     private String name;
-    @OneToOne(cascade = CascadeType.ALL)
-    private SelectProperty select;
 
+    @Enumerated(EnumType.STRING)
+    private PropertyType type;
+
+    //realmente deixar aq? confirmar com o prof
+    @OneToMany
+    private Collection<SelectOption> possibleOptions;
 }

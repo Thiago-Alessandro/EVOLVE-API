@@ -1,4 +1,4 @@
-package net.weg.taskmanager.model.property;
+package net.weg.model.property;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ public class SelectOption {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
-    private String name;
-    private String backgroundColor;
 
+    private String value;
+    private String backgroundColor;
 }
