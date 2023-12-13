@@ -40,6 +40,14 @@ public class UsuarioService {
     public Usuario update(String jsonUser, MultipartFile profilePhoto){
         try {
             Usuario user = objectMapper.readValue(jsonUser, Usuario.class);
+
+            //para não stackar a imagem
+            if(user.getFotoPerfil().length() > 0){
+                user.setFotoPerfil(findById(user.getId()).getFotoPerfil());
+            }
+
+
+
             System.out.println(user);
             if(profilePhoto != null && !profilePhoto.isEmpty()) {
                 try {

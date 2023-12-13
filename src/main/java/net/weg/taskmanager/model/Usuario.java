@@ -47,6 +47,7 @@ public class Usuario {
                 ", nome='" + nome + '\'' +
                 ", senha='" + senha + '\'' +
                 ", email='" + email + '\'' +
+//                ", fotoPerfil='" + fotoPerfil.substring(0,100) + '\'' +
                 '}';
     }
 }

@@ -2,8 +2,9 @@ package net.weg.taskmanager.model;
 
 public enum MessageStatus {
 
-    VISUALIZED,
+    AWAITING,
     RECEIVED,
-    SENT
+    SENT,
+    VISUALIZED
 
 }

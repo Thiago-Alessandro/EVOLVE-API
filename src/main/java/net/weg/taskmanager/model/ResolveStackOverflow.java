@@ -92,6 +92,20 @@ public class ResolveStackOverflow {
             } else {
                 message.getChat().setMessages(null);
             }
+
+            if(!message.getSender().getFotoPerfil().contains("data:image/png;base64,")){
+                message.getSender().setFotoPerfil(addBase64Prefix(message.getSender().getFotoPerfil()));
+                System.out.println(message);
+            }
         }
     }
+
+
+
+
+    //tratar o usuario
+    private static String addBase64Prefix(String base64Image) {
+        return "data:image/png;base64," + base64Image;
+    }
+
 }
