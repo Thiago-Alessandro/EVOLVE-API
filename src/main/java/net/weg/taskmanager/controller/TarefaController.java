@@ -1,6 +1,7 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.Tarefa;
 import net.weg.taskmanager.service.TarefaService;
 import org.springframework.web.bind.annotation.*;
@@ -27,5 +28,7 @@ public class TarefaController {
     @PutMapping
     public Tarefa update(@RequestBody Tarefa tarefa){return tarefaService.update(tarefa);}
 
+    @GetMapping("/status/{id}")
+    public Collection<Tarefa> getTasksByStatus(@PathVariable Integer id){return tarefaService.getTarefasByStatus(id);}
 
 }

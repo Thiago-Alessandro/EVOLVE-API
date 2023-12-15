@@ -37,7 +37,7 @@ public class Usuario {
     private Collection<Equipe> equipesAdministradas;
     @ManyToMany(mappedBy = "participantes")
     //tava na equipe
-    @JsonIgnore
+//    @JsonIgnore
     private Collection<Equipe> equipes;
 
     @Override

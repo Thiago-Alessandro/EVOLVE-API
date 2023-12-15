@@ -2,7 +2,7 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Equipe;
-import net.weg.taskmanager.model.ResolveStackOverflow;
+import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.TeamChat;
 import net.weg.taskmanager.model.Usuario;
 import net.weg.taskmanager.repository.EquipeRepository;
@@ -16,7 +16,9 @@ public class EquipeService {
 
     private final EquipeRepository equipeRepository;
 
-    public Equipe findById(Integer id){return equipeRepository.findById(id).get();}
+    public Equipe findById(Integer id){
+        Equipe equipe = equipeRepository.findById(id).get();
+        return ResolveStackOverflow.getObjectWithoutStackOverflow(equipe);}
 
     public Collection<Equipe> findAll(){
 
@@ -29,17 +31,26 @@ public class EquipeService {
 
     public void delete(Integer id){equipeRepository.deleteById(id);}
 
-    public Equipe create(Equipe equipe){
-        TeamChat newChat = new TeamChat();
-        newChat.setUsers(equipe.getParticipantes());
-        equipe.setChat(newChat);
-        return equipeRepository.save(equipe);}
-    public Equipe update(Equipe equipe){
-        for(Usuario participante : equipe.getParticipantes()){
-            if(!equipe.getChat().getUsers().contains(participante)){
-                equipe.getChat().getUsers().add(participante);
+    public Equipe create(Equipe team){
+        updateTeamChat(team);
+        return equipeRepository.save(team);}
+
+    public Equipe update(Equipe team){
+        updateTeamChat(team);
+        for(Usuario participante : team.getParticipantes()){
+            if(!team.getChat().getUsers().contains(participante)){
+                team.getChat().getUsers().add(participante);
             }
         }
-        return equipeRepository.save(equipe);}
+        team.getChat().setUsers(team.getParticipantes());
+        return equipeRepository.save(team);}
+
+    private void updateTeamChat(Equipe team){
+        if(team.getChat()==null){
+            team.setChat(new TeamChat());
+            team.getChat().setTeam(team);
+        }
+        team.getChat().setUsers(team.getParticipantes());
+    }
 
 }

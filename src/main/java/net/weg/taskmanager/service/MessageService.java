@@ -3,16 +3,13 @@ package net.weg.taskmanager.service;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Message;
 import net.weg.taskmanager.model.MessageDTO;
-import net.weg.taskmanager.model.ResolveStackOverflow;
+import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.repository.ChatRepository;
 import net.weg.taskmanager.repository.MessageRepository;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 @AllArgsConstructor
 @Service
@@ -52,8 +49,8 @@ private final ChatRepository chatRepository;
 
         message.setChat(chatRepository.findById(obj.getChatId()).get());
 //        System.out.println(message);
-
-        return ResolveStackOverflow.getObjectWithoutStackOverflow(messageRepository.save(message));
+        Message newMessage = messageRepository.save(message);
+        return ResolveStackOverflow.getObjectWithoutStackOverflow(newMessage);
     }
 
 //    @Override

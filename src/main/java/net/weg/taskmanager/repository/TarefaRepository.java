@@ -7,6 +7,8 @@ import org.aspectj.weaver.patterns.PerObject;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+
 @Repository
 public interface TarefaRepository extends JpaRepository<Tarefa, Integer> {
 
@@ -15,4 +17,7 @@ public interface TarefaRepository extends JpaRepository<Tarefa, Integer> {
 //    Tarefa findByDataFinal(Projeto projeto, String dataFinal);
 //
 //    Tarefa findByPrioridade(Tarefa tarefa);
+
+    Collection<Tarefa> getTarefaByStatusAtual(Status status);
+
 }

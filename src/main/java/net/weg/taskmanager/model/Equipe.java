@@ -25,10 +25,11 @@ public class Equipe {
     @OneToMany(mappedBy = "equipe")
     private Collection<Projeto> projetos;
     @ManyToMany()
-//    @JsonIgnore
+    @JsonIgnore
+    //tirar eventualmente
     private Collection<Usuario> participantes;
     @OneToOne(cascade = CascadeType.ALL)
 //    @JsonIgnore
-    private Chat chat;
+    private TeamChat chat;
 
 }

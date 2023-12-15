@@ -1,10 +1,8 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Message;
-import net.weg.taskmanager.model.ResolveStackOverflow;
+import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.UserChat;
-import net.weg.taskmanager.repository.MessageRepository;
 import net.weg.taskmanager.repository.UserChatRepository;
 import net.weg.taskmanager.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
@@ -20,7 +18,7 @@ public class UserChatService implements IService<UserChat>{
 
     private final UserChatRepository userChatRepository;
 
-    private final MessageRepository messageRepository;
+//    private final MessageRepository messageRepository;
 
     private static Integer count = 1;
 
@@ -53,19 +51,8 @@ public class UserChatService implements IService<UserChat>{
     public UserChat update(UserChat obj) {
 //        validaChat(obj);
 
-
-//        for(Message message : obj.getMessages()){
-//            if(message.getId() == null || message.getId() == 0){
-//                message.setId(count);
-//                count++;
-//            }
-//            message = messageRepository.save(message);
-//            message.setChat(obj);
-//            System.out.println(message);
-//        }
-
-
-        return ResolveStackOverflow.getObjectWithoutStackOverflow(userChatRepository.save(obj));
+        UserChat updatedUserChat = userChatRepository.save(obj);
+        return ResolveStackOverflow.getObjectWithoutStackOverflow(updatedUserChat);
     }
 
     public Collection<UserChat> getChatsByUserId(Integer id){
@@ -80,19 +67,6 @@ public class UserChatService implements IService<UserChat>{
 //        if(chat.getType().equals("USER")){
 //            if (chat.getMembers().size() != 2){
 //                throw new RuntimeException("User chat members number doesn't match excpected (2)");
-//            }
-//            if(chat.getTeam() != null || chat.getProject() != null){
-//                throw new RuntimeException("Chat from type 'USER' must only have users related");
-//            }
-//        }
-//        if(chat.getType().equals("TEAM")){
-//            if(chat.getProject() != null){
-//                throw new RuntimeException("Chat from type 'TEAM' can't have a project related");
-//            }
-//        }
-//        if(chat.getType().equals("PROJECT")){
-//            if(chat.getTeam() != null){
-//                throw new RuntimeException("Chat from type 'PROJECT' can't have a team related");
 //            }
 //        }
 //    }

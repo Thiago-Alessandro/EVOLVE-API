@@ -1,15 +1,15 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.ResolveStackOverflow;
+import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.Tarefa;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
+import net.weg.taskmanager.repository.StatusRepository;
 import net.weg.taskmanager.repository.TarefaProjetoPropriedadeRepository;
 import net.weg.taskmanager.repository.TarefaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 @Service
 @AllArgsConstructor
@@ -19,20 +19,18 @@ public class TarefaService {
     private final TarefaProjetoPropriedadeRepository tarefaProjetoPropriedadeRepository;
 
     public Tarefa findById(Integer id) {
-        Tarefa tarefa = tarefaRepository.findById(id).get();
-        ResolveStackOverflow.getObjectWithoutStackOverflow(tarefa);
-        return tarefa;
+        Tarefa task = tarefaRepository.findById(id).get();
+        ResolveStackOverflow.getObjectWithoutStackOverflow(task);
+        return task;
     }
 
     public Collection<Tarefa> findAll() {
-        Collection<Tarefa> tarefas = tarefaRepository.findAll();
+        Collection<Tarefa> tasks = tarefaRepository.findAll();
 
-        for(Tarefa tarefa : tarefas){
-            ResolveStackOverflow.getObjectWithoutStackOverflow(tarefa);
+        for(Tarefa task : tasks){
+            ResolveStackOverflow.getObjectWithoutStackOverflow(task);
         }
-
-
-        return tarefas;
+        return tasks;
     }
 
     public void delete(Integer id) {
@@ -41,14 +39,34 @@ public class TarefaService {
 
     public Tarefa create(Tarefa tarefa) {
         tarefaRepository.save(tarefa);
+        setStatusListIndex(tarefa);
         return update(tarefa);
     }
 
-    public Tarefa update(Tarefa tarefa) {
+    public Tarefa update(Tarefa task) {
 
-        propriedadeSetTarefa(tarefa);
-//        System.out.println(tarefa);
-        return tarefaRepository.save(tarefa);
+        setStatusListIndex(task);
+        propriedadeSetTarefa(task);
+
+        Tarefa updatedTask = tarefaRepository.save(task);
+        return ResolveStackOverflow.getObjectWithoutStackOverflow(updatedTask);
+    }
+
+    private void setStatusListIndex(Tarefa tarefa){
+        Integer defaultIndex = -1;
+        Integer firstIndex = 0;
+        if(tarefa.getStatusAtual()!=null && tarefa.getStatusListIndex() != null){
+            if(tarefa.getStatusListIndex() == defaultIndex){
+                Collection<Tarefa> listaTarefas = getTarefasByStatus(tarefa.getStatusAtual().getId());
+                if(listaTarefas != null){
+                    tarefa.setStatusListIndex(listaTarefas.size());
+                }else {
+                    tarefa.setStatusListIndex(firstIndex);
+                }
+            }
+        } else {
+            tarefa.setStatusListIndex(defaultIndex);
+        }
     }
 
     private void propriedadeSetTarefa(Tarefa tarefa){
@@ -62,6 +80,11 @@ public class TarefaService {
                 tarefaProjetoPropriedadeRepository.save(propriedade);
             }
         }
+    }
+    private final StatusRepository statusRepository;
+    public Collection<Tarefa> getTarefasByStatus(Integer id){
+
+        return tarefaRepository.getTarefaByStatusAtual(statusRepository.findById(id).get());
     }
 
 }

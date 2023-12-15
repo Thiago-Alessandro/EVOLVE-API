@@ -3,12 +3,10 @@ package net.weg.taskmanager.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Tarefa;
+import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.Usuario;
-import net.weg.taskmanager.repository.TarefaRepository;
 import net.weg.taskmanager.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -27,12 +25,17 @@ public class UsuarioService {
     }
 
     public Usuario findById(Integer id){
-        Usuario usuario = usuarioRepository.findById(id).get();
+        Usuario user = usuarioRepository.findById(id).get();
         //usuario.getTesteImagem() retorna a representação Base64 da imagem
-        usuario.setFotoPerfil(addBase64Prefix(usuario.getFotoPerfil()));
-        return usuario;}
+        user.setFotoPerfil(addBase64Prefix(user.getFotoPerfil()));
+        return ResolveStackOverflow.getObjectWithoutStackOverflow(user);}
 
-    public Collection<Usuario> findAll(){return usuarioRepository.findAll();}
+    public Collection<Usuario> findAll(){
+        Collection<Usuario> users = usuarioRepository.findAll();
+        for(Usuario user : users){
+            ResolveStackOverflow.getObjectWithoutStackOverflow(user);
+        }
+        return users;}
 
     public void delete(Integer id){usuarioRepository.deleteById(id);}
 

@@ -49,4 +49,6 @@ public class Tarefa {
     @ManyToMany
     private Collection<Usuario> associados;
 
+    private Integer statusListIndex;
+
 }
