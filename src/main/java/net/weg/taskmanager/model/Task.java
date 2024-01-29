@@ -26,7 +26,7 @@ public class Task {
     private String description;
 
     @ManyToOne()
-    private Status CurrentStatus;
+    private Status currentStatus;
 
     @Enumerated(value = EnumType.ORDINAL)
     private Priority priority;

@@ -16,6 +16,6 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
 //
 //    Tarefa findByPrioridade(Tarefa tarefa);
 
-    Collection<Task> getTarefaByStatusAtual(Status status);
+    Collection<Task> getTaskByCurrentStatus(Status status);
 
 }

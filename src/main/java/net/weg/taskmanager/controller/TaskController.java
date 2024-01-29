@@ -29,6 +29,6 @@ public class TaskController {
     public Task update(@RequestBody Task task){return taskService.update(task);}
 
     @GetMapping("/status/{id}")
-    public Collection<Task> getTasksByStatus(@PathVariable Integer id){return taskService.getTarefasByStatus(id);}
+    public Collection<Task> getTasksByStatus(@PathVariable Integer id){return taskService.getTasksByStatus(id);}
 
 }

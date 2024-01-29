@@ -57,7 +57,7 @@ public class TaskService {
         Integer firstIndex = 0;
         if(task.getCurrentStatus()!=null && task.getStatusListIndex() != null){
             if(task.getStatusListIndex() == defaultIndex){
-                Collection<Task> listaTasks = getTarefasByStatus(task.getCurrentStatus().getId());
+                Collection<Task> listaTasks = getTasksByStatus(task.getCurrentStatus().getId());
                 if(listaTasks != null){
                     task.setStatusListIndex(listaTasks.size());
                 }else {
@@ -82,9 +82,9 @@ public class TaskService {
         }
     }
     private final StatusRepository statusRepository;
-    public Collection<Task> getTarefasByStatus(Integer id){
+    public Collection<Task> getTasksByStatus(Integer id){
 
-        return taskRepository.getTarefaByStatusAtual(statusRepository.findById(id).get());
+        return taskRepository.getTaskByCurrentStatus(statusRepository.findById(id).get());
     }
 
 }
