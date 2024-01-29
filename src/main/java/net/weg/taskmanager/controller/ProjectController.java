@@ -9,7 +9,7 @@ import java.util.Collection;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/projeto")
+@RequestMapping("/project")
 public class ProjectController {
 
     private final ProjectService projectService;

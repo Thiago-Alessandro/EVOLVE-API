@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Integer> {
 
-    Team findTeamsByProjectsContaining(Project project);
+    Team findTeamByProjectsContaining(Project project);
 
 }

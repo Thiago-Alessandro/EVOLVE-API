@@ -21,7 +21,7 @@ public class Task {
     private Boolean favorited;
 
     //Mudar datas para Date posteriormente
-    private String FinalDate;
+    private String finalDate;
     private String CreationDate;
     private String description;
 
@@ -43,7 +43,7 @@ public class Task {
     private Collection<TaskProjectProperty> properties;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Collection<SubTask> subTasks;
+    private Collection<Subtask> subTasks;
     @ManyToMany
     private Collection<User> associates;
 

@@ -44,9 +44,9 @@ public class ProjectService {
         statusRepository.deleteAll(project.getStatusList());
 
         try {
-            if(teamRepository.findTeamsByProjectsContaining(project)!=null){
+            if(teamRepository.findTeamByProjectsContaining(project)!=null){
                 //seria bom ter o atributo equipe no proprio projeto para não ter que pegar na service
-                teamRepository.findTeamsByProjectsContaining(project).getProjects().remove(project);
+                teamRepository.findTeamByProjectsContaining(project).getProjects().remove(project);
             }
         } catch (Exception e) {
             System.out.println("Deu erro lá manin");

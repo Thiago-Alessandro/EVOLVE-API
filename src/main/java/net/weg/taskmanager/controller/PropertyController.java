@@ -9,7 +9,7 @@ import java.util.Collection;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/propriedade")
+@RequestMapping("/property")
 public class PropertyController {
 
     private final PropertyService propertyService;
@@ -22,8 +22,8 @@ public class PropertyController {
     public void delete(@PathVariable Integer id){
         propertyService.delete(id);}
     @PostMapping
-    public Property create(@RequestBody Property propriedade){return propertyService.create(propriedade);}
+    public Property create(@RequestBody Property property){return propertyService.create(property);}
     @PutMapping
-    public Property update(@RequestBody Property propriedade){return propertyService.update(propriedade);}
+    public Property update(@RequestBody Property property){return propertyService.update(property);}
 
 }

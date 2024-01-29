@@ -11,7 +11,7 @@ import java.util.Collection;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/usuario")
+@RequestMapping("/user")
 public class UserController {
 
     private final ObjectMapper objectMapper;

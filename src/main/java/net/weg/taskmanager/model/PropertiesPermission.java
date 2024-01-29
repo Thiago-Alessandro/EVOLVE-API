@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PermissionOfProperties {
+public class PropertiesPermission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)

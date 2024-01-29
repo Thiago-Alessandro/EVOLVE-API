@@ -1,9 +1,9 @@
 package net.weg.taskmanager.repository;
 
-import net.weg.taskmanager.model.SubTask;
+import net.weg.taskmanager.model.Subtask;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SubTaskRepository extends JpaRepository<SubTask, Integer> {
+public interface SubTaskRepository extends JpaRepository<Subtask, Integer> {
 }

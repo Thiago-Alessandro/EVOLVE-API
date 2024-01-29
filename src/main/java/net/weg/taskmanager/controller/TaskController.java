@@ -9,7 +9,7 @@ import java.util.Collection;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/tarefa")
+@RequestMapping("/task")
 public class TaskController {
 
     private final TaskService taskService;

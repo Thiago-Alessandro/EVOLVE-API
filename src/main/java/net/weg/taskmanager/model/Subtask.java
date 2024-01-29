@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class SubTask {
+public class Subtask {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)

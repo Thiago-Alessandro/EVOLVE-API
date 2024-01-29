@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PermissionOfCards {
+public class CardsPermission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)

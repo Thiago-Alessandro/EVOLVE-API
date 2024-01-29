@@ -18,8 +18,8 @@ public class UserTeam {
     private Integer teamId;
 
     @ManyToOne
-    private PermissionOfProperties permissionOfProperties;
+    private PropertiesPermission permissionOfProperties;
     @ManyToOne
-    private PermissionOfCards permissionOfCards;
+    private CardsPermission permissionOfCards;
 
 }
