@@ -1,4 +1,4 @@
-package net.weg.taskmanager.model.property;
+package net.weg.taskmanager.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,16 +8,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Text {
+@Data
+public class SubTask {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
-
-    private String value;
+    private String name;
+    private Boolean concluded;
 
 }

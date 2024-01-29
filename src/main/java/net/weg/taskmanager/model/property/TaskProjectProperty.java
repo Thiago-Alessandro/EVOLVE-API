@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.Projeto;
-import net.weg.taskmanager.model.Tarefa;
+import net.weg.taskmanager.model.Project;
+import net.weg.taskmanager.model.Task;
 
 import java.util.Collection;
 
@@ -24,10 +24,10 @@ public class TaskProjectProperty {
     private Property property;
     @ManyToOne
     @JsonIgnore
-    private Tarefa task;
+    private Task task;
     @ManyToOne
     @JsonIgnore
-    private Projeto project;
+    private Project project;
 
     @ManyToMany
     private Collection<Text> value;

@@ -20,7 +20,7 @@ public class ResolveStackOverflow {
 
         if (obj != null) {
             System.out.println("a");
-            resolveObjectIfContainsGeneric(obj, Projeto.class, "getProjeto", null);
+            resolveObjectIfContainsGeneric(obj, Project.class, "getProjeto", null);
 
             System.out.println("b");
             resolveObjectIfContainsGeneric(obj, Chat.class, "getChat" , null);
@@ -29,19 +29,19 @@ public class ResolveStackOverflow {
             resolveObjectIfContainsGeneric(obj, Collection.class, "getMessages" , Message.class);
 
             System.out.println("d");
-            resolveObjectIfContainsGeneric(obj, Collection.class ,"getProjetos", Projeto.class);
+            resolveObjectIfContainsGeneric(obj, Collection.class ,"getProjetos", Project.class);
 
             System.out.println("e");
-            resolveObjectIfContainsGeneric(obj, Collection.class ,"getParticipantes", Usuario.class);
+            resolveObjectIfContainsGeneric(obj, Collection.class ,"getParticipantes", User.class);
 
             System.out.println("e2");
-            resolveObjectIfContainsGeneric(obj, Collection.class, "getUsuarios", Usuario.class);
+            resolveObjectIfContainsGeneric(obj, Collection.class, "getUsuarios", User.class);
 
             System.out.println("e3");
-            resolveObjectIfContainsGeneric(obj, Collection.class, "getUsers", Usuario.class);
+            resolveObjectIfContainsGeneric(obj, Collection.class, "getUsers", User.class);
 
             System.out.println("f");
-            resolveObjectIfContainsGeneric(obj, Collection.class ,"getEquipes", Equipe.class);
+            resolveObjectIfContainsGeneric(obj, Collection.class ,"getEquipes", Team.class);
 
 
 
@@ -51,15 +51,15 @@ public class ResolveStackOverflow {
         return obj;
     }
 
-    private static void resolveProject(Projeto projeto, String objClassName) {
+    private static void resolveProject(Project project, String objClassName) {
 
 
-        if(projeto.getTarefas()!=null){
-            if(objClassName.equals(Tarefa.class.getSimpleName())){
-                projeto.setTarefas(null);
+        if(project.getTasks()!=null){
+            if(objClassName.equals(Task.class.getSimpleName())){
+                project.setTasks(null);
             } else {
-                for(Tarefa tarefa : projeto.getTarefas()){
-                    tarefa.setProjeto(null);
+                for(Task task : project.getTasks()){
+                    task.setProject(null);
                 }
             }
         }
@@ -88,7 +88,7 @@ public class ResolveStackOverflow {
 
         switch (atribute.getClass().getSimpleName()){
 
-            case projectClassName -> resolveProject((Projeto) atribute, objClassName);
+            case projectClassName -> resolveProject((Project) atribute, objClassName);
 
             case userChatClassName -> ChatProcessor.resolveChat( (Chat) atribute, objClassName);
 //            case "Message" ->
@@ -106,17 +106,17 @@ public class ResolveStackOverflow {
                 }
             }
             case projectClassName -> {
-                for(Projeto project:(Collection<Projeto>)atribute){
+                for(Project project:(Collection<Project>)atribute){
                     resolveProject(project, objClassName);
                 }
             }
             case teamClassName -> {
-                for (Equipe team : (Collection<Equipe>) atribute){
+                for (Team team : (Collection<Team>) atribute){
                     TeamProcessor.resolveTeam(team, objClassName);
                 }
             }
             case userClassName -> {
-                for(Usuario user : (Collection<Usuario>) atribute){
+                for(User user : (Collection<User>) atribute){
                     UserProcessor.resolveUser(user, objClassName);
                 }
             }

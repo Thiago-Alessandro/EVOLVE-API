@@ -1,6 +1,5 @@
 package net.weg.taskmanager.model;
 
-import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,7 +11,7 @@ public class MessageDTO {
 
     private String content;
 
-    private Usuario sender;
+    private User sender;
     private Date date;
     private MessageStatus status;
 

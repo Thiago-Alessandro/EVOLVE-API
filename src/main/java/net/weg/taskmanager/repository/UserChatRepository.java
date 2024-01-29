@@ -1,8 +1,7 @@
 package net.weg.taskmanager.repository;
 
-import net.weg.taskmanager.model.Chat;
 import net.weg.taskmanager.model.UserChat;
-import net.weg.taskmanager.model.Usuario;
+import net.weg.taskmanager.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +12,6 @@ public interface UserChatRepository extends JpaRepository<UserChat, Integer> {
 
 //    Collection<Usuario> findByUsersContaining(Usuario user);
 
-    Collection<UserChat> findUserChatsByUsersContaining(Usuario user);
+    Collection<UserChat> findUserChatsByUsersContaining(User user);
 
 }

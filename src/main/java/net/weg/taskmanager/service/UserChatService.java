@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.UserChat;
 import net.weg.taskmanager.repository.UserChatRepository;
-import net.weg.taskmanager.repository.UsuarioRepository;
+import net.weg.taskmanager.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -14,7 +14,7 @@ import java.util.Collection;
 public class UserChatService implements IService<UserChat>{
 
     //para fins de teste
-    private final UsuarioRepository userRepository;
+    private final UserRepository userRepository;
 
     private final UserChatRepository userChatRepository;
 

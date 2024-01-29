@@ -1,8 +1,6 @@
 package net.weg.taskmanager.controller;
 
-import net.weg.taskmanager.model.Equipe;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;

@@ -15,17 +15,17 @@ import lombok.NoArgsConstructor;
 public class Status {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE )
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
-    private String nome;
-    private String corFundo;
-    private String corTexto;
+    private String name;
+    private String backgroundColor;
+    private String textColor;
     private Boolean enabled;
 
-    public Status(String nome, String corFundo, String corTexto, Boolean enabled){
-        this.nome = nome;
-        this.corFundo = corFundo;
-        this.corTexto = corTexto;
+    public Status(String name, String backgroundColor, String textColor, Boolean enabled) {
+        this.name = name;
+        this.backgroundColor = backgroundColor;
+        this.textColor = textColor;
         this.enabled = enabled;
     }
 

@@ -1,14 +1,14 @@
 package net.weg.taskmanager.service.processor;
 
-import net.weg.taskmanager.model.Equipe;
-import net.weg.taskmanager.model.Usuario;
+import net.weg.taskmanager.model.Team;
+import net.weg.taskmanager.model.User;
 
 public class TeamProcessor {
 
-    private static Equipe resolvingTeam;
+    private static Team resolvingTeam;
     private static String objClassName;
 
-    protected static void resolveTeam(Equipe team, String objectClassName){
+    protected static void resolveTeam(Team team, String objectClassName){
 
         resolvingTeam = team;
         objClassName = objectClassName;
@@ -16,12 +16,12 @@ public class TeamProcessor {
     }
 
     private static void resolveTeamMembers(){
-        if(resolvingTeam.getParticipantes() != null){
-            if(objClassName.equals(Usuario.class.getSimpleName())){
-                resolvingTeam.setParticipantes(null);
+        if(resolvingTeam.getParticipants() != null){
+            if(objClassName.equals(User.class.getSimpleName())){
+                resolvingTeam.setParticipants(null);
                 return;
             }
-            for(Usuario user : resolvingTeam.getParticipantes()){
+            for(User user : resolvingTeam.getParticipants()){
                 UserProcessor.resolveUser(user, resolvingTeam.getClass().getSimpleName());
             }
         }

@@ -1,15 +1,9 @@
 package net.weg.taskmanager.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.repository.ChatRepository;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -30,7 +24,7 @@ public class Message {
     @Column(length = 999999999)
     private String content;
     @ManyToOne
-    private Usuario sender;
+    private User sender;
     private Date date;
     private MessageStatus status;
 

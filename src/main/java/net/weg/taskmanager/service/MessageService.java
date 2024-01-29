@@ -13,33 +13,35 @@ import java.util.Collection;
 
 @AllArgsConstructor
 @Service
-public class MessageService{
+public class MessageService {
 
     private final MessageRepository messageRepository;
-private final ChatRepository chatRepository;
+    private final ChatRepository chatRepository;
+
 //    @Override
     public Message findById(Integer id) {
         return null;
+//        return messageRepository.findById(id).get();
     }
 
-//    @Override
+    //    @Override
     public Collection<Message> findAll() {
         return setMessagesChatNull(messageRepository.findAll());
     }
 
-    private Collection<Message> setMessagesChatNull(Collection<Message> messages){
-        for(Message message:messages){
+    private Collection<Message> setMessagesChatNull(Collection<Message> messages) {
+        for (Message message : messages) {
             message.setChat(null);
         }
         return messages;
     }
 
-//    @Override
+    //    @Override
     public void delete(Integer id) {
 
     }
 
-//    @Override
+    //    @Override
     public Message create(MessageDTO obj) {
         System.out.println(obj);
         Message message = new Message();
@@ -53,7 +55,7 @@ private final ChatRepository chatRepository;
         return ResolveStackOverflow.getObjectWithoutStackOverflow(newMessage);
     }
 
-//    @Override
+    //    @Override
     public Message update(Message obj) {
         return messageRepository.save(obj);
     }

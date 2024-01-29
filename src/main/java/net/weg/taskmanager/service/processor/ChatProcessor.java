@@ -3,7 +3,7 @@ package net.weg.taskmanager.service.processor;
 import net.weg.taskmanager.model.Chat;
 import net.weg.taskmanager.model.Message;
 import net.weg.taskmanager.model.UserChat;
-import net.weg.taskmanager.model.Usuario;
+import net.weg.taskmanager.model.User;
 
 public class ChatProcessor {
 
@@ -23,11 +23,11 @@ public class ChatProcessor {
 
     private static void resolveChatUsers(){
         if(chat.getUsers()!=null){
-            if(objClassName.equals(Usuario.class.getSimpleName())){
+            if(objClassName.equals(User.class.getSimpleName())){
                 chat.setUsers(null);
                 return;
             }
-            for(Usuario user : chat.getUsers()){
+            for(User user : chat.getUsers()){
                 UserProcessor.resolveUser(user, UserChat.class.getSimpleName());
             }
         }
