@@ -11,37 +11,34 @@ public class ResolveStackOverflow {
 
     private static final String messageClassName = "Message";
     private static final String userChatClassName = "UserChat";
-    private static final String projectClassName = "Projeto";
-    private static final String teamClassName = "Equipe";
-    private static final String userClassName = "Usuario";
+    private static final String projectClassName = "Project";
+    private static final String teamClassName = "Team";
+    private static final String userClassName = "User";
     private static final String persistentBagClassName = "PersistentBag";
 
     public static <T> T getObjectWithoutStackOverflow(T obj) {
 
         if (obj != null) {
-            System.out.println("a");
-            resolveObjectIfContainsGeneric(obj, Project.class, "getProjeto", null);
+//            System.out.println("a");
+            resolveObjectIfContainsGeneric(obj, Project.class, "getProject", null);
 
-            System.out.println("b");
+//            System.out.println("b");
             resolveObjectIfContainsGeneric(obj, Chat.class, "getChat" , null);
 
-            System.out.println("c");
+//            System.out.println("c");
             resolveObjectIfContainsGeneric(obj, Collection.class, "getMessages" , Message.class);
 
-            System.out.println("d");
-            resolveObjectIfContainsGeneric(obj, Collection.class ,"getProjetos", Project.class);
+//            System.out.println("d");
+            resolveObjectIfContainsGeneric(obj, Collection.class ,"getProjects", Project.class);
 
-            System.out.println("e");
-            resolveObjectIfContainsGeneric(obj, Collection.class ,"getParticipantes", User.class);
+//            System.out.println("e");
+            resolveObjectIfContainsGeneric(obj, Collection.class ,"getParticipants", User.class);
 
-            System.out.println("e2");
-            resolveObjectIfContainsGeneric(obj, Collection.class, "getUsuarios", User.class);
-
-            System.out.println("e3");
+//            System.out.println("e2");
             resolveObjectIfContainsGeneric(obj, Collection.class, "getUsers", User.class);
 
-            System.out.println("f");
-            resolveObjectIfContainsGeneric(obj, Collection.class ,"getEquipes", Team.class);
+//            System.out.println("f");
+            resolveObjectIfContainsGeneric(obj, Collection.class ,"getTeams", Team.class);
 
 
 
@@ -70,13 +67,13 @@ public class ResolveStackOverflow {
         try {
 
             Method getMethod = obj.getClass().getMethod(atributeGetMethod);
-            System.out.println(1);
+//            System.out.println(1);
 
             Object atributeObj = getMethod.invoke(obj);
-            System.out.println(2);
+//            System.out.println(2);
 
             if (expectedAtributeClass.isInstance(atributeObj)) {
-                System.out.println(3);
+//                System.out.println(3);
                 T atribute = (T) atributeObj;
                 resolveObject(atribute, expectedCollectionClass, obj.getClass().getSimpleName());
             }

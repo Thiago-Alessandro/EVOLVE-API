@@ -3,9 +3,11 @@ package net.weg.taskmanager.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.service.processor.FileProcessor;
 import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.repository.UserRepository;
+import org.springframework.jmx.export.assembler.MBeanInfoAssembler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,14 +22,10 @@ public class UserService {
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
 
-    public String addBase64Prefix(String base64Image) {
-        return "data:image/png;base64," + base64Image;
-    }
-
     public User findById(Integer id){
         User user = userRepository.findById(id).get();
         //usuario.getTesteImagem() retorna a representação Base64 da imagem
-        user.setProfilePicture(addBase64Prefix(user.getProfilePicture()));
+        user.setProfilePicture(FileProcessor.addBase64Prefix(user.getProfilePicture()));
         return ResolveStackOverflow.getObjectWithoutStackOverflow(user);}
 
     public Collection<User> findAll(){

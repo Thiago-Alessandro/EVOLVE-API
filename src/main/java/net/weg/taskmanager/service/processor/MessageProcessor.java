@@ -21,9 +21,9 @@ public class MessageProcessor {
     
     private static void resolveMessageChat(){
         //futuramente tirar isso daqui pois estara sendo tratado no proprio usuario
-        if(!resovingMessage.getSender().getProfilePicture().contains(FileProcessor.getImageBase64Prefix())){
-            resovingMessage.getSender().setProfilePicture(FileProcessor.addBase64Prefix(resovingMessage.getSender().getProfilePicture()));
-        }
+//        if(!resovingMessage.getSender().getProfilePicture().contains(FileProcessor.getImageBase64Prefix())){
+//            resovingMessage.getSender().setProfilePicture(FileProcessor.addBase64Prefix(resovingMessage.getSender().getProfilePicture()));
+//        }
         
         if(resovingMessage.getChat()!=null){
             

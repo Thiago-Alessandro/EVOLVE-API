@@ -17,6 +17,8 @@ public class UserProcessor {
         resolveUserChats();
         resolveUserTeams();
 
+        user.setProfilePicture(FileProcessor.addBase64Prefix(user.getProfilePicture()));
+
     }
 
     private static void resolveUserChats(){

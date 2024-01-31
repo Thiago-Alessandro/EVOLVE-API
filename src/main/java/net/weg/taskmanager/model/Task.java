@@ -22,7 +22,7 @@ public class Task {
 
     //Mudar datas para Date posteriormente
     private String finalDate;
-    private String CreationDate;
+    private String creationDate;
     private String description;
 
     @ManyToOne()
@@ -43,7 +43,7 @@ public class Task {
     private Collection<TaskProjectProperty> properties;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Collection<Subtask> subTasks;
+    private Collection<Subtask> subtasks;
     @ManyToMany
     private Collection<User> associates;
 
