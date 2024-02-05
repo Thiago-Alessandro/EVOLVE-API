@@ -2,14 +2,17 @@ package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Project;
+import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.service.ProjectService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/project")
+@CrossOrigin
 public class ProjectController {
 
     private final ProjectService projectService;
@@ -27,5 +30,10 @@ public class ProjectController {
     public Project update(@RequestBody Project project){return projectService.update(project);}
 //    @GetMapping("/status")
 //    public Collection<Status> getStatus(){return projetoService.getAllStatus();}
+
+    @PatchMapping("/{id}")
+    public Project updateStatusList(@PathVariable Integer id, @RequestBody Status status){
+        return projectService.updateStatusList(id, status);
+    }
 
 }

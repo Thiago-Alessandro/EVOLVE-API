@@ -16,6 +16,7 @@ public class UserProcessor {
 
         resolveUserChats();
         resolveUserTeams();
+        resolveUserManagedTeams();
 
         user.setProfilePicture(FileProcessor.addBase64Prefix(user.getProfilePicture()));
 
@@ -40,6 +41,20 @@ public class UserProcessor {
                 return;
             }
             for(Team team : resolvingUser.getTeams()){
+//                System.out.println(objClassName);
+                TeamProcessor.resolveTeam(team, objClassName);
+            }
+        }
+    }
+
+    private static void resolveUserManagedTeams(){
+        if(resolvingUser.getManagedTeams() != null){
+            if( objClassName.equals(Team.class.getSimpleName())){
+                resolvingUser.setManagedTeams(null);
+                return;
+            }
+            for(Team team : resolvingUser.getManagedTeams()){
+                System.out.println(objClassName);
                 TeamProcessor.resolveTeam(team, objClassName);
             }
         }

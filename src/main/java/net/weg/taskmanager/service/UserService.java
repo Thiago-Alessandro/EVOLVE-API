@@ -25,8 +25,12 @@ public class UserService {
     public User findById(Integer id){
         User user = userRepository.findById(id).get();
         //usuario.getTesteImagem() retorna a representação Base64 da imagem
-        user.setProfilePicture(FileProcessor.addBase64Prefix(user.getProfilePicture()));
-        return ResolveStackOverflow.getObjectWithoutStackOverflow(user);}
+//        if(user.getProfilePicture()!=null){
+//            user.setProfilePicture(FileProcessor.addBase64Prefix(user.getProfilePicture()));
+//        }
+        ResolveStackOverflow.getObjectWithoutStackOverflow(user);
+        return user;
+    }
 
     public Collection<User> findAll(){
         Collection<User> users = userRepository.findAll();

@@ -1,6 +1,7 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.Chat;
 import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.UserChat;
 import net.weg.taskmanager.repository.UserChatRepository;
@@ -24,7 +25,9 @@ public class UserChatService implements IService<UserChat>{
 
     @Override
     public UserChat findById(Integer id) {
-        return userChatRepository.findById(id).get();
+        UserChat chat = userChatRepository.findById(id).get();
+        ResolveStackOverflow.getObjectWithoutStackOverflow(chat);
+        return chat;
     }
 
     @Override

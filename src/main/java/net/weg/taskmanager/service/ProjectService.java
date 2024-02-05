@@ -2,6 +2,7 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Project;
+import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.*;
@@ -18,6 +19,13 @@ public class ProjectService {
     private final StatusRepository statusRepository;
     private final TeamRepository teamRepository;
     private final TaskProjectPropertyRepository taskProjectPropertyRepository;
+
+    public Project updateStatusList(Integer id, Status status){
+        Project project = projectRepository.getById(id);
+        project.getStatusList().add(status);
+        return update(project);
+    }
+
 
     public Project findById(Integer id){
         Project project =  projectRepository.findById(id).get();
@@ -69,12 +77,13 @@ public class ProjectService {
     }
     public Project update(Project project){
 
-//        for(Status status : projeto.getListaStatus()){
-//            if(status.getId()==0){
-//                status.setId(null);
-//            }
-//        }
+        for(Status status : project.getStatusList()){
+            if(status.getId()==0){
+                status.setId(null);
+            }
+        }
 
+        System.out.println(project);
         return projectRepository.save(project);}
     private void propertiesSetProject(Project project){
         //Verifica se há alguma propriedade no projeto

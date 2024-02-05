@@ -6,14 +6,17 @@ public class FileProcessor {
 
     public static String addBase64Prefix(String base64Image) {
 
-        if(!isStringAHashColor(base64Image) && !base64Image.contains(imageBase64Prefix)){
+        if(base64Image != null && !isStringAHashColor(base64Image) && !base64Image.contains(imageBase64Prefix)){
             return imageBase64Prefix + base64Image;
         }
         return base64Image;
     }
 
     public static boolean isStringAHashColor(String base64Image){
-        return base64Image.startsWith("#") && base64Image.length() == 7;
+        if(base64Image != null){
+            return base64Image.startsWith("#") && base64Image.length() == 7;
+        }
+        return false;
     }
 
 

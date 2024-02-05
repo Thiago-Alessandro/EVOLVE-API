@@ -38,12 +38,12 @@ public class TeamService {
 
     public Team update(Team team){
         updateTeamChat(team);
-        for(User participante : team.getParticipants()){
-            if(!team.getChat().getUsers().contains(participante)){
-                team.getChat().getUsers().add(participante);
-            }
-        }
-        team.getChat().setUsers(team.getParticipants());
+//        for(User participante : team.getParticipants()){
+//            if(!team.getChat().getUsers().contains(participante)){
+//                team.getChat().getUsers().add(participante);
+//            }
+//        }
+//        team.getChat().setUsers(team.getParticipants());
         return teamRepository.save(team);}
 
     private void updateTeamChat(Team team){

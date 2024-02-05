@@ -33,7 +33,7 @@ public class User {
     @JsonIgnore
     private Collection<Task> createdTasks;
     @OneToMany(mappedBy = "administrator")
-    @JsonIgnore
+//    @JsonIgnore
     private Collection<Team> managedTeams;
     @ManyToMany(mappedBy = "participants")
     //tava na equipe

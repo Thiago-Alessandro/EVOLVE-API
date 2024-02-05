@@ -38,8 +38,13 @@ public class TaskService {
     }
 
     public Task create(Task task) {
+        if(task.getCurrentStatus().getId()==0){
+            task.getCurrentStatus().setId(null);
+
+        }
+        System.out.println(task);
         taskRepository.save(task);
-        setStatusListIndex(task);
+//        setStatusListIndex(task);
         return update(task);
     }
 

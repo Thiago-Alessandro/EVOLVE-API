@@ -11,6 +11,7 @@ public class ResolveStackOverflow {
 
     private static final String messageClassName = "Message";
     private static final String userChatClassName = "UserChat";
+    private static final String teamChatClassName = "TeamChat";
     private static final String projectClassName = "Project";
     private static final String teamClassName = "Team";
     private static final String userClassName = "User";
@@ -22,23 +23,45 @@ public class ResolveStackOverflow {
 //            System.out.println("a");
             resolveObjectIfContainsGeneric(obj, Project.class, "getProject", null);
 
-//            System.out.println("b");
+            System.out.println("b");
             resolveObjectIfContainsGeneric(obj, Chat.class, "getChat" , null);
 
-//            System.out.println("c");
+            System.out.println("chat plural");
+            resolveObjectIfContainsGeneric(obj, Chat.class, "getChats" , null);
+            System.out.println("b2");
+            resolveObjectIfContainsGeneric(obj, UserChat.class, "getChat" , null);
+
+            System.out.println("chat plural");
+            resolveObjectIfContainsGeneric(obj, UserChat.class, "getChats" , null);
+
+            System.out.println("dentro da hi lux");
+            resolveObjectIfContainsGeneric(obj, Team.class ,"getTeam", null);
+
+            System.out.println("Ela vem no tustussts");
+            resolveObjectIfContainsGeneric(obj, User.class, "getUser", null);
+            System.out.println(obj.getClass());
+
+            System.out.println("ohoho");
+            resolveObjectIfContainsGeneric(obj, User.class, "getAdministrator", null);
+
+            System.out.println("c");
             resolveObjectIfContainsGeneric(obj, Collection.class, "getMessages" , Message.class);
 
-//            System.out.println("d");
+            System.out.println("d");
             resolveObjectIfContainsGeneric(obj, Collection.class ,"getProjects", Project.class);
 
-//            System.out.println("e");
+            System.out.println("e");
             resolveObjectIfContainsGeneric(obj, Collection.class ,"getParticipants", User.class);
 
-//            System.out.println("e2");
+            System.out.println("e2");
             resolveObjectIfContainsGeneric(obj, Collection.class, "getUsers", User.class);
 
-//            System.out.println("f");
+            System.out.println("f");
             resolveObjectIfContainsGeneric(obj, Collection.class ,"getTeams", Team.class);
+//            OBS: a collection seria do atributo do objeto a ser pego pelo metodo get
+
+            System.out.println("f2");
+            resolveObjectIfContainsGeneric(obj, Collection.class ,"getManagedTeams", Team.class);
 
 
 
@@ -72,10 +95,14 @@ public class ResolveStackOverflow {
             Object atributeObj = getMethod.invoke(obj);
 //            System.out.println(2);
 
-            if (expectedAtributeClass.isInstance(atributeObj)) {
-//                System.out.println(3);
-                T atribute = (T) atributeObj;
-                resolveObject(atribute, expectedCollectionClass, obj.getClass().getSimpleName());
+            if(atributeObj!=null){
+                System.out.println(atributeObj.getClass());
+                if (expectedAtributeClass.isInstance(atributeObj)) {
+    //                System.out.println(3);
+                    T atribute = (T) atributeObj;
+                    System.out.println("foi");
+                    resolveObject(atribute, expectedCollectionClass, obj.getClass().getSimpleName());
+                }
             }
 
         }catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignore){}
@@ -87,9 +114,13 @@ public class ResolveStackOverflow {
 
             case projectClassName -> resolveProject((Project) atribute, objClassName);
 
-            case userChatClassName -> ChatProcessor.resolveChat( (Chat) atribute, objClassName);
-//            case "Message" ->
+            case userChatClassName, teamChatClassName -> ChatProcessor.resolveChat( (Chat) atribute, objClassName);
+
             case persistentBagClassName -> resolveCollectionAtribute((Collection<C>) atribute, expectedCollectionClass, objClassName);
+
+            case userClassName -> UserProcessor.resolveUser((User)atribute,objClassName);
+
+            case teamClassName -> TeamProcessor.resolveTeam((Team) atribute, objClassName);
 
             default -> System.out.println("ResolveStackOverflow: O nome da classe não foi encontrado. Classe: " + atribute.getClass().getSimpleName());
         }

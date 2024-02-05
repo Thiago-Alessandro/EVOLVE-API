@@ -21,6 +21,7 @@ public class Team {
     private String image;
 //    private String descricao;
     @ManyToOne
+    @JsonIgnore
     private User administrator;
     @OneToMany(mappedBy = "team")
     private Collection<Project> projects;
@@ -29,7 +30,7 @@ public class Team {
     //tirar eventualmente
     private Collection<User> participants;
     @OneToOne(cascade = CascadeType.ALL)
-//    @JsonIgnore
+    @JsonIgnore
     private TeamChat chat;
 
 }
