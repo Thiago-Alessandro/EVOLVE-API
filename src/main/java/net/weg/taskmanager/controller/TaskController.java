@@ -33,7 +33,7 @@ public class TaskController {
     @GetMapping("/status/{id}")
     public Collection<Task> getTasksByStatus(@PathVariable Integer id){return taskService.getTasksByStatus(id);}
 
-    @PatchMapping("/workedTime")
+    @PatchMapping("/userTask")
     public UserTask setWorkedTime(@RequestBody UserTask userTask){
         return taskService.setWorkedTime(userTask);
     }
