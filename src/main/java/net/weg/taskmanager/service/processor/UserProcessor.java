@@ -9,7 +9,7 @@ public class UserProcessor {
     private static User resolvingUser;
     private static String objClassName;
 
-    protected static void resolveUser(User user, String objectClassName){
+    public static void resolveUser(User user, String objectClassName){
 
         resolvingUser = user;
         objClassName = objectClassName;

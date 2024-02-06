@@ -1,6 +1,8 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.UserTask;
+import net.weg.taskmanager.repository.UserTaskRepository;
 import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
@@ -17,6 +19,24 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskProjectPropertyRepository taskProjectPropertyRepository;
+    private final UserTaskRepository userTaskRepository;
+
+    public UserTask setWorkedTime(UserTask userTask){
+
+        UserTask changingUserTask = userTaskRepository.findByUserIdAndTaskId(userTask.getUserId(), userTask.getTaskId());
+
+        if(changingUserTask!=null){
+            changingUserTask.setWorkedHours(userTask.getWorkedHours());
+            changingUserTask.setWorkedMinutes(userTask.getWorkedMinutes());
+            changingUserTask.setWorkedSeconds(userTask.getWorkedSeconds());
+        }
+
+        return changingUserTask;
+    }
+
+    public UserTask getUserTask(Integer userId, Integer taskId){
+        return userTaskRepository.findByUserIdAndTaskId(userId, taskId);
+    }
 
     public Task findById(Integer id) {
         Task task = taskRepository.findById(id).get();

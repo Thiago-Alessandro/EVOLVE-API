@@ -7,6 +7,7 @@ import net.weg.taskmanager.service.processor.FileProcessor;
 import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.repository.UserRepository;
+import net.weg.taskmanager.service.processor.UserProcessor;
 import org.springframework.jmx.export.assembler.MBeanInfoAssembler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +36,8 @@ public class UserService {
     public Collection<User> findAll(){
         Collection<User> users = userRepository.findAll();
         for(User user : users){
-            ResolveStackOverflow.getObjectWithoutStackOverflow(user);
+//            ResolveStackOverflow.getObjectWithoutStackOverflow(user);
+            UserProcessor.resolveUser(user, "User");
         }
         return users;}
 

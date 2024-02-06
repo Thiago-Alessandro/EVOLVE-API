@@ -15,12 +15,23 @@ public class ResolveStackOverflow {
     private static final String projectClassName = "Project";
     private static final String teamClassName = "Team";
     private static final String userClassName = "User";
+    private static final String taskClassname = "Task";
     private static final String persistentBagClassName = "PersistentBag";
+
 
     public static <T> T getObjectWithoutStackOverflow(T obj) {
 
         if (obj != null) {
-//            System.out.println("a");
+
+            //EN
+            //OBS: The comments above the following methods are about wich models have the atribute to be resolved
+            //     and the 'obj' parameter is an instance of the expected model wich will be tested inside the method
+            //PT-BR
+            //OBS: Os comentários acima dos seguintes métodos são a respeito de quais models possuem o atributo a ser resolvido
+            //     e o parametro 'obj' é uma instancia da model esperada o que será testado dentro do método
+
+            System.out.println("a");
+            //ProjectChat
             resolveObjectIfContainsGeneric(obj, Project.class, "getProject", null);
 
             System.out.println("b");
@@ -35,6 +46,7 @@ public class ResolveStackOverflow {
             resolveObjectIfContainsGeneric(obj, UserChat.class, "getChats" , null);
 
             System.out.println("dentro da hi lux");
+            //TeamChat
             resolveObjectIfContainsGeneric(obj, Team.class ,"getTeam", null);
 
             System.out.println("Ela vem no tustussts");
@@ -45,6 +57,7 @@ public class ResolveStackOverflow {
             resolveObjectIfContainsGeneric(obj, User.class, "getAdministrator", null);
 
             System.out.println("c");
+            //Chat
             resolveObjectIfContainsGeneric(obj, Collection.class, "getMessages" , Message.class);
 
             System.out.println("d");
@@ -54,6 +67,7 @@ public class ResolveStackOverflow {
             resolveObjectIfContainsGeneric(obj, Collection.class ,"getParticipants", User.class);
 
             System.out.println("e2");
+            //Chat,
             resolveObjectIfContainsGeneric(obj, Collection.class, "getUsers", User.class);
 
             System.out.println("f");
@@ -63,27 +77,14 @@ public class ResolveStackOverflow {
             System.out.println("f2");
             resolveObjectIfContainsGeneric(obj, Collection.class ,"getManagedTeams", Team.class);
 
-
+            System.out.println("g");
+            //Project
+            resolveObjectIfContainsGeneric(obj, Collection.class, "getTasks", Task.class);
 
 //            resolveObjectIfContainsProject(obj);
 //            resolveObjectIfContainsProjectCollection(obj);
         }
         return obj;
-    }
-
-    private static void resolveProject(Project project, String objClassName) {
-
-
-        if(project.getTasks()!=null){
-            if(objClassName.equals(Task.class.getSimpleName())){
-                project.setTasks(null);
-            } else {
-                for(Task task : project.getTasks()){
-                    task.setProject(null);
-                }
-            }
-        }
-
     }
 
     private static <T, OBJ, C> void resolveObjectIfContainsGeneric(OBJ obj, Class<T> expectedAtributeClass, String atributeGetMethod, Class<C> expectedCollectionClass){
@@ -112,7 +113,7 @@ public class ResolveStackOverflow {
 
         switch (atribute.getClass().getSimpleName()){
 
-            case projectClassName -> resolveProject((Project) atribute, objClassName);
+            case projectClassName -> ProjectProcessor.resolveProject((Project) atribute, objClassName);
 
             case userChatClassName, teamChatClassName -> ChatProcessor.resolveChat( (Chat) atribute, objClassName);
 
@@ -135,7 +136,7 @@ public class ResolveStackOverflow {
             }
             case projectClassName -> {
                 for(Project project:(Collection<Project>)atribute){
-                    resolveProject(project, objClassName);
+                    ProjectProcessor.resolveProject(project, objClassName);
                 }
             }
             case teamClassName -> {
@@ -146,6 +147,12 @@ public class ResolveStackOverflow {
             case userClassName -> {
                 for(User user : (Collection<User>) atribute){
                     UserProcessor.resolveUser(user, objClassName);
+                }
+            }
+
+            case taskClassname -> {
+                for(Task task : (Collection<Task>) atribute){
+                    TaskProcessor.resolveTask(task, objClassName);
                 }
             }
         }

@@ -44,7 +44,7 @@ public class Project {
     private Chat chat;
 
     @OneToMany(mappedBy = "project")
-//    @JsonIgnore
+    @JsonIgnore
     private Collection<Task> tasks;
 
     public void setStandardStatus() {

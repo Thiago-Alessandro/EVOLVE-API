@@ -8,6 +8,7 @@ import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
@@ -22,7 +23,14 @@ public class ProjectService {
 
     public Project updateStatusList(Integer id, Status status){
         Project project = projectRepository.getById(id);
-        project.getStatusList().add(status);
+        if(project!=null){
+            if(project.getStatusList()!=null){
+                project.getStatusList().add(status);
+            } else {
+                project.setStatusList(new ArrayList());
+                project.getStatusList().add(status);
+            }
+        }
         return update(project);
     }
 
@@ -83,7 +91,7 @@ public class ProjectService {
             }
         }
 
-        System.out.println(project);
+//        System.out.println(project);
         return projectRepository.save(project);}
     private void propertiesSetProject(Project project){
         //Verifica se há alguma propriedade no projeto

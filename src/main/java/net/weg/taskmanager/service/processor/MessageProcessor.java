@@ -8,11 +8,11 @@ import net.weg.taskmanager.model.UserChat;
 public class MessageProcessor {
 
     private static String objClassName;
-    private static Message resovingMessage;
+    private static Message resolvingMessage;
     
     protected static void resolveMessage(Message message, String objectClassName){
 
-        resovingMessage = message;
+        resolvingMessage = message;
         objClassName = objectClassName;
 
         resolveMessageChat();
@@ -21,20 +21,20 @@ public class MessageProcessor {
     
     private static void resolveMessageChat(){
         //futuramente tirar isso daqui pois estara sendo tratado no proprio usuario
-//        if(!resovingMessage.getSender().getProfilePicture().contains(FileProcessor.getImageBase64Prefix())){
-//            resovingMessage.getSender().setProfilePicture(FileProcessor.addBase64Prefix(resovingMessage.getSender().getProfilePicture()));
+//        if(!resolvingMessage.getSender().getProfilePicture().contains(FileProcessor.getImageBase64Prefix())){
+//            resolvingMessage.getSender().setProfilePicture(FileProcessor.addBase64Prefix(resolvingMessage.getSender().getProfilePicture()));
 //        }
         
-        if(resovingMessage.getChat()!=null){
+        if(resolvingMessage.getChat()!=null){
             
             if(objClassName.equals(UserChat.class.getSimpleName()) ||
                     objClassName.equals(TeamChat.class.getSimpleName()) ||
                     objClassName.equals(ProjectChat.class.getSimpleName())
             ){
-                resovingMessage.setChat(null);
+                resolvingMessage.setChat(null);
                 return;
             }
-            ChatProcessor.resolveChat(resovingMessage.getChat(), resovingMessage.getClass().getSimpleName());
+            ChatProcessor.resolveChat(resolvingMessage.getChat(), resolvingMessage.getClass().getSimpleName());
         }
     }
     

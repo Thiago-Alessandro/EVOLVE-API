@@ -24,6 +24,8 @@ public class UserTask {
     @JoinColumn(name = "taskId")
     private Task task;
 
-    private Double workedHours;
+    private Integer workedHours;
+    private Integer workedMinutes;
+    private Integer workedSeconds;
 
 }

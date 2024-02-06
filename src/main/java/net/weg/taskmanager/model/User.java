@@ -26,7 +26,7 @@ public class User {
     private String profilePicture;
 
     @ManyToMany(mappedBy = "users")
-    @JsonIgnore
+//    @JsonIgnore
     private Collection<UserChat> chats;
 
     @OneToMany(mappedBy = "creator")
