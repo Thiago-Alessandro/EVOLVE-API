@@ -1,23 +1,23 @@
 package net.weg.taskmanager.service.processor;
 
-import net.weg.taskmanager.model.Chat;
-import net.weg.taskmanager.model.Team;
-import net.weg.taskmanager.model.TeamChat;
-import net.weg.taskmanager.model.User;
+import net.weg.taskmanager.model.*;
 
 public class TeamProcessor {
 
     private static Team resolvingTeam;
     private static String objClassName;
+    private static String teamClassName;
 
     protected static void resolveTeam(Team team, String objectClassName){
 
         resolvingTeam = team;
         objClassName = objectClassName;
+        teamClassName = Team.class.getSimpleName();
 
         resolveTeamParticipants();
         resolveTeamAdministrator();
         resolveTeamChat();
+        resolveTeamProjects();
 
     }
 
@@ -27,7 +27,7 @@ public class TeamProcessor {
                 resolvingTeam.setChat(null);
                 return;
             }
-            ChatProcessor.resolveChat(resolvingTeam.getChat(), TeamChat.class.getSimpleName());
+            ChatProcessor.resolveChat(resolvingTeam.getChat(), teamClassName);
         }
     }
 
@@ -37,9 +37,8 @@ public class TeamProcessor {
                 resolvingTeam.setParticipants(null);
                 return;
             }
-            for(User user : resolvingTeam.getParticipants()){
-                UserProcessor.resolveUser(user, resolvingTeam.getClass().getSimpleName());
-            }
+            resolvingTeam.getParticipants().stream()
+                    .forEach(user -> UserProcessor.resolveUser(user, teamClassName));
         }
     }
 
@@ -49,7 +48,18 @@ public class TeamProcessor {
                 resolvingTeam.setAdministrator(null);
                 return;
             }
-            UserProcessor.resolveUser(resolvingTeam.getAdministrator(), resolvingTeam.getClass().getSimpleName());
+            UserProcessor.resolveUser(resolvingTeam.getAdministrator(), teamClassName);
+        }
+    }
+
+    private static void resolveTeamProjects(){
+        if(resolvingTeam.getProjects()!=null){
+            if(objClassName.equals(Project.class.getSimpleName())){
+                resolvingTeam.setProjects(null);
+                return;
+            }
+            resolvingTeam.getProjects().stream()
+                    .forEach(project -> ProjectProcessor.resolveProject(project, teamClassName));
         }
     }
 
