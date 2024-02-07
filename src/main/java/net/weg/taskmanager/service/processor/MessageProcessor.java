@@ -1,9 +1,6 @@
 package net.weg.taskmanager.service.processor;
 
-import net.weg.taskmanager.model.Message;
-import net.weg.taskmanager.model.ProjectChat;
-import net.weg.taskmanager.model.TeamChat;
-import net.weg.taskmanager.model.UserChat;
+import net.weg.taskmanager.model.*;
 
 public class MessageProcessor {
 
@@ -16,6 +13,7 @@ public class MessageProcessor {
         objClassName = objectClassName;
 
         resolveMessageChat();
+        resolveMessageSender();
 
     }
     
@@ -26,7 +24,7 @@ public class MessageProcessor {
 //        }
         
         if(resolvingMessage.getChat()!=null){
-            
+
             if(objClassName.equals(UserChat.class.getSimpleName()) ||
                     objClassName.equals(TeamChat.class.getSimpleName()) ||
                     objClassName.equals(ProjectChat.class.getSimpleName())
@@ -35,6 +33,15 @@ public class MessageProcessor {
                 return;
             }
             ChatProcessor.resolveChat(resolvingMessage.getChat(), resolvingMessage.getClass().getSimpleName());
+        }
+    }
+    private static void resolveMessageSender(){
+        if(resolvingMessage.getSender()!=null){
+            if(objClassName.equals(User.class.getSimpleName())){
+                resolvingMessage.setSender(null);
+                return;
+            }
+            UserProcessor.resolveUser(resolvingMessage.getSender(), resolvingMessage.getClass().getSimpleName());
         }
     }
     

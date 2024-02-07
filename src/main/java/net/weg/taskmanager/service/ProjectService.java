@@ -92,6 +92,7 @@ public class ProjectService {
         }
 
 //        System.out.println(project);
+        System.out.println(project.getStatusList());
         return projectRepository.save(project);}
     private void propertiesSetProject(Project project){
         //Verifica se há alguma propriedade no projeto

@@ -21,6 +21,7 @@ public class Status {
     private String backgroundColor;
     private String textColor;
     private Boolean enabled;
+    private Integer columnIndex;
 
     public Status(String name, String backgroundColor, String textColor, Boolean enabled) {
         this.name = name;

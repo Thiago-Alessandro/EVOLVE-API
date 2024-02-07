@@ -9,16 +9,18 @@ public class UserProcessor {
 
     private static User resolvingUser;
     private static String objClassName;
+    private static String userClassName;
 
     public static void resolveUser(User user, String objectClassName){
 
         resolvingUser = user;
         objClassName = objectClassName;
+        userClassName = User.class.getSimpleName();
 
         resolveUserChats();
         resolveUserTeams();
         resolveUserManagedTeams();
-        resolveUserTasks();
+        resolveUserCreatedTasks();
 
         user.setProfilePicture(FileProcessor.addBase64Prefix(user.getProfilePicture()));
 
@@ -30,9 +32,8 @@ public class UserProcessor {
                 resolvingUser.setChats(null);
                 return;
             }
-            for(UserChat chat : resolvingUser.getChats()){
-                ChatProcessor.resolveChat(chat, objClassName);
-            }
+            resolvingUser.getChats().stream()
+                    .forEach(chat -> ChatProcessor.resolveChat(chat, userClassName));
         }
     }
 
@@ -42,10 +43,8 @@ public class UserProcessor {
                 resolvingUser.setTeams(null);
                 return;
             }
-            for(Team team : resolvingUser.getTeams()){
-//                System.out.println(objClassName);
-                TeamProcessor.resolveTeam(team, objClassName);
-            }
+            resolvingUser.getTeams().stream()
+                    .forEach(team -> TeamProcessor.resolveTeam(team, userClassName));
         }
     }
 
@@ -55,22 +54,19 @@ public class UserProcessor {
                 resolvingUser.setManagedTeams(null);
                 return;
             }
-            for(Team team : resolvingUser.getManagedTeams()){
-                System.out.println(objClassName);
-                TeamProcessor.resolveTeam(team, objClassName);
-            }
+            resolvingUser.getManagedTeams().stream()
+                    .forEach(team -> TeamProcessor.resolveTeam(team, userClassName));
         }
     }
 
-    private static void resolveUserTasks(){
+    private static void resolveUserCreatedTasks(){
         if(resolvingUser.getCreatedTasks() != null){
             if(objClassName.equals(Team.class.getSimpleName())){
                 resolvingUser.setCreatedTasks(null);
                 return;
             }
-            for(Task task : resolvingUser.getCreatedTasks()){
-                TaskProcessor.resolveTask(task, resolvingUser.getClass().getSimpleName());
-            }
+            resolvingUser.getCreatedTasks().stream()
+                    .forEach(task -> TaskProcessor.resolveTask(task, userClassName));
         }
     }
 

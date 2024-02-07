@@ -10,14 +10,17 @@ public class TaskProcessor {
 
     private static String objClassName;
     private static Task resolvingTask;
+    private static String taskClassName;
 
     public static void resolveTask(Task task, String objectClassName){
 
         resolvingTask = task;
         objClassName = objectClassName;
+        taskClassName = resolvingTask.getClass().getSimpleName();
 
         resolveTaskProject();
-        resolveTaskUser();
+        resolveTaskAssociates();
+        resolveTaskCreator();
 
     }
 
@@ -27,20 +30,33 @@ public class TaskProcessor {
                 resolvingTask.setProject(null);
                 return;
             }
-            ProjectProcessor.resolveProject(resolvingTask.getProject(), resolvingTask.getClass().getSimpleName());
+            ProjectProcessor.resolveProject(resolvingTask.getProject(), taskClassName);
         }
     }
 
-    private static void resolveTaskUser(){
+    private static void resolveTaskAssociates(){
         if(resolvingTask.getAssociates()!=null){
             if(objClassName.equals(User.class.getSimpleName())){
                 resolvingTask.setAssociates(null);
                 return;
             }
             for (User user : resolvingTask.getAssociates()){
-                UserProcessor.resolveUser(user, resolvingTask.getClass().getSimpleName());
+                UserProcessor.resolveUser(user, taskClassName);
             }
         }
+    }
+    private static void resolveTaskCreator(){
+        if(resolvingTask.getCreator()!=null){
+            if(objClassName.equals(User.class.getSimpleName())){
+                resolvingTask.setCreator(null);
+                return;
+            }
+            UserProcessor.resolveUser(resolvingTask.getCreator(), taskClassName);
+        }
+    }
+
+    private static void resolveTaskProperties(){
+
     }
 
 }
