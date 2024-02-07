@@ -1,5 +1,6 @@
 package net.weg.taskmanager.service.processor;
 
+import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.Team;
 import net.weg.taskmanager.model.UserChat;
 import net.weg.taskmanager.model.User;
@@ -17,6 +18,7 @@ public class UserProcessor {
         resolveUserChats();
         resolveUserTeams();
         resolveUserManagedTeams();
+        resolveUserTasks();
 
         user.setProfilePicture(FileProcessor.addBase64Prefix(user.getProfilePicture()));
 
@@ -56,6 +58,18 @@ public class UserProcessor {
             for(Team team : resolvingUser.getManagedTeams()){
                 System.out.println(objClassName);
                 TeamProcessor.resolveTeam(team, objClassName);
+            }
+        }
+    }
+
+    private static void resolveUserTasks(){
+        if(resolvingUser.getCreatedTasks() != null){
+            if(objClassName.equals(Team.class.getSimpleName())){
+                resolvingUser.setCreatedTasks(null);
+                return;
+            }
+            for(Task task : resolvingUser.getCreatedTasks()){
+                TaskProcessor.resolveTask(task, resolvingUser.getClass().getSimpleName());
             }
         }
     }

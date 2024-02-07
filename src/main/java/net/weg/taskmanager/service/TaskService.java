@@ -1,7 +1,10 @@
 package net.weg.taskmanager.service;
 
+import jdk.swing.interop.SwingInterOpUtils;
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.UserTask;
+import net.weg.taskmanager.model.UserTaskId;
 import net.weg.taskmanager.repository.UserTaskRepository;
 import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.Task;
@@ -9,9 +12,13 @@ import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.StatusRepository;
 import net.weg.taskmanager.repository.TaskProjectPropertyRepository;
 import net.weg.taskmanager.repository.TaskRepository;
+import net.weg.taskmanager.service.processor.UserTaskProcessor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -62,10 +69,9 @@ public class TaskService {
             task.getCurrentStatus().setId(null);
 
         }
-        System.out.println(task);
-        taskRepository.save(task);
+//        System.out.println(task);
 //        setStatusListIndex(task);
-        return update(task);
+        return update(taskRepository.save(task));
     }
 
     public Task update(Task task) {
@@ -74,7 +80,32 @@ public class TaskService {
         propriedadeSetTarefa(task);
 
         Task updatedTask = taskRepository.save(task);
+
+        syncUserTaskTable(task);
+
         return ResolveStackOverflow.getObjectWithoutStackOverflow(updatedTask);
+    }
+
+    private void syncUserTaskTable(Task task){
+        if(task.getAssociates()!=null){
+
+            for(User user : task.getAssociates()){
+                if(!userTaskRepository.existsById(new UserTaskId(user.getId(), task.getId()))){
+                    UserTask userTask = new UserTask();
+                    userTask.setUserId(user.getId());
+                    userTask.setTaskId(task.getId());
+                    System.out.println(userTask);
+                    userTaskRepository.save(userTask);
+                }
+            }
+//            userTasks.forEach(userTask -> UserTaskProcessor.resolveUserTask(userTask, UserTask.class.getSimpleName()));
+
+            userTaskRepository.findAll().stream()
+                    .filter(userTask -> Objects.equals(userTask.getTaskId(), task.getId()))
+                    .filter(userTask -> !task.getAssociates().contains(userTask.getUser()))
+                    .forEach(userTask -> userTaskRepository.delete(userTask));
+        }
+
     }
 
     private void setStatusListIndex(Task task){

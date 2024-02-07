@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
 @Data
@@ -28,6 +29,14 @@ public class User {
     @ManyToMany(mappedBy = "users")
 //    @JsonIgnore
     private Collection<UserChat> chats;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
 
     @OneToMany(mappedBy = "creator")
     @JsonIgnore

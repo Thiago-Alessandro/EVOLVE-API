@@ -8,9 +8,14 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @IdClass(UserTaskId.class)
 public class UserTask {
+
+    public UserTask(){
+        this.workedHours = 0;
+        this.workedMinutes = 0;
+        this.workedSeconds = 0;
+    }
 
     @Id
     private Integer userId;
@@ -18,10 +23,10 @@ public class UserTask {
     private Integer taskId;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
     private User user;
     @ManyToOne
-    @JoinColumn(name = "taskId")
+    @JoinColumn(name = "taskId", insertable = false, updatable = false)
     private Task task;
 
     private Integer workedHours;

@@ -1,5 +1,6 @@
 package net.weg.taskmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,6 +37,8 @@ public class Task {
 //    Poder colocar status como "globais" para o projeto inteiro
 
     @ManyToOne
+    //comentar mais tarde
+    @JsonIgnore
     private User creator;
     @ManyToOne
     private Project project;
@@ -45,6 +48,7 @@ public class Task {
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<Subtask> subtasks;
     @ManyToMany
+//    @JsonIgnore
     private Collection<User> associates;
 
     private Integer statusListIndex;
