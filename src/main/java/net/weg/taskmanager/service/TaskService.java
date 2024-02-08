@@ -2,6 +2,7 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.UserTask;
+import net.weg.taskmanager.model.UserTaskId;
 import net.weg.taskmanager.repository.UserTaskRepository;
 import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.Task;
@@ -35,7 +36,18 @@ public class TaskService {
     }
 
     public UserTask getUserTask(Integer userId, Integer taskId){
-        return userTaskRepository.findByUserIdAndTaskId(userId, taskId);
+        UserTaskId userTaskId = new UserTaskId();
+        userTaskId.setUserId(userId);
+        userTaskId.setTaskId(taskId);
+
+//        return userTaskRepository.findByUserIdAndTaskId(userId, taskId);
+        return userTaskRepository.findById(userTaskId).get();
+    }
+
+    public Task patchProperty(TaskProjectProperty taskProjectProperty, Integer taskId) {
+        Task task = taskRepository.findById(taskId).get();
+        task.getProperties().add(taskProjectProperty);
+        return update(task);
     }
 
     public Task findById(Integer id) {

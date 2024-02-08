@@ -32,7 +32,7 @@ public class TaskProjectProperty {
     @ManyToMany
     private Collection<Text> value;
 
-    @Enumerated()
+    @Enumerated(EnumType.ORDINAL)
     private PropertyType type;
 
 

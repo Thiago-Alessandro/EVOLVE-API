@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.UserTask;
+import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +38,9 @@ public class TaskController {
     public UserTask setWorkedTime(@RequestBody UserTask userTask){
         return taskService.setWorkedTime(userTask);
     }
+
+    @PatchMapping("/property/{taskId}")
+    public Task patchProperty(@RequestBody TaskProjectProperty taskProjectProperty,@PathVariable Integer taskId) {return taskService.patchProperty(taskProjectProperty,taskId);}
 
     @GetMapping("/userTask/{userId}/{taskId}")
     public UserTask getUserTask(@PathVariable Integer userId, @PathVariable Integer taskId){
