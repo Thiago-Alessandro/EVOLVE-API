@@ -44,8 +44,18 @@ public class TaskService {
         return userTaskRepository.findById(userTaskId).get();
     }
 
-    public Task patchProperty(TaskProjectProperty taskProjectProperty, Integer taskId) {
+        public Task patchProperty(TaskProjectProperty taskProjectProperty, Integer taskId) {
+            System.out.println(taskProjectProperty + "Tavinho");
         Task task = taskRepository.findById(taskId).get();
+        if(taskProjectProperty.getId()==0){
+            System.out.println("entrei1");
+            taskProjectProperty.setId(null);
+        }
+        if(taskProjectProperty.getProperty().getId()==0){
+            System.out.println("entrei2");
+            taskProjectProperty.getProperty().setId(null);
+        }
+            System.out.println(taskProjectProperty);
         task.getProperties().add(taskProjectProperty);
         return update(task);
     }
@@ -66,6 +76,9 @@ public class TaskService {
     }
 
     public void delete(Integer id) {
+//        taskProjectPropertyRepository.deleteALl(taskRepository.findById(id).get().getProperties());
+        taskRepository.findById(id).get().getProperties().removeAll(taskRepository.findById(id).get().getProperties());
+        System.out.println("list properties : "=);
         taskRepository.deleteById(id);
     }
 
