@@ -40,7 +40,11 @@ public class TaskController {
     }
 
     @PatchMapping("/property/{taskId}")
-    public Task patchProperty(@RequestBody TaskProjectProperty taskProjectProperty,@PathVariable Integer taskId) {return taskService.patchProperty(taskProjectProperty,taskId);}
+    public Task patchProperty(@RequestBody TaskProjectProperty taskProjectProperty,@PathVariable Integer taskId) {
+        System.out.println("AQUIIIIIII");
+        System.out.println(taskProjectProperty.getType());
+        return taskService.patchProperty(taskProjectProperty,taskId);
+    }
 
     @GetMapping("/userTask/{userId}/{taskId}")
     public UserTask getUserTask(@PathVariable Integer userId, @PathVariable Integer taskId){

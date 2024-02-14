@@ -85,14 +85,15 @@ public class ProjectService {
     }
     public Project update(Project project){
 
-        for(Status status : project.getStatusList()){
-            if(status.getId()==0){
-                status.setId(null);
-            }
-        }
+//        for(Status status : project.getStatusList()){
+//            if(status.getId()==0){
+//                status.setId(null);
+//            }
+//        }
 
 //        System.out.println(project);
-        return projectRepository.save(project);}
+        return projectRepository.save(project);
+    }
     private void propertiesSetProject(Project project){
         //Verifica se há alguma propriedade no projeto
         if(project.getProperties() != null && project.getProperties().size()>0){

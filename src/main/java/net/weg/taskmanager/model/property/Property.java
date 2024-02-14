@@ -20,6 +20,6 @@ public class Property {
 
     private String name;
     @OneToOne(cascade = CascadeType.ALL)
-    private SelectProperty select;
+    private SelectProperty possibleOptions;
 
 }
