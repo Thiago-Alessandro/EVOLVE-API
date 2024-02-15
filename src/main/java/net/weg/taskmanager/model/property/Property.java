@@ -19,7 +19,7 @@ public class Property {
     private Integer id;
 
     private String name;
-    @OneToOne(cascade = CascadeType.ALL)
-    private SelectProperty possibleOptions;
+    @OneToOne(cascade = CascadeType.MERGE)
+    private SelectProperty select;
 
 }

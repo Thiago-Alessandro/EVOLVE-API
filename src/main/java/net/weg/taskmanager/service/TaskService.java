@@ -76,9 +76,8 @@ public class TaskService {
     }
 
     public void delete(Integer id) {
-//        taskProjectPropertyRepository.deleteALl(taskRepository.findById(id).get().getProperties());
-//        taskRepository.findById(id).get().getProperties().removeAll(taskRepository.findById(id).get().getProperties());
-//        System.out.println("list properties : "=);
+        Collection<TaskProjectProperty> properties = taskRepository.findById(id).get().getProperties();
+        taskProjectPropertyRepository.deleteAll(properties);
         taskRepository.deleteById(id);
     }
 
@@ -126,6 +125,8 @@ public class TaskService {
             for(TaskProjectProperty propriedade : task.getProperties()) {
                 //Adiciona a referencia da tarefa na propriedade
                 propriedade.setTask(task);
+
+
                 //Salva a propriedade atualizada com a referencia da tarefa
                 taskProjectPropertyRepository.save(propriedade);
             }
