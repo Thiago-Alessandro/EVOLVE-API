@@ -12,7 +12,7 @@ public class TaskProcessor {
     private static Task resolvingTask;
     private static String taskClassName;
 
-    public static void resolveTask(Task task, String objectClassName){
+    public static Task resolveTask(Task task, String objectClassName){
 
         resolvingTask = task;
         objClassName = objectClassName;
@@ -22,6 +22,7 @@ public class TaskProcessor {
         resolveTaskAssociates();
         resolveTaskCreator();
 
+        return task;
     }
 
     private static void resolveTaskProject(){

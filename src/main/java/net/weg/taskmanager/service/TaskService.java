@@ -12,6 +12,7 @@ import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.StatusRepository;
 import net.weg.taskmanager.repository.TaskProjectPropertyRepository;
 import net.weg.taskmanager.repository.TaskRepository;
+import net.weg.taskmanager.service.processor.TaskProcessor;
 import net.weg.taskmanager.service.processor.UserTaskProcessor;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +56,7 @@ public class TaskService {
         Collection<Task> tasks = taskRepository.findAll();
 
         for(Task task : tasks){
-            ResolveStackOverflow.getObjectWithoutStackOverflow(task);
+            TaskProcessor.resolveTask(task, Task.class.getSimpleName());
         }
         return tasks;
     }
@@ -83,7 +84,7 @@ public class TaskService {
 
         syncUserTaskTable(task);
 
-        return ResolveStackOverflow.getObjectWithoutStackOverflow(updatedTask);
+        return TaskProcessor.resolveTask(task, Task.class.getSimpleName());
     }
 
     private void syncUserTaskTable(Task task){

@@ -1,9 +1,6 @@
 package net.weg.taskmanager.service.processor;
 
-import net.weg.taskmanager.model.Task;
-import net.weg.taskmanager.model.Team;
-import net.weg.taskmanager.model.UserChat;
-import net.weg.taskmanager.model.User;
+import net.weg.taskmanager.model.*;
 
 public class UserProcessor {
 
@@ -18,9 +15,17 @@ public class UserProcessor {
         userClassName = User.class.getSimpleName();
 
         resolveUserChats();
+//        System.out.println("1 - user: " + objClassName);
+
+
         resolveUserTeams();
+
+
+//        System.out.println("2 - user ");
         resolveUserManagedTeams();
+//        System.out.println("3 - user");
         resolveUserCreatedTasks();
+//        System.out.println("4 - user: " + objClassName);
 
         user.setProfilePicture(FileProcessor.addBase64Prefix(user.getProfilePicture()));
 
@@ -32,6 +37,7 @@ public class UserProcessor {
                 resolvingUser.setChats(null);
                 return;
             }
+//            System.out.println(objClassName); (message)
             resolvingUser.getChats().stream()
                     .forEach(chat -> ChatProcessor.resolveChat(chat, userClassName));
         }
@@ -39,10 +45,12 @@ public class UserProcessor {
 
     private static void resolveUserTeams(){
         if(resolvingUser.getTeams() != null){
-            if( objClassName.equals(Team.class.getSimpleName())){
+            if( objClassName.equals(Team.class.getSimpleName())
+                || objClassName.equals(TeamChat.class.getSimpleName())){
                 resolvingUser.setTeams(null);
                 return;
             }
+//            System.out.println("User resolving teams: " + objClassName);
             resolvingUser.getTeams().stream()
                     .forEach(team -> TeamProcessor.resolveTeam(team, userClassName));
         }

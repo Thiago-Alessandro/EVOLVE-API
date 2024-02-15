@@ -30,17 +30,22 @@ public class MessageProcessor {
                     objClassName.equals(ProjectChat.class.getSimpleName())
             ){
                 resolvingMessage.setChat(null);
+//                System.out.println("setei nulo"); 3
                 return;
             }
+            System.out.println("to indo resolver");
             ChatProcessor.resolveChat(resolvingMessage.getChat(), resolvingMessage.getClass().getSimpleName());
         }
     }
     private static void resolveMessageSender(){
         if(resolvingMessage.getSender()!=null){
-            if(objClassName.equals(User.class.getSimpleName())){
+            if(objClassName.equals(User.class.getSimpleName()) ||
+                    objClassName.equals(UserChat.class.getSimpleName())){
                 resolvingMessage.setSender(null);
                 return;
             }
+//            System.out.println("resolveMessageSender"); 4
+//            System.out.println(objClassName); 5 (UserChat)
             UserProcessor.resolveUser(resolvingMessage.getSender(), resolvingMessage.getClass().getSimpleName());
         }
     }

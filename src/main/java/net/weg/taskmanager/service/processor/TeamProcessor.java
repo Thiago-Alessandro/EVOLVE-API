@@ -14,10 +14,15 @@ public class TeamProcessor {
         objClassName = objectClassName;
         teamClassName = Team.class.getSimpleName();
 
+//        System.out.println("1");
         resolveTeamParticipants();
+//        System.out.println("2");
         resolveTeamAdministrator();
+//        System.out.println("3 - Team: " + objClassName);
         resolveTeamChat();
+//        System.out.println("4 - Team: " + objClassName);
         resolveTeamProjects();
+//        System.out.println("5");
 
     }
 
@@ -53,6 +58,7 @@ public class TeamProcessor {
     }
 
     private static void resolveTeamProjects(){
+//        System.out.println("oioioioioio");
         if(resolvingTeam.getProjects()!=null){
             if(objClassName.equals(Project.class.getSimpleName())){
                 resolvingTeam.setProjects(null);
