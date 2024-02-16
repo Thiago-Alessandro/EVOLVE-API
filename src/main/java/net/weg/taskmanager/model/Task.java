@@ -39,7 +39,7 @@ public class Task {
     private User creator;
     @ManyToOne
     private Project project;
-    @OneToMany(mappedBy = "task", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
     private Collection<TaskProjectProperty> properties;
 
     @OneToMany(cascade = CascadeType.ALL)
