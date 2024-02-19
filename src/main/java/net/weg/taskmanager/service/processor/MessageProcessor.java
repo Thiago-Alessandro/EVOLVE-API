@@ -2,51 +2,51 @@ package net.weg.taskmanager.service.processor;
 
 import net.weg.taskmanager.model.*;
 
+import java.util.ArrayList;
+
 public class MessageProcessor {
 
-    private static String objClassName;
     private static Message resolvingMessage;
+    private static ArrayList<String> resolvingCascade;
+    private static String messageClassName = Message.class.getSimpleName();
     
-    protected static void resolveMessage(Message message, String objectClassName){
+    public static Message resolveMessage(Message message, String objClassName, ArrayList<String> _resolvingCascade){
 
         resolvingMessage = message;
-        objClassName = objectClassName;
+        resolvingCascade = _resolvingCascade;
+        resolvingCascade.add(objClassName);
 
         resolveMessageChat();
         resolveMessageSender();
+        resolvingCascade = null;
+        return resolvingMessage;
+    }
 
+    public static Message resolveMessage(Message resolvingMessage){
+        return resolveMessage(resolvingMessage, messageClassName, new ArrayList<>());
     }
     
     private static void resolveMessageChat(){
-        //futuramente tirar isso daqui pois estara sendo tratado no proprio usuario
-//        if(!resolvingMessage.getSender().getProfilePicture().contains(FileProcessor.getImageBase64Prefix())){
-//            resolvingMessage.getSender().setProfilePicture(FileProcessor.addBase64Prefix(resolvingMessage.getSender().getProfilePicture()));
-//        }
         
         if(resolvingMessage.getChat()!=null){
 
-            if(objClassName.equals(UserChat.class.getSimpleName()) ||
-                    objClassName.equals(TeamChat.class.getSimpleName()) ||
-                    objClassName.equals(ProjectChat.class.getSimpleName())
+            if(resolvingCascade.contains(UserChat.class.getSimpleName()) ||
+                    resolvingCascade.contains(TeamChat.class.getSimpleName()) ||
+                    resolvingCascade.contains(ProjectChat.class.getSimpleName())
             ){
                 resolvingMessage.setChat(null);
-//                System.out.println("setei nulo"); 3
                 return;
             }
-            System.out.println("to indo resolver");
-            ChatProcessor.resolveChat(resolvingMessage.getChat(), resolvingMessage.getClass().getSimpleName());
+            ChatProcessor.resolveChat(resolvingMessage.getChat(), messageClassName, resolvingCascade);
         }
     }
     private static void resolveMessageSender(){
         if(resolvingMessage.getSender()!=null){
-            if(objClassName.equals(User.class.getSimpleName()) ||
-                    objClassName.equals(UserChat.class.getSimpleName())){
+            if(resolvingCascade.contains(User.class.getSimpleName())){
                 resolvingMessage.setSender(null);
                 return;
             }
-//            System.out.println("resolveMessageSender"); 4
-//            System.out.println(objClassName); 5 (UserChat)
-            UserProcessor.resolveUser(resolvingMessage.getSender(), resolvingMessage.getClass().getSimpleName());
+            UserProcessor.resolveUser(resolvingMessage.getSender(), messageClassName, resolvingCascade);
         }
     }
     

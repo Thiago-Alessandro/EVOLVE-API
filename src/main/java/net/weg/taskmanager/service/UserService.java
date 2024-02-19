@@ -3,12 +3,9 @@ package net.weg.taskmanager.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.service.processor.FileProcessor;
-import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.service.processor.UserProcessor;
-import org.springframework.jmx.export.assembler.MBeanInfoAssembler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,11 +22,7 @@ public class UserService {
 
     public User findById(Integer id){
         User user = userRepository.findById(id).get();
-        //usuario.getTesteImagem() retorna a representação Base64 da imagem
-//        if(user.getProfilePicture()!=null){
-//            user.setProfilePicture(FileProcessor.addBase64Prefix(user.getProfilePicture()));
-//        }
-        ResolveStackOverflow.getObjectWithoutStackOverflow(user);
+        UserProcessor.resolveUser(user);
         return user;
     }
 
@@ -37,7 +30,7 @@ public class UserService {
         Collection<User> users = userRepository.findAll();
         for(User user : users){
 //            ResolveStackOverflow.getObjectWithoutStackOverflow(user);
-            UserProcessor.resolveUser(user, "User");
+            UserProcessor.resolveUser(user);
         }
         return users;}
 
@@ -56,7 +49,7 @@ public class UserService {
 
 
 
-            System.out.println(user);
+//            System.out.println(user);
             if(profilePhoto != null && !profilePhoto.isEmpty()) {
                 try {
 //                    usuario.setTesteImagem(fotoPerfil.getBytes());
@@ -74,7 +67,8 @@ public class UserService {
     }
 
     public User findByEmail(String email){
-       return userRepository.findByEmail(email);
+
+       return UserProcessor.resolveUser(userRepository.findByEmail(email));
     }
 
 }

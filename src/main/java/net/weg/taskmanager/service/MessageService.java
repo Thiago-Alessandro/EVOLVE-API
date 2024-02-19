@@ -3,7 +3,7 @@ package net.weg.taskmanager.service;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Message;
 import net.weg.taskmanager.model.MessageDTO;
-import net.weg.taskmanager.service.processor.ResolveStackOverflow;
+import net.weg.taskmanager.service.processor.MessageProcessor;
 import net.weg.taskmanager.repository.ChatRepository;
 import net.weg.taskmanager.repository.MessageRepository;
 import org.springframework.beans.BeanUtils;
@@ -26,15 +26,18 @@ public class MessageService {
 
     //    @Override
     public Collection<Message> findAll() {
-        return setMessagesChatNull(messageRepository.findAll());
-    }
-
-    private Collection<Message> setMessagesChatNull(Collection<Message> messages) {
-        for (Message message : messages) {
-            message.setChat(null);
-        }
+        Collection<Message> messages = messageRepository.findAll();
+        messages.stream()
+                .forEach(message -> MessageProcessor.resolveMessage(message));
         return messages;
     }
+
+//    private Collection<Message> setMessagesChatNull(Collection<Message> messages) {
+//        for (Message message : messages) {
+//            message.setChat(null);
+//        }
+//        return messages;
+//    }
 
     //    @Override
     public void delete(Integer id) {
@@ -43,7 +46,7 @@ public class MessageService {
 
     //    @Override
     public Message create(MessageDTO obj) {
-        System.out.println(obj);
+//        System.out.println(obj);
         Message message = new Message();
 
         BeanUtils.copyProperties(obj, message);
@@ -52,7 +55,7 @@ public class MessageService {
         message.setChat(chatRepository.findById(obj.getChatId()).get());
 //        System.out.println(message);
         Message newMessage = messageRepository.save(message);
-        return ResolveStackOverflow.getObjectWithoutStackOverflow(newMessage);
+        return MessageProcessor.resolveMessage(newMessage);
     }
 
     //    @Override

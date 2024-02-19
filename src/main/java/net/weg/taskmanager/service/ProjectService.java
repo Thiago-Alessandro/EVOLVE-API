@@ -6,10 +6,13 @@ import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.*;
+import net.weg.taskmanager.service.processor.ProjectProcessor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -25,6 +28,12 @@ public class ProjectService {
         Project project = projectRepository.getById(id);
         if(project!=null){
             if(project.getStatusList()!=null){
+                for(Status statusFor : project.getStatusList()){
+                    if(Objects.equals(status.getId(), statusFor.getId())){
+                        BeanUtils.copyProperties(status, statusFor);
+                        return project;
+                    }
+                }
                 project.getStatusList().add(status);
             } else {
                 project.setStatusList(new ArrayList());
@@ -37,20 +46,26 @@ public class ProjectService {
 
     public Project findById(Integer id){
         Project project =  projectRepository.findById(id).get();
-        for(Task task : project.getTasks()){
-            task.setProject(null);
-        }
-
-
-        return project;}
+//        System.out.println(project.getTeam());
+//        for(Task task : project.getTasks()){
+//            task.setProject(null);
+//        }
+        ProjectProcessor.resolveProject(project);
+//        System.out.println(project.getTeam());
+        return project;
+    }
 
     public Collection<Project> findAll() {
         Collection<Project> projects =  projectRepository.findAll();
-        for (Project project : projects) {
-            for (Task task : project.getTasks()) {
-                task.setProject(null);
-            }
-        }
+//        for (Project project : projects) {
+//            for (Task task : project.getTasks()) {
+//                task.setProject(null);
+//            }
+//        }
+
+        projects.stream()
+                        .forEach(project -> ProjectProcessor.resolveProject(project) );
+
         return projects;
     }
 
@@ -65,7 +80,7 @@ public class ProjectService {
                 teamRepository.findTeamByProjectsContaining(project).getProjects().remove(project);
             }
         } catch (Exception e) {
-            System.out.println("Deu erro lá manin");
+            System.out.println("Deu erro lá na projectService manin");
             throw new RuntimeException(e);
         }
 
@@ -78,22 +93,32 @@ public class ProjectService {
 
         //Seta os status padrões do projeto
         project.setStandardStatus();
+        //Referencia o projeto nas suas propriedades
         propertiesSetProject(project);
+        //Prepara os status para serem criados
+        setNewStatusIdNull(project);
 
         //Atualiza o projeto adicionando sua referencia nas suas propriedades
-        return update(project);
-    }
-    public Project update(Project project){
+        projectRepository.save(project);
 
+        //Retorna o objeto sem stackOverflow
+        return ProjectProcessor.resolveProject(project);
+    }
+
+    public void setNewStatusIdNull(Project project){
         for(Status status : project.getStatusList()){
-            if(status.getId()==0){
+            if(status.getId()!=null && status.getId().equals(0)){
                 status.setId(null);
             }
         }
+    }
 
-//        System.out.println(project);
-        System.out.println(project.getStatusList());
-        return projectRepository.save(project);}
+    public Project update(Project project){
+        setNewStatusIdNull(project);
+
+        return ProjectProcessor.resolveProject(projectRepository.save(project));
+    }
+
     private void propertiesSetProject(Project project){
         //Verifica se há alguma propriedade no projeto
         if(project.getProperties() != null && project.getProperties().size()>0){

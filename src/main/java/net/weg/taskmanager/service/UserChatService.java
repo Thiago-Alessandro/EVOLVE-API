@@ -1,13 +1,13 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Chat;
-import net.weg.taskmanager.service.processor.ResolveStackOverflow;
+import net.weg.taskmanager.service.processor.ChatProcessor;
 import net.weg.taskmanager.model.UserChat;
 import net.weg.taskmanager.repository.UserChatRepository;
 import net.weg.taskmanager.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
@@ -21,12 +21,12 @@ public class UserChatService implements IService<UserChat>{
 
 //    private final MessageRepository messageRepository;
 
-    private static Integer count = 1;
+//    private static Integer count = 1;
 
     @Override
     public UserChat findById(Integer id) {
         UserChat chat = userChatRepository.findById(id).get();
-        ResolveStackOverflow.getObjectWithoutStackOverflow(chat);
+        ChatProcessor.resolveChat(chat, UserChat.class.getSimpleName(), new ArrayList<>());
         return chat;
     }
 
@@ -34,7 +34,7 @@ public class UserChatService implements IService<UserChat>{
     public Collection<UserChat> findAll() {
         Collection<UserChat> chats = userChatRepository.findAll();
         for(UserChat chat :  chats){
-            ResolveStackOverflow.getObjectWithoutStackOverflow(chat);
+            ChatProcessor.resolveChat(chat);
         }
         return chats;
     }
@@ -55,13 +55,14 @@ public class UserChatService implements IService<UserChat>{
 //        validaChat(obj);
 
         UserChat updatedUserChat = userChatRepository.save(obj);
-        return ResolveStackOverflow.getObjectWithoutStackOverflow(updatedUserChat);
+        ChatProcessor.resolveChat(updatedUserChat);
+        return updatedUserChat;
     }
 
     public Collection<UserChat> getChatsByUserId(Integer id){
         Collection<UserChat> chats = userChatRepository.findUserChatsByUsersContaining(userRepository.findById(id).get());
         for(UserChat chat : chats){
-            ResolveStackOverflow.getObjectWithoutStackOverflow(chat);
+            ChatProcessor.resolveChat(chat);
         }
         return chats;
     }

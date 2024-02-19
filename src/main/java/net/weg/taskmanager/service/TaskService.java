@@ -1,12 +1,10 @@
 package net.weg.taskmanager.service;
 
-import jdk.swing.interop.SwingInterOpUtils;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.UserTask;
 import net.weg.taskmanager.model.UserTaskId;
 import net.weg.taskmanager.repository.UserTaskRepository;
-import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.StatusRepository;
@@ -16,9 +14,7 @@ import net.weg.taskmanager.service.processor.TaskProcessor;
 import net.weg.taskmanager.service.processor.UserTaskProcessor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -43,12 +39,13 @@ public class TaskService {
     }
 
     public UserTask getUserTask(Integer userId, Integer taskId){
-        return userTaskRepository.findByUserIdAndTaskId(userId, taskId);
+        UserTask userTask = userTaskRepository.findByUserIdAndTaskId(userId, taskId);
+        return UserTaskProcessor.resolveUserTask(userTask);
     }
 
     public Task findById(Integer id) {
         Task task = taskRepository.findById(id).get();
-        ResolveStackOverflow.getObjectWithoutStackOverflow(task);
+        TaskProcessor.resolveTask(task);
         return task;
     }
 
@@ -56,7 +53,7 @@ public class TaskService {
         Collection<Task> tasks = taskRepository.findAll();
 
         for(Task task : tasks){
-            TaskProcessor.resolveTask(task, Task.class.getSimpleName());
+            TaskProcessor.resolveTask(task);
         }
         return tasks;
     }
@@ -82,9 +79,9 @@ public class TaskService {
 
         Task updatedTask = taskRepository.save(task);
 
-        syncUserTaskTable(task);
+        syncUserTaskTable(updatedTask);
 
-        return TaskProcessor.resolveTask(task, Task.class.getSimpleName());
+        return TaskProcessor.resolveTask(updatedTask);
     }
 
     private void syncUserTaskTable(Task task){

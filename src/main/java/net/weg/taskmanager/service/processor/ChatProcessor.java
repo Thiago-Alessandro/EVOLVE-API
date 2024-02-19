@@ -1,50 +1,54 @@
 package net.weg.taskmanager.service.processor;
 
+import net.weg.taskmanager.controller.TaskController;
 import net.weg.taskmanager.model.*;
+
+import java.util.ArrayList;
 
 public class ChatProcessor {
 
     private static Chat chat;
-    private static String objClassName;
+    private static ArrayList<String> resolvingCascade;
 
-    protected static void resolveChat(Chat resolvingChat, String objectClassName){
+    public static Chat resolveChat(Chat resolvingChat, String objClassName, ArrayList<String> _resolvingCascade){
         chat = resolvingChat;
-        objClassName = objectClassName;
+        resolvingCascade = _resolvingCascade;
+        resolvingCascade.add(objClassName);
 
         resolveChatMessages();
         resolveChatUsers();
         resolveChatTeam();
+        resolvingCascade = null;
+        return chat;
+    }
 
+    public static Chat resolveChat(Chat resolvingChat){
+        if(resolvingChat instanceof UserChat){
+            return resolveChat(resolvingChat, UserChat.class.getSimpleName(), new ArrayList<>());
+        }else if (resolvingChat instanceof TeamChat){
+            return resolveChat(resolvingChat, TeamChat.class.getSimpleName(), new ArrayList<>());
+        } else if (resolvingChat instanceof ProjectChat) {
+            return resolveChat(resolvingChat, ProjectChat.class.getSimpleName(), new ArrayList<>());
+        }
+        return resolveChat(resolvingChat, Chat.class.getSimpleName(), new ArrayList<>());
     }
 
     private static void resolveChatUsers(){
         if(chat.getUsers()!=null){
-//            System.out.println("resolve chat users: " + objClassName);
-            if(objClassName.equals(User.class.getSimpleName())
-                //ou team ou project
-            ){
-//                System.out.println("setando chat users null: " + objClassName);
+            if(resolvingCascade.contains(User.class.getSimpleName())){
                 chat.setUsers(null);
                 return;
             }
 
-
                 for(User user : chat.getUsers()) {
-//                    System.out.println(user);
-//                    System.out.println(chat.getUsers());
                     if (chat.getUsers() != null) {
-//                        System.out.println(chat.getUsers());
-//                        System.out.println("for do chat");
-//                        System.out.println("opa " + objClassName);
+
                         if (chat instanceof UserChat) {
-//                            System.out.println("sou usuario chat");
-                            UserProcessor.resolveUser(user, UserChat.class.getSimpleName());
+                            UserProcessor.resolveUser(user, UserChat.class.getSimpleName(), resolvingCascade);
                         } else if (chat instanceof TeamChat) {
-//                            System.out.println("sou team chat");
-                            UserProcessor.resolveUser(user, TeamChat.class.getSimpleName());
+                            UserProcessor.resolveUser(user, TeamChat.class.getSimpleName(), resolvingCascade);
                         } else if (chat instanceof ProjectChat) {
-//                            System.out.println("sou project chat");
-                            UserProcessor.resolveUser(user, ProjectChat.class.getSimpleName());
+                            UserProcessor.resolveUser(user, ProjectChat.class.getSimpleName(), resolvingCascade);
                         }
                     }
                 }
@@ -55,26 +59,24 @@ public class ChatProcessor {
 
     private static void resolveChatTeam(){
         if(chat instanceof TeamChat){
-            System.out.println("resolvendo chat team");
             if(((TeamChat) chat).getTeam() != null){
-                if(objClassName.equals(Team.class.getSimpleName())){
+                if(resolvingCascade.contains(Team.class.getSimpleName())){
                     ((TeamChat) chat).setTeam(null);
+                    return;
                 }
-                TeamProcessor.resolveTeam(((TeamChat) chat).getTeam(), TeamChat.class.getSimpleName());
+                TeamProcessor.resolveTeam(((TeamChat) chat).getTeam(), TeamChat.class.getSimpleName(), resolvingCascade);
             }
         }
     }
 
     private static void resolveChatMessages(){
         if(chat.getMessages() != null){
-            if(objClassName.equals(Message.class.getSimpleName())){
+            if(resolvingCascade.contains(Message.class.getSimpleName())){
                 chat.setMessages(null);
                 return;
             }
             for(Message message : chat.getMessages()){
-//                System.out.println(chat.getClass().getSimpleName()); 1 (userChat)
-//                System.out.println("a"); 2 (a)
-                MessageProcessor.resolveMessage(message, chat.getClass().getSimpleName());
+                MessageProcessor.resolveMessage(message, chat.getClass().getSimpleName(), resolvingCascade);
             }
         }
     }

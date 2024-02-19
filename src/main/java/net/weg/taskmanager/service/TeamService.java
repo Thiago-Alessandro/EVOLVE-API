@@ -2,10 +2,9 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Team;
-import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.TeamChat;
-import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.repository.TeamRepository;
+import net.weg.taskmanager.service.processor.TeamProcessor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -18,13 +17,13 @@ public class TeamService {
 
     public Team findById(Integer id){
         Team team = teamRepository.findById(id).get();
-        return ResolveStackOverflow.getObjectWithoutStackOverflow(team);}
+        return TeamProcessor.resolveTeam(team);}
 
     public Collection<Team> findAll(){
 
         Collection<Team> teams = teamRepository.findAll();
         for(Team team : teams){
-            ResolveStackOverflow.getObjectWithoutStackOverflow(team);
+            TeamProcessor.resolveTeam(team);
         }
         return teams;
     }

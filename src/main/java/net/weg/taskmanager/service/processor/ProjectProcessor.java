@@ -2,17 +2,20 @@ package net.weg.taskmanager.service.processor;
 
 import net.weg.taskmanager.model.*;
 
+import java.util.ArrayList;
+
 public class ProjectProcessor {
 
-    private static String objClassName;
     private static Project resolvingProject;
-    private static String projectClassName;
+    private static String projectClassName = Project.class.getSimpleName();
+    private static ArrayList<String> resolvingCascade;
 
-    public static void resolveProject(Project project, String objectClassName){
+    public static Project resolveProject(Project project, String objClassName, ArrayList<String> _resolvingCascade){
+
+        resolvingCascade = _resolvingCascade;
+        resolvingCascade.add(objClassName);
 
         resolvingProject = project;
-        objClassName = objectClassName;
-        projectClassName = resolvingProject.getClass().getSimpleName();
 
         resolveProjectTasks();
         resolveProjectCreator();
@@ -20,49 +23,54 @@ public class ProjectProcessor {
         resolveProjectAdministrators();
         resolveProjectTeam();
         reolveProjectChat();
+        resolvingCascade = null;
+        return resolvingProject;
+    }
 
+    public static Project resolveProject(Project project){
+        return resolveProject(project, projectClassName, new ArrayList<>());
     }
 
     private static void resolveProjectTasks(){
         if(resolvingProject.getTasks()!=null){
-            if(objClassName.equals(Task.class.getSimpleName())){
+            if(resolvingCascade.contains(Task.class.getSimpleName())){
                 resolvingProject.setTasks(null);
                 return;
             }
             resolvingProject.getTasks().stream()
-                    .forEach(task -> TaskProcessor.resolveTask(task, projectClassName));
+                    .forEach(task -> TaskProcessor.resolveTask(task, projectClassName, resolvingCascade));
         }
     }
 
     private static void resolveProjectCreator(){
         if(resolvingProject.getCreator()!=null){
-            if(objClassName.equals(User.class.getSimpleName())){
+            if(resolvingCascade.contains(User.class.getSimpleName())){
                 resolvingProject.setCreator(null);
                 return;
             }
-            UserProcessor.resolveUser(resolvingProject.getCreator(), projectClassName);
+            UserProcessor.resolveUser(resolvingProject.getCreator(), projectClassName, resolvingCascade);
         }
     }
 
     private static void resolveProjectMembers(){
         if(resolvingProject.getMembers()!=null){
-            if(objClassName.equals(User.class.getSimpleName())){
+            if(resolvingCascade.contains(User.class.getSimpleName())){
                 resolvingProject.setMembers(null);
                 return;
             }
             resolvingProject.getMembers().stream()
-                    .forEach(user -> UserProcessor.resolveUser(user, projectClassName));
+                    .forEach(user -> UserProcessor.resolveUser(user, projectClassName, resolvingCascade));
         }
     }
 
     private static void resolveProjectAdministrators(){
         if(resolvingProject.getAdministrators()!=null){
-            if(objClassName.equals(User.class.getSimpleName())){
+            if(resolvingCascade.contains(User.class.getSimpleName())){
                 resolvingProject.setAdministrators(null);
                 return;
             }
             resolvingProject.getAdministrators().stream()
-                    .forEach(user -> UserProcessor.resolveUser(user, projectClassName));
+                    .forEach(user -> UserProcessor.resolveUser(user, projectClassName, resolvingCascade));
         }
     }
 
@@ -72,21 +80,21 @@ public class ProjectProcessor {
 
     private static void resolveProjectTeam(){
         if(resolvingProject.getTeam()!=null){
-            if(objClassName.equals(Team.class.getSimpleName())){
+            if(resolvingCascade.contains(Team.class.getSimpleName())){
                 resolvingProject.setTeam(null);
                 return;
             }
-            TeamProcessor.resolveTeam(resolvingProject.getTeam(), projectClassName);
+            TeamProcessor.resolveTeam(resolvingProject.getTeam(), projectClassName, resolvingCascade);
         }
     }
 
     private static void reolveProjectChat(){
         if(resolvingProject.getChat()!=null){
-            if(objClassName.equals(TeamChat.class.getSimpleName())){
+            if(resolvingCascade.contains(TeamChat.class.getSimpleName())){
                 resolvingProject.setChat(null);
                 return;
             }
-            ChatProcessor.resolveChat(resolvingProject.getChat(), projectClassName);
+            ChatProcessor.resolveChat(resolvingProject.getChat(), projectClassName, resolvingCascade);
         }
     }
 

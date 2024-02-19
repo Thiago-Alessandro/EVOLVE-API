@@ -36,7 +36,7 @@ public class Project {
     @ManyToMany
     private Collection<User> members;
     @ManyToOne
-    @JsonIgnore
+//    @JsonIgnore
     private Team team;
 
     @OneToOne()
@@ -44,7 +44,7 @@ public class Project {
     private Chat chat;
 
     @OneToMany(mappedBy = "project")
-    @JsonIgnore
+//    @JsonIgnore
     private Collection<Task> tasks;
 
     public void setStandardStatus() {
