@@ -22,7 +22,7 @@ public class TaskProcessor {
         resolveTaskProject();
         resolveTaskAssociates();
         resolveTaskCreator();
-        resolvingCascade = null;
+
         return task;
     }
     public static Task resolveTask(Task task){

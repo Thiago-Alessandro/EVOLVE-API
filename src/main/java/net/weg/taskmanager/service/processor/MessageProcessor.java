@@ -18,7 +18,7 @@ public class MessageProcessor {
 
         resolveMessageChat();
         resolveMessageSender();
-        resolvingCascade = null;
+
         return resolvingMessage;
     }
 

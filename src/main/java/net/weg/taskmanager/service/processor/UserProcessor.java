@@ -24,7 +24,7 @@ public class UserProcessor {
         resolveUserCreatedTasks();
 
         user.setProfilePicture(FileProcessor.addBase64Prefix(user.getProfilePicture()));
-        resolvingCascade = null;
+
         return resolvingUser;
     }
 

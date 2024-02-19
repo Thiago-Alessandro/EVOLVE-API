@@ -23,7 +23,7 @@ public class ProjectProcessor {
         resolveProjectAdministrators();
         resolveProjectTeam();
         reolveProjectChat();
-        resolvingCascade = null;
+
         return resolvingProject;
     }
 

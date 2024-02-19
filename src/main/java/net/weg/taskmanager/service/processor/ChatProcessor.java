@@ -18,7 +18,7 @@ public class ChatProcessor {
         resolveChatMessages();
         resolveChatUsers();
         resolveChatTeam();
-        resolvingCascade = null;
+
         return chat;
     }
 

@@ -21,7 +21,6 @@ public class UserTaskProcessor {
 
         resolveUserTaskUser();
         resolveUserTaskTask();
-        resolvingCascade = null;
 
         return resolvingUserTask;
     }

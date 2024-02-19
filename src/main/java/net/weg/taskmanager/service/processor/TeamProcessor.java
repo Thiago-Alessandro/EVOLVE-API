@@ -22,7 +22,7 @@ public class TeamProcessor {
         resolveTeamAdministrator();
         resolveTeamChat();
         resolveTeamProjects();
-        resolvingCascade = null;
+
         return team;
     }
     public static Team resolveTeam(Team team) {
