@@ -1,6 +1,7 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.Priority;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.UserTask;
@@ -44,6 +45,13 @@ public class TaskController {
         System.out.println("AQUIIIIIII");
         System.out.println(taskProjectProperty.getType());
         return taskService.patchProperty(taskProjectProperty,taskId);
+    }
+
+    @PatchMapping("/priority/patch/{taskId}/{priority}")
+    public void patchPriority(@PathVariable Integer priority, @PathVariable Integer taskId) {
+        System.out.println(priority);
+        taskService.patchPriority(priority,taskId);
+//        return null;
     }
 
     @GetMapping("/userTask/{userId}/{taskId}")

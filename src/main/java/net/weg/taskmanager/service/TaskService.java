@@ -1,8 +1,10 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.Priority;
 import net.weg.taskmanager.model.UserTask;
 import net.weg.taskmanager.model.UserTaskId;
+import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.repository.UserTaskRepository;
 import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.Task;
@@ -58,6 +60,32 @@ public class TaskService {
             System.out.println(taskProjectProperty);
         task.getProperties().add(taskProjectProperty);
         return update(task);
+    }
+
+    public void patchPriority(Integer priority, Integer taskId) {
+        System.out.println("TA CHEGANDO AQUI");
+        Task task = taskRepository.findById(taskId).get();
+        switch (priority) {
+            case 0:
+                task.setPriority(Priority.NONE);
+                break;
+            case 1:
+                task.setPriority(Priority.VERY_LOW);
+                break;
+            case 2:
+                task.setPriority(Priority.LOW);
+                break;
+            case 3:
+                task.setPriority(Priority.AVERAGE);
+                break;
+            case 4:
+                task.setPriority(Priority.HIGH);
+                break;
+            case 5:
+                task.setPriority(Priority.URGENT);
+                break;
+        }
+        taskRepository.save(task);
     }
 
     public Task findById(Integer id) {
