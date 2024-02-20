@@ -1,49 +1,24 @@
 package net.weg.taskmanager.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-//@Entity
-//@AllArgsConstructor
+@Entity
+@AllArgsConstructor
 @NoArgsConstructor
-public enum Priority {
+public class Priority {
+    @Id
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    private Integer id;
+    private String name;
+    private String backgroundColor;
 
-    NONE{
-        @Override
-        public Integer getValue() {
-            return 0;
-        }
-    },
-    VERY_LOW {
-        @Override
-        public Integer getValue() {
-            return 20;
-        }
-    },
-    LOW {
-        @Override
-        public Integer getValue() {
-            return 40;
-        }
-    },
-    AVERAGE {
-        @Override
-        public Integer getValue() {
-            return 60;
-        }
-    },
-    HIGH {
-        @Override
-        public Integer getValue() {
-            return 80;
-        }
-    },
-    URGENT {
-        @Override
-        public Integer getValue() {
-            return 100;
-        }
-    };
-
-    public abstract Integer getValue();
-
+    public Priority(String name,String backgroundColor) {
+        this.name = name;
+        this.backgroundColor = backgroundColor;
+    }
 }

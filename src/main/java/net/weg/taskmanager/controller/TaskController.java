@@ -47,13 +47,6 @@ public class TaskController {
         return taskService.patchProperty(taskProjectProperty,taskId);
     }
 
-    @PatchMapping("/priority/patch/{taskId}/{priority}")
-    public void patchPriority(@PathVariable Integer priority, @PathVariable Integer taskId) {
-        System.out.println(priority);
-        taskService.patchPriority(priority,taskId);
-//        return null;
-    }
-
     @GetMapping("/userTask/{userId}/{taskId}")
     public UserTask getUserTask(@PathVariable Integer userId, @PathVariable Integer taskId){
         return taskService.getUserTask(userId, taskId);

@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 @Entity
 @Data
@@ -28,8 +30,8 @@ public class Task {
     @ManyToOne()
     private Status currentStatus;
 
-    @Enumerated(value = EnumType.ORDINAL)
-    private Priority priority;
+    @OneToMany(cascade = CascadeType.ALL)
+    private Collection<Priority> priorities ;
 
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    private Collection<Status> statusPossiveis;
@@ -48,5 +50,22 @@ public class Task {
     private Collection<User> associates;
 
     private Integer statusListIndex;
+
+    public void setStandardPriorities() {
+
+            Collection<Priority> standardPriorities = new HashSet<>();
+            standardPriorities.add(new Priority("nenhuma","#cccccc"));
+            standardPriorities.add(new Priority("muito baixa","#6bbcfa"));
+            standardPriorities.add(new Priority("baixa","#4db339"));
+            standardPriorities.add(new Priority("media","#f5e020"));
+            standardPriorities.add(new Priority("alta","#f57520"));
+            standardPriorities.add(new Priority("urgente","#e32910"));
+            if (this.getPriorities() != null) {
+                this.getPriorities().addAll(standardPriorities);
+            } else{
+                this.setPriorities((standardPriorities));
+            }
+
+    }
 
 }
