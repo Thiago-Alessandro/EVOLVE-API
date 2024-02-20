@@ -48,8 +48,6 @@ public class UserService {
             }
 
 
-
-//            System.out.println(user);
             if(profilePhoto != null && !profilePhoto.isEmpty()) {
                 try {
 //                    usuario.setTesteImagem(fotoPerfil.getBytes());

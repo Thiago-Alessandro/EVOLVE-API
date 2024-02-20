@@ -67,7 +67,6 @@ public class TaskService {
             task.getCurrentStatus().setId(null);
 
         }
-//        System.out.println(task);
 //        setStatusListIndex(task);
         return update(taskRepository.save(task));
     }
@@ -92,7 +91,7 @@ public class TaskService {
                     UserTask userTask = new UserTask();
                     userTask.setUserId(user.getId());
                     userTask.setTaskId(task.getId());
-                    System.out.println(userTask);
+//                    System.out.println(userTask);
                     userTaskRepository.save(userTask);
                 }
             }

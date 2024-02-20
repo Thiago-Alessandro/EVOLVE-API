@@ -38,7 +38,6 @@ public class UserProcessor {
                 resolvingUser.setChats(null);
                 return;
             }
-//            System.out.println(objClassName); (message)
             resolvingUser.getChats().stream()
                     .forEach(chat -> ChatProcessor.resolveChat(chat, userClassName, resolvingCascade));
         }

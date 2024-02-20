@@ -46,14 +46,14 @@ public class MessageService {
 
     //    @Override
     public Message create(MessageDTO obj) {
-//        System.out.println(obj);
+
         Message message = new Message();
 
         BeanUtils.copyProperties(obj, message);
-//        System.out.println(message);
+
 
         message.setChat(chatRepository.findById(obj.getChatId()).get());
-//        System.out.println(message);
+
         Message newMessage = messageRepository.save(message);
         return MessageProcessor.resolveMessage(newMessage);
     }

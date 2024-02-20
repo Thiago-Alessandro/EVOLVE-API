@@ -46,25 +46,17 @@ public class ProjectService {
 
     public Project findById(Integer id){
         Project project =  projectRepository.findById(id).get();
-//        System.out.println(project.getTeam());
-//        for(Task task : project.getTasks()){
-//            task.setProject(null);
-//        }
+
         ProjectProcessor.resolveProject(project);
-//        System.out.println(project.getTeam());
+
         return project;
     }
 
     public Collection<Project> findAll() {
         Collection<Project> projects =  projectRepository.findAll();
-//        for (Project project : projects) {
-//            for (Task task : project.getTasks()) {
-//                task.setProject(null);
-//            }
-//        }
 
         projects.stream()
-                        .forEach(project -> ProjectProcessor.resolveProject(project) );
+                        .forEach(project -> ProjectProcessor.resolveProject(project));
 
         return projects;
     }
@@ -80,8 +72,7 @@ public class ProjectService {
                 teamRepository.findTeamByProjectsContaining(project).getProjects().remove(project);
             }
         } catch (Exception e) {
-            System.out.println("Deu erro lá na projectService manin");
-            throw new RuntimeException(e);
+            throw new RuntimeException(e + "Deu erro lá na projectService manin");
         }
 
         projectRepository.deleteById(id);}
