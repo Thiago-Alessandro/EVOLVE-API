@@ -30,6 +30,9 @@ public class Task {
     @ManyToOne()
     private Status currentStatus;
 
+    @OneToOne
+    private Priority currentPriority;
+
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<Priority> priorities ;
 
@@ -52,9 +55,10 @@ public class Task {
     private Integer statusListIndex;
 
     public void setStandardPriorities() {
+        Priority standard = new Priority("nenhuma","#cccccc");
 
             Collection<Priority> standardPriorities = new HashSet<>();
-            standardPriorities.add(new Priority("nenhuma","#cccccc"));
+            standardPriorities.add(standard);
             standardPriorities.add(new Priority("muito baixa","#6bbcfa"));
             standardPriorities.add(new Priority("baixa","#4db339"));
             standardPriorities.add(new Priority("media","#f5e020"));
@@ -64,6 +68,7 @@ public class Task {
                 this.getPriorities().addAll(standardPriorities);
             } else{
                 this.setPriorities((standardPriorities));
+                this.setCurrentPriority(standard);
             }
 
     }
