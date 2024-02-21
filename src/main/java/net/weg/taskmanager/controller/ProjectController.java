@@ -3,6 +3,7 @@ package net.weg.taskmanager.controller;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Status;
+import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.service.ProjectService;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,15 +26,15 @@ public class ProjectController {
     public void delete(@PathVariable Integer id){
         projectService.delete(id);}
     @PostMapping
-    public Project create(@RequestBody Project project){return projectService.create(project);}
+    public Project create(@RequestBody PostProjectDTO project){return projectService.create(project);}
     @PutMapping
     public Project update(@RequestBody Project project){return projectService.update(project);}
 //    @GetMapping("/status")
 //    public Collection<Status> getStatus(){return projetoService.getAllStatus();}
 
-    @PatchMapping("/{id}")
-    public Project updateStatusList(@PathVariable Integer id, @RequestBody Status status){
-        return projectService.updateStatusList(id, status);
+    @PatchMapping("/{projectId}")
+    public Project updateStatusList(@PathVariable Integer projectId, @RequestBody Status status){
+        return projectService.updateStatusList(projectId, status);
     }
 
 }

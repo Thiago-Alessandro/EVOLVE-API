@@ -1,9 +1,11 @@
 package net.weg.taskmanager.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.UserTask;
 import net.weg.taskmanager.model.UserTaskId;
+import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.repository.UserTaskRepository;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
@@ -12,7 +14,9 @@ import net.weg.taskmanager.repository.TaskProjectPropertyRepository;
 import net.weg.taskmanager.repository.TaskRepository;
 import net.weg.taskmanager.service.processor.TaskProcessor;
 import net.weg.taskmanager.service.processor.UserTaskProcessor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -24,6 +28,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskProjectPropertyRepository taskProjectPropertyRepository;
     private final UserTaskRepository userTaskRepository;
+    private final ModelMapper modelMapper;
 
     public UserTask setWorkedTime(UserTask userTask){
 
@@ -62,11 +67,15 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
-    public Task create(Task task) {
-        if(task.getCurrentStatus().getId()==0){
-            task.getCurrentStatus().setId(null);
+    public Task create(PostTaskDTO taskDTO) {
 
+        if(taskDTO.getCurrentStatus().getId()==0){
+            taskDTO.getCurrentStatus().setId(null);
         }
+
+        Task task = new Task();
+        modelMapper.map(taskDTO, task);
+
 //        setStatusListIndex(task);
         return update(taskRepository.save(task));
     }
@@ -76,6 +85,7 @@ public class TaskService {
         setStatusListIndex(task);
         propriedadeSetTarefa(task);
 
+        System.out.println(task);
         Task updatedTask = taskRepository.save(task);
 
         syncUserTaskTable(updatedTask);

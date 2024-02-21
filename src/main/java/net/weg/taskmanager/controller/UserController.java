@@ -3,6 +3,7 @@ package net.weg.taskmanager.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.User;
+import net.weg.taskmanager.model.dto.post.PostUserDTO;
 import net.weg.taskmanager.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,7 @@ public class UserController {
     public void delete(@PathVariable Integer id){
         userService.delete(id);}
     @PostMapping
-    public User create(@RequestBody User user){return userService.create(user);}
+    public User create(@RequestBody PostUserDTO user){return userService.create(user);}
     @PutMapping
     public User update(
                   @RequestParam String jsonUser,

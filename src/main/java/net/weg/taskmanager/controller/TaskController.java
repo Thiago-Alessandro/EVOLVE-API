@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.UserTask;
+import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class TaskController {
     public void delete(@PathVariable Integer id){
         taskService.delete(id);}
     @PostMapping
-    public Task create(@RequestBody Task task){
+    public Task create(@RequestBody PostTaskDTO task){
         System.out.println("Controller yay");
         return taskService.create(task);}
     @PutMapping

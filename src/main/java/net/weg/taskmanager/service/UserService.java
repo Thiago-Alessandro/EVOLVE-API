@@ -4,8 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.User;
+import net.weg.taskmanager.model.UserChat;
+import net.weg.taskmanager.model.dto.post.PostUserDTO;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.service.processor.UserProcessor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +32,6 @@ public class UserService {
     public Collection<User> findAll(){
         Collection<User> users = userRepository.findAll();
         for(User user : users){
-//            ResolveStackOverflow.getObjectWithoutStackOverflow(user);
             UserProcessor.resolveUser(user);
         }
         return users;}
@@ -37,7 +39,10 @@ public class UserService {
     public void delete(Integer id){
         userRepository.deleteById(id);}
 
-    public User create(User user){return userRepository.save(user);}
+    public User create(PostUserDTO userDTO){
+        User user = new User();
+        BeanUtils.copyProperties(userDTO, user);
+        return userRepository.save(user);}
     public User update(String jsonUser, MultipartFile profilePhoto){
         try {
             User user = objectMapper.readValue(jsonUser, User.class);

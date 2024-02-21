@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.Task;
+import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
@@ -77,7 +78,10 @@ public class ProjectService {
 
         projectRepository.deleteById(id);}
 
-    public Project create(Project project){
+    public Project create(PostProjectDTO projectDTO){
+
+        Project project = new Project();
+        BeanUtils.copyProperties(projectDTO, project);
 
         //Adiciona o projeto ao BD para que seja criado o seu Id
         projectRepository.save(project);
