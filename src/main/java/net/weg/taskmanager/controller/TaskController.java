@@ -22,9 +22,9 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping("/{id}")
-    public Task findById(@PathVariable Integer id){return taskService.findById(id);}
+    public TaskDTO findById(@PathVariable Integer id){return taskService.findById(id);}
     @GetMapping
-    public Collection<Task> findAll(){return taskService.findAll();}
+    public Collection<TaskDTO> findAll(){return taskService.findAll();}
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id){
         taskService.delete(id);}

@@ -6,6 +6,7 @@ import net.weg.taskmanager.model.UserTask;
 import net.weg.taskmanager.model.UserTaskId;
 import net.weg.taskmanager.model.dto.TaskDTO;
 import net.weg.taskmanager.model.property.Property;
+import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.Task;
@@ -13,6 +14,7 @@ import net.weg.taskmanager.model.property.TaskProjectProperty;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
@@ -61,19 +63,35 @@ public class TaskService {
         return update(task);
     }
 
-    public Task findById(Integer id) {
+    public TaskDTO findById(Integer id) {
         Task task = taskRepository.findById(id).get();
+        TaskDTO taskDTO = new TaskDTO();
+        PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(),task.getPriority().backgroundColor);
+        BeanUtils.copyProperties(task,taskDTO);
+        taskDTO.setPriority(priorityRecord);
         ResolveStackOverflow.getObjectWithoutStackOverflow(task);
-        return task;
+        return taskDTO;
     }
 
-    public Collection<Task> findAll() {
+    public Collection<TaskDTO> findAll() {
         Collection<Task> tasks = taskRepository.findAll();
+        Collection<TaskDTO> taskDTOS = new ArrayList<>();
 
         for(Task task : tasks){
             ResolveStackOverflow.getObjectWithoutStackOverflow(task);
         }
-        return tasks;
+
+        for (Task taskFor: tasks) {
+            TaskDTO taskDTO = new TaskDTO();
+            PriorityRecord priorityRecord = new PriorityRecord(taskFor.getPriority().name(), taskFor.getPriority().backgroundColor);
+            BeanUtils.copyProperties(taskFor,taskDTO);
+            taskDTO.setPriority(priorityRecord);
+            taskDTOS.add(taskDTO);
+        }
+
+        System.out.println(taskDTOS);
+
+        return taskDTOS;
     }
 
     public void delete(Integer id) {
@@ -84,8 +102,7 @@ public class TaskService {
 
     public Task create(TaskDTO taskDTO) {
         Task task = new Task();
-        Priority prioritySaved = Priority.NENHUMA;
-        prioritySaved = prioritySaved.valueOf(taskDTO.getPriority().name());
+        Priority prioritySaved = Priority.valueOf(taskDTO.getPriority().name());
         prioritySaved.backgroundColor = taskDTO.getPriority().backgroundColor();
         BeanUtils.copyProperties(taskDTO,task);
         System.out.println("TESTANDO FUNCIOAN 412");
@@ -94,6 +111,7 @@ public class TaskService {
         if(task.getCurrentStatus().getId()==0){
             task.getCurrentStatus().setId(null);
         }
+        System.out.println(taskDTO);
         System.out.println(task);
         Task task2 = taskRepository.save(task);
 //        setStatusListIndex(task);
