@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Priority;
 import net.weg.taskmanager.model.UserTask;
 import net.weg.taskmanager.model.UserTaskId;
+import net.weg.taskmanager.model.dto.TaskDTO;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -20,7 +22,6 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskProjectPropertyRepository taskProjectPropertyRepository;
     private final UserTaskRepository userTaskRepository;
-    private final PriorityRepository priorityRepository;
 
     public UserTask setWorkedTime(UserTask userTask){
 
@@ -81,15 +82,20 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
-    public Task create(Task task) {
+    public Task create(TaskDTO taskDTO) {
+        Task task = new Task();
+        Priority prioritySaved = Priority.NENHUMA;
+        prioritySaved = prioritySaved.valueOf(taskDTO.getPriority().name());
+        prioritySaved.backgroundColor = taskDTO.getPriority().backgroundColor();
+        BeanUtils.copyProperties(taskDTO,task);
+        System.out.println("TESTANDO FUNCIOAN 412");
+        task.setPriority(prioritySaved);
+        System.out.println(task.getPriority());
         if(task.getCurrentStatus().getId()==0){
             task.getCurrentStatus().setId(null);
         }
         System.out.println(task);
         Task task2 = taskRepository.save(task);
-        task2.setStandardPriorities();
-        priorityRepository.saveAll(task2.getPriorities());
-        System.out.println(task2.getPriorities());
 //        setStatusListIndex(task);
         return update(task2);
     }

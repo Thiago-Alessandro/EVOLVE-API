@@ -7,18 +7,25 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@Entity
-@AllArgsConstructor
-@NoArgsConstructor
-public class Priority {
-    @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Integer id;
-    private String name;
-    private String backgroundColor;
+//@Entity
+//@AllArgsConstructor
+//@NoArgsConstructor
+public enum Priority {
+        NENHUMA("#cccccc"),
+        MUITO_BAIXA("#6bbcfa"),
+        BAIXA("#4db339"),
+        MEDIA("#f5e020"),
+        ALTA("#f57520"),
+        URGENTE("#e32910");
 
-    public Priority(String name,String backgroundColor) {
-        this.name = name;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.TABLE)
+//    private Integer id;
+//    String name;
+    public String backgroundColor;
+
+    Priority(String backgroundColor) {
+//        this.name = name;
         this.backgroundColor = backgroundColor;
     }
 }

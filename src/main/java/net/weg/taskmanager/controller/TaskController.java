@@ -3,13 +3,16 @@ package net.weg.taskmanager.controller;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Priority;
 import net.weg.taskmanager.model.Task;
-import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.UserTask;
+import net.weg.taskmanager.model.dto.TaskDTO;
+import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -26,9 +29,9 @@ public class TaskController {
     public void delete(@PathVariable Integer id){
         taskService.delete(id);}
     @PostMapping
-    public Task create(@RequestBody Task task){
+    public Task create(@RequestBody TaskDTO taskDTO){
         System.out.println("Controller yay");
-        return taskService.create(task);}
+        return taskService.create(taskDTO);}
     @PutMapping
     public Task update(@RequestBody Task task){return taskService.update(task);}
 
@@ -42,7 +45,6 @@ public class TaskController {
 
     @PatchMapping("/property/{taskId}")
     public Task patchProperty(@RequestBody TaskProjectProperty taskProjectProperty,@PathVariable Integer taskId) {
-        System.out.println("AQUIIIIIII");
         System.out.println(taskProjectProperty.getType());
         return taskService.patchProperty(taskProjectProperty,taskId);
     }
@@ -50,6 +52,12 @@ public class TaskController {
     @GetMapping("/userTask/{userId}/{taskId}")
     public UserTask getUserTask(@PathVariable Integer userId, @PathVariable Integer taskId){
         return taskService.getUserTask(userId, taskId);
+    }
+
+    @GetMapping("/priorities")
+    public Collection<PriorityRecord> getAllPriorities() {
+        List<Priority> listTest =  List.of(Priority.values());
+       return listTest.stream().map(priority -> new PriorityRecord(priority.name(), priority.backgroundColor)).collect(Collectors.toList());
     }
 
 }
