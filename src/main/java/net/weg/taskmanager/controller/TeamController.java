@@ -24,6 +24,8 @@ public class TeamController {
     @PostMapping
     public Team create(@RequestBody Team team){return teamService.create(team);}
     @PutMapping
-    public Team update(@RequestBody Team team){return teamService.update(team);}
+    public Team update(@RequestBody Team team){
+//        System.out.println(team);
+        return teamService.update(team);}
 
 }

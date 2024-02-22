@@ -25,6 +25,8 @@ public class UserProcessor {
 
         user.setProfilePicture(FileProcessor.addBase64Prefix(user.getProfilePicture()));
 
+        resolvingCascade.remove(objClassName);
+
         return resolvingUser;
     }
 

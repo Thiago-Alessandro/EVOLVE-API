@@ -16,4 +16,11 @@ public class TeamChat extends Chat{
     //ao inserir, atualizar ou remover uma equipe terá de ser criado, atualizado ou excuido seu chat
     private Team team;
 
+    @Override
+    public String toString() {
+        return "TeamChat{" +
+//                "team=" + team +
+                "Users=" + getUsers() +
+                '}';
+    }
 }

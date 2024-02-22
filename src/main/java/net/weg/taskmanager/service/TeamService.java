@@ -22,8 +22,10 @@ public class TeamService {
     public Collection<Team> findAll(){
 
         Collection<Team> teams = teamRepository.findAll();
+//        System.out.println(teams);
         for(Team team : teams){
             TeamProcessor.resolveTeam(team);
+//            System.out.println(team);
         }
         return teams;
     }
@@ -37,13 +39,9 @@ public class TeamService {
 
     public Team update(Team team){
         updateTeamChat(team);
-//        for(User participante : team.getParticipants()){
-//            if(!team.getChat().getUsers().contains(participante)){
-//                team.getChat().getUsers().add(participante);
-//            }
-//        }
-//        team.getChat().setUsers(team.getParticipants());
-        return teamRepository.save(team);}
+        Team updatedTeam = teamRepository.save(team);
+        return TeamProcessor.resolveTeam(updatedTeam);
+    }
 
     private void updateTeamChat(Team team){
         if(team.getChat()==null){

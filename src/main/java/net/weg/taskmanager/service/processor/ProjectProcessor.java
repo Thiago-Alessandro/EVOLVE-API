@@ -24,6 +24,8 @@ public class ProjectProcessor {
         resolveProjectTeam();
         reolveProjectChat();
 
+        resolvingCascade.remove(objClassName);
+
         return resolvingProject;
     }
 

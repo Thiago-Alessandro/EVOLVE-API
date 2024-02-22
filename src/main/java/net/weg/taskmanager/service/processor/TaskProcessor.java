@@ -23,6 +23,8 @@ public class TaskProcessor {
         resolveTaskAssociates();
         resolveTaskCreator();
 
+        resolvingCascade.remove(objClassName);
+
         return task;
     }
     public static Task resolveTask(Task task){

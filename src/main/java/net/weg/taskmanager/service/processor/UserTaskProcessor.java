@@ -22,6 +22,8 @@ public class UserTaskProcessor {
         resolveUserTaskUser();
         resolveUserTaskTask();
 
+        resolvingCascade.remove(objClassName);
+
         return resolvingUserTask;
     }
 

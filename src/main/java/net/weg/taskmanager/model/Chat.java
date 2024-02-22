@@ -27,7 +27,7 @@ public abstract class Chat {
     private Collection<Message> messages;
 
     @ManyToMany
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private Collection<User> users;
 
 }

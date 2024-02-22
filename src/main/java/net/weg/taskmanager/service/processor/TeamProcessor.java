@@ -18,11 +18,11 @@ public class TeamProcessor {
 
         resolvingTeam = team;
 
+        resolveTeamChat();
         resolveTeamParticipants();
         resolveTeamAdministrator();
-        resolveTeamChat();
         resolveTeamProjects();
-
+        resolvingCascade.remove(objClassName);
         return team;
     }
     public static Team resolveTeam(Team team) {

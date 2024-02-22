@@ -19,6 +19,8 @@ public class MessageProcessor {
         resolveMessageChat();
         resolveMessageSender();
 
+        resolvingCascade.remove(objClassName);
+
         return resolvingMessage;
     }
 

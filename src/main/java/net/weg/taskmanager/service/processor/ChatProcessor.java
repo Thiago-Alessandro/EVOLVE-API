@@ -14,10 +14,13 @@ public class ChatProcessor {
         chat = resolvingChat;
         resolvingCascade = _resolvingCascade;
         resolvingCascade.add(objClassName);
-
-        resolveChatMessages();
-        resolveChatUsers();
+//        System.out.println("IN chat: " + chat.getClass().getSimpleName());
         resolveChatTeam();
+        resolveChatUsers();
+        resolveChatMessages();
+//        System.out.println("OUT chat: " + chat.getClass().getSimpleName());
+
+        resolvingCascade.remove(objClassName);
 
         return chat;
     }
@@ -40,18 +43,18 @@ public class ChatProcessor {
                 return;
             }
 
-                for(User user : chat.getUsers()) {
-                    if (chat.getUsers() != null) {
+            for(User user : chat.getUsers()) {
+                if (chat.getUsers() != null) {
 
-                        if (chat instanceof UserChat) {
-                            UserProcessor.resolveUser(user, UserChat.class.getSimpleName(), resolvingCascade);
-                        } else if (chat instanceof TeamChat) {
-                            UserProcessor.resolveUser(user, TeamChat.class.getSimpleName(), resolvingCascade);
-                        } else if (chat instanceof ProjectChat) {
-                            UserProcessor.resolveUser(user, ProjectChat.class.getSimpleName(), resolvingCascade);
-                        }
+                    if (chat instanceof UserChat) {
+                        UserProcessor.resolveUser(user, UserChat.class.getSimpleName(), resolvingCascade);
+                    } else if (chat instanceof TeamChat) {
+                        UserProcessor.resolveUser(user, TeamChat.class.getSimpleName(), resolvingCascade);
+                    } else if (chat instanceof ProjectChat) {
+                        UserProcessor.resolveUser(user, ProjectChat.class.getSimpleName(), resolvingCascade);
                     }
                 }
+            }
 
 
         }
