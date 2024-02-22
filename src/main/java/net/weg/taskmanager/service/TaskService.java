@@ -60,7 +60,13 @@ public class TaskService {
         }
             System.out.println(taskProjectProperty);
         task.getProperties().add(taskProjectProperty);
-        return update(task);
+
+        TaskDTO taskDTO = new TaskDTO();
+        PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(),task.getPriority().backgroundColor);
+        BeanUtils.copyProperties(task,taskDTO);
+        taskDTO.setPriority(priorityRecord);
+
+        return update(taskDTO);
     }
 
     public TaskDTO findById(Integer id) {
@@ -105,20 +111,23 @@ public class TaskService {
         Priority prioritySaved = Priority.valueOf(taskDTO.getPriority().name());
         prioritySaved.backgroundColor = taskDTO.getPriority().backgroundColor();
         BeanUtils.copyProperties(taskDTO,task);
-        System.out.println("TESTANDO FUNCIOAN 412");
         task.setPriority(prioritySaved);
-        System.out.println(task.getPriority());
         if(task.getCurrentStatus().getId()==0){
             task.getCurrentStatus().setId(null);
         }
-        System.out.println(taskDTO);
-        System.out.println(task);
+
+        setStatusListIndex(task);
+        propriedadeSetTarefa(task);
         Task task2 = taskRepository.save(task);
-//        setStatusListIndex(task);
-        return update(task2);
+        return ResolveStackOverflow.getObjectWithoutStackOverflow(task2);
     }
 
-    public Task update(Task task) {
+    public Task update(TaskDTO taskDTO) {
+        Task task = new Task();
+        Priority prioritySaved = Priority.valueOf(taskDTO.getPriority().name());
+        prioritySaved.backgroundColor = taskDTO.getPriority().backgroundColor();
+        BeanUtils.copyProperties(taskDTO,task);
+        task.setPriority(prioritySaved);
 
         setStatusListIndex(task);
         propriedadeSetTarefa(task);

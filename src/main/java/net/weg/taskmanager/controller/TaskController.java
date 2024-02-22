@@ -33,7 +33,7 @@ public class TaskController {
         System.out.println("Controller yay");
         return taskService.create(taskDTO);}
     @PutMapping
-    public Task update(@RequestBody Task task){return taskService.update(task);}
+    public Task update(@RequestBody TaskDTO taskDTO){return taskService.update(taskDTO);}
 
     @GetMapping("/status/{id}")
     public Collection<Task> getTasksByStatus(@PathVariable Integer id){return taskService.getTasksByStatus(id);}
