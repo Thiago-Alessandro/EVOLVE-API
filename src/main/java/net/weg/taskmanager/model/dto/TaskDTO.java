@@ -22,6 +22,7 @@ public class TaskDTO {
 
     private String finalDate;
     private String creationDate;
+    private String schedulingData;
     private String description;
 
     private Status currentStatus;

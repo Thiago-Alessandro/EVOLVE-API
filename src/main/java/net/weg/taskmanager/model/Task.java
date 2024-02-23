@@ -25,6 +25,7 @@ public class Task {
     //Mudar datas para Date posteriormente
     private String finalDate;
     private String creationDate;
+    private String schedulingData;
     private String description;
 
     @ManyToOne()

@@ -95,8 +95,6 @@ public class TaskService {
             taskDTOS.add(taskDTO);
         }
 
-        System.out.println(taskDTOS);
-
         return taskDTOS;
     }
 
