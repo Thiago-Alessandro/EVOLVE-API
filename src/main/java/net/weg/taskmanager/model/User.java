@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -30,6 +32,10 @@ public class User {
 //    @JsonIgnore
     private Collection<UserChat> chats;
 
+    //mudar para File
+    @OneToOne
+    private File image;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,6 +54,18 @@ public class User {
     //tava na equipe
 //    @JsonIgnore
     private Collection<Team> teams;
+
+    public void setImage(MultipartFile picture) {
+        File file = new File();
+        try {
+            file.setData(picture.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        file.setName(picture.getOriginalFilename());
+        file.setType(picture.getContentType());
+        this.image = file;
+    }
 
     @Override
     public String toString() {

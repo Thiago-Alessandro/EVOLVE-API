@@ -42,13 +42,15 @@ public class UserService {
     public User create(PostUserDTO userDTO){
         User user = new User();
         BeanUtils.copyProperties(userDTO, user);
-        return userRepository.save(user);}
+        User createdUser = userRepository.save(user);
+        UserProcessor.resolveUser(createdUser);
+        return createdUser;}
     public User update(String jsonUser, MultipartFile profilePhoto){
         try {
             User user = objectMapper.readValue(jsonUser, User.class);
 
             //para não stackar a imagem
-            if(user.getProfilePicture().length() > 0){
+            if(user.getProfilePicture()!=null && user.getProfilePicture().length() > 0){
                 user.setProfilePicture(findById(user.getId()).getProfilePicture());
             }
 

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -26,8 +27,11 @@ public class Task {
 
 //    private LocalDateTime finalDate;
 //    private LocalDateTime creationDate = LocalDateTime.now();
-    private String finalDate;
-    private String creationDate;
+    private LocalDate finalDate;
+    private LocalDate creationDate;
+    private LocalDateTime lastTimeEdited;
+    private LocalDate scheduledDate;
+
     private String description;
 
     @ManyToOne()

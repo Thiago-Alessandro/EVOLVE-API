@@ -15,9 +15,11 @@ public class ChatProcessor {
         resolvingCascade = _resolvingCascade;
         resolvingCascade.add(objClassName);
 //        System.out.println("IN chat: " + chat.getClass().getSimpleName());
-        resolveChatTeam();
-        resolveChatUsers();
+        if(chat.getClass().getSimpleName().equals(TeamChat.class.getSimpleName())){
+            resolveChatTeam();
+        }
         resolveChatMessages();
+        resolveChatUsers();
 //        System.out.println("OUT chat: " + chat.getClass().getSimpleName());
 
         resolvingCascade.remove(objClassName);
@@ -26,6 +28,7 @@ public class ChatProcessor {
     }
 
     public static Chat resolveChat(Chat resolvingChat){
+//        System.out.println(resolvingChat.getClass().getSimpleName());
         if(resolvingChat instanceof UserChat){
             return resolveChat(resolvingChat, UserChat.class.getSimpleName(), new ArrayList<>());
         }else if (resolvingChat instanceof TeamChat){
