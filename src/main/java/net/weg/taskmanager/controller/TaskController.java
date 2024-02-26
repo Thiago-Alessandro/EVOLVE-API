@@ -18,13 +18,13 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping("/{id}")
-    public Task findById(@PathVariable Integer id){
+    public Task findById(@PathVariable Long id){
 
         return taskService.findById(id);}
     @GetMapping
     public Collection<Task> findAll(){return taskService.findAll();}
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id){
+    public void delete(@PathVariable Long id){
         taskService.delete(id);}
     @PostMapping
     public Task create(@RequestBody PostTaskDTO task){
@@ -34,7 +34,7 @@ public class TaskController {
     public Task update(@RequestBody Task task){return taskService.update(task);}
 
     @GetMapping("/status/{id}")
-    public Collection<Task> getTasksByStatus(@PathVariable Integer id){return taskService.getTasksByStatus(id);}
+    public Collection<Task> getTasksByStatus(@PathVariable Long id){return taskService.getTasksByStatus(id);}
 
     @PatchMapping("/userTask")
     public UserTask setWorkedTime(@RequestBody UserTask userTask){
@@ -42,7 +42,7 @@ public class TaskController {
     }
 
     @GetMapping("/userTask/{userId}/{taskId}")
-    public UserTask getUserTask(@PathVariable Integer userId, @PathVariable Integer taskId){
+    public UserTask getUserTask(@PathVariable Long userId, @PathVariable Long taskId){
         return taskService.getUserTask(userId, taskId);
     }
 

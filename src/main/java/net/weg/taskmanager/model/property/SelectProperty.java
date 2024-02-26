@@ -14,8 +14,8 @@ import java.util.*;
 public class SelectProperty {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<SelectOption> possibleOptions;

@@ -20,7 +20,7 @@ public class TeamChatService {
     private final TeamChatRepository teamChatRepository;
     private final UserRepository userRepository;
 
-    public TeamChat findById(Integer id){
+    public TeamChat findById(Long id){
         TeamChat teamChat = teamChatRepository.findById(id).get();
         ChatProcessor.resolveChat(teamChat);
         return teamChat;
@@ -33,7 +33,7 @@ public class TeamChatService {
         return teamChats;
     }
 
-    public Collection<TeamChat> findTeamChatsByUserId(Integer id){
+    public Collection<TeamChat> findTeamChatsByUserId(Long id){
         User user = userRepository.findById(id).get();
 
         Collection<TeamChat> userTeamChats =

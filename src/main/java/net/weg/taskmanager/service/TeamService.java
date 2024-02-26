@@ -15,7 +15,7 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
 
-    public Team findById(Integer id){
+    public Team findById(Long id){
         Team team = teamRepository.findById(id).get();
         return TeamProcessor.resolveTeam(team);}
 
@@ -30,7 +30,7 @@ public class TeamService {
         return teams;
     }
 
-    public void delete(Integer id){
+    public void delete(Long id){
         teamRepository.deleteById(id);}
 
     public Team create(Team team){

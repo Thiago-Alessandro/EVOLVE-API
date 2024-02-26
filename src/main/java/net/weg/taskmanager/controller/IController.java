@@ -8,11 +8,11 @@ import java.util.Collection;
 public interface IController <T>{
 
     @GetMapping("/{id}")
-    public ResponseEntity<T> findById(@PathVariable Integer id);
+    public ResponseEntity<T> findById(@PathVariable Long id);
     @GetMapping
     public ResponseEntity<Collection<T>> findAll();
     @DeleteMapping("/{id}")
-    public ResponseEntity<T> delete(@PathVariable Integer id);
+    public ResponseEntity<T> delete(@PathVariable Long id);
     @PostMapping
     public ResponseEntity<T> create(@RequestBody T obj);
     @PutMapping

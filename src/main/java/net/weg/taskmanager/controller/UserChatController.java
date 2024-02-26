@@ -21,7 +21,7 @@ public class UserChatController implements IController<UserChat> {
     private final UserChatService userChatService;
 
     @Override
-    public ResponseEntity<UserChat> findById(Integer id) {
+    public ResponseEntity<UserChat> findById(Long id) {
         try {
             return new ResponseEntity<>(userChatService.findById(id), HttpStatus.OK);
         } catch (NoSuchElementException e){
@@ -35,7 +35,7 @@ public class UserChatController implements IController<UserChat> {
     }
 
     @Override
-    public ResponseEntity<UserChat> delete(Integer id) {
+    public ResponseEntity<UserChat> delete(Long id) {
         try {
             userChatService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -55,7 +55,7 @@ public class UserChatController implements IController<UserChat> {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<Collection<UserChat>> getChatsByUserID(@PathVariable Integer id) {
+    public ResponseEntity<Collection<UserChat>> getChatsByUserID(@PathVariable Long id) {
         return new ResponseEntity<>(userChatService.getChatsByUserId(id), HttpStatus.OK);
     }
 }

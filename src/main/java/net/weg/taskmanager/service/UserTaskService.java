@@ -7,7 +7,7 @@ import java.util.Collection;
 public class UserTaskService {
 
 
-    public UserTask findById(Integer id) {
+    public UserTask findById(Long id) {
         return null;
     }
 
@@ -15,7 +15,7 @@ public class UserTaskService {
         return null;
     }
 
-    public void delete(Integer id) {
+    public void delete(Long id) {
 
     }
 

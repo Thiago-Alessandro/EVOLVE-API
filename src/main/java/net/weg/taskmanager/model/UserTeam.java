@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 public class UserTeam {
 
     @Id
-    private Integer userId;
+    private Long userId;
     @Id
-    private Integer teamId;
+    private Long teamId;
 
     @ManyToOne
     private PropertiesPermission permissionOfProperties;

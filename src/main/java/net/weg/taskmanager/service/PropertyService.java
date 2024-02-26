@@ -13,11 +13,11 @@ public class PropertyService {
 
     private final PropertiesRepository propertiesRepository;
 
-    public Property findById(Integer id){return propertiesRepository.findById(id).get();}
+    public Property findById(Long id){return propertiesRepository.findById(id).get();}
 
     public Collection<Property> findAll(){return propertiesRepository.findAll();}
 
-    public void delete(Integer id){
+    public void delete(Long id){
         propertiesRepository.deleteById(id);}
 
     public Property create(Property propriedade){return propertiesRepository.save(propriedade);}

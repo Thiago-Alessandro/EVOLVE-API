@@ -7,10 +7,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import java.util.Locale;
 
 @Repository
-public interface TeamChatRepository extends JpaRepository<TeamChat, Integer> {
+public interface TeamChatRepository extends JpaRepository<TeamChat, Long> {
 
-    TeamChat findTeamChatByTeam_Id(Integer id);
+    TeamChat findTeamChatByTeam_Id(Long id);
 
 }

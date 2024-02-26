@@ -17,8 +17,8 @@ import java.util.Collection;
 public class TaskProjectProperty {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Property property;

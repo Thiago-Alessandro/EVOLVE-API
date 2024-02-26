@@ -19,7 +19,7 @@ public class MessageService {
     private final ChatRepository chatRepository;
 
 //    @Override
-    public Message findById(Integer id) {
+    public Message findById(Long id) {
         return null;
 //        return messageRepository.findById(id).get();
     }
@@ -40,7 +40,7 @@ public class MessageService {
 //    }
 
     //    @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
 
     }
 

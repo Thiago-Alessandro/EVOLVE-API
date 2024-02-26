@@ -13,11 +13,11 @@ public class PropertiesPermissionService {
 
     private final PropertiesPermissionRepository permissionOfPropertiesRepository;
 
-    public PropertiesPermission findById(Integer id){return permissionOfPropertiesRepository.findById(id).get();}
+    public PropertiesPermission findById(Long id){return permissionOfPropertiesRepository.findById(id).get();}
 
     public Collection<PropertiesPermission> findAll(){return permissionOfPropertiesRepository.findAll();}
 
-    public void delete(Integer id){
+    public void delete(Long id){
         permissionOfPropertiesRepository.deleteById(id);}
 
     public PropertiesPermission create(PropertiesPermission permissionOfProperties){return permissionOfPropertiesRepository.save(permissionOfProperties);}

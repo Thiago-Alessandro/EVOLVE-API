@@ -21,10 +21,10 @@ public class UserChatService implements IService<UserChat>{
 
 //    private final MessageRepository messageRepository;
 
-//    private static Integer count = 1;
+//    private static Long count = 1;
 
     @Override
-    public UserChat findById(Integer id) {
+    public UserChat findById(Long id) {
         UserChat chat = userChatRepository.findById(id).get();
         ChatProcessor.resolveChat(chat, UserChat.class.getSimpleName(), new ArrayList<>());
         return chat;
@@ -40,7 +40,7 @@ public class UserChatService implements IService<UserChat>{
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         userChatRepository.deleteById(id);
     }
 
@@ -59,7 +59,7 @@ public class UserChatService implements IService<UserChat>{
         return updatedUserChat;
     }
 
-    public Collection<UserChat> getChatsByUserId(Integer id){
+    public Collection<UserChat> getChatsByUserId(Long id){
         Collection<UserChat> chats = userChatRepository.findUserChatsByUsersContaining(userRepository.findById(id).get());
         for(UserChat chat : chats){
             ChatProcessor.resolveChat(chat);

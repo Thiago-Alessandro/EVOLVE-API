@@ -19,11 +19,11 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping("/{id}")
-    public Project findById(@PathVariable Integer id){return projectService.findById(id);}
+    public Project findById(@PathVariable Long id){return projectService.findById(id);}
     @GetMapping
     public Collection<Project> findAll(){return projectService.findAll();}
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id){
+    public void delete(@PathVariable Long id){
         projectService.delete(id);}
     @PostMapping
     public Project create(@RequestBody PostProjectDTO project){return projectService.create(project);}
@@ -33,7 +33,7 @@ public class ProjectController {
 //    public Collection<Status> getStatus(){return projetoService.getAllStatus();}
 
     @PatchMapping("/{projectId}")
-    public Project updateStatusList(@PathVariable Integer projectId, @RequestBody Status status){
+    public Project updateStatusList(@PathVariable Long projectId, @RequestBody Status status){
         return projectService.updateStatusList(projectId, status);
     }
 

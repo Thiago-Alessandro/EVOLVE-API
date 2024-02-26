@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.*;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -18,8 +19,11 @@ public class PostTaskDTO {
 
     private String name;
 
-//    private LocalDateTime finalDate;
-    private String finalDate;
+    private LocalDate finalDate;
+    private LocalDate creationDate;
+    private LocalDateTime lastTimeEdited;
+    private LocalDate scheduledDate;
+
 //    private LocalDateTime creationDate;
     private String description;
 

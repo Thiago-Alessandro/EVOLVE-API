@@ -15,11 +15,11 @@ public class PropertyController {
     private final PropertyService propertyService;
 
     @GetMapping("/{id}")
-    public Property findById(@PathVariable Integer id){return propertyService.findById(id);}
+    public Property findById(@PathVariable Long id){return propertyService.findById(id);}
     @GetMapping
     public Collection<Property> findAll(){return propertyService.findAll();}
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id){
+    public void delete(@PathVariable Long id){
         propertyService.delete(id);}
     @PostMapping
     public Property create(@RequestBody Property property){return propertyService.create(property);}

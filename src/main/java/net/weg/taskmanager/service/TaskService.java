@@ -43,12 +43,12 @@ public class TaskService {
         return changingUserTask;
     }
 
-    public UserTask getUserTask(Integer userId, Integer taskId){
+    public UserTask getUserTask(Long userId, Long taskId){
         UserTask userTask = userTaskRepository.findByUserIdAndTaskId(userId, taskId);
         return UserTaskProcessor.resolveUserTask(userTask);
     }
 
-    public Task findById(Integer id) {
+    public Task findById(Long id) {
         Task task = taskRepository.findById(id).get();
         TaskProcessor.resolveTask(task);
         return task;
@@ -63,7 +63,7 @@ public class TaskService {
         return tasks;
     }
 
-    public void delete(Integer id) {
+    public void delete(Long id) {
         taskRepository.deleteById(id);
     }
 
@@ -145,7 +145,7 @@ public class TaskService {
         }
     }
     private final StatusRepository statusRepository;
-    public Collection<Task> getTasksByStatus(Integer id){
+    public Collection<Task> getTasksByStatus(Long id){
 
         return taskRepository.getTaskByCurrentStatus(statusRepository.findById(id).get());
     }

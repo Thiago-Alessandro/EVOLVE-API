@@ -18,8 +18,9 @@ import java.util.Objects;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+//    @Column(nullable = false)
     private String name;
     private String password;
     private String email;

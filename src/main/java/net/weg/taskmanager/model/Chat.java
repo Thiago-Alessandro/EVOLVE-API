@@ -16,7 +16,7 @@ public abstract class Chat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    private Integer id;
+    private Long id;
 
 //    @Enumerated(value = EnumType.ORDINAL)
 //    private ChatType type;

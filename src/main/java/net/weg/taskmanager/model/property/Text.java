@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 public class Text {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String value;
 

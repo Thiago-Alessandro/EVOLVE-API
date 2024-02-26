@@ -19,20 +19,31 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public User findById(@PathVariable Integer id){return userService.findById(id);}
+    public User findById(@PathVariable Long id){return userService.findById(id);}
     @GetMapping
     public Collection<User> findAll(){return userService.findAll();}
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id){
+    public void delete(@PathVariable Long id){
         userService.delete(id);}
     @PostMapping
     public User create(@RequestBody PostUserDTO user){return userService.create(user);}
+    
     @PutMapping
+    public User update(@RequestBody User user){
+        return userService.update(user);
+    }
+    
+    @PutMapping("/full")
     public User update(
                   @RequestParam String jsonUser,
                           @RequestParam MultipartFile profilePhoto){
 
         return userService.update(jsonUser, profilePhoto);
+    }
+    
+    @PatchMapping("/id")
+    public User patchImage(@PathVariable Long id, @RequestParam MultipartFile image){
+        return userService.patchImage(id, image);
     }
     @GetMapping("/login/{email}")
     public User findByEmail(@PathVariable String email){return userService.findByEmail(email);}

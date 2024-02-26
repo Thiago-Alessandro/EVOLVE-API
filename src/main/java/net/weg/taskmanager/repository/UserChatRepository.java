@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 
 @Repository
-public interface UserChatRepository extends JpaRepository<UserChat, Integer> {
+public interface UserChatRepository extends JpaRepository<UserChat, Long> {
 
 //    Collection<Usuario> findByUsersContaining(Usuario user);
 

@@ -18,9 +18,9 @@ public class UserTask {
     }
 
     @Id
-    private Integer userId;
+    private Long userId;
     @Id
-    private Integer taskId;
+    private Long taskId;
 
     @ManyToOne
     @JoinColumn(name = "userId", insertable = false, updatable = false)

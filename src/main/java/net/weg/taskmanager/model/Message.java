@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -15,8 +16,8 @@ import java.util.Date;
 public class Message {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 //    @Lob
 //    private MultipartFile content;
     // ?????
@@ -25,7 +26,7 @@ public class Message {
     private String content;
     @ManyToOne
     private User sender;
-    private Date date;
+    private LocalDateTime date;
     private MessageStatus status;
 
     @ManyToOne

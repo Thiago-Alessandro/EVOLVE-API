@@ -15,11 +15,11 @@ public class PropertiesPermissionController {
     private final PropertiesPermissionService permissionOfPropertieService;
 
     @GetMapping("/{id}")
-    public PropertiesPermission findById(@PathVariable Integer id){return permissionOfPropertieService.findById(id);}
+    public PropertiesPermission findById(@PathVariable Long id){return permissionOfPropertieService.findById(id);}
     @GetMapping
     public Collection<PropertiesPermission> findAll(){return permissionOfPropertieService.findAll();}
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id){
+    public void delete(@PathVariable Long id){
         permissionOfPropertieService.delete(id);}
     @PostMapping
     public PropertiesPermission create(@RequestBody PropertiesPermission propertiesPermission){return permissionOfPropertieService.create(propertiesPermission);}

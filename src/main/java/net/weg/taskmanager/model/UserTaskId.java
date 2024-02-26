@@ -11,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class UserTaskId implements Serializable {
 
-    private Integer userId;
-    private Integer taskId;
+    private Long userId;
+    private Long taskId;
 
 }

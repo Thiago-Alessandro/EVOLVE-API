@@ -15,8 +15,8 @@ import java.util.Collection;
 public class Team {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String image;
 //    private String descricao;

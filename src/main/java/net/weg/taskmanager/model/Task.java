@@ -19,8 +19,8 @@ import java.util.Collection;
 public class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name = "Sem Nome";
     @NonNull
     private Boolean favorited;

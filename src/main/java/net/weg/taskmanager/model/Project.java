@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -17,8 +19,8 @@ import java.util.HashSet;
 public class Project {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String description;
     private String image;
@@ -26,8 +28,12 @@ public class Project {
     private User creator;
     @ManyToMany
     private Collection<User> administrators;
+
     //mudar para Date
-    private String FinalDate;
+    private LocalDate FinalDate;
+    private LocalDate creationDate;
+    private LocalDateTime lastTimeEdited;
+
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Collection<TaskProjectProperty> properties;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

@@ -17,7 +17,7 @@ public class MessageController{
     private final MessageService messageService;
 
 //    @Override
-    public ResponseEntity<MessageDTO> findById(Integer id) {
+    public ResponseEntity<MessageDTO> findById(Long id) {
         return null;
     }
 
@@ -28,7 +28,7 @@ public class MessageController{
     }
 
 //    @Override
-    public ResponseEntity<MessageDTO> delete(Integer id) {
+    public ResponseEntity<MessageDTO> delete(Long id) {
         return null;
     }
 

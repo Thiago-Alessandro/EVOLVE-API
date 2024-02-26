@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserTeamId {
 
-    private Integer userId;
-    private Integer teamId;
+    private Long userId;
+    private Long teamId;
 
 }

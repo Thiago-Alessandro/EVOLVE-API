@@ -14,11 +14,11 @@ public class CardsPermissionService {
 
     private final CardsPermissionRepository permissionOfCardsRepository;
 
-    public CardsPermission findById(Integer id){return permissionOfCardsRepository.findById(id).get();}
+    public CardsPermission findById(Long id){return permissionOfCardsRepository.findById(id).get();}
 
     public Collection<CardsPermission> findAll(){return permissionOfCardsRepository.findAll();}
 
-    public void delete(Integer id){
+    public void delete(Long id){
         permissionOfCardsRepository.deleteById(id);}
 
     public CardsPermission create(CardsPermission permissionOfCards){return permissionOfCardsRepository.save(permissionOfCards);}

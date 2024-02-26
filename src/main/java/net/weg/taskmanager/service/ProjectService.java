@@ -25,7 +25,7 @@ public class ProjectService {
     private final TeamRepository teamRepository;
     private final TaskProjectPropertyRepository taskProjectPropertyRepository;
 
-    public Project updateStatusList(Integer id, Status status){
+    public Project updateStatusList(Long id, Status status){
         Project project = projectRepository.getById(id);
         if(project!=null){
             if(project.getStatusList()!=null){
@@ -45,7 +45,7 @@ public class ProjectService {
     }
 
 
-    public Project findById(Integer id){
+    public Project findById(Long id){
         Project project =  projectRepository.findById(id).get();
 
         ProjectProcessor.resolveProject(project);
@@ -62,7 +62,7 @@ public class ProjectService {
         return projects;
     }
 
-    public void delete(Integer id){
+    public void delete(Long id){
         Project project = findById(id);
         taskRepository.deleteAll(project.getTasks());
         statusRepository.deleteAll(project.getStatusList());
