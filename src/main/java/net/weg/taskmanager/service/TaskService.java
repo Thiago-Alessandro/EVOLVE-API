@@ -38,6 +38,12 @@ public class TaskService {
         return changingUserTask;
     }
 
+    public TaskProjectProperty putPropertyValue(Integer id, TaskProjectProperty taskProjectPropertyValue) {
+        TaskProjectProperty neededProperty = taskProjectPropertyRepository.findById(id).get();
+        neededProperty.setValues(taskProjectPropertyValue.getValues());
+        return taskProjectPropertyRepository.save(neededProperty);
+    }
+
     public UserTask getUserTask(Integer userId, Integer taskId){
         UserTaskId userTaskId = new UserTaskId();
         userTaskId.setUserId(userId);

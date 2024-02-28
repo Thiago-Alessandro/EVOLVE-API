@@ -21,16 +21,16 @@ public class TaskProjectProperty {
     private Integer id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private Property property;
+    private Property property; // Generalização de propriedades
     @ManyToOne
     @JsonIgnore
-    private Task task;
+    private Task task; // Possivelmente relacionada
     @ManyToOne
     @JsonIgnore
-    private Project project;
+    private Project project;  // Possivelmente relacionada
 
-    @ManyToMany
-    private Collection<Text> value;
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Collection<Text> values; //
 
     @Enumerated(EnumType.STRING)
     private PropertyType type;

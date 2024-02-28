@@ -54,6 +54,11 @@ public class TaskController {
         return taskService.getUserTask(userId, taskId);
     }
 
+    @PutMapping("/property/{propertyId}")
+    public TaskProjectProperty putPropertyValue(@PathVariable Integer propertyId, @RequestBody TaskProjectProperty taskProjectPropertyValue) {
+        return taskService.putPropertyValue(propertyId,taskProjectPropertyValue);
+    }
+
     @GetMapping("/priorities")
     public Collection<PriorityRecord> getAllPriorities() {
         List<Priority> listTest =  List.of(Priority.values());
