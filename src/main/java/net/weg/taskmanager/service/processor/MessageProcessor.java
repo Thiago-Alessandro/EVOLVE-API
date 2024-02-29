@@ -39,7 +39,7 @@ public class MessageProcessor {
                 resolvingMessage.setChat(null);
                 return;
             }
-            ChatProcessor.resolveChat(resolvingMessage.getChat(), messageClassName, resolvingCascade);
+            ChatProcessor.resolveChatGeneric(resolvingMessage.getChat(), messageClassName, resolvingCascade);
         }
     }
     private static void resolveMessageSender(){

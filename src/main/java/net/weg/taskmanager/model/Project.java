@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 
 import java.time.LocalDate;
@@ -15,54 +16,79 @@ import java.util.HashSet;
 @Entity
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@ToString()
 public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String description;
-    private String image;
-    @ManyToOne
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private File image;
+    private String imageColor;
+    @JoinColumn(nullable = false)
+    @ManyToOne()
     private User creator;
+
+    @Column(nullable = false)
+    private LocalDate finalDate;
+    @Column(nullable = false)
+    private LocalDate creationDate;
+    @Column(nullable = false)
+    private LocalDateTime lastTimeEdited;
+
+
+    //vai continuar msm?
     @ManyToMany
+    @Column(nullable = false)
     private Collection<User> administrators;
 
-    //mudar para Date
-    private LocalDate FinalDate;
-    private LocalDate creationDate;
-    private LocalDateTime lastTimeEdited;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Collection<TaskProjectProperty> properties;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    // teremos status padrao? seriam os mesmos objetos para todos projetos? ou seria instanciado um novo para cada novo projeto?
-    private Collection<Status> StatusList;
+    @JoinColumn(nullable = false)
+    private Collection<Status> statusList;
     @ManyToMany
+    @JoinColumn(nullable = false)
     private Collection<User> members;
     @ManyToOne
-//    @JsonIgnore
+    @JoinColumn(nullable = false)
     private Team team;
 
-    @OneToOne()
-//    @JsonIgnore
-    private Chat chat;
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    private ProjectChat chat;
 
     @OneToMany(mappedBy = "project")
-//    @JsonIgnore
     private Collection<Task> tasks;
 
-    public void setStandardStatus() {
-        Collection<Status> statusPadrao = new HashSet<>();
-        statusPadrao.add(new Status("pendente", "#7CD5F4", "#000000",true));
-        statusPadrao.add(new Status("em progresso", "#FCEC62", "#000000",true));
-        statusPadrao.add(new Status("concluido", "#86C19F", "#000000",true));
-        statusPadrao.add(new Status("não atribuido", "#9CA3AE", "#000000",true));
+    public void setDefaultStatus() {
+        Collection<Status> defaultStatus = new HashSet<>();
+        defaultStatus.add(new Status("pendente", "#7CD5F4", "#000000",true));
+        defaultStatus.add(new Status("em progresso", "#FCEC62", "#000000",true));
+        defaultStatus.add(new Status("concluido", "#86C19F", "#000000",true));
+        defaultStatus.add(new Status("não atribuido", "#9CA3AE", "#000000",true));
         if(this.getStatusList()!=null){
-            this.getStatusList().addAll(statusPadrao);
+            this.getStatusList().addAll(defaultStatus);
         } else{
-            this.setStatusList((statusPadrao));
+            this.setStatusList((defaultStatus));
         }
     }
+
+    public void updateLastTimeEdited() {
+        this.lastTimeEdited = LocalDateTime.now();
+    }
+
+    public Project(){
+        this.chat = new ProjectChat();
+        this.chat.setProject(this);
+        this.creationDate = LocalDate.now();
+        updateLastTimeEdited();
+        setDefaultStatus();
+    }
+
 }

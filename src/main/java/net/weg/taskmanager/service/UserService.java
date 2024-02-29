@@ -3,9 +3,12 @@ package net.weg.taskmanager.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.Team;
+import net.weg.taskmanager.model.TeamChat;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.UserChat;
 import net.weg.taskmanager.model.dto.post.PostUserDTO;
+import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.service.processor.UserProcessor;
 import org.modelmapper.ModelMapper;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 
@@ -24,6 +28,7 @@ public class UserService {
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final TeamRepository teamRepository;
 
     public User findById(Long id){
         User user = userRepository.findById(id).get();
@@ -45,6 +50,7 @@ public class UserService {
         User user = new User();
         BeanUtils.copyProperties(userDTO, user);
         User createdUser = userRepository.save(user);
+        setDefaultTeam(createdUser);
         UserProcessor.resolveUser(createdUser);
         return createdUser;}
 
@@ -63,37 +69,34 @@ public class UserService {
     }
     
     
-    public User update(String jsonUser, MultipartFile profilePhoto){
+    public User update(String jsonUser, MultipartFile image){
+
         try {
             User user = objectMapper.readValue(jsonUser, User.class);
+            user.setImage(image);
 
-            //para não stackar a imagem
-            if(user.getProfilePicture()!=null && user.getProfilePicture().length() > 0){
-                user.setProfilePicture(findById(user.getId()).getProfilePicture());
-            }
-
-
-            if(profilePhoto != null && !profilePhoto.isEmpty()) {
-                try {
-//                    usuario.setTesteImagem(fotoPerfil.getBytes());
-                    user.setProfilePicture(Base64.getEncoder().encodeToString(profilePhoto.getBytes()));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                //excecao aq
-            }
             User updatedUser = userRepository.save(user);
             UserProcessor.resolveUser(updatedUser);
             return updatedUser;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     public User findByEmail(String email){
-
        return UserProcessor.resolveUser(userRepository.findByEmail(email));
+    }
+
+    private User setDefaultTeam(User user){
+        if (user.getTeams()==null){
+            user.setTeams(new ArrayList<>());
+        }
+
+        Team defaultTeam = new Team(user);
+
+        user.getTeams().add(teamRepository.save(defaultTeam));
+        return user;
     }
 
 }

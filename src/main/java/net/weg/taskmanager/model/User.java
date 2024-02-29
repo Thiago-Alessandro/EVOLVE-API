@@ -20,22 +20,29 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    @Column(nullable = false)
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
     private String email;
-    @Lob
-    @Column(length = 999999999)
-//    private String testeImagem;
-    private String profilePicture;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private File image;
+    private String imageColor;
 
     @ManyToMany(mappedBy = "users")
 //    @JsonIgnore
     private Collection<UserChat> chats;
+    @OneToMany(mappedBy = "creator")
+    private Collection<Task> createdTasks;
+    @OneToMany(mappedBy = "administrator")
+    @JsonIgnore
+    private Collection<Team> managedTeams;
+    @ManyToMany(mappedBy = "participants")
+    @JsonIgnore
+    private Collection<Team> teams;
 
-    //mudar para File
-    @OneToOne
-    private File image;
 
     @Override
     public boolean equals(Object o) {
@@ -45,26 +52,16 @@ public class User {
         return Objects.equals(id, user.id);
     }
 
-    @OneToMany(mappedBy = "creator")
-    @JsonIgnore
-    private Collection<Task> createdTasks;
-    @OneToMany(mappedBy = "administrator")
-//    @JsonIgnore
-    private Collection<Team> managedTeams;
-    @ManyToMany(mappedBy = "participants")
-    //tava na equipe
-//    @JsonIgnore
-    private Collection<Team> teams;
 
-    public void setImage(MultipartFile picture) {
+    public void setImage(MultipartFile image) {
         File file = new File();
         try {
-            file.setData(picture.getBytes());
+            file.setData(image.getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        file.setName(picture.getOriginalFilename());
-        file.setType(picture.getContentType());
+        file.setName(image.getOriginalFilename());
+        file.setType(image.getContentType());
         this.image = file;
     }
 
@@ -75,7 +72,7 @@ public class User {
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
-//                ", fotoPerfil='" + fotoPerfil.substring(0,100) + '\'' +
+                ", chats =" + chats +
                 '}';
     }
 }

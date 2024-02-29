@@ -29,8 +29,8 @@ public class TaskProjectProperty {
     @JsonIgnore
     private Project project;
 
-    @ManyToMany
-    private Collection<Text> value;
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Collection<Text> values;
 
     @Enumerated()
     private PropertyType type;

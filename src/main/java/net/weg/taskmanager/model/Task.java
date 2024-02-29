@@ -10,6 +10,7 @@ import net.weg.taskmanager.model.property.TaskProjectProperty;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity

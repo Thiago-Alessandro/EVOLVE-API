@@ -1,9 +1,11 @@
 package net.weg.taskmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Collection;
 
@@ -12,6 +14,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@ToString
 public abstract class Chat {
 
     @Id
@@ -28,6 +31,7 @@ public abstract class Chat {
 
     @ManyToMany
     @Column(nullable = false)
+//    @JsonIgnore
     private Collection<User> users;
 
 }

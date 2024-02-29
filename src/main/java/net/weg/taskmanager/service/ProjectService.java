@@ -1,9 +1,7 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Project;
-import net.weg.taskmanager.model.Status;
-import net.weg.taskmanager.model.Task;
+import net.weg.taskmanager.model.*;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.*;
@@ -83,21 +81,25 @@ public class ProjectService {
         Project project = new Project();
         BeanUtils.copyProperties(projectDTO, project);
 
+        updateProjectChat(project);
+
         //Adiciona o projeto ao BD para que seja criado o seu Id
         projectRepository.save(project);
 
-        //Seta os status padrões do projeto
-        project.setStandardStatus();
         //Referencia o projeto nas suas propriedades
         propertiesSetProject(project);
+
         //Prepara os status para serem criados
+        //(futuramente quando o front não mandar o id como 0 por padrao podera ser retirado)
         setNewStatusIdNull(project);
 
         //Atualiza o projeto adicionando sua referencia nas suas propriedades
-        projectRepository.save(project);
+        Project createdProject = projectRepository.save(project);
+        ProjectProcessor.resolveProject(createdProject);
+//        System.out.println(createdProject);
 
         //Retorna o objeto sem stackOverflow
-        return ProjectProcessor.resolveProject(project);
+        return createdProject;
     }
 
     public void setNewStatusIdNull(Project project){
@@ -109,7 +111,9 @@ public class ProjectService {
     }
 
     public Project update(Project project){
+        updateProjectChat(project);
         setNewStatusIdNull(project);
+        project.updateLastTimeEdited();
 
         return ProjectProcessor.resolveProject(projectRepository.save(project));
     }
@@ -127,6 +131,9 @@ public class ProjectService {
         }
     }
 
+    private void updateProjectChat(Project project){
+        project.getChat().setUsers(project.getMembers());
+    }
 
 
 }

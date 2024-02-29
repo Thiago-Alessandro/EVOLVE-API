@@ -41,7 +41,7 @@ public class UserController {
         return userService.update(jsonUser, profilePhoto);
     }
     
-    @PatchMapping("/id")
+    @PatchMapping("/{id}")
     public User patchImage(@PathVariable Long id, @RequestParam MultipartFile image){
         return userService.patchImage(id, image);
     }
