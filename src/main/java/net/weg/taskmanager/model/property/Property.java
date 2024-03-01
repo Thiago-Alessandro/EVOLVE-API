@@ -33,7 +33,7 @@ public class Property {
     @Enumerated(EnumType.STRING)
     private PropertyType propertyType;
 
-    @ManyToOne
+    @OneToMany
     private Collection<Option> options;
 
 }

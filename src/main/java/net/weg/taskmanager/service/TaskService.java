@@ -37,11 +37,11 @@ public class TaskService {
         return changingUserTask;
     }
 
-    public Property putPropertyValue(Integer id, Property propertyValue) {
-        Property neededProperty = taskProjectPropertyRepository.findById(id).get();
-        neededProperty.setValues(propertyValue.getValues());
-        return taskProjectPropertyRepository.save(neededProperty);
-    }
+//    public Property putPropertyValue(Integer id, Property propertyValue) {
+//        Property neededProperty = taskProjectPropertyRepository.findById(id).get();
+//        neededProperty.setValues(propertyValue.getValues());
+//        return taskProjectPropertyRepository.save(neededProperty);
+//    }
 
     public UserTask getUserTask(Integer userId, Integer taskId){
         UserTaskId userTaskId = new UserTaskId();
@@ -52,27 +52,27 @@ public class TaskService {
         return userTaskRepository.findById(userTaskId).get();
     }
 
-        public Task patchProperty(Property property, Integer taskId) {
-            System.out.println(property.getType());
-        Task task = taskRepository.findById(taskId).get();
-        if(property.getId()==0){
-            System.out.println("entrei1");
-            property.setId(null);
-        }
-        if(property.getProperty().getId()==0){
-            System.out.println("entrei2");
-            property.getProperty().setId(null);
-        }
-            System.out.println(property);
-        task.getProperties().add(property);
-
-        TaskDTO taskDTO = new TaskDTO();
-        PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(),task.getPriority().backgroundColor);
-        BeanUtils.copyProperties(task,taskDTO);
-        taskDTO.setPriority(priorityRecord);
-
-        return update(taskDTO);
-    }
+//        public Task patchProperty(Property property, Integer taskId) {
+//            System.out.println(property.getType());
+//        Task task = taskRepository.findById(taskId).get();
+//        if(property.getId()==0){
+//            System.out.println("entrei1");
+//            property.setId(null);
+//        }
+//        if(property.getProperty().getId()==0){
+//            System.out.println("entrei2");
+//            property.getProperty().setId(null);
+//        }
+//            System.out.println(property);
+//        task.getProperties().add(property);
+//
+//        TaskDTO taskDTO = new TaskDTO();
+//        PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(),task.getPriority().backgroundColor);
+//        BeanUtils.copyProperties(task,taskDTO);
+//        taskDTO.setPriority(priorityRecord);
+//
+//        return update(taskDTO);
+//    }
 
     public TaskDTO findById(Integer id) {
         Task task = taskRepository.findById(id).get();
@@ -115,12 +115,12 @@ public class TaskService {
         prioritySaved.backgroundColor = taskDTO.getPriority().backgroundColor();
         BeanUtils.copyProperties(taskDTO,task);
         task.setPriority(prioritySaved);
-        if(task.getCurrentStatus().getId()==0){
+        if(task.getCurrentStatus().getId()==null){
             task.getCurrentStatus().setId(null);
         }
 
         setStatusListIndex(task);
-        propriedadeSetTarefa(task);
+//        propriedadeSetTarefa(task);
         Task task2 = taskRepository.save(task);
         return ResolveStackOverflow.getObjectWithoutStackOverflow(task2);
     }
@@ -133,7 +133,7 @@ public class TaskService {
         task.setPriority(prioritySaved);
 
         setStatusListIndex(task);
-        propriedadeSetTarefa(task);
+//        propriedadeSetTarefa(task);
 
         Task updatedTask = taskRepository.save(task);
         return ResolveStackOverflow.getObjectWithoutStackOverflow(updatedTask);
@@ -156,20 +156,20 @@ public class TaskService {
         }
     }
 
-    private void propriedadeSetTarefa(Task task){
-        //Verifica se há alguma propriedade na tarefa
-        if(task.getProperties() != null && task.getProperties().size()>0){
-            //Passa pela lista de propriedades da tarefa
-            for(Property propriedade : task.getProperties()) {
-                //Adiciona a referencia da tarefa na propriedade
-                propriedade.setTask(task);
-
-
-                //Salva a propriedade atualizada com a referencia da tarefa
-                taskProjectPropertyRepository.save(propriedade);
-            }
-        }
-    }
+//    private void propriedadeSetTarefa(Task task){
+//        //Verifica se há alguma propriedade na tarefa
+//        if(task.getProperties() != null && task.getProperties().size()>0){
+//            //Passa pela lista de propriedades da tarefa
+//            for(Property propriedade : task.getProperties()) {
+//                //Adiciona a referencia da tarefa na propriedade
+//                propriedade.setTask(task);
+//
+//
+//                //Salva a propriedade atualizada com a referencia da tarefa
+//                taskProjectPropertyRepository.save(propriedade);
+//            }
+//        }
+//    }
     private final StatusRepository statusRepository;
     public Collection<Task> getTasksByStatus(Integer id){
 

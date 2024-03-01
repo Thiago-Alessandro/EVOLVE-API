@@ -40,7 +40,7 @@ public class Task {
     private User creator;
     @ManyToOne
     private Project project;
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    @OneToMany()
     private Collection<Property> properties;
 
     @OneToMany(cascade = CascadeType.ALL)

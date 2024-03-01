@@ -11,27 +11,13 @@ import net.weg.taskmanager.model.property.Option;
 
 import java.util.List;
 
+@Entity
+public abstract class Value <T>{
 
-public interface Value <T>{
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
-    T getValue();
-
-    public class MultiSelect implements Value<List<Option>> {
-        private List<Option> selectedOptions;
-
-        @Override
-        public List<Option> getValue() {
-            return selectedOptions;
-        }
-    }
-
-    public class UniSelect implements Value<Option> {
-        private Option selectedOption;
-
-        @Override
-        public Option getValue() {
-            return selectedOption;
-        }
-    }
+    protected abstract T getValue();
 
 }
