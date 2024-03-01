@@ -45,12 +45,12 @@ public class TaskService {
 
     public UserTask getUserTask(Long userId, Long taskId){
         UserTask userTask = userTaskRepository.findByUserIdAndTaskId(userId, taskId);
-        return UserTaskProcessor.resolveUserTask(userTask);
+        return UserTaskProcessor.getInstance().resolveUserTask(userTask);
     }
 
     public Task findById(Long id) {
         Task task = taskRepository.findById(id).get();
-        TaskProcessor.resolveTask(task);
+        TaskProcessor.getInstance().resolveTask(task);
         return task;
     }
 
@@ -58,7 +58,7 @@ public class TaskService {
         Collection<Task> tasks = taskRepository.findAll();
 
         for(Task task : tasks){
-            TaskProcessor.resolveTask(task);
+            TaskProcessor.getInstance().resolveTask(task);
         }
         return tasks;
     }
@@ -90,7 +90,7 @@ public class TaskService {
 
         syncUserTaskTable(updatedTask);
 
-        return TaskProcessor.resolveTask(updatedTask);
+        return TaskProcessor.getInstance().resolveTask(updatedTask);
     }
 
     private void syncUserTaskTable(Task task){

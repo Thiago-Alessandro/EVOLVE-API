@@ -1,6 +1,7 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import net.weg.taskmanager.model.*;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.property.TaskProjectProperty;
@@ -14,7 +15,8 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
+@RequiredArgsConstructor
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
@@ -22,7 +24,7 @@ public class ProjectService {
     private final StatusRepository statusRepository;
     private final TeamRepository teamRepository;
     private final TaskProjectPropertyRepository taskProjectPropertyRepository;
-
+    
     public Project updateStatusList(Long id, Status status){
         Project project = projectRepository.getById(id);
         if(project!=null){
@@ -46,7 +48,7 @@ public class ProjectService {
     public Project findById(Long id){
         Project project =  projectRepository.findById(id).get();
 
-        ProjectProcessor.resolveProject(project);
+        ProjectProcessor.getInstance().resolveProject(project);
 
         return project;
     }
@@ -55,7 +57,7 @@ public class ProjectService {
         Collection<Project> projects =  projectRepository.findAll();
 
         projects.stream()
-                        .forEach(project -> ProjectProcessor.resolveProject(project));
+                        .forEach(project -> ProjectProcessor.getInstance().resolveProject(project));
 
         return projects;
     }
@@ -95,7 +97,7 @@ public class ProjectService {
 
         //Atualiza o projeto adicionando sua referencia nas suas propriedades
         Project createdProject = projectRepository.save(project);
-        ProjectProcessor.resolveProject(createdProject);
+        ProjectProcessor.getInstance().resolveProject(createdProject);
 //        System.out.println(createdProject);
 
         //Retorna o objeto sem stackOverflow
@@ -115,7 +117,7 @@ public class ProjectService {
         setNewStatusIdNull(project);
         project.updateLastTimeEdited();
 
-        return ProjectProcessor.resolveProject(projectRepository.save(project));
+        return ProjectProcessor.getInstance().resolveProject(projectRepository.save(project));
     }
 
     private void propertiesSetProject(Project project){

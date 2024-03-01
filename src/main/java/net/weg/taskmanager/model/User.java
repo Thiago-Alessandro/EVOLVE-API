@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -32,15 +33,12 @@ public class User {
     private String imageColor;
 
     @ManyToMany(mappedBy = "users")
-//    @JsonIgnore
     private Collection<UserChat> chats;
     @OneToMany(mappedBy = "creator")
     private Collection<Task> createdTasks;
     @OneToMany(mappedBy = "administrator")
-    @JsonIgnore
     private Collection<Team> managedTeams;
     @ManyToMany(mappedBy = "participants")
-    @JsonIgnore
     private Collection<Team> teams;
 
 
@@ -72,7 +70,8 @@ public class User {
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
-                ", chats =" + chats +
+//                ", chats =" + chats +
+//                ", teams =" + teams +
                 '}';
     }
 }

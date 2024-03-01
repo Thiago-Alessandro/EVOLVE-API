@@ -46,7 +46,11 @@ public class Team {
         this.administrator = user;
         this.chat = new TeamChat();
         this.imageColor = user.getImageColor();
+        System.out.println("TEAM USER GETIMAGECOLOR");
+        System.out.println(user.getImageColor());
         this.image = user.getImage();
+        System.out.println("TEAM USERGETIMAGE");
+        System.out.println(user.getImage());
         Collection<User> participants = new ArrayList<>();
         participants.add(user);
         this.participants = participants;

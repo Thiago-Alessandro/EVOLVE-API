@@ -1,20 +1,24 @@
 package net.weg.taskmanager.service.processor;
 
+import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.*;
 
 import java.util.ArrayList;
-
+@NoArgsConstructor
 public class UserProcessor {
 
-    private static User resolvingUser;
-    private static String userClassName = User.class.getSimpleName();
-    private static ArrayList<String> resolvingCascade;
+    private User resolvingUser;
+    private String userClassName = User.class.getSimpleName();
+    private ArrayList<String> resolvingCascade;
 
+    public static UserProcessor getInstance(){
+        return new UserProcessor();
+    }
 
-    public static User resolveUser(User user, String objClassName, ArrayList<String> _resolvingCascade){
+    public User resolveUser(User user, ArrayList<String> _resolvingCascade){
 
-        UserProcessor.resolvingCascade = _resolvingCascade;
-        resolvingCascade.add(objClassName);
+        resolvingCascade = _resolvingCascade;
+        resolvingCascade.add(userClassName);
 
         resolvingUser = user;
 
@@ -27,16 +31,16 @@ public class UserProcessor {
 
 //        user.getImage().setData(FileProcessor.addBase64Prefix(user.getImage().getData()));
 
-        resolvingCascade.remove(objClassName);
+        resolvingCascade.remove(userClassName);
 
         return resolvingUser;
     }
 
-    public static User resolveUser(User user){
-        return resolveUser(user, userClassName, new ArrayList<>());
+    public User resolveUser(User user){
+        return resolveUser(user, new ArrayList<>());
     }
 
-    private static void resolveUserChats(){
+    private void resolveUserChats(){
         if(resolvingUser.getChats()!=null){
             if(resolvingCascade.contains(UserChat.class.getSimpleName())){
                 resolvingUser.setChats(null);
@@ -47,40 +51,40 @@ public class UserProcessor {
             }
             System.out.println("n setei userchat null");
             resolvingUser.getChats().stream()
-                    .forEach(chat -> ChatProcessor.resolveChat(chat, userClassName, resolvingCascade));
+                    .forEach(chat -> ChatProcessor.getInstance().resolveChat(chat, resolvingCascade));
         }
     }
 
-    private static void resolveUserTeams(){
+    private void resolveUserTeams(){
         if(resolvingUser.getTeams() != null){
             if( resolvingCascade.contains(Team.class.getSimpleName())){
                 resolvingUser.setTeams(null);
                 return;
             }
             resolvingUser.getTeams().stream()
-                    .forEach(team -> TeamProcessor.resolveTeam(team, userClassName, resolvingCascade));
+                    .forEach(team -> TeamProcessor.getInstance().resolveTeam(team, resolvingCascade));
         }
     }
 
-    private static void resolveUserManagedTeams(){
+    private void resolveUserManagedTeams(){
         if(resolvingUser.getManagedTeams() != null){
             if( resolvingCascade.contains(Team.class.getSimpleName())){
                 resolvingUser.setManagedTeams(null);
                 return;
             }
             resolvingUser.getManagedTeams().stream()
-                    .forEach(team -> TeamProcessor.resolveTeam(team, userClassName, resolvingCascade));
+                    .forEach(team -> TeamProcessor.getInstance().resolveTeam(team, resolvingCascade));
         }
     }
 
-    private static void resolveUserCreatedTasks(){
+    private void resolveUserCreatedTasks(){
         if(resolvingUser.getCreatedTasks() != null){
             if(resolvingCascade.contains(Team.class.getSimpleName())){
                 resolvingUser.setCreatedTasks(null);
                 return;
             }
             resolvingUser.getCreatedTasks().stream()
-                    .forEach(task -> TaskProcessor.resolveTask(task, userClassName, resolvingCascade));
+                    .forEach(task -> TaskProcessor.getInstance().resolveTask(task, resolvingCascade));
         }
     }
 

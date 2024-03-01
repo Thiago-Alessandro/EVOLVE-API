@@ -6,29 +6,33 @@ import java.util.ArrayList;
 
 public class MessageProcessor {
 
-    private static Message resolvingMessage;
-    private static ArrayList<String> resolvingCascade;
-    private static String messageClassName = Message.class.getSimpleName();
-    
-    public static Message resolveMessage(Message message, String objClassName, ArrayList<String> _resolvingCascade){
+    private Message resolvingMessage;
+    private ArrayList<String> resolvingCascade;
+    private String messageClassName = Message.class.getSimpleName();
+
+    public static MessageProcessor getInstance(){
+        return new MessageProcessor();
+    }
+
+    public  Message resolveMessage(Message message, ArrayList<String> _resolvingCascade){
 
         resolvingMessage = message;
         resolvingCascade = _resolvingCascade;
-        resolvingCascade.add(objClassName);
+        resolvingCascade.add(messageClassName);
 
         resolveMessageChat();
         resolveMessageSender();
 
-        resolvingCascade.remove(objClassName);
+        resolvingCascade.remove(messageClassName);
 
         return resolvingMessage;
     }
 
-    public static Message resolveMessage(Message resolvingMessage){
-        return resolveMessage(resolvingMessage, messageClassName, new ArrayList<>());
+    public  Message resolveMessage(Message resolvingMessage){
+        return resolveMessage(resolvingMessage, new ArrayList<>());
     }
     
-    private static void resolveMessageChat(){
+    private  void resolveMessageChat(){
         
         if(resolvingMessage.getChat()!=null){
 
@@ -39,16 +43,16 @@ public class MessageProcessor {
                 resolvingMessage.setChat(null);
                 return;
             }
-            ChatProcessor.resolveChatGeneric(resolvingMessage.getChat(), messageClassName, resolvingCascade);
+            ChatProcessor.getInstance().resolveChatGeneric(resolvingMessage.getChat(), resolvingCascade);
         }
     }
-    private static void resolveMessageSender(){
+    private  void resolveMessageSender(){
         if(resolvingMessage.getSender()!=null){
             if(resolvingCascade.contains(User.class.getSimpleName())){
                 resolvingMessage.setSender(null);
                 return;
             }
-            UserProcessor.resolveUser(resolvingMessage.getSender(), messageClassName, resolvingCascade);
+            UserProcessor.getInstance().resolveUser(resolvingMessage.getSender(), resolvingCascade);
         }
     }
     

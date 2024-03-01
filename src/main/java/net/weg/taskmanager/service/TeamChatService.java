@@ -22,14 +22,14 @@ public class TeamChatService {
 
     public TeamChat findById(Long id){
         TeamChat teamChat = teamChatRepository.findById(id).get();
-        ChatProcessor.resolveChat(teamChat);
+        ChatProcessor.getInstance().resolveChat(teamChat);
         return teamChat;
     }
 
     public Collection<TeamChat> finAll(){
         Collection<TeamChat> teamChats = teamChatRepository.findAll();
         teamChats
-                .forEach(teamChat -> ChatProcessor.resolveChat(teamChat));
+                .forEach(teamChat -> ChatProcessor.getInstance().resolveChat(teamChat));
         return teamChats;
     }
 
@@ -42,7 +42,7 @@ public class TeamChatService {
                 .toList();
 
         userTeamChats.
-                forEach(teamChat -> ChatProcessor.resolveChat(teamChat));
+                forEach(teamChat -> ChatProcessor.getInstance().resolveChat(teamChat));
 
         return userTeamChats;
     }

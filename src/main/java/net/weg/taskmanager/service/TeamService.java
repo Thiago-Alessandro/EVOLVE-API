@@ -17,13 +17,13 @@ public class TeamService {
 
     public Team findById(Long id){
         Team team = teamRepository.findById(id).get();
-        return TeamProcessor.resolveTeam(team);}
+        return TeamProcessor.getInstance().resolveTeam(team);}
 
     public Collection<Team> findAll(){
 
         Collection<Team> teams = teamRepository.findAll();
         for(Team team : teams){
-            TeamProcessor.resolveTeam(team);
+            TeamProcessor.getInstance().resolveTeam(team);
         }
         return teams;
     }
@@ -34,12 +34,12 @@ public class TeamService {
     public Team create(Team team){
         updateTeamChat(team);
         Team createdTeam = teamRepository.save(team);
-        return TeamProcessor.resolveTeam(createdTeam);}
+        return TeamProcessor.getInstance().resolveTeam(createdTeam);}
 
     public Team update(Team team){
         updateTeamChat(team);
         Team updatedTeam = teamRepository.save(team);
-        return TeamProcessor.resolveTeam(updatedTeam);
+        return TeamProcessor.getInstance().resolveTeam(updatedTeam);
     }
 
     private void updateTeamChat(Team team){

@@ -26,7 +26,7 @@ public class UserChatService implements IService<UserChat>{
     @Override
     public UserChat findById(Long id) {
         UserChat chat = userChatRepository.findById(id).get();
-        ChatProcessor.resolveChat(chat, UserChat.class.getSimpleName(), new ArrayList<>());
+        ChatProcessor.getInstance().resolveChat(chat);
         return chat;
     }
 
@@ -35,7 +35,7 @@ public class UserChatService implements IService<UserChat>{
         Collection<UserChat> chats = userChatRepository.findAll();
         for(UserChat chat :  chats){
             System.out.println("\nRESOLVENDO AQUI HEIN\n\n");
-            ChatProcessor.resolveChat(chat);
+            ChatProcessor.getInstance().resolveChat(chat);
         }
         System.out.println("AOPAAAAAAA");
         System.out.println(chats);
@@ -58,14 +58,14 @@ public class UserChatService implements IService<UserChat>{
 //        validaChat(obj);
 
         UserChat updatedUserChat = userChatRepository.save(obj);
-        ChatProcessor.resolveChat(updatedUserChat);
+        ChatProcessor.getInstance().resolveChat(updatedUserChat);
         return updatedUserChat;
     }
 
     public Collection<UserChat> getChatsByUserId(Long id){
         Collection<UserChat> chats = userChatRepository.findUserChatsByUsersContaining(userRepository.findById(id).get());
         for(UserChat chat : chats){
-            ChatProcessor.resolveChat(chat);
+            ChatProcessor.getInstance().resolveChat(chat);
         }
         return chats;
     }

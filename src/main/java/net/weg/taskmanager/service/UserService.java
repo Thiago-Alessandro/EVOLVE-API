@@ -32,14 +32,14 @@ public class UserService {
 
     public User findById(Long id){
         User user = userRepository.findById(id).get();
-        UserProcessor.resolveUser(user);
+        UserProcessor.getInstance().resolveUser(user);
         return user;
     }
 
     public Collection<User> findAll(){
         Collection<User> users = userRepository.findAll();
         for(User user : users){
-            UserProcessor.resolveUser(user);
+            UserProcessor.getInstance().resolveUser(user);
         }
         return users;}
 
@@ -51,21 +51,21 @@ public class UserService {
         BeanUtils.copyProperties(userDTO, user);
         User createdUser = userRepository.save(user);
         setDefaultTeam(createdUser);
-        UserProcessor.resolveUser(createdUser);
+        UserProcessor.getInstance().resolveUser(createdUser);
         return createdUser;}
 
     public User patchImage(Long id, MultipartFile image){
         User user = userRepository.findById(id).get();
         user.setImage(image);
         User upddatedUser = userRepository.save(user);
-        return UserProcessor.resolveUser(upddatedUser);
+        return UserProcessor.getInstance().resolveUser(upddatedUser);
     }
 
     public User update(User updatingUser){
         User user = userRepository.findById(updatingUser.getId()).get();
         modelMapper.map(updatingUser, user);
         User updatedUser  = userRepository.save(user);
-        return UserProcessor.resolveUser(updatedUser);
+        return UserProcessor.getInstance().resolveUser(updatedUser);
     }
     
     
@@ -76,7 +76,7 @@ public class UserService {
             user.setImage(image);
 
             User updatedUser = userRepository.save(user);
-            UserProcessor.resolveUser(updatedUser);
+            UserProcessor.getInstance().resolveUser(updatedUser);
             return updatedUser;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -85,13 +85,17 @@ public class UserService {
     }
 
     public User findByEmail(String email){
-       return UserProcessor.resolveUser(userRepository.findByEmail(email));
+       return UserProcessor.getInstance().resolveUser(userRepository.findByEmail(email));
     }
 
     private User setDefaultTeam(User user){
         if (user.getTeams()==null){
             user.setTeams(new ArrayList<>());
         }
+
+        System.out.println("USER SeT defaulrt team");
+        System.out.println(user.getImageColor());
+        System.out.println(user.getImage());
 
         Team defaultTeam = new Team(user);
 
