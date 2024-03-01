@@ -1,8 +1,6 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.property.Property;
-import net.weg.taskmanager.model.property.TaskProjectProperty;
 import net.weg.taskmanager.repository.PropertiesRepository;
 import org.springframework.stereotype.Service;
 

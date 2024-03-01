@@ -6,7 +6,7 @@ import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.UserTask;
 import net.weg.taskmanager.model.dto.TaskDTO;
 import net.weg.taskmanager.model.record.PriorityRecord;
-import net.weg.taskmanager.model.property.TaskProjectProperty;
+import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,9 +44,9 @@ public class TaskController {
     }
 
     @PatchMapping("/property/{taskId}")
-    public Task patchProperty(@RequestBody TaskProjectProperty taskProjectProperty,@PathVariable Integer taskId) {
-        System.out.println(taskProjectProperty.getType());
-        return taskService.patchProperty(taskProjectProperty,taskId);
+    public Task patchProperty(@RequestBody Property property, @PathVariable Integer taskId) {
+        System.out.println(property.getType());
+        return taskService.patchProperty(property,taskId);
     }
 
     @GetMapping("/userTask/{userId}/{taskId}")
@@ -55,8 +55,8 @@ public class TaskController {
     }
 
     @PutMapping("/property/{propertyId}")
-    public TaskProjectProperty putPropertyValue(@PathVariable Integer propertyId, @RequestBody TaskProjectProperty taskProjectPropertyValue) {
-        return taskService.putPropertyValue(propertyId,taskProjectPropertyValue);
+    public Property putPropertyValue(@PathVariable Integer propertyId, @RequestBody Property propertyValue) {
+        return taskService.putPropertyValue(propertyId, propertyValue);
     }
 
     @GetMapping("/priorities")

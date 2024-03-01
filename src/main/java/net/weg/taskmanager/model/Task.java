@@ -4,11 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.property.TaskProjectProperty;
+import net.weg.taskmanager.model.property.Property;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 @Entity
 @Data
@@ -43,7 +41,7 @@ public class Task {
     @ManyToOne
     private Project project;
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
-    private Collection<TaskProjectProperty> properties;
+    private Collection<Property> properties;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<Subtask> subtasks;

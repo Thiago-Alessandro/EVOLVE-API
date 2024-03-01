@@ -1,17 +1,20 @@
 package net.weg.taskmanager.model.property;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.Project;
+import net.weg.taskmanager.model.Task;
+import net.weg.taskmanager.model.property.values.PropertyValue;
+
+import java.util.Collection;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Inheritance(strategy = InheritanceType.JOINED)
+@Data
 public class Property {
 
     @Id
@@ -19,7 +22,18 @@ public class Property {
     private Integer id;
 
     private String name;
-    @OneToOne(cascade = CascadeType.ALL)
-    private SelectProperty select;
+
+    @ManyToOne
+    @JsonIgnore
+    private Project project;  // Possivelmente relacionada
+
+    @OneToMany(mappedBy = "property")
+    private Collection<PropertyValue> propertyValues; //
+
+    @Enumerated(EnumType.STRING)
+    private PropertyType propertyType;
+
+    @ManyToOne
+    private Collection<Option> options;
 
 }

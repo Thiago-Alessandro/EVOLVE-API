@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class SelectOption {
+public class Option {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)

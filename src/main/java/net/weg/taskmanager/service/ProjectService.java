@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.Task;
-import net.weg.taskmanager.model.property.TaskProjectProperty;
+import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.repository.*;
 import org.springframework.stereotype.Service;
 
@@ -98,7 +98,7 @@ public class ProjectService {
         //Verifica se há alguma propriedade no projeto
         if(project.getProperties() != null && project.getProperties().size()>0){
             //Passa pela lista de propriedades do projeto
-            for(TaskProjectProperty propriedade : project.getProperties()) {
+            for(Property propriedade : project.getProperties()) {
                 //Adiciona a referencia do projeto na propriedade
                 propriedade.setProject(project);
                 //Salva a propriedade atualizada com a referencia do projeto

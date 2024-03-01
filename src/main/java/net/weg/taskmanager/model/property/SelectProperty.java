@@ -18,7 +18,7 @@ public class SelectProperty {
     private Integer id;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Collection<SelectOption> possibleOptions;
+    private Collection<Option> possibleOptions;
 
 //    @OneToOne(mappedBy = "select")
 //    @JsonIgnore

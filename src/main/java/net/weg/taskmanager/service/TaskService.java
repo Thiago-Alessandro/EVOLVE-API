@@ -5,12 +5,11 @@ import net.weg.taskmanager.model.Priority;
 import net.weg.taskmanager.model.UserTask;
 import net.weg.taskmanager.model.UserTaskId;
 import net.weg.taskmanager.model.dto.TaskDTO;
-import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.service.processor.ResolveStackOverflow;
 import net.weg.taskmanager.model.Task;
-import net.weg.taskmanager.model.property.TaskProjectProperty;
+import net.weg.taskmanager.model.property.Property;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -38,9 +37,9 @@ public class TaskService {
         return changingUserTask;
     }
 
-    public TaskProjectProperty putPropertyValue(Integer id, TaskProjectProperty taskProjectPropertyValue) {
-        TaskProjectProperty neededProperty = taskProjectPropertyRepository.findById(id).get();
-        neededProperty.setValues(taskProjectPropertyValue.getValues());
+    public Property putPropertyValue(Integer id, Property propertyValue) {
+        Property neededProperty = taskProjectPropertyRepository.findById(id).get();
+        neededProperty.setValues(propertyValue.getValues());
         return taskProjectPropertyRepository.save(neededProperty);
     }
 
@@ -53,19 +52,19 @@ public class TaskService {
         return userTaskRepository.findById(userTaskId).get();
     }
 
-        public Task patchProperty(TaskProjectProperty taskProjectProperty, Integer taskId) {
-            System.out.println(taskProjectProperty.getType());
+        public Task patchProperty(Property property, Integer taskId) {
+            System.out.println(property.getType());
         Task task = taskRepository.findById(taskId).get();
-        if(taskProjectProperty.getId()==0){
+        if(property.getId()==0){
             System.out.println("entrei1");
-            taskProjectProperty.setId(null);
+            property.setId(null);
         }
-        if(taskProjectProperty.getProperty().getId()==0){
+        if(property.getProperty().getId()==0){
             System.out.println("entrei2");
-            taskProjectProperty.getProperty().setId(null);
+            property.getProperty().setId(null);
         }
-            System.out.println(taskProjectProperty);
-        task.getProperties().add(taskProjectProperty);
+            System.out.println(property);
+        task.getProperties().add(property);
 
         TaskDTO taskDTO = new TaskDTO();
         PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(),task.getPriority().backgroundColor);
@@ -105,7 +104,7 @@ public class TaskService {
     }
 
     public void delete(Integer id) {
-        Collection<TaskProjectProperty> properties = taskRepository.findById(id).get().getProperties();
+        Collection<Property> properties = taskRepository.findById(id).get().getProperties();
         taskProjectPropertyRepository.deleteAll(properties);
         taskRepository.deleteById(id);
     }
@@ -161,7 +160,7 @@ public class TaskService {
         //Verifica se há alguma propriedade na tarefa
         if(task.getProperties() != null && task.getProperties().size()>0){
             //Passa pela lista de propriedades da tarefa
-            for(TaskProjectProperty propriedade : task.getProperties()) {
+            for(Property propriedade : task.getProperties()) {
                 //Adiciona a referencia da tarefa na propriedade
                 propriedade.setTask(task);
 

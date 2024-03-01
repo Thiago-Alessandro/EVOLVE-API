@@ -1,7 +1,6 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.service.PropertyService;
 import org.springframework.web.bind.annotation.*;
 
