@@ -30,54 +30,40 @@ public class ResolveStackOverflow {
             //OBS: Os comentários acima dos seguintes métodos são a respeito de quais models possuem o atributo a ser resolvido
             //     e o parametro 'obj' é uma instancia da model esperada o que será testado dentro do método
 
-            System.out.println("a");
             //ProjectChat
             resolveObjectIfContainsGeneric(obj, Project.class, "getProject", null);
 
-            System.out.println("b");
             resolveObjectIfContainsGeneric(obj, Chat.class, "getChat" , null);
 
-            System.out.println("chat plural");
             resolveObjectIfContainsGeneric(obj, Chat.class, "getChats" , null);
-            System.out.println("b2");
+
             resolveObjectIfContainsGeneric(obj, UserChat.class, "getChat" , null);
 
-            System.out.println("chat plural");
             resolveObjectIfContainsGeneric(obj, UserChat.class, "getChats" , null);
 
-            System.out.println("dentro da hi lux");
             //TeamChat
             resolveObjectIfContainsGeneric(obj, Team.class ,"getTeam", null);
 
-            System.out.println("Ela vem no tustussts");
             resolveObjectIfContainsGeneric(obj, User.class, "getUser", null);
             System.out.println(obj.getClass());
 
-            System.out.println("ohoho");
             resolveObjectIfContainsGeneric(obj, User.class, "getAdministrator", null);
 
-            System.out.println("c");
             //Chat
             resolveObjectIfContainsGeneric(obj, Collection.class, "getMessages" , Message.class);
 
-            System.out.println("d");
             resolveObjectIfContainsGeneric(obj, Collection.class ,"getProjects", Project.class);
 
-            System.out.println("e");
             resolveObjectIfContainsGeneric(obj, Collection.class ,"getParticipants", User.class);
 
-            System.out.println("e2");
             //Chat,
             resolveObjectIfContainsGeneric(obj, Collection.class, "getUsers", User.class);
 
-            System.out.println("f");
             resolveObjectIfContainsGeneric(obj, Collection.class ,"getTeams", Team.class);
 //            OBS: a collection seria do atributo do objeto a ser pego pelo metodo get
 
-            System.out.println("f2");
             resolveObjectIfContainsGeneric(obj, Collection.class ,"getManagedTeams", Team.class);
 
-            System.out.println("g");
             //Project
             resolveObjectIfContainsGeneric(obj, Collection.class, "getTasks", Task.class);
 
@@ -91,17 +77,13 @@ public class ResolveStackOverflow {
         try {
 
             Method getMethod = obj.getClass().getMethod(atributeGetMethod);
-//            System.out.println(1);
+
 
             Object atributeObj = getMethod.invoke(obj);
-//            System.out.println(2);
 
             if(atributeObj!=null){
-                System.out.println(atributeObj.getClass());
                 if (expectedAtributeClass.isInstance(atributeObj)) {
-    //                System.out.println(3);
                     T atribute = (T) atributeObj;
-                    System.out.println("foi");
                     resolveObject(atribute, expectedCollectionClass, obj.getClass().getSimpleName());
                 }
             }

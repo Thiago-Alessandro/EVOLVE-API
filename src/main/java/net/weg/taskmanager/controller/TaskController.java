@@ -30,7 +30,6 @@ public class TaskController {
         taskService.delete(id);}
     @PostMapping
     public Task create(@RequestBody TaskDTO taskDTO){
-        System.out.println("Controller yay");
         return taskService.create(taskDTO);}
     @PutMapping
     public Task update(@RequestBody TaskDTO taskDTO){return taskService.update(taskDTO);}
@@ -45,7 +44,6 @@ public class TaskController {
 
 //    @PatchMapping("/property/{taskId}")
 //    public Task patchProperty(@RequestBody Property property, @PathVariable Integer taskId) {
-//        System.out.println(property.getType());
 //        return taskService.patchProperty(property,taskId);
 //    }
 

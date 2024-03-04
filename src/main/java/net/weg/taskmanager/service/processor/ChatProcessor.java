@@ -18,7 +18,6 @@ public class ChatProcessor {
     }
 
     private static void resolveChatUsers(){
-        System.out.println("resolvendo chat users");
         if(chat.getUsers()!=null){
             if(objClassName.equals(User.class.getSimpleName())){
                 chat.setUsers(null);
@@ -26,13 +25,10 @@ public class ChatProcessor {
             }
             for(User user : chat.getUsers()){
                 if(chat instanceof UserChat){
-                    System.out.println("sou usuario chat");
                     UserProcessor.resolveUser(user, UserChat.class.getSimpleName());
                 } else if(chat instanceof TeamChat){
-                    System.out.println("sou team chat");
                     UserProcessor.resolveUser(user, TeamChat.class.getSimpleName());
                 } else if(chat instanceof ProjectChat){
-                    System.out.println("sou project chat");
                     UserProcessor.resolveUser(user, ProjectChat.class.getSimpleName());
                 }
             }
@@ -41,7 +37,6 @@ public class ChatProcessor {
 
     private static void resolveChatTeam(){
         if(chat instanceof TeamChat){
-            System.out.println("resolvendo chat team");
             if(((TeamChat) chat).getTeam() != null){
                 if(objClassName.equals(Team.class.getSimpleName())){
                     ((TeamChat) chat).setTeam(null);

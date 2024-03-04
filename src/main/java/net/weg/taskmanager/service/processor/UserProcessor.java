@@ -41,7 +41,6 @@ public class UserProcessor {
                 return;
             }
             for(Team team : resolvingUser.getTeams()){
-//                System.out.println(objClassName);
                 TeamProcessor.resolveTeam(team, objClassName);
             }
         }
@@ -54,7 +53,6 @@ public class UserProcessor {
                 return;
             }
             for(Team team : resolvingUser.getManagedTeams()){
-                System.out.println(objClassName);
                 TeamProcessor.resolveTeam(team, objClassName);
             }
         }
