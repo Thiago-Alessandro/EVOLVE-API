@@ -42,20 +42,20 @@ public class TaskController {
         return taskService.setWorkedTime(userTask);
     }
 
-//    @PatchMapping("/property/{taskId}")
-//    public Task patchProperty(@RequestBody Property property, @PathVariable Integer taskId) {
-//        return taskService.patchProperty(property,taskId);
-//    }
+    @PatchMapping("/property/{taskId}")
+    public Task patchProperty(@RequestBody Property property, @PathVariable Integer taskId) {
+        return taskService.patchProperty(property,taskId);
+    }
 
     @GetMapping("/userTask/{userId}/{taskId}")
     public UserTask getUserTask(@PathVariable Integer userId, @PathVariable Integer taskId){
         return taskService.getUserTask(userId, taskId);
     }
 
-//    @PutMapping("/property/{propertyId}")
-//    public Property putPropertyValue(@PathVariable Integer propertyId, @RequestBody Property propertyValue) {
-//        return taskService.putPropertyValue(propertyId, propertyValue);
-//    }
+    @PutMapping("/property/put/{propertyId}")
+    public Property putPropertyValue(@PathVariable Integer propertyId, @RequestBody Property propertyValue) {
+        return taskService.putPropertyValue(propertyId, propertyValue);
+    }
 
     @GetMapping("/priorities")
     public Collection<PriorityRecord> getAllPriorities() {

@@ -12,6 +12,8 @@ import net.weg.taskmanager.model.property.Option;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
+@Data
 public abstract class Value <T>{
 
     @Id

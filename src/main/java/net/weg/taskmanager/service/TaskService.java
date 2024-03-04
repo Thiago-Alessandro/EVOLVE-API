@@ -23,6 +23,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskProjectPropertyRepository taskProjectPropertyRepository;
     private final UserTaskRepository userTaskRepository;
+    private final PropertiesRepository propertiesRepository;
 
     public UserTask setWorkedTime(UserTask userTask){
 
@@ -37,11 +38,14 @@ public class TaskService {
         return changingUserTask;
     }
 
-//    public Property putPropertyValue(Integer id, Property propertyValue) {
-//        Property neededProperty = taskProjectPropertyRepository.findById(id).get();
-//        neededProperty.setValues(propertyValue.getValues());
-//        return taskProjectPropertyRepository.save(neededProperty);
-//    }
+    public Property putPropertyValue(Integer id, Property propertyValue) {
+        System.out.println(propertyValue.getPropertyValues().getClass());
+        Property neededProperty = taskProjectPropertyRepository.findById(id).get();
+        System.out.println(propertyValue);
+        neededProperty.setPropertyValues(propertyValue.getPropertyValues());
+
+        return taskProjectPropertyRepository.save(neededProperty);
+    }
 
     public UserTask getUserTask(Integer userId, Integer taskId){
         UserTaskId userTaskId = new UserTaskId();
@@ -52,27 +56,23 @@ public class TaskService {
         return userTaskRepository.findById(userTaskId).get();
     }
 
-//        public Task patchProperty(Property property, Integer taskId) {
-//            System.out.println(property.getType());
-//        Task task = taskRepository.findById(taskId).get();
-//        if(property.getId()==0){
-//            System.out.println("entrei1");
-//            property.setId(null);
-//        }
-//        if(property.getProperty().getId()==0){
-//            System.out.println("entrei2");
-//            property.getProperty().setId(null);
-//        }
-//            System.out.println(property);
-//        task.getProperties().add(property);
-//
-//        TaskDTO taskDTO = new TaskDTO();
-//        PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(),task.getPriority().backgroundColor);
-//        BeanUtils.copyProperties(task,taskDTO);
-//        taskDTO.setPriority(priorityRecord);
-//
-//        return update(taskDTO);
-//    }
+        public Task patchProperty(Property property, Integer taskId) {
+        Task task = taskRepository.findById(taskId).get();
+        if(property.getId()==0){
+            System.out.println("entrei2");
+            property.setId(null);
+        }
+
+        property = this.propertiesRepository.save(property);
+        task.getProperties().add(property);
+
+        TaskDTO taskDTO = new TaskDTO();
+        PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(),task.getPriority().backgroundColor);
+        BeanUtils.copyProperties(task,taskDTO);
+        taskDTO.setPriority(priorityRecord);
+
+        return update(taskDTO);
+    }
 
     public TaskDTO findById(Integer id) {
         Task task = taskRepository.findById(id).get();
@@ -115,9 +115,9 @@ public class TaskService {
         prioritySaved.backgroundColor = taskDTO.getPriority().backgroundColor();
         BeanUtils.copyProperties(taskDTO,task);
         task.setPriority(prioritySaved);
-        if(task.getCurrentStatus().getId()==null){
-            task.getCurrentStatus().setId(null);
-        }
+//        if(task.getCurrentStatus()==null){
+//            task.getCurrentStatus().setId(null);
+//        }
 
         setStatusListIndex(task);
 //        propriedadeSetTarefa(task);
