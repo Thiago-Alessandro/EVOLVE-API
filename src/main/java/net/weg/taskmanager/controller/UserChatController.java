@@ -55,7 +55,7 @@ public class UserChatController implements IController<UserChat> {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<Collection<UserChat>> getChatsByUserID(@PathVariable Long id) {
+    public ResponseEntity<Collection<UserChat>> getUserChatsByUserID(@PathVariable Long id) {
         return new ResponseEntity<>(userChatService.getChatsByUserId(id), HttpStatus.OK);
     }
 }
