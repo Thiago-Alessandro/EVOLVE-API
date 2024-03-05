@@ -34,11 +34,8 @@ public class UserChatService implements IService<UserChat>{
     public Collection<UserChat> findAll() {
         Collection<UserChat> chats = userChatRepository.findAll();
         for(UserChat chat :  chats){
-            System.out.println("\nRESOLVENDO AQUI HEIN\n\n");
             ChatProcessor.getInstance().resolveChat(chat);
         }
-        System.out.println("AOPAAAAAAA");
-        System.out.println(chats);
         return chats;
     }
 

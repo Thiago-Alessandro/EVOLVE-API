@@ -44,90 +44,47 @@ public class ChatProcessor {
         return chat;
     }
 
-    public Chat resolveChat(UserChat resolvingChat,  ArrayList<String> _resolvingCascade){
+    public Chat resolveChat(Chat resolvingChat,  ArrayList<String> _resolvingCascade){
 
         genericResolve(resolvingChat, _resolvingCascade);
-//        resolveUserChatUsers();
-
-        resolvingCascade.remove(chatClassName);
-
-        return chat;
-    }
-
-    public Chat resolveChat(ProjectChat resolvingChat,  ArrayList<String> _resolvingCascade){
-        genericResolve(resolvingChat, _resolvingCascade);
-
         resolveChatProject();
-//        resolveProjectChatUsers();
-
-        resolvingCascade.remove(chatClassName);
-
-        return chat;
-    }
-
-    public Chat resolveChat(TeamChat resolvingChat,  ArrayList<String> _resolvingCascade){
-        genericResolve(resolvingChat, _resolvingCascade);
-
-
         resolveChatTeam();
-//        resolveTeamChatUsers();
 
         resolvingCascade.remove(chatClassName);
 
         return chat;
     }
 
-    public Chat resolveChat(UserChat resolvingChat){
-        return resolveChat(resolvingChat, new ArrayList<>());
-    }
-
-    public Chat resolveChat(TeamChat resolvingChat){
-        return resolveChat(resolvingChat, new ArrayList<>());
-    }
-
-    public Chat resolveChat(ProjectChat resolvingChat){
-        return resolveChat(resolvingChat, new ArrayList<>());
-    }
-
-
-//    private static void resolveTeamChatUsers(){
-//        if(chat.getUsers()!=null){
-//            if(resolvingCascade.contains(User.class.getSimpleName())){
-//                chat.setUsers(null);
-//                System.out.println("seteichat TeamChatUsers null " + resolvingCascade);
-//                return;
-//            }
+//    public Chat resolveChat(ProjectChat resolvingChat,  ArrayList<String> _resolvingCascade){
+//        genericResolve(resolvingChat, _resolvingCascade);
 //
-//            for(User user : chat.getUsers()) {
-//                UserProcessor.resolveUser(user, resolvingCascade);
-//            }
-//        }
+//        resolveChatProject();
+//
+//        resolvingCascade.remove(chatClassName);
+//
+//        return chat;
 //    }
-//    private static void resolveProjectChatUsers(){
-//        if(chat.getUsers()!=null){
-//            if(resolvingCascade.contains(User.class.getSimpleName())){
-//                chat.setUsers(null);
-//                System.out.println("seteichat ProjectChatUsers null " + resolvingCascade);
-//                return;
-//            }
 //
-//            for(User user : chat.getUsers()) {
-//                UserProcessor.resolveUser(user, resolvingCascade);
-//            }
-//        }
+//    public Chat resolveChat(TeamChat resolvingChat,  ArrayList<String> _resolvingCascade){
+//        genericResolve(resolvingChat, _resolvingCascade);
+//
+//        resolveChatTeam();
+//
+//        resolvingCascade.remove(chatClassName);
+//
+//        return chat;
 //    }
-//    private static void resolveUserChatUsers(){
-//        if(chat.getUsers()!=null){
-//            if(resolvingCascade.contains(User.class.getSimpleName())){
-//                chat.setUsers(null);
-//                System.out.println("seteichat UserChatUsers null " + resolvingCascade);
-//                return;
-//            }
+
+    public Chat resolveChat(Chat resolvingChat){
+        return resolveChat(resolvingChat, new ArrayList<>());
+    }
+
+//    public Chat resolveChat(TeamChat resolvingChat){
+//        return resolveChat(resolvingChat, new ArrayList<>());
+//    }
 //
-//            for(User user : chat.getUsers()) {
-//                UserProcessor.resolveUser(user, resolvingCascade);
-//            }
-//        }
+//    public Chat resolveChat(ProjectChat resolvingChat){
+//        return resolveChat(resolvingChat, new ArrayList<>());
 //    }
 
     private void resolveChatTeam(){
@@ -160,9 +117,8 @@ public class ChatProcessor {
                 chat.setMessages(null);
                 return;
             }
-            for(Message message : chat.getMessages()){
-                MessageProcessor.getInstance().resolveMessage(message, resolvingCascade);
-            }
+            chat.getMessages()
+                    .forEach(message -> MessageProcessor.getInstance().resolveMessage(message, resolvingCascade));
         }
     }
 
@@ -176,10 +132,8 @@ public class ChatProcessor {
                 chat.setUsers(null);
                 return;
             }
-
-            for(User user : chat.getUsers()) {
-                UserProcessor.getInstance().resolveUser(user, resolvingCascade);
-            }
+            chat.getUsers()
+                    .forEach(user -> UserProcessor.getInstance().resolveUser(user, resolvingCascade));
         }
     }
 

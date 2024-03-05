@@ -14,7 +14,7 @@ public class MessageProcessor {
         return new MessageProcessor();
     }
 
-    public  Message resolveMessage(Message message, ArrayList<String> _resolvingCascade){
+    public void resolveMessage(Message message, ArrayList<String> _resolvingCascade){
 
         resolvingMessage = message;
         resolvingCascade = _resolvingCascade;
@@ -25,11 +25,11 @@ public class MessageProcessor {
 
         resolvingCascade.remove(messageClassName);
 
-        return resolvingMessage;
     }
 
     public  Message resolveMessage(Message resolvingMessage){
-        return resolveMessage(resolvingMessage, new ArrayList<>());
+        resolveMessage(resolvingMessage, new ArrayList<>());
+        return resolvingMessage;
     }
     
     private  void resolveMessageChat(){

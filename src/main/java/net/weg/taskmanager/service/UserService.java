@@ -93,10 +93,6 @@ public class UserService {
             user.setTeams(new ArrayList<>());
         }
 
-        System.out.println("USER SeT defaulrt team");
-        System.out.println(user.getImageColor());
-        System.out.println(user.getImage());
-
         Team defaultTeam = new Team(user);
 
         user.getTeams().add(teamRepository.save(defaultTeam));

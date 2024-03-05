@@ -85,7 +85,6 @@ public class TaskService {
         setStatusListIndex(task);
         propriedadeSetTarefa(task);
 
-        System.out.println(task);
         Task updatedTask = taskRepository.save(task);
 
         syncUserTaskTable(updatedTask);

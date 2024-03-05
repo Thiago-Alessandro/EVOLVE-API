@@ -27,7 +27,8 @@ public class UserProcessor {
         resolveUserManagedTeams();
         resolveUserCreatedTasks();
         resolveUserChats();
-        System.out.println("passei do user chats hein");
+//        FileProcessor.addBase64Prefix(user.getImage().getData().);
+//        System.out.println("passei do user chats hein");
 
 //        user.getImage().setData(FileProcessor.addBase64Prefix(user.getImage().getData()));
 
@@ -44,12 +45,8 @@ public class UserProcessor {
         if(resolvingUser.getChats()!=null){
             if(resolvingCascade.contains(UserChat.class.getSimpleName())){
                 resolvingUser.setChats(null);
-                System.out.println("ESTOU setando null user chats" + resolvingCascade);
-                System.out.println(resolvingUser.getChats());
-                System.out.println(resolvingUser.getId());
                 return;
             }
-            System.out.println("n setei userchat null");
             resolvingUser.getChats().stream()
                     .forEach(chat -> ChatProcessor.getInstance().resolveChat(chat, resolvingCascade));
         }
