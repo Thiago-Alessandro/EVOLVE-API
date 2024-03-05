@@ -5,6 +5,7 @@ import net.weg.taskmanager.model.Priority;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.UserTask;
 import net.weg.taskmanager.model.dto.TaskDTO;
+import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.service.TaskService;
@@ -53,7 +54,7 @@ public class TaskController {
     }
 
     @PutMapping("/property/put/{propertyId}")
-    public Property putPropertyValue(@PathVariable Integer propertyId, @RequestBody Property propertyValue) {
+    public PropertyValue putPropertyValue(@PathVariable Integer propertyId, @RequestBody PropertyValue propertyValue) {
         return taskService.putPropertyValue(propertyId, propertyValue);
     }
 

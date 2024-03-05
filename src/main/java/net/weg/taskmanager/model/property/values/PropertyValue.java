@@ -9,18 +9,19 @@ import net.weg.taskmanager.model.property.Property;
 @Entity
 @AllArgsConstructor
 @Data
+@NoArgsConstructor
 public class PropertyValue {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Value<?> value;
     @ManyToOne
     private Property property;
 
-    public PropertyValue() {
-        if(property != null) {
-            value = property.getPropertyType().getValue();
-        }
-    }
+//    public PropertyValue() {
+//        if(property != null) {
+//            value = property.getPropertyType().getValue();
+//        }
+//    }
 }

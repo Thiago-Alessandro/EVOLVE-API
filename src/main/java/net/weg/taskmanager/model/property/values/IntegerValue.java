@@ -1,9 +1,15 @@
 package net.weg.taskmanager.model.property.values;
 
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Data
+@Entity
 public class IntegerValue extends Value<Integer>{
-    private Integer integerValue;
+
+    private Integer value;
     @Override
-    protected Integer getValue() {
-        return integerValue;
+    public Integer getValue() {
+        return value;
     }
 }

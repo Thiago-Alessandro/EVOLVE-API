@@ -40,7 +40,7 @@ public class Task {
     private User creator;
     @ManyToOne
     private Project project;
-    @OneToMany()
+    @OneToMany(cascade = CascadeType.ALL)
     private Collection<Property> properties;
 
     @OneToMany(cascade = CascadeType.ALL)

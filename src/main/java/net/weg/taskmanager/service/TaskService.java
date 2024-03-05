@@ -5,6 +5,7 @@ import net.weg.taskmanager.model.Priority;
 import net.weg.taskmanager.model.UserTask;
 import net.weg.taskmanager.model.UserTaskId;
 import net.weg.taskmanager.model.dto.TaskDTO;
+import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.service.processor.ResolveStackOverflow;
@@ -24,6 +25,7 @@ public class TaskService {
     private final TaskProjectPropertyRepository taskProjectPropertyRepository;
     private final UserTaskRepository userTaskRepository;
     private final PropertiesRepository propertiesRepository;
+    private final PropertyValueRepository propertyValueRepository;
 
     public UserTask setWorkedTime(UserTask userTask){
 
@@ -38,13 +40,8 @@ public class TaskService {
         return changingUserTask;
     }
 
-    public Property putPropertyValue(Integer id, Property propertyValue) {
-        System.out.println(propertyValue.getPropertyValues().getClass());
-        Property neededProperty = taskProjectPropertyRepository.findById(id).get();
-        System.out.println(propertyValue);
-        neededProperty.setPropertyValues(propertyValue.getPropertyValues());
-
-        return taskProjectPropertyRepository.save(neededProperty);
+    public PropertyValue putPropertyValue(Integer id, PropertyValue propertyValue) {
+        return this.propertyValueRepository.save(propertyValue);
     }
 
     public UserTask getUserTask(Integer userId, Integer taskId){
@@ -59,7 +56,6 @@ public class TaskService {
         public Task patchProperty(Property property, Integer taskId) {
         Task task = taskRepository.findById(taskId).get();
         if(property.getId()==0){
-            System.out.println("entrei2");
             property.setId(null);
         }
 

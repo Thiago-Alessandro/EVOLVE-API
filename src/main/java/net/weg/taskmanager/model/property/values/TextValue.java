@@ -1,10 +1,17 @@
 package net.weg.taskmanager.model.property.values;
 
-public class TextValue extends Value<String>{
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Data;
 
-    private String textValue;
+@Data
+@Entity
+public class TextValue extends Value<String>{
+    private String value;
     @Override
-    protected String getValue() {
-        return textValue;
+    public String getValue() {
+        return value;
     }
 }
