@@ -59,7 +59,7 @@ public class UserProcessor {
                 return;
             }
 
-            resolvingUser.getTeams().stream()
+            resolvingUser.getTeams()
                     .forEach(team -> TeamProcessor.getInstance().resolveTeam(team, resolvingCascade));
 
         }

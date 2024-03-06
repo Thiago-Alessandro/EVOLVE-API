@@ -40,7 +40,7 @@ public class TaskProcessor {
     private void resolveTaskProject(){
         if(resolvingTask.getProject()!=null){
             if(resolvingCascade.contains(Project.class.getSimpleName())){
-                resolvingTask.setProject(null);
+               resolvingTask.setProject(null);
                 return;
             }
             ProjectProcessor.getInstance().resolveProject(resolvingTask.getProject(), resolvingCascade);
