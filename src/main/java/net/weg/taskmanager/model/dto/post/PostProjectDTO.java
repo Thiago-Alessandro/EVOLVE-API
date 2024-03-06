@@ -1,11 +1,9 @@
 package net.weg.taskmanager.model.dto.post;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.*;
-import net.weg.taskmanager.model.property.TaskProjectProperty;
 
 import java.time.LocalDate;
 import java.util.Collection;

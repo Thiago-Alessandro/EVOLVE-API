@@ -1,11 +1,9 @@
 package net.weg.taskmanager.repository;
 
-import net.weg.taskmanager.model.property.values.Value;
+import net.weg.taskmanager.model.property.values.PropertyValue;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-
-public interface OptionRepository extends JpaRepository<Value, Integer> {
+public interface PropertyValueRepository extends JpaRepository<PropertyValue,Integer> {
 }
-

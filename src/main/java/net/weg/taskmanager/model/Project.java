@@ -1,12 +1,12 @@
 package net.weg.taskmanager.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
 import lombok.ToString;
-import net.weg.taskmanager.model.property.TaskProjectProperty;
+
+import net.weg.taskmanager.model.property.Property;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,7 +49,7 @@ public class Project {
 
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private Collection<TaskProjectProperty> properties;
+    private Collection<Property> properties;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(nullable = false)
     private Collection<Status> statusList;

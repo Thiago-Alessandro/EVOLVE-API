@@ -1,10 +1,9 @@
 package net.weg.taskmanager.service;
-
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import net.weg.taskmanager.model.*;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
-import net.weg.taskmanager.model.property.TaskProjectProperty;
+import net.weg.taskmanager.model.Project;
+import net.weg.taskmanager.model.Status;
+import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
 import org.springframework.beans.BeanUtils;
@@ -23,7 +22,7 @@ public class ProjectService {
     private final TaskRepository taskRepository;
     private final StatusRepository statusRepository;
     private final TeamRepository teamRepository;
-    private final TaskProjectPropertyRepository taskProjectPropertyRepository;
+    private final PropertyRepository propertyRepository;
     
     public Project updateStatusList(Long id, Status status){
         Project project = projectRepository.getById(id);
@@ -104,6 +103,7 @@ public class ProjectService {
         return createdProject;
     }
 
+
     public void setNewStatusIdNull(Project project){
         for(Status status : project.getStatusList()){
             if(status.getId()!=null && status.getId().equals(0)){
@@ -120,15 +120,16 @@ public class ProjectService {
         return ProjectProcessor.getInstance().resolveProject(projectRepository.save(project));
     }
 
+
     private void propertiesSetProject(Project project){
         //Verifica se há alguma propriedade no projeto
         if(project.getProperties() != null && project.getProperties().size()>0){
             //Passa pela lista de propriedades do projeto
-            for(TaskProjectProperty propriedade : project.getProperties()) {
+            for(Property propriedade : project.getProperties()) {
                 //Adiciona a referencia do projeto na propriedade
                 propriedade.setProject(project);
                 //Salva a propriedade atualizada com a referencia do projeto
-                taskProjectPropertyRepository.save(propriedade);
+                propertyRepository.save(propriedade);
             }
         }
     }

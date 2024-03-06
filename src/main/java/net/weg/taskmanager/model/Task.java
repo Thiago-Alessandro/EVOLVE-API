@@ -1,16 +1,14 @@
 package net.weg.taskmanager.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import net.weg.taskmanager.model.property.TaskProjectProperty;
+
+import net.weg.taskmanager.model.property.Property;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
@@ -23,14 +21,12 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name = "Sem Nome";
-    @NonNull
-    private Boolean favorited;
+    @Column(nullable = false)
+    private Boolean favorited = false;
 
-//    private LocalDateTime finalDate;
-//    private LocalDateTime creationDate = LocalDateTime.now();
     private LocalDate finalDate;
-    private LocalDate creationDate;
-    private LocalDateTime lastTimeEdited;
+    private LocalDate creationDate = LocalDate.now();
+    private LocalDateTime lastTimeEdited = LocalDateTime.now();
     private LocalDate scheduledDate;
 
     private String description;
@@ -38,8 +34,8 @@ public class Task {
     @ManyToOne()
     private Status currentStatus;
 
-    @Enumerated(value = EnumType.ORDINAL)
-    private Priority priority;
+    @Enumerated(EnumType.STRING)
+    private Priority priority ;
 
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -49,8 +45,8 @@ public class Task {
     @JoinColumn(nullable = false)
     private Project project;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
-    private Collection<TaskProjectProperty> properties;
+    @OneToMany(cascade = CascadeType.ALL)
+    private Collection<Property> properties;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<Subtask> subtasks;

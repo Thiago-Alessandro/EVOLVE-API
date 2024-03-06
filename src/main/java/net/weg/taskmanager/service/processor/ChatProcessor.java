@@ -44,7 +44,7 @@ public class ChatProcessor {
         return chat;
     }
 
-    public Chat resolveChat(Chat resolvingChat,  ArrayList<String> _resolvingCascade){
+    public Chat resolveChat(Chat resolvingChat,  ArrayList<String> _resolvingCascade) {
 
         genericResolve(resolvingChat, _resolvingCascade);
         resolveChatProject();
@@ -55,37 +55,10 @@ public class ChatProcessor {
         return chat;
     }
 
-//    public Chat resolveChat(ProjectChat resolvingChat,  ArrayList<String> _resolvingCascade){
-//        genericResolve(resolvingChat, _resolvingCascade);
-//
-//        resolveChatProject();
-//
-//        resolvingCascade.remove(chatClassName);
-//
-//        return chat;
-//    }
-//
-//    public Chat resolveChat(TeamChat resolvingChat,  ArrayList<String> _resolvingCascade){
-//        genericResolve(resolvingChat, _resolvingCascade);
-//
-//        resolveChatTeam();
-//
-//        resolvingCascade.remove(chatClassName);
-//
-//        return chat;
-//    }
-
     public Chat resolveChat(Chat resolvingChat){
         return resolveChat(resolvingChat, new ArrayList<>());
     }
 
-//    public Chat resolveChat(TeamChat resolvingChat){
-//        return resolveChat(resolvingChat, new ArrayList<>());
-//    }
-//
-//    public Chat resolveChat(ProjectChat resolvingChat){
-//        return resolveChat(resolvingChat, new ArrayList<>());
-//    }
 
     private void resolveChatTeam(){
         if(chat instanceof TeamChat){
@@ -137,18 +110,5 @@ public class ChatProcessor {
         }
     }
 
-    //    public static Chat resolveChat(Chat resolvingChat){
-//        System.out.println(resolvingChat.getClass().getSimpleName());
-//        if(resolvingChat instanceof UserChat){
-//            System.out.println("sou instance de userchat");
-//            return resolveChat(resolvingChat, UserChat.class.getSimpleName(), new ArrayList<>());
-//        }else if (resolvingChat instanceof TeamChat){
-//            return resolveChat(resolvingChat, TeamChat.class.getSimpleName(), new ArrayList<>());
-//        } else if (resolvingChat instanceof ProjectChat) {
-//            return resolveChat(resolvingChat, ProjectChat.class.getSimpleName(), new ArrayList<>());
-//        }
-//        System.out.println("aaaa");
-//        return resolveChat(resolvingChat, Chat.class.getSimpleName(), new ArrayList<>());
-//    }
 
 }

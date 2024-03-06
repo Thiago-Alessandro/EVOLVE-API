@@ -58,8 +58,10 @@ public class UserProcessor {
                 resolvingUser.setTeams(null);
                 return;
             }
+
             resolvingUser.getTeams().stream()
                     .forEach(team -> TeamProcessor.getInstance().resolveTeam(team, resolvingCascade));
+
         }
     }
 

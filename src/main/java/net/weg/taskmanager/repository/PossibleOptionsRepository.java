@@ -1,9 +1,9 @@
 package net.weg.taskmanager.repository;
 
-import net.weg.taskmanager.model.property.TaskProjectProperty;
+import net.weg.taskmanager.model.property.Option;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TaskProjectPropertyRepository extends JpaRepository<TaskProjectProperty, Long> {
+public interface PossibleOptionsRepository extends JpaRepository<Option,Integer> {
 }
