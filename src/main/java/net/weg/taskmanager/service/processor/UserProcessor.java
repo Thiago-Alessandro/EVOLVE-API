@@ -78,7 +78,7 @@ public class UserProcessor {
 
     private void resolveUserCreatedTasks(){
         if(resolvingUser.getCreatedTasks() != null){
-            if(resolvingCascade.contains(Team.class.getSimpleName())){
+            if(resolvingCascade.contains(Task.class.getSimpleName())){
                 resolvingUser.setCreatedTasks(null);
                 return;
             }

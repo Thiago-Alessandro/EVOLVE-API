@@ -117,16 +117,22 @@ public class TaskService {
 
     public GetTaskDTO create(PostTaskDTO postTaskDTO) {
         Task task = new Task();
+        BeanUtils.copyProperties(postTaskDTO, task);
         Priority prioritySaved = Priority.valueOf(postTaskDTO.getPriority().name());
         prioritySaved.backgroundColor = postTaskDTO.getPriority().backgroundColor();
-        BeanUtils.copyProperties(postTaskDTO, task);
         task.setPriority(prioritySaved);
 
         setStatusListIndex(task);
+        System.out.println(taskRepository.save(task).getProject().getName());
         Task task2 = taskRepository.save(task);
-
+        System.out.println(task2.getProject().getName());
+        System.out.println(task2.getProject().getId());
         syncUserTaskTable(task2);
+//        System.out.println("task2 CREATE");
+//        System.out.println(task2.getCreator().getName());
         TaskProcessor.getInstance().resolveTask(task2);
+//        System.out.println("task2 CREATE resolved");
+//        System.out.println(task2.getCreator().getName());
 
         GetTaskDTO getTaskDTO = new GetTaskDTO();
         BeanUtils.copyProperties(task2, getTaskDTO);
