@@ -124,7 +124,8 @@ public class TaskService {
 
         setStatusListIndex(task);
         System.out.println(taskRepository.save(task).getProject().getName());
-        Task task2 = taskRepository.save(task);
+                taskRepository.save(task);
+        Task task2 = taskRepository.findById(task.getId()).get();
         System.out.println(task2.getProject().getName());
         System.out.println(task2.getProject().getId());
         syncUserTaskTable(task2);
@@ -140,7 +141,7 @@ public class TaskService {
     }
 
     public GetTaskDTO update(PutTaskDTO putTaskDTO) {
-        Task task = new Task();
+        Task task = taskRepository.findById(putTaskDTO.getId()).get();
         Priority prioritySaved = Priority.valueOf(putTaskDTO.getPriority().name());
         prioritySaved.backgroundColor = putTaskDTO.getPriority().backgroundColor();
         BeanUtils.copyProperties(putTaskDTO, task);

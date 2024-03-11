@@ -16,25 +16,15 @@ import java.util.Collection;
 public class PostTaskDTO {
 
     private String name;
-
     private LocalDate finalDate;
-
     private LocalDate scheduledDate;
-
     private String description;
-
     private Status currentStatus;
-
     private PriorityRecord priority ;
-
     private User creator;
-
     private Project project;
-
     private Collection<User> associates;
-
     private Integer statusListIndex;
-
     private Collection<Property> properties;
 
 }
