@@ -14,9 +14,9 @@ import java.util.List;
 @Entity
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = DataValue.class, name = "DATA_VALUE"),
+        @JsonSubTypes.Type(value = DataValue.class, name = "DataValue"),
         @JsonSubTypes.Type(value = TextValue.class, name = "TextValue"),
-        @JsonSubTypes.Type(value = IntegerValue.class, name = "INTEGER_VALUE")
+        @JsonSubTypes.Type(value = IntegerValue.class, name = "IntegerValue")
 })
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Value <T>{

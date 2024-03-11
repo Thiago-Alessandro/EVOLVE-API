@@ -22,14 +22,4 @@ public class PostProjectDTO {
     private LocalDate finalDate;
     private Collection<User> members;
     private Team team;
-
-//    //rever
-//    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-//    private Collection<TaskProjectProperty> properties;
-//    //rever
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Collection<Status> StatusList;
-
-
-
 }
