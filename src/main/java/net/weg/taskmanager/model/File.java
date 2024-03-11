@@ -22,5 +22,6 @@ public class File {
     private String type;
     @Column(nullable = false, columnDefinition = "LONGBLOB")
     private byte[] data;
+    private String chaveAWS;
 
 }
