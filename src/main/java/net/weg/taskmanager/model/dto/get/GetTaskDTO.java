@@ -21,8 +21,8 @@ public class GetTaskDTO {
     private String name;
     private Boolean favorited;
 
-    private String finalDate;
-    private String creationDate;
+    private LocalDate finalDate;
+    private LocalDate creationDate;
     private LocalDate scheduledDate;
     private LocalDateTime lastTimeEdited;
     private String description;

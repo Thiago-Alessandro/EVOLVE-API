@@ -57,8 +57,9 @@ public class UserService {
     public User patchImage(Long id, MultipartFile image){
         User user = userRepository.findById(id).get();
         user.setImage(image);
-        User upddatedUser = userRepository.save(user);
-        return UserProcessor.getInstance().resolveUser(upddatedUser);
+        User updatedUser = userRepository.save(user);
+        UserProcessor.getInstance().resolveUser(updatedUser);
+        return updatedUser;
     }
 
     public User update(User updatingUser){

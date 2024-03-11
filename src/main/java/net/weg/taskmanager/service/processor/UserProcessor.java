@@ -59,7 +59,7 @@ public class UserProcessor {
                 return;
             }
 
-            resolvingUser.getTeams().stream()
+            resolvingUser.getTeams()
                     .forEach(team -> TeamProcessor.getInstance().resolveTeam(team, resolvingCascade));
 
         }
@@ -78,7 +78,7 @@ public class UserProcessor {
 
     private void resolveUserCreatedTasks(){
         if(resolvingUser.getCreatedTasks() != null){
-            if(resolvingCascade.contains(Team.class.getSimpleName())){
+            if(resolvingCascade.contains(Task.class.getSimpleName())){
                 resolvingUser.setCreatedTasks(null);
                 return;
             }
