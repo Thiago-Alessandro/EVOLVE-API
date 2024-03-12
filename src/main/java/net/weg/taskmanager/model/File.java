@@ -5,12 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class File {
+
+    public File(MultipartFile multipartFile){
+        this.setName(multipartFile.getOriginalFilename());
+        this.setType(multipartFile.getContentType());
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +26,8 @@ public class File {
     private String name;
     @Column(nullable = false)
     private String type;
-    @Column(nullable = false, columnDefinition = "LONGBLOB")
-    private byte[] data;
     private String chaveAWS;
 
+    public void setData(byte[] bytes) {
+    }
 }
