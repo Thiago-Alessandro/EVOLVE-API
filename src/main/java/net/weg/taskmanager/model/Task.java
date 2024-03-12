@@ -57,4 +57,10 @@ public class Task {
 
     private Integer statusListIndex;
 
+    @ManyToMany()
+    private Collection<File> files;
+
+    @OneToMany(mappedBy = "task")
+    private Collection<AwsFile> awsFiles;
+
 }
