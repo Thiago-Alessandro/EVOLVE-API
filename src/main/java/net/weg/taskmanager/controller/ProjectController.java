@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
+import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.service.ProjectService;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class ProjectController {
     @PostMapping
     public Project create(@RequestBody PostProjectDTO project){return projectService.create(project);}
     @PutMapping
-    public Project update(@RequestBody Project project){return projectService.update(project);}
+    public Project update(@RequestBody PutProjectDTO project){return projectService.update(project);}
 //    @GetMapping("/status")
 //    public Collection<Status> getStatus(){return projetoService.getAllStatus();}
 

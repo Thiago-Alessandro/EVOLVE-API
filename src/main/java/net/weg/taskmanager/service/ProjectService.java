@@ -3,9 +3,11 @@ import lombok.RequiredArgsConstructor;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Status;
+import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ public class ProjectService {
     private final StatusRepository statusRepository;
     private final TeamRepository teamRepository;
     private final PropertyRepository propertyRepository;
+
+    private final ModelMapper modelMapper;
     
     public Project updateStatusList(Long id, Status status){
         Project project = projectRepository.getById(id);
@@ -40,7 +44,7 @@ public class ProjectService {
                 project.getStatusList().add(status);
             }
         }
-        return update(project);
+        return treatAndSave(project);
     }
 
 
@@ -84,40 +88,27 @@ public class ProjectService {
 
         updateProjectChat(project);
 
+        //verificar se as linhas abaixo estao funcionando
+        // (o projeto é salvo para ser atribuido o id mas
+        // não se é pego o objeto salvo em momento algum)
+
         //Adiciona o projeto ao BD para que seja criado o seu Id
         projectRepository.save(project);
 
         //Referencia o projeto nas suas propriedades
         propertiesSetProject(project);
 
-        //Prepara os status para serem criados
-        //(futuramente quando o front não mandar o id como 0 por padrao podera ser retirado)
-        setNewStatusIdNull(project);
-
-        //Atualiza o projeto adicionando sua referencia nas suas propriedades
-        Project createdProject = projectRepository.save(project);
-        ProjectProcessor.getInstance().resolveProject(createdProject);
-//        System.out.println(createdProject);
-
-        //Retorna o objeto sem stackOverflow
-        return createdProject;
+        return treatAndSave(project);
     }
 
+    public Project update(PutProjectDTO projectDTO){
 
-    public void setNewStatusIdNull(Project project){
-        for(Status status : project.getStatusList()){
-            if(status.getId()!=null && status.getId().equals(0)){
-                status.setId(null);
-            }
-        }
-    }
+        Project project = projectRepository.findById(projectDTO.getId()).get();
+        modelMapper.map(projectDTO, project);
 
-    public Project update(Project project){
         updateProjectChat(project);
-        setNewStatusIdNull(project);
-        project.updateLastTimeEdited();
-
-        return ProjectProcessor.getInstance().resolveProject(projectRepository.save(project));
+//        System.out.println(project.getStatusList());
+        return treatAndSave(project);
     }
 
 
@@ -138,5 +129,16 @@ public class ProjectService {
         project.getChat().setUsers(project.getMembers());
     }
 
+    private Project treatAndSave(Project project){
+
+        project.updateLastTimeEdited();
+
+        //salva o projeto no banco de dados
+        Project savedProject = projectRepository.save(project);
+        //trata o projeto para o seu retorno
+        ProjectProcessor.getInstance().resolveProject(savedProject);
+        //retorna o objeto tratado
+        return savedProject;
+    }
 
 }

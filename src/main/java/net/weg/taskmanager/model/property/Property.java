@@ -23,7 +23,7 @@ public class Property {
 
     private String name;
 
-    @ManyToOne
+    @ManyToOne()
     @JsonIgnore
     private Project project;  // Possivelmente relacionada
 
