@@ -49,8 +49,10 @@ public class TaskService {
     }
 
 
-    public PropertyValue putPropertyValue(PropertyValue propertyValue) {
-        return this.propertyValueRepository.save(propertyValue);
+    public void putPropertyValue(Property property) {
+        ArrayList<PropertyValue> array = (ArrayList<PropertyValue>) property.getPropertyValues();
+        System.out.println(array.get(0));
+//        return this.propertyValueRepository.save(property.getPropertyValues());
     }
 
     public UserTask getUserTask(Long userId, Long taskId) {
