@@ -1,10 +1,14 @@
 package net.weg.taskmanager.service;
 import lombok.RequiredArgsConstructor;
+import net.weg.taskmanager.model.Task;
+import net.weg.taskmanager.model.dto.get.GetProjectDTO;
+import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.model.property.Property;
+import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
 import org.modelmapper.ModelMapper;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
 @Service
@@ -27,13 +32,13 @@ public class ProjectService {
     private final PropertyRepository propertyRepository;
     private final ModelMapper modelMapper;
     
-    public Project updateStatusList(Long id, Status status){
+    public GetProjectDTO updateStatusList(Long id, Status status){
         Project project = projectRepository.findById(id).get();
         if(project.getStatusList()!=null){
             for(Status statusFor : project.getStatusList()){
                 if(Objects.equals(status.getId(), statusFor.getId())){
                     BeanUtils.copyProperties(status, statusFor);
-                    return project;
+                    return transformToGetProjectDTO(treatAndSave(project));
                 }
             }
             project.getStatusList().add(status);
@@ -41,43 +46,34 @@ public class ProjectService {
             project.setStatusList(new ArrayList());
             project.getStatusList().add(status);
         }
-        return treatAndSave(project);
+        return transformToGetProjectDTO(treatAndSave(project));
     }
 
 
-    public Project findById(Long id){
+    public GetProjectDTO findById(Long id){
         Project project =  projectRepository.findById(id).get();
 
         ProjectProcessor.getInstance().resolveProject(project);
 
-        return project;
+        return transformToGetProjectDTO(project);
     }
 
-    public Collection<Project> findAll() {
+    public Collection<GetProjectDTO> findAll() {
         Collection<Project> projects =  projectRepository.findAll();
+        Collection<GetProjectDTO> getProjectDTOS = new HashSet<>();
 
         projects.stream()
-                        .forEach(project -> ProjectProcessor.getInstance().resolveProject(project));
-        return projects;
+                        .forEach(project -> {
+//                            project.setTasks();
+                            ProjectProcessor.getInstance().resolveProject(project);
+                            GetProjectDTO getProjectDTO = transformToGetProjectDTO(project);
+                            getProjectDTOS.add(getProjectDTO);
+                        });
+
+        return getProjectDTOS;
     }
 
-    public void delete(Long id){
-        Project project = findById(id);
-        taskRepository.deleteAll(project.getTasks());
-        statusRepository.deleteAll(project.getStatusList());
-
-        try {
-            if(teamRepository.findTeamByProjectsContaining(project)!=null){
-                //seria bom ter o atributo equipe no proprio projeto para não ter que pegar na service
-                teamRepository.findTeamByProjectsContaining(project).getProjects().remove(project);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e + "Deu erro lá na projectService manin");
-        }
-
-        projectRepository.deleteById(id);}
-
-    public Project create(PostProjectDTO projectDTO){
+    public GetProjectDTO create(PostProjectDTO projectDTO){
 
         Project project = new Project();
         BeanUtils.copyProperties(projectDTO, project);
@@ -90,21 +86,63 @@ public class ProjectService {
         //Referencia o projeto nas suas propriedades
         propertiesSetProject(project);
 
-        return treatAndSave(project);
+        return transformToGetProjectDTO(treatAndSave(project));
     }
 
-    
-
-    public Project update(PutProjectDTO projectDTO){
+    public GetProjectDTO update(PutProjectDTO projectDTO){
 
         Project project = projectRepository.findById(projectDTO.getId()).get();
         modelMapper.map(projectDTO, project);
 
         updateProjectChat(project);
 
-        return treatAndSave(project);
+        return transformToGetProjectDTO(treatAndSave(project));
     }
 
+    public void delete(Long id){
+        Project project = projectRepository.findById(id).get();
+        taskRepository.deleteAll(project.getTasks());
+        statusRepository.deleteAll(project.getStatusList());
+
+        try {
+            if(teamRepository.findTeamByProjectsContaining(project)!=null){
+                //seria bom ter o atributo equipe no proprio projeto para não ter que pegar na service
+                teamRepository.findTeamByProjectsContaining(project).getProjects().remove(project);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e + "Deu erro lá na projectService manin");
+        }
+        projectRepository.deleteById(id);
+    }
+
+
+
+
+    private Project treatAndSave(Project project){
+        project.updateLastTimeEdited();
+        Project savedProject = projectRepository.save(project);
+        ProjectProcessor.getInstance().resolveProject(savedProject);
+        return savedProject;
+    }
+    private GetProjectDTO transformToGetProjectDTO(Project project){
+        GetProjectDTO getProjectDTO = new GetProjectDTO();
+        Collection<GetTaskDTO> getTaskDTOS = new HashSet<>();
+
+        BeanUtils.copyProperties(project, getProjectDTO);
+
+        if(project.getTasks()!=null) {
+            project.getTasks().forEach((task -> {
+                GetTaskDTO getTaskDTO = new GetTaskDTO();
+                PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(), task.getPriority().backgroundColor);
+                BeanUtils.copyProperties(task, getTaskDTO);
+                getTaskDTO.setPriority(priorityRecord);
+                getTaskDTOS.add(getTaskDTO);
+            }));
+        }
+
+        getProjectDTO.setTasks(getTaskDTOS);
+        return getProjectDTO;
+    }
 
     private void propertiesSetProject(Project project){
         //Verifica se há alguma propriedade no projeto
@@ -123,11 +161,6 @@ public class ProjectService {
         project.getChat().setUsers(project.getMembers());
     }
 
-    public Project treatAndSave(Project project){
-        project.updateLastTimeEdited();
-        Project savedProject = projectRepository.save(project);
-        ProjectProcessor.getInstance().resolveProject(savedProject);
-        return savedProject;
-    }
+
 
 }

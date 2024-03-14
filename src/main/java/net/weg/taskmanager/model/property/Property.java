@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.Project;
-import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.property.values.PropertyValue;
 
 import java.util.Collection;

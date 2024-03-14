@@ -1,12 +1,11 @@
 package net.weg.taskmanager.model.dto.get;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.*;
-import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.property.Property;
-import net.weg.taskmanager.model.record.PriorityRecord;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,32 +14,26 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetTaskDTO {
+public class GetProjectDTO {
+
     private Long id;
-
-
     private String name;
-    private Boolean favorited;
-
+    private String description;
+    private File image;
+    private String imageColor;
+    private User creator;
     private LocalDate finalDate;
     private LocalDate creationDate;
-    private LocalDate scheduledDate;
     private LocalDateTime lastTimeEdited;
-    private String description;
 
-    private Status currentStatus;
-
-    private PriorityRecord priority ;
-
-    private User creator;
-
-    private Project project;
-
+    //vai continuar msm?
+    private Collection<User> administrators;
     private Collection<Property> properties;
+    private Collection<Status> statusList;
+    private Collection<User> members;
+    private Team team;
 
-    private Collection<Subtask> subtasks;
+    private ProjectChat chat;
+    private Collection<GetTaskDTO> tasks;
 
-    private Collection<User> associates;
-
-    private Integer statusListIndex;
 }
