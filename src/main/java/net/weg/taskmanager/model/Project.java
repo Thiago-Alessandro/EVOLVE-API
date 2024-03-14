@@ -86,6 +86,7 @@ public class Project {
     public Project(){
         this.chat = new ProjectChat();
         this.chat.setProject(this);
+//        this.chat.setUsers(this.members);
         this.creationDate = LocalDate.now();
         updateLastTimeEdited();
         setDefaultStatus();

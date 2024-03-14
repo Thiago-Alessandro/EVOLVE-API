@@ -3,9 +3,11 @@ import lombok.RequiredArgsConstructor;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Status;
+import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -23,24 +25,23 @@ public class ProjectService {
     private final StatusRepository statusRepository;
     private final TeamRepository teamRepository;
     private final PropertyRepository propertyRepository;
+    private final ModelMapper modelMapper;
     
     public Project updateStatusList(Long id, Status status){
-        Project project = projectRepository.getById(id);
-        if(project!=null){
-            if(project.getStatusList()!=null){
-                for(Status statusFor : project.getStatusList()){
-                    if(Objects.equals(status.getId(), statusFor.getId())){
-                        BeanUtils.copyProperties(status, statusFor);
-                        return project;
-                    }
+        Project project = projectRepository.findById(id).get();
+        if(project.getStatusList()!=null){
+            for(Status statusFor : project.getStatusList()){
+                if(Objects.equals(status.getId(), statusFor.getId())){
+                    BeanUtils.copyProperties(status, statusFor);
+                    return project;
                 }
-                project.getStatusList().add(status);
-            } else {
-                project.setStatusList(new ArrayList());
-                project.getStatusList().add(status);
             }
+            project.getStatusList().add(status);
+        } else {
+            project.setStatusList(new ArrayList());
+            project.getStatusList().add(status);
         }
-        return update(project);
+        return treatAndSave(project);
     }
 
 
@@ -57,7 +58,6 @@ public class ProjectService {
 
         projects.stream()
                         .forEach(project -> ProjectProcessor.getInstance().resolveProject(project));
-
         return projects;
     }
 
@@ -90,34 +90,19 @@ public class ProjectService {
         //Referencia o projeto nas suas propriedades
         propertiesSetProject(project);
 
-        //Prepara os status para serem criados
-        //(futuramente quando o front não mandar o id como 0 por padrao podera ser retirado)
-        setNewStatusIdNull(project);
-
-        //Atualiza o projeto adicionando sua referencia nas suas propriedades
-        Project createdProject = projectRepository.save(project);
-        ProjectProcessor.getInstance().resolveProject(createdProject);
-//        System.out.println(createdProject);
-
-        //Retorna o objeto sem stackOverflow
-        return createdProject;
+        return treatAndSave(project);
     }
 
+    
 
-    public void setNewStatusIdNull(Project project){
-        for(Status status : project.getStatusList()){
-            if(status.getId()!=null && status.getId().equals(0)){
-                status.setId(null);
-            }
-        }
-    }
+    public Project update(PutProjectDTO projectDTO){
 
-    public Project update(Project project){
+        Project project = projectRepository.findById(projectDTO.getId()).get();
+        modelMapper.map(projectDTO, project);
+
         updateProjectChat(project);
-        setNewStatusIdNull(project);
-        project.updateLastTimeEdited();
 
-        return ProjectProcessor.getInstance().resolveProject(projectRepository.save(project));
+        return treatAndSave(project);
     }
 
 
@@ -138,5 +123,11 @@ public class ProjectService {
         project.getChat().setUsers(project.getMembers());
     }
 
+    public Project treatAndSave(Project project){
+        project.updateLastTimeEdited();
+        Project savedProject = projectRepository.save(project);
+        ProjectProcessor.getInstance().resolveProject(savedProject);
+        return savedProject;
+    }
 
 }
