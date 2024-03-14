@@ -2,7 +2,6 @@ package net.weg.taskmanager.service.processor;
 
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.*;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 
 import java.util.ArrayList;
 @NoArgsConstructor

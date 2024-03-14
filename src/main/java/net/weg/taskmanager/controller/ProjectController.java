@@ -1,14 +1,13 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Status;
+import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.service.ProjectService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 @RestController
@@ -20,21 +19,21 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping("/{id}")
-    public Project findById(@PathVariable Long id){return projectService.findById(id);}
+    public GetProjectDTO findById(@PathVariable Long id){return projectService.findById(id);}
     @GetMapping
-    public Collection<Project> findAll(){return projectService.findAll();}
+    public Collection<GetProjectDTO> findAll(){return projectService.findAll();}
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
         projectService.delete(id);}
     @PostMapping
-    public Project create(@RequestBody PostProjectDTO project){return projectService.create(project);}
+    public GetProjectDTO create(@RequestBody PostProjectDTO project){return projectService.create(project);}
     @PutMapping
-    public Project update(@RequestBody PutProjectDTO project){return projectService.update(project);}
+    public GetProjectDTO update(@RequestBody PutProjectDTO project){return projectService.update(project);}
 //    @GetMapping("/status")
 //    public Collection<Status> getStatus(){return projetoService.getAllStatus();}
 
     @PatchMapping("/{projectId}")
-    public Project updateStatusList(@PathVariable Long projectId, @RequestBody Status status){
+    public GetProjectDTO updateStatusList(@PathVariable Long projectId, @RequestBody Status status){
         return projectService.updateStatusList(projectId, status);
     }
 

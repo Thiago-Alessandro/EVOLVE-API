@@ -5,7 +5,6 @@ import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.User;
 
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
 @NoArgsConstructor
 public class TaskProcessor {
