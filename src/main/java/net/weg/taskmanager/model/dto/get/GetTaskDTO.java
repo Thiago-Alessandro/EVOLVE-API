@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.*;
+import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.record.PriorityRecord;
 

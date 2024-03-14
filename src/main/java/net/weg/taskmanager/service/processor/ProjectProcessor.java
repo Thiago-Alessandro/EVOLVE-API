@@ -7,7 +7,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 public class ProjectProcessor {
 
-    private  Project resolvingProject;
+    private Project resolvingProject;
     private  String projectClassName = Project.class.getSimpleName();
     private  ArrayList<String> resolvingCascade;
 

@@ -3,7 +3,6 @@ package net.weg.taskmanager.model.dto.put;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.Subtask;
 import net.weg.taskmanager.model.User;
@@ -11,7 +10,6 @@ import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.record.PriorityRecord;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Data
