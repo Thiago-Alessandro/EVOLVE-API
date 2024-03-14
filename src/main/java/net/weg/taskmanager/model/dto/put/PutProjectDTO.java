@@ -23,10 +23,12 @@ public class PutProjectDTO {
     private String imageColor;
     private LocalDate finalDate;
     private Collection<Property> properties;
-    private Collection<Status> statusList;
     private Collection<User> members;
     private Collection<Task> tasks;
     //vai continuar msm?
     private Collection<User> administrators;
+
+//    há uma request especifica para se atualizar um status
+//    private Collection<Status> statusList;
 
 }

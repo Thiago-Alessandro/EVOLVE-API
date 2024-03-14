@@ -25,24 +25,21 @@ public class ProjectService {
     private final StatusRepository statusRepository;
     private final TeamRepository teamRepository;
     private final PropertyRepository propertyRepository;
-
     private final ModelMapper modelMapper;
     
     public Project updateStatusList(Long id, Status status){
-        Project project = projectRepository.getById(id);
-        if(project!=null){
-            if(project.getStatusList()!=null){
-                for(Status statusFor : project.getStatusList()){
-                    if(Objects.equals(status.getId(), statusFor.getId())){
-                        BeanUtils.copyProperties(status, statusFor);
-                        return project;
-                    }
+        Project project = projectRepository.findById(id).get();
+        if(project.getStatusList()!=null){
+            for(Status statusFor : project.getStatusList()){
+                if(Objects.equals(status.getId(), statusFor.getId())){
+                    BeanUtils.copyProperties(status, statusFor);
+                    return project;
                 }
-                project.getStatusList().add(status);
-            } else {
-                project.setStatusList(new ArrayList());
-                project.getStatusList().add(status);
             }
+            project.getStatusList().add(status);
+        } else {
+            project.setStatusList(new ArrayList());
+            project.getStatusList().add(status);
         }
         return treatAndSave(project);
     }
@@ -61,7 +58,6 @@ public class ProjectService {
 
         projects.stream()
                         .forEach(project -> ProjectProcessor.getInstance().resolveProject(project));
-
         return projects;
     }
 
@@ -88,10 +84,6 @@ public class ProjectService {
 
         updateProjectChat(project);
 
-        //verificar se as linhas abaixo estao funcionando
-        // (o projeto é salvo para ser atribuido o id mas
-        // não se é pego o objeto salvo em momento algum)
-
         //Adiciona o projeto ao BD para que seja criado o seu Id
         projectRepository.save(project);
 
@@ -101,13 +93,15 @@ public class ProjectService {
         return treatAndSave(project);
     }
 
+    
+
     public Project update(PutProjectDTO projectDTO){
 
         Project project = projectRepository.findById(projectDTO.getId()).get();
         modelMapper.map(projectDTO, project);
 
         updateProjectChat(project);
-//        System.out.println(project.getStatusList());
+
         return treatAndSave(project);
     }
 
@@ -129,15 +123,10 @@ public class ProjectService {
         project.getChat().setUsers(project.getMembers());
     }
 
-    private Project treatAndSave(Project project){
-
+    public Project treatAndSave(Project project){
         project.updateLastTimeEdited();
-
-        //salva o projeto no banco de dados
         Project savedProject = projectRepository.save(project);
-        //trata o projeto para o seu retorno
         ProjectProcessor.getInstance().resolveProject(savedProject);
-        //retorna o objeto tratado
         return savedProject;
     }
 

@@ -74,10 +74,8 @@ public class Project {
         defaultStatus.add(new Status("não atribuido", "#9CA3AE", "#000000",true));
         if(this.getStatusList()!=null){
             this.getStatusList().addAll(defaultStatus);
-            System.out.println("SETANDO STATUS PADRAO");
         } else{
             this.setStatusList((defaultStatus));
-            System.out.println("SETANDO STATUS PADRAO2");
         }
     }
 
