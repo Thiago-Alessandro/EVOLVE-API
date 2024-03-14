@@ -1,10 +1,14 @@
 package net.weg.taskmanager.service;
 import lombok.RequiredArgsConstructor;
+import net.weg.taskmanager.model.Task;
+import net.weg.taskmanager.model.dto.get.GetProjectDTO;
+import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.model.property.Property;
+import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
 import org.modelmapper.ModelMapper;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
 @Service
@@ -57,8 +62,26 @@ public class ProjectService {
         Collection<Project> projects =  projectRepository.findAll();
 
         projects.stream()
-                        .forEach(project -> ProjectProcessor.getInstance().resolveProject(project));
+                        .forEach(project -> {
+                            project.setTasks();transformTasksToGetTasks(project);
+                            ProjectProcessor.getInstance().resolveProject(project)
+                        });
+
         return projects;
+    }
+
+    private GetProjectDTO transformToProjectDTO(Project project){
+        GetProjectDTO getProjectDTO = new GetProjectDTO();
+        Collection<GetTaskDTO> getTaskDTOS = new HashSet<>();
+        for (Task taskFor : project.getTasks()) {
+            GetTaskDTO getTaskDTO = new GetTaskDTO();
+            PriorityRecord priorityRecord = new PriorityRecord(taskFor.getPriority().name(), taskFor.getPriority().backgroundColor);
+            BeanUtils.copyProperties(taskFor, getTaskDTO);
+            getTaskDTO.setPriority(priorityRecord);
+            getTaskDTOS.add(getTaskDTO);
+        }
+        getProjectDTO.setTasks(getTaskDTOS);
+        return getProjectDTO;
     }
 
     public void delete(Long id){
