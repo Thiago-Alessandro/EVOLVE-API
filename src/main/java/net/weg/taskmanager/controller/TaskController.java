@@ -78,4 +78,9 @@ public class TaskController {
        return listTest.stream().map(priority -> new PriorityRecord(priority.name(), priority.backgroundColor)).collect(Collectors.toList());
     }
 
+    @GetMapping("/user/{userId}")
+    public Collection<GetTaskDTO> getTasksByUserId(@PathVariable Long userId){
+        return taskService.getTasksByUserId(userId);
+    }
+
 }

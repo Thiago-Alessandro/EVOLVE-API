@@ -60,7 +60,8 @@ public class MessageService {
         message.setChat(chatRepository.findById(obj.getChatId()).get());
 
         Message newMessage = messageRepository.save(message);
-        return MessageProcessor.getInstance().resolveMessage(newMessage);
+        MessageProcessor.getInstance().resolveMessage(newMessage);
+        return newMessage;
     }
 
     //    @Override

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
 @Service
@@ -34,6 +35,8 @@ public class TaskService {
     //    private final ModelMapper modelMapper;
     private final PropertiesRepository propertiesRepository;
     private final PropertyValueRepository propertyValueRepository;
+
+    private final UserRepository userRepository;
 
     public UserTask setWorkedTime(UserTask userTask) {
 
@@ -129,15 +132,8 @@ public class TaskService {
         System.out.println(task2.getProject().getName());
         System.out.println(task2.getProject().getId());
         syncUserTaskTable(task2);
-//        System.out.println("task2 CREATE");
-//        System.out.println(task2.getCreator().getName());
-        TaskProcessor.getInstance().resolveTask(task2);
-//        System.out.println("task2 CREATE resolved");
-//        System.out.println(task2.getCreator().getName());
 
-        GetTaskDTO getTaskDTO = new GetTaskDTO();
-        BeanUtils.copyProperties(task2, getTaskDTO);
-        return getTaskDTO;
+        return transformToTaskDTO(task2);
     }
 
     public GetTaskDTO update(PutTaskDTO putTaskDTO) {
@@ -153,10 +149,7 @@ public class TaskService {
 
         syncUserTaskTable(updatedTask);
 
-        TaskProcessor.getInstance().resolveTask(updatedTask);
-        GetTaskDTO getTaskDTO = new GetTaskDTO();
-        BeanUtils.copyProperties(updatedTask,getTaskDTO);
-        return getTaskDTO;
+        return transformToTaskDTO(updatedTask);
     }
 
     private void syncUserTaskTable(Task task) {
@@ -196,6 +189,35 @@ public class TaskService {
         }
     }
 
+    public Collection<GetTaskDTO> getTasksByUserId(Long id){
+
+        User user = userRepository.findById(id).get();
+
+        Collection<Task> associatedTasks = taskRepository.getTasksByAssociatesContaining(user);
+        Collection<Task> createdTasks = taskRepository.getTasksByCreatorIs(user);
+
+        Collection<GetTaskDTO> getTaskDTOS = new HashSet<>();
+
+        associatedTasks.forEach((task -> getTaskDTOS.add(transformToTaskDTO(task))));
+        createdTasks.forEach(createdTask ->
+            associatedTasks.forEach(associatedTask -> {
+                if (!createdTask.getId().equals(associatedTask.getId())){
+                    getTaskDTOS.add(transformToTaskDTO(createdTask));
+                }
+            })
+        );
+
+        return getTaskDTOS;
+    }
+
+    private GetTaskDTO transformToTaskDTO(Task task){
+        TaskProcessor.getInstance().resolveTask(task);
+        GetTaskDTO getTaskDTO = new GetTaskDTO();
+        BeanUtils.copyProperties(task, getTaskDTO);
+        return getTaskDTO;
+    }
+
+
     private final StatusRepository statusRepository;
 
     public Collection<GetTaskDTO> getTasksByStatus(Long id) {
@@ -204,11 +226,7 @@ public class TaskService {
         Collection<GetTaskDTO> getTaskDTOS = new ArrayList<>();
         tasks
                 .forEach((task) -> {
-                    TaskProcessor.getInstance().resolveTask(task);
-
-                    GetTaskDTO getTaskDTO = new GetTaskDTO();
-                    BeanUtils.copyProperties(task, getTaskDTO);
-                    getTaskDTOS.add(getTaskDTO);
+                    getTaskDTOS.add(transformToTaskDTO(task));
                 });
 
         return getTaskDTOS;
