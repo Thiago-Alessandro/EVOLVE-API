@@ -26,6 +26,8 @@ public class Project {
     private String name;
     @Column(nullable = false)
     private String description;
+    @Column(nullable = false)
+    private Boolean favorited = false;
 
     @OneToOne(cascade = CascadeType.ALL)
     private File image;

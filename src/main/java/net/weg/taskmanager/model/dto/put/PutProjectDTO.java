@@ -19,6 +19,7 @@ public class PutProjectDTO {
     private Long id;
     private String name;
     private String description;
+    private Boolean favorited;
     private File image;
     private String imageColor;
     private LocalDate finalDate;
