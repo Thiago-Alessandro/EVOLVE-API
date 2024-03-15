@@ -27,7 +27,7 @@ public class UserProcessor {
         resolveUserManagedTeams();
         resolveUserCreatedTasks();
         resolveUserChats();
-//        FileProcessor.addBase64Prefix(user.getImage().getData().);
+        FileProcessor.addBase64Prefix(user.getImage().getData().);
 //        System.out.println("passei do user chats hein");
 
 //        user.getImage().setData(FileProcessor.addBase64Prefix(user.getImage().getData()));
