@@ -37,4 +37,9 @@ public class ProjectController {
         return projectService.updateStatusList(projectId, status);
     }
 
+    @GetMapping("/user/{userId}")
+    public Collection<GetProjectDTO> getProjectsByUserId(@PathVariable Long userId){
+        return projectService.getProjectsByUserId(userId);
+    }
+
 }

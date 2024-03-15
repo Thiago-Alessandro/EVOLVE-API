@@ -1,6 +1,7 @@
 package net.weg.taskmanager.service;
 import lombok.RequiredArgsConstructor;
 import net.weg.taskmanager.model.Task;
+import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
@@ -115,7 +116,20 @@ public class ProjectService {
         projectRepository.deleteById(id);
     }
 
+    private final UserRepository userRepository;
 
+    public Collection<GetProjectDTO> getProjectsByUserId(Long id){
+        User user = userRepository.findById(id).get();
+        Collection<Project> projects = projectRepository.findProjectsByMembersContaining(user);
+
+        Collection<GetProjectDTO> getProjectDTOS = new HashSet<>();
+        projects.forEach(project -> {
+                    ProjectProcessor.getInstance().resolveProject(project);
+                    GetProjectDTO getProjectDTO = transformToGetProjectDTO(project);
+                    getProjectDTOS.add(getProjectDTO);
+                });
+        return getProjectDTOS;
+    }
 
 
     private Project treatAndSave(Project project){
