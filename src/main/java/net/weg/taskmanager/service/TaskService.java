@@ -8,6 +8,8 @@ import net.weg.taskmanager.model.UserTaskId;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
+import net.weg.taskmanager.model.property.Property;
+import net.weg.taskmanager.service.processor.PropertyProcessor;
 import net.weg.taskmanager.service.processor.TaskProcessor;
 
 import net.weg.taskmanager.model.Priority;
@@ -15,7 +17,6 @@ import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
-import net.weg.taskmanager.model.property.Property;
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.stereotype.Service;
@@ -56,7 +57,9 @@ public class TaskService {
 
         propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
 
-        return propertyOfPropertyValue;
+        this.propertyRepository.save(propertyOfPropertyValue);
+
+        return PropertyProcessor.getInstance().resolveProperty(propertyOfPropertyValue);
     }
 
     public Collection<Property> getAllProperties() {

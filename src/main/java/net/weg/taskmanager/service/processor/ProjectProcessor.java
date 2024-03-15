@@ -2,6 +2,7 @@ package net.weg.taskmanager.service.processor;
 
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.*;
+import net.weg.taskmanager.model.property.Property;
 
 import java.util.ArrayList;
 @NoArgsConstructor
@@ -28,6 +29,7 @@ public class ProjectProcessor {
         resolveProjectAdministrators();
         resolveProjectTeam();
         reolveProjectChat();
+        resolveProjectProperties();
 
         resolvingCascade.remove(projectClassName);
 
@@ -82,7 +84,14 @@ public class ProjectProcessor {
     }
 
     private void resolveProjectProperties(){
-
+        if(resolvingProject.getProperties()!=null){
+            if(resolvingCascade.contains(Property.class.getSimpleName())){
+                resolvingProject.setProperties(null);
+                return;
+            }
+            resolvingProject.getProperties().stream()
+                    .forEach(property -> PropertyProcessor.getInstance().resolveProperty(property, resolvingCascade));
+        }
     }
 
     private void resolveProjectTeam(){
@@ -104,6 +113,7 @@ public class ProjectProcessor {
             ChatProcessor.getInstance().resolveChat(resolvingProject.getChat(), resolvingCascade);
         }
     }
+
 
 
 }

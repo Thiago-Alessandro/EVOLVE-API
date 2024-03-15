@@ -4,6 +4,7 @@ import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.User;
+import net.weg.taskmanager.model.property.Property;
 
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class TaskProcessor {
         resolveTaskProject();
         resolveTaskAssociates();
         resolveTaskCreator();
+        resolveTaskProperties();
 
         resolvingCascade.remove(taskClassName);
 
@@ -69,7 +71,13 @@ public class TaskProcessor {
     }
 
     private void resolveTaskProperties(){
-
+        if(resolvingTask.getProperties()!=null){
+            if(resolvingCascade.contains(Property.class.getSimpleName())){
+                resolvingTask.setPriority(null);
+                return;
+            }
+            resolvingTask.getProperties().forEach(property -> PropertyProcessor.getInstance().resolveProperty(property, resolvingCascade));
+        }
     }
 
 }
