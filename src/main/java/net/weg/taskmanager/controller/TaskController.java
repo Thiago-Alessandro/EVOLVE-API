@@ -65,9 +65,16 @@ public class TaskController {
         return taskService.getUserTask(userId, taskId);
     }
 
-    @PutMapping("/property/put")
-    public void putPropertyValue(@RequestBody Property property) {
-        taskService.putPropertyValue(property);
+    @PutMapping("/property/put/{propertyId}")
+    public Property putPropertyValue(@PathVariable Long propertyId,
+                                     @RequestBody PropertyValue propertyValue) {
+        Property propertyOfPropertyValue = taskService.putPropertyValue(propertyValue, propertyId);
+        return propertyOfPropertyValue;
+    }
+
+    @GetMapping("/property/get/getall")
+    public Collection<Property> getAllProperties() {
+        return taskService.getAllProperties();
     }
 
     @GetMapping("/priorities")

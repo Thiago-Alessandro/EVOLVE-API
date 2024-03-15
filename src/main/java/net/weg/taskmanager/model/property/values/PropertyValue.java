@@ -18,7 +18,6 @@ public class PropertyValue {
     @OneToOne(cascade = CascadeType.ALL)
     private Value<?> value;
     @ManyToOne
-    @JsonIgnore
     private Property property;
 
 //    public PropertyValue() {

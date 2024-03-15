@@ -12,7 +12,7 @@ import net.weg.taskmanager.model.property.Option;
 import java.util.List;
 
 @Entity
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "propertyType", visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = DataValue.class, name = "DataValue"),
         @JsonSubTypes.Type(value = TextValue.class, name = "TextValue"),
@@ -23,6 +23,7 @@ public abstract class Value <T>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String propertyType;
     public abstract T getValue();
 
     public Value() {

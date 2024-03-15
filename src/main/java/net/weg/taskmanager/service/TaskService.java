@@ -32,7 +32,6 @@ public class TaskService {
     private final PropertyRepository propertyRepository;
     private final UserTaskRepository userTaskRepository;
     //    private final ModelMapper modelMapper;
-    private final PropertiesRepository propertiesRepository;
     private final PropertyValueRepository propertyValueRepository;
 
     public UserTask setWorkedTime(UserTask userTask) {
@@ -49,10 +48,19 @@ public class TaskService {
     }
 
 
-    public void putPropertyValue(Property property) {
-        ArrayList<PropertyValue> array = (ArrayList<PropertyValue>) property.getPropertyValues();
-        System.out.println(array.get(0));
-//        return this.propertyValueRepository.save(property.getPropertyValues());
+    public Property putPropertyValue(PropertyValue propertyValue,
+                                     Long propertyId) {
+
+        PropertyValue propertyValueReturn = this.propertyValueRepository.save(propertyValue);
+        Property propertyOfPropertyValue = this.propertyRepository.findById(propertyId).get();
+
+        propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
+
+        return propertyOfPropertyValue;
+    }
+
+    public Collection<Property> getAllProperties() {
+        return this.propertyRepository.findAll();
     }
 
     public UserTask getUserTask(Long userId, Long taskId) {
@@ -69,7 +77,7 @@ public class TaskService {
             property.setId(null);
         }
 
-        property = this.propertiesRepository.save(property);
+        property = this.propertyRepository.save(property);
         task.getProperties().add(property);
 
         GetTaskDTO getTaskDTO = new GetTaskDTO();
