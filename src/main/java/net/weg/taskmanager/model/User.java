@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -40,6 +41,9 @@ public class User {
     private Collection<Team> managedTeams;
     @ManyToMany(mappedBy = "participants")
     private Collection<Team> teams;
+    @OneToOne(cascade = CascadeType.ALL)
+//    @JsonIgnore
+    private UserDetailsEntity userDetailsEntity;
 
 
     @Override
