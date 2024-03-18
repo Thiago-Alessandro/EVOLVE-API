@@ -1,11 +1,9 @@
 package net.weg.taskmanager.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -52,7 +50,7 @@ public class User {
 
 
     public void setImage(MultipartFile image) {
-        File file = new File();
+        File file = new File(image);
         try {
             file.setData(image.getBytes());
         } catch (IOException e) {

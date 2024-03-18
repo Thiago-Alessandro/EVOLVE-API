@@ -1,6 +1,5 @@
 package net.weg.taskmanager.service;
 import lombok.RequiredArgsConstructor;
-import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.dto.get.GetTaskDTO;
@@ -9,7 +8,6 @@ import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.model.property.Property;
-import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
 import org.modelmapper.ModelMapper;

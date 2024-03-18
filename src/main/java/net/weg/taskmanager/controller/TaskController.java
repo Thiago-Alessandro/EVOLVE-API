@@ -2,7 +2,6 @@ package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Priority;
-import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.UserTask;
 
 //OLHAR PARA JUNTAR AS DTOs MAIS TARDE
@@ -12,7 +11,6 @@ import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
 import net.weg.taskmanager.model.property.values.PropertyValue;
-import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.service.TaskService;
 import org.springframework.web.bind.annotation.*;
