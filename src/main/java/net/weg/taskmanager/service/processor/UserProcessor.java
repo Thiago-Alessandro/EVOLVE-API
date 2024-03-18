@@ -1,9 +1,15 @@
 package net.weg.taskmanager.service.processor;
 
+import com.fasterxml.jackson.databind.util.BeanUtil;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.*;
+import net.weg.taskmanager.model.dto.get.GetFileDTO;
+import net.weg.taskmanager.model.dto.get.GetUserDTO;
+import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 @NoArgsConstructor
 public class UserProcessor {
 
@@ -15,7 +21,7 @@ public class UserProcessor {
         return new UserProcessor();
     }
 
-    public User resolveUser(User user, ArrayList<String> _resolvingCascade){
+    public GetUserDTO resolveUser(User user, ArrayList<String> _resolvingCascade){
 
         resolvingCascade = _resolvingCascade;
         resolvingCascade.add(userClassName);
@@ -27,17 +33,18 @@ public class UserProcessor {
         resolveUserManagedTeams();
         resolveUserCreatedTasks();
         resolveUserChats();
-        FileProcessor.addBase64Prefix(user.getImage().getData().);
+//        user.getImage().setData(FileProcessor.addBase64Prefix(user.getImage().getData())); getUserDTO?
 //        System.out.println("passei do user chats hein");
 
 //        user.getImage().setData(FileProcessor.addBase64Prefix(user.getImage().getData()));
 
         resolvingCascade.remove(userClassName);
 
-        return resolvingUser;
+//        eai?
+        return getUserDTO(resolvingUser);
     }
 
-    public User resolveUser(User user){
+    public GetUserDTO resolveUser(User user){
         return resolveUser(user, new ArrayList<>());
     }
 
@@ -84,6 +91,23 @@ public class UserProcessor {
             }
             resolvingUser.getCreatedTasks().stream()
                     .forEach(task -> TaskProcessor.getInstance().resolveTask(task, resolvingCascade));
+        }
+    }
+
+    private GetUserDTO getUserDTO(User user){
+        GetUserDTO getUserDTO = new GetUserDTO();
+        BeanUtils.copyProperties(resolvingUser, getUserDTO);
+        setUserDTOImage(user, getUserDTO);
+        return getUserDTO;
+    }
+
+    private void setUserDTOImage(User user, GetUserDTO getUserDTO){
+        if(user.getImage()!=null){
+            if(getUserDTO.getImage()==null){
+                getUserDTO.setImage(new GetFileDTO());
+            }
+            BeanUtils.copyProperties(user.getImage(), getUserDTO.getImage());
+            getUserDTO.getImage().setData(FileProcessor.addBase64Prefix(user.getImage().getData()));
         }
     }
 
