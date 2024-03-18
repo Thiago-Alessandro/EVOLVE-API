@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-//@RequiredArgsConstructor
 //@ToString
 public class UserDetailsEntity implements UserDetails {
 
@@ -34,7 +33,7 @@ public class UserDetailsEntity implements UserDetails {
     private boolean enabled = true;
 //    @OneToMany
 //    @Enumerated(EnumType.STRING)
-    private Collection<Auth> authorities;
+    private Collection<Auth> authorities = null;
     private boolean accountNonExpired = true;
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;

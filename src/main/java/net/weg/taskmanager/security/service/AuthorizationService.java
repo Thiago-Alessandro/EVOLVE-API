@@ -19,9 +19,10 @@ public class AuthorizationService {
 
     //id do usuario
     //ai acha o usuarodetail que ele ta linkado e por ai acha as suas autorizacoes
-    public Collection<Auth> getAllAuthorizations(Long id) {
-        User user = userRepository.findById(id).get();
+    public Collection<Auth> getAllAuthorizations(Long userId) {
+        User user = userRepository.findById(userId).get();
         UserDetailsEntity userDetails = userDetailsEntityRepository.findByUser_Id(user.getId());
-        return userDetailsEntityRepository.findAllById(userDetails.getId());
+        Collection<Auth> autorizacoes = userDetailsEntityRepository.findAllById(userDetails.getId());
+        return autorizacoes;
     }
 }
