@@ -53,7 +53,7 @@ public class AwsFileService {
 
     private final Environment env;
 
-    public boolean uploadFile(MultipartFile file) {
+    public boolean uploadFile(MultipartFile file, long referenceId) {
 
         String keySecret = env.getProperty("keySecret");
         String bucketName = env.getProperty("bucket");
@@ -88,8 +88,8 @@ public class AwsFileService {
                 awsFile.setAwsKey(fileKey);
                 awsFile.setName(file.getOriginalFilename());
                 awsFile.setType(contentType);
-//                awsFile.setTask(taskRepository.findById(referenceId).get());
-//                return awsFile;
+             awsFile.setTask(taskRepository.findById(referenceId).get());
+             awsFileRepository.save(awsFile);
 
                 return true;
             } catch (IOException e) {

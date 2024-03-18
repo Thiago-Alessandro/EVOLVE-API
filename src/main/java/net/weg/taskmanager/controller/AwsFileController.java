@@ -16,7 +16,7 @@ public class AwsFileController {
 
     @PostMapping("/{taskId}")
     public boolean create(@PathVariable Long taskId, @RequestParam MultipartFile file){
-        return awsFileService.uploadFile(file);
+        return awsFileService.uploadFile(file, taskId);
     }
 
 }
