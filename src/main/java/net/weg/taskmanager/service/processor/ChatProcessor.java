@@ -1,8 +1,6 @@
 package net.weg.taskmanager.service.processor;
 
-import jdk.swing.interop.SwingInterOpUtils;
-import lombok.AllArgsConstructor;
-import net.weg.taskmanager.controller.TaskController;
+
 import net.weg.taskmanager.model.*;
 
 import java.util.ArrayList;
