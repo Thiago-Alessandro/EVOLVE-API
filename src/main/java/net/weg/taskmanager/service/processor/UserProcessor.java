@@ -5,10 +5,12 @@ import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.*;
 import net.weg.taskmanager.model.dto.get.GetFileDTO;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
+import org.apache.logging.log4j.util.Base64Util;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 
 @NoArgsConstructor
 public class UserProcessor {
@@ -107,7 +109,10 @@ public class UserProcessor {
                 getUserDTO.setImage(new GetFileDTO());
             }
             BeanUtils.copyProperties(user.getImage(), getUserDTO.getImage());
-            getUserDTO.getImage().setData(FileProcessor.addBase64Prefix(user.getImage().getData()));
+
+//            System.out.println(Base64.getEncoder().encodeToString(user.getImage().getData()));
+
+            getUserDTO.getImage().setData(FileProcessor.getImageBase64Prefix() + Base64.getEncoder().encodeToString(user.getImage().getData()));
         }
     }
 
