@@ -87,6 +87,7 @@ public class UserService {
     }
 
     public GetUserDTO findByEmail(String email){
+        System.out.println(UserProcessor.getInstance().resolveUser(userRepository.findByEmail(email)));
        return UserProcessor.getInstance().resolveUser(userRepository.findByEmail(email));
     }
 

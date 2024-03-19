@@ -111,7 +111,7 @@ public class UserProcessor {
             BeanUtils.copyProperties(user.getImage(), getUserDTO.getImage());
 
 //            System.out.println(Base64.getEncoder().encodeToString(user.getImage().getData()));
-
+            System.out.println(FileProcessor.getImageBase64Prefix() + Base64.getEncoder().encodeToString(user.getImage().getData()));
             getUserDTO.getImage().setData(FileProcessor.getImageBase64Prefix() + Base64.getEncoder().encodeToString(user.getImage().getData()));
         }
     }
