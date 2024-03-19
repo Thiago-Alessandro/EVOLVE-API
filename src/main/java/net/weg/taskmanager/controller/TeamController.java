@@ -28,4 +28,9 @@ public class TeamController {
 //        System.out.println(team);
         return teamService.update(team);}
 
+    @GetMapping("/user/{userId}")
+    public Collection<Team> findTeamsByUserId(@PathVariable Long userId){
+        return teamService.findTeamsByUserId(userId);
+    }
+
 }
