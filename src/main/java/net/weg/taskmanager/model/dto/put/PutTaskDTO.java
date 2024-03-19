@@ -7,6 +7,7 @@ import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.Subtask;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.property.Property;
+import net.weg.taskmanager.model.record.PriorityRecord;
 
 import java.time.LocalDate;
 import java.util.Collection;

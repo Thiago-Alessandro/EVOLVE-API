@@ -8,6 +8,7 @@ import net.weg.taskmanager.model.UserTaskId;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
+import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.service.processor.TaskProcessor;
 
 import net.weg.taskmanager.model.Priority;

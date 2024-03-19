@@ -18,4 +18,5 @@ public class AWSFile {
     @ManyToOne
     private Task task;
     private String chaveAWS;
+    private String type;
 }
