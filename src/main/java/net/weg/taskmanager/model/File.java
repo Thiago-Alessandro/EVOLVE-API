@@ -13,9 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 public class File {
 
-    public File(MultipartFile multipartFile){
+    public File(MultipartFile multipartFile, String randomId){
         this.setName(multipartFile.getOriginalFilename());
         this.setType(multipartFile.getContentType());
+        this.setChaveAWS(randomId);
     }
 
     @Id

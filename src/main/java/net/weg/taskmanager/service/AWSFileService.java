@@ -7,16 +7,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.awscore.AwsClient;
-import software.amazon.awssdk.awscore.client.builder.AwsDefaultClientBuilder;
 import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.identity.spi.AwsCredentialsIdentity;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.S3ClientBuilder;
-import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
@@ -35,9 +29,8 @@ public class AWSFileService {
         String keySecret = env.getProperty("keySecret");
         String bucketName = env.getProperty("bucket");
         String region = "us-east-1";
-//        String randomId = UUID.randomUUID().toString();
-        String randomId = "Felipe";
-        File file1 = new File(file);
+        String randomId = UUID.randomUUID().toString();
+        File file1 = new File(file, randomId);
 
         AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(keyID, keySecret);
 
