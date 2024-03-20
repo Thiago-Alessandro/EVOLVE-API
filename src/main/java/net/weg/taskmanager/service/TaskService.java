@@ -68,11 +68,8 @@ public class TaskService {
             this.propertyRepository.save(propertyOfPropertyValue);
 
             propertyValueReturn.setProperty(propertyOfPropertyValue);
-            System.out.println(propertyOfPropertyValue.getPropertyValues());
             propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
-            System.out.println(propertyOfPropertyValue.getPropertyValues());
         }
-        System.out.println(propertyOfPropertyValue);
         this.propertyRepository.save(propertyOfPropertyValue);
 
         return PropertyProcessor.getInstance().resolveProperty(propertyOfPropertyValue);
