@@ -1,2 +1,16 @@
-package net.weg.taskmanager.model;public class UserAuthProjectId {
+package net.weg.taskmanager.model;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserAuthProjectId implements Serializable {
+    private Long userId;
+    private Long projectId;
 }

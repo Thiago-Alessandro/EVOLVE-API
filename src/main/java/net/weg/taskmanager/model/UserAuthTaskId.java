@@ -9,8 +9,8 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserAuthProjectId implements Serializable {
+public class UserAuthTaskId implements Serializable {
 
     private Long userId;
-    private Long projectId;
+    private Long taskId;
 }

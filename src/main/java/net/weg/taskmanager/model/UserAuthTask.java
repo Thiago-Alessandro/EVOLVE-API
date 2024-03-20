@@ -1,7 +1,6 @@
 package net.weg.taskmanager.model;
 
 import jakarta.persistence.*;
-import jdk.jfr.Enabled;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,22 +11,22 @@ import java.util.Collection;
 @Entity
 @AllArgsConstructor
 @Data
-@IdClass(UserAuthProjectId.class)
+@IdClass(UserAuthTaskId.class)
 @NoArgsConstructor
-public class UserAuthProject {
+public class UserAuthTask {
     @Id
     private Long userId;
     @Id
-    private Long projectId;
+    private Long taskId;
 
     @ManyToOne
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     private User user;
     @ManyToOne
-    @JoinColumn(name = "projectId", insertable = false, updatable = false)
-    private Project project;
+    @JoinColumn(name = "taskId", insertable = false, updatable = false)
+    private Task task;
 
     @OneToMany
-    private Collection<Auth> authorizations;
+    private Collection<Auth> authorizations = null;
 
 }

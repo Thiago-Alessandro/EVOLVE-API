@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.security.model.enums.Auth;
+
+import java.util.Collection;
 
 @Entity
 @Data
@@ -28,6 +31,8 @@ public class UserTask {
     @ManyToOne
     @JoinColumn(name = "taskId", insertable = false, updatable = false)
     private Task task;
+//    @OneToMany
+//    private Collection<Auth> authorizations;
 
     private Integer workedHours;
     private Integer workedMinutes;

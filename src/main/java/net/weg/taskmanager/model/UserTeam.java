@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.security.model.enums.Auth;
+
+import java.util.Collection;
 
 @Entity
 @Data
@@ -21,5 +24,7 @@ public class UserTeam {
     private PropertiesPermission permissionOfProperties;
     @ManyToOne
     private CardsPermission permissionOfCards;
+//    @OneToMany
+//    private Collection<Auth> authorizations;
 
 }

@@ -65,6 +65,7 @@ public class Project {
 
     @OneToMany(mappedBy = "project")
     private Collection<Task> tasks;
+//    private Collection<User> colo
 
     public void setDefaultStatus() {
         Collection<Status> defaultStatus = new HashSet<>();
