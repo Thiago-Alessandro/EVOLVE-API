@@ -19,6 +19,7 @@ import java.util.Collection;
 @NoArgsConstructor
 public class PutTaskDTO {
 
+    private Long id;
     private String name;
     private Boolean favorited;
 

@@ -32,6 +32,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final PropertyRepository propertyRepository;
     private final UserTaskRepository userTaskRepository;
+    private final UserRepository userRepository;
     //    private final ModelMapper modelMapper;
     private final PropertyValueRepository propertyValueRepository;
 
@@ -55,8 +56,23 @@ public class TaskService {
         PropertyValue propertyValueReturn = this.propertyValueRepository.save(propertyValue);
         Property propertyOfPropertyValue = this.propertyRepository.findById(propertyId).get();
 
-        propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
+        if (propertyOfPropertyValue.getPropertyType().name().equals("MultiSelectValue") ||
+                propertyOfPropertyValue.getPropertyType().name().equals("UniSelectValue")) {
+            propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
+        } else {
 
+            propertyOfPropertyValue.getPropertyValues().forEach(propertyValue1 -> {
+                propertyValue1.setProperty(null);
+            });
+
+            this.propertyRepository.save(propertyOfPropertyValue);
+
+            propertyValueReturn.setProperty(propertyOfPropertyValue);
+            System.out.println(propertyOfPropertyValue.getPropertyValues());
+            propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
+            System.out.println(propertyOfPropertyValue.getPropertyValues());
+        }
+        System.out.println(propertyOfPropertyValue);
         this.propertyRepository.save(propertyOfPropertyValue);
 
         return PropertyProcessor.getInstance().resolveProperty(propertyOfPropertyValue);
@@ -147,12 +163,11 @@ public class TaskService {
     }
 
     public GetTaskDTO update(PutTaskDTO putTaskDTO) {
-        Task task = new Task();
+        Task task = taskRepository.findById(putTaskDTO.getId()).get();
         Priority prioritySaved = Priority.valueOf(putTaskDTO.getPriority().name());
         prioritySaved.backgroundColor = putTaskDTO.getPriority().backgroundColor();
         BeanUtils.copyProperties(putTaskDTO, task);
         task.setPriority(prioritySaved);
-
         setStatusListIndex(task);
 
         Task updatedTask = taskRepository.save(task);

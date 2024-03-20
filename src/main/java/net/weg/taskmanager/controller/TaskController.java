@@ -10,6 +10,7 @@ import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 
 
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
+import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.service.TaskService;
@@ -64,9 +65,9 @@ public class TaskController {
     }
 
     @PutMapping("/property/put/{propertyId}")
-    public net.weg.taskmanager.model.property.Property putPropertyValue(@PathVariable Long propertyId,
-                                                                        @RequestBody PropertyValue propertyValue) {
-        net.weg.taskmanager.model.property.Property propertyOfPropertyValue = taskService.putPropertyValue(propertyValue, propertyId);
+    public Property putPropertyValue(@PathVariable Long propertyId,
+                                     @RequestBody PropertyValue propertyValue) {
+        Property propertyOfPropertyValue = taskService.putPropertyValue(propertyValue, propertyId);
         return propertyOfPropertyValue;
     }
 
