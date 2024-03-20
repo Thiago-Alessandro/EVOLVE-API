@@ -30,5 +30,3 @@ public class UserAuthTeam {
     @OneToMany
     private Collection<Auth> authorizations;
 }
-
-creation of a complementary table for user association and authorizations
