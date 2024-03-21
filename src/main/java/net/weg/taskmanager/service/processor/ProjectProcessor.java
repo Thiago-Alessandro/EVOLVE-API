@@ -1,7 +1,7 @@
 package net.weg.taskmanager.service.processor;
 
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.*;
+import net.weg.taskmanager.model.entity.*;
 
 import java.util.ArrayList;
 @NoArgsConstructor

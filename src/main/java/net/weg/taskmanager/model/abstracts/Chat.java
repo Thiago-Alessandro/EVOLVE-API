@@ -1,11 +1,12 @@
-package net.weg.taskmanager.model;
+package net.weg.taskmanager.model.abstracts;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import net.weg.taskmanager.model.entity.Message;
+import net.weg.taskmanager.model.entity.User;
 
 import java.util.Collection;
 

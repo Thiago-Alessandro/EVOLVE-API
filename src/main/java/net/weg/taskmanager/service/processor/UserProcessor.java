@@ -1,29 +1,28 @@
 package net.weg.taskmanager.service.processor;
 
-import com.fasterxml.jackson.databind.util.BeanUtil;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.*;
 import net.weg.taskmanager.model.dto.get.GetFileDTO;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
-import org.apache.logging.log4j.util.Base64Util;
+import net.weg.taskmanager.model.entity.Task;
+import net.weg.taskmanager.model.entity.Team;
+import net.weg.taskmanager.model.entity.User;
+import net.weg.taskmanager.model.entity.UserChat;
 import org.springframework.beans.BeanUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
+import java.util.*;
 
 @NoArgsConstructor
 public class UserProcessor {
 
     private User resolvingUser;
-    private String userClassName = User.class.getSimpleName();
+    private final String userClassName = User.class.getSimpleName();
     private ArrayList<String> resolvingCascade;
 
     public static UserProcessor getInstance(){
         return new UserProcessor();
     }
 
-    public GetUserDTO resolveUser(User user, ArrayList<String> _resolvingCascade){
+    public User resolveUser(User user, ArrayList<String> _resolvingCascade){
 
         resolvingCascade = _resolvingCascade;
         resolvingCascade.add(userClassName);
@@ -35,20 +34,23 @@ public class UserProcessor {
         resolveUserManagedTeams();
         resolveUserCreatedTasks();
         resolveUserChats();
-//        user.getImage().setData(FileProcessor.addBase64Prefix(user.getImage().getData())); getUserDTO?
-//        System.out.println("passei do user chats hein");
-
-//        user.getImage().setData(FileProcessor.addBase64Prefix(user.getImage().getData()));
 
         resolvingCascade.remove(userClassName);
 
-//        eai?
-        return getUserDTO(resolvingUser);
+        return resolvingUser;
     }
 
-    public GetUserDTO resolveUser(User user){
+    public User resolveUser(User user){
         return resolveUser(user, new ArrayList<>());
     }
+//    public Collection<GetUserDTO> resolveUsers(Collection<User> users){
+//        return resolveUsers(users, new ArrayList<>());
+//    }
+//    public Collection<GetUserDTO> resolveUsers(Collection<User> users, ArrayList<String> _resolvingCascade){
+//        Collection<GetUserDTO> getUserDTOS = new HashSet<>();
+//        users.forEach(user -> getUserDTOS.add(resolveUser(user,_resolvingCascade)));
+//        return getUserDTOS;
+//    }
 
     private void resolveUserChats(){
         if(resolvingUser.getChats()!=null){
@@ -56,7 +58,7 @@ public class UserProcessor {
                 resolvingUser.setChats(null);
                 return;
             }
-            resolvingUser.getChats().stream()
+            resolvingUser.getChats()
                     .forEach(chat -> ChatProcessor.getInstance().resolveChat(chat, resolvingCascade));
         }
     }
@@ -80,7 +82,7 @@ public class UserProcessor {
                 resolvingUser.setManagedTeams(null);
                 return;
             }
-            resolvingUser.getManagedTeams().stream()
+            resolvingUser.getManagedTeams()
                     .forEach(team -> TeamProcessor.getInstance().resolveTeam(team, resolvingCascade));
         }
     }
@@ -91,29 +93,29 @@ public class UserProcessor {
                 resolvingUser.setCreatedTasks(null);
                 return;
             }
-            resolvingUser.getCreatedTasks().stream()
+            resolvingUser.getCreatedTasks()
                     .forEach(task -> TaskProcessor.getInstance().resolveTask(task, resolvingCascade));
         }
     }
 
-    private GetUserDTO getUserDTO(User user){
-        GetUserDTO getUserDTO = new GetUserDTO();
-        BeanUtils.copyProperties(resolvingUser, getUserDTO);
-        setUserDTOImage(user, getUserDTO);
-        return getUserDTO;
-    }
-
-    private void setUserDTOImage(User user, GetUserDTO getUserDTO){
-        if(user.getImage()!=null){
-            if(getUserDTO.getImage()==null){
-                getUserDTO.setImage(new GetFileDTO());
-            }
-            BeanUtils.copyProperties(user.getImage(), getUserDTO.getImage());
-
-//            System.out.println(Base64.getEncoder().encodeToString(user.getImage().getData()));
-            System.out.println(FileProcessor.getImageBase64Prefix() + Base64.getEncoder().encodeToString(user.getImage().getData()));
-            getUserDTO.getImage().setData(FileProcessor.getImageBase64Prefix() + Base64.getEncoder().encodeToString(user.getImage().getData()));
-        }
-    }
+//    private GetUserDTO getUserDTO(User user){
+//        GetUserDTO getUserDTO = new GetUserDTO();
+//        BeanUtils.copyProperties(resolvingUser, getUserDTO);
+//        setUserDTOImage(user, getUserDTO);
+//        return getUserDTO;
+//    }
+//
+//    private void setUserDTOImage(User user, GetUserDTO getUserDTO){
+//        if(user.getImage()!=null){
+//            if(getUserDTO.getImage()==null){
+//                getUserDTO.setImage(new GetFileDTO());
+//            }
+//            BeanUtils.copyProperties(user.getImage(), getUserDTO.getImage());
+//
+////            System.out.println(Base64.getEncoder().encodeToString(user.getImage().getData()));
+//            System.out.println(FileProcessor.getImageBase64Prefix() + Base64.getEncoder().encodeToString(user.getImage().getData()));
+//            getUserDTO.getImage().setData(FileProcessor.getImageBase64Prefix() + Base64.getEncoder().encodeToString(user.getImage().getData()));
+//        }
+//    }
 
 }

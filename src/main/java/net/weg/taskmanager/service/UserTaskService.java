@@ -1,6 +1,6 @@
 package net.weg.taskmanager.service;
 
-import net.weg.taskmanager.model.UserTask;
+import net.weg.taskmanager.model.entity.UserTask;
 
 import java.util.Collection;
 

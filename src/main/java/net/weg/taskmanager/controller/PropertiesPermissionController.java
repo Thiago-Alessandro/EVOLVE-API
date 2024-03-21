@@ -1,7 +1,7 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.PropertiesPermission;
+import net.weg.taskmanager.model.entity.PropertiesPermission;
 import net.weg.taskmanager.service.PropertiesPermissionService;
 import org.springframework.web.bind.annotation.*;
 

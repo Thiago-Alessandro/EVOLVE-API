@@ -1,11 +1,9 @@
-package net.weg.taskmanager.model;
+package net.weg.taskmanager.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

@@ -1,9 +1,8 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Priority;
-import net.weg.taskmanager.model.Task;
-import net.weg.taskmanager.model.UserTask;
+import net.weg.taskmanager.model.enums.Priority;
+import net.weg.taskmanager.model.entity.UserTask;
 
 //OLHAR PARA JUNTAR AS DTOs MAIS TARDE
 import net.weg.taskmanager.model.dto.post.PostTaskDTO;

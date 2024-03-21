@@ -1,11 +1,10 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Message;
-import net.weg.taskmanager.model.MessageDTO;
+import net.weg.taskmanager.model.entity.Message;
+import net.weg.taskmanager.model.entity.MessageDTO;
 import net.weg.taskmanager.service.MessageService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;

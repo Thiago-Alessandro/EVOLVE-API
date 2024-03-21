@@ -1,14 +1,12 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.UserChat;
+import net.weg.taskmanager.model.dto.get.GetUserChatDTO;
+import net.weg.taskmanager.model.entity.UserChat;
 import net.weg.taskmanager.service.UserChatService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -16,12 +14,15 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/userChat")
 @AllArgsConstructor
-public class UserChatController implements IController<UserChat> {
+public class UserChatController
+//        implements IController<UserChat>
+{
 
     private final UserChatService userChatService;
 
-    @Override
-    public ResponseEntity<UserChat> findById(Long id) {
+//    @Override
+    @GetMapping("/{id}")
+    public ResponseEntity<GetUserChatDTO> findById(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(userChatService.findById(id), HttpStatus.OK);
         } catch (NoSuchElementException e){
@@ -29,13 +30,15 @@ public class UserChatController implements IController<UserChat> {
         }
     }
 
-    @Override
-    public ResponseEntity<Collection<UserChat>> findAll() {
+//    @Override
+    @GetMapping()
+    public ResponseEntity<Collection<GetUserChatDTO>> findAll() {
         return new ResponseEntity<>(userChatService.findAll(), HttpStatus.OK);
     }
 
-    @Override
-    public ResponseEntity<UserChat> delete(Long id) {
+//    @Override
+    @DeleteMapping("/{id}")
+    public ResponseEntity<GetUserChatDTO> delete(@PathVariable Long id) {
         try {
             userChatService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -44,18 +47,20 @@ public class UserChatController implements IController<UserChat> {
         }
     }
 
-    @Override
-    public ResponseEntity<UserChat> create(UserChat obj) {
+//    @Override
+    @PostMapping
+    public ResponseEntity<GetUserChatDTO> create(@RequestBody UserChat obj) {
         return new ResponseEntity<>(userChatService.create(obj), HttpStatus.OK);
     }
 
-    @Override
-    public ResponseEntity<UserChat> update(UserChat obj) {
+//    @Override
+    @PutMapping()
+    public ResponseEntity<GetUserChatDTO> update(@RequestBody UserChat obj) {
         return new ResponseEntity<>(userChatService.update(obj), HttpStatus.OK);
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<Collection<UserChat>> getUserChatsByUserID(@PathVariable Long id) {
+    public ResponseEntity<Collection<GetUserChatDTO>> getUserChatsByUserID(@PathVariable Long id) {
         return new ResponseEntity<>(userChatService.getChatsByUserId(id), HttpStatus.OK);
     }
 }

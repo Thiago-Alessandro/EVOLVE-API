@@ -1,14 +1,14 @@
 package net.weg.taskmanager.model.dto.put;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.*;
+import net.weg.taskmanager.model.entity.File;
+import net.weg.taskmanager.model.entity.Task;
+import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.property.Property;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Data

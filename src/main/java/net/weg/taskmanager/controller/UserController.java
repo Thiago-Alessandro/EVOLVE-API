@@ -2,7 +2,7 @@ package net.weg.taskmanager.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.User;
+import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.post.PostUserDTO;
 import net.weg.taskmanager.service.UserService;

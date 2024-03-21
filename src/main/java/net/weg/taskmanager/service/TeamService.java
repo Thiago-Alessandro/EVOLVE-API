@@ -1,49 +1,58 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Team;
-import net.weg.taskmanager.model.TeamChat;
+import net.weg.taskmanager.model.entity.Team;
+import net.weg.taskmanager.model.dto.get.GetTeamDTO;
 import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.service.processor.TeamProcessor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 @Service
 @AllArgsConstructor
 public class TeamService {
 
     private final TeamRepository teamRepository;
+    private final TeamProcessor teamProcessor = TeamProcessor.getInstance();
 
-    public Team findById(Long id){
+    public GetTeamDTO findById(Long id){
         Team team = teamRepository.findById(id).get();
-        return TeamProcessor.getInstance().resolveTeam(team);}
+//        teamDTO.image()
+        return resolveAndGetDTO(team);
+    }
 
-    public Collection<Team> findAll(){
-
+    public Collection<GetTeamDTO> findAll(){
         Collection<Team> teams = teamRepository.findAll();
-        for(Team team : teams){
-            TeamProcessor.getInstance().resolveTeam(team);
-        }
-        return teams;
+        return resolveAndGetDTOs(teams);
     }
 
     public void delete(Long id){
-        teamRepository.deleteById(id);}
+        teamRepository.deleteById(id);
+    }
 
-    public Team create(Team team){
+    public GetTeamDTO create(Team team){
         updateTeamChat(team);
         Team createdTeam = teamRepository.save(team);
-        return TeamProcessor.getInstance().resolveTeam(createdTeam);}
+        return resolveAndGetDTO(createdTeam);}
 
-    public Team update(Team team){
+    public GetTeamDTO update(Team team){
         updateTeamChat(team);
         Team updatedTeam = teamRepository.save(team);
-        return TeamProcessor.getInstance().resolveTeam(updatedTeam);
+        return resolveAndGetDTO(updatedTeam);
     }
 
     private void updateTeamChat(Team team){
         team.getChat().setUsers(team.getParticipants());
+    }
+
+    private GetTeamDTO resolveAndGetDTO(Team team){
+        Team resolvedTeam = teamProcessor.resolveTeam(team);
+        return new GetTeamDTO(resolvedTeam);
+    }
+    private Collection<GetTeamDTO> resolveAndGetDTOs(Collection<Team> teams){
+        return teams.stream().map(this::resolveAndGetDTO).toList();
     }
 
 }

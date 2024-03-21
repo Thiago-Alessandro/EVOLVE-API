@@ -1,6 +1,6 @@
 package net.weg.taskmanager.service.processor;
 
-import net.weg.taskmanager.model.*;
+import net.weg.taskmanager.model.entity.*;
 
 import java.util.ArrayList;
 

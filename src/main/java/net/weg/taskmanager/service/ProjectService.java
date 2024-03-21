@@ -1,11 +1,10 @@
 package net.weg.taskmanager.service;
 import lombok.RequiredArgsConstructor;
-import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
-import net.weg.taskmanager.model.Project;
-import net.weg.taskmanager.model.Status;
+import net.weg.taskmanager.model.entity.Project;
+import net.weg.taskmanager.model.entity.Status;
 import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.record.PriorityRecord;
@@ -31,6 +30,7 @@ public class ProjectService {
     private final TeamRepository teamRepository;
     private final PropertyRepository propertyRepository;
     private final ModelMapper modelMapper;
+    private final ProjectProcessor projectProcessor = new ProjectProcessor();
     
     public GetProjectDTO updateStatusList(Long id, Status status){
         Project project = projectRepository.findById(id).get();
