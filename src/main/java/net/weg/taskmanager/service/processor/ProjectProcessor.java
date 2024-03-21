@@ -1,12 +1,9 @@
 package net.weg.taskmanager.service.processor;
 
 import lombok.NoArgsConstructor;
-<<<<<<< HEAD
-import net.weg.taskmanager.model.*;
-import net.weg.taskmanager.model.property.Property;
-=======
+
 import net.weg.taskmanager.model.entity.*;
->>>>>>> origin/feature/chat
+import net.weg.taskmanager.model.property.Property;
 
 import java.util.ArrayList;
 @NoArgsConstructor

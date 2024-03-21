@@ -1,7 +1,7 @@
 package net.weg.taskmanager.service.processor;
 
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.Project;
+import net.weg.taskmanager.model.entity.Project;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.property.values.PropertyValue;
 

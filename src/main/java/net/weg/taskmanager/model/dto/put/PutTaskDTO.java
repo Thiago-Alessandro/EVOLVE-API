@@ -3,16 +3,10 @@ package net.weg.taskmanager.model.dto.put;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-<<<<<<< HEAD
-import net.weg.taskmanager.model.Status;
-import net.weg.taskmanager.model.Subtask;
-import net.weg.taskmanager.model.User;
+
 import net.weg.taskmanager.model.dto.get.ShortUserDTO;
-=======
 import net.weg.taskmanager.model.entity.Status;
 import net.weg.taskmanager.model.entity.Subtask;
-import net.weg.taskmanager.model.entity.User;
->>>>>>> origin/feature/chat
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.record.PriorityRecord;
 

@@ -1,8 +1,8 @@
 package net.weg.taskmanager.model.dto.get;
 
-import net.weg.taskmanager.model.Task;
-import net.weg.taskmanager.model.Team;
-import net.weg.taskmanager.model.UserChat;
+import net.weg.taskmanager.model.entity.Task;
+import net.weg.taskmanager.model.entity.Team;
+import net.weg.taskmanager.model.entity.UserChat;
 
 import java.util.Collection;
 
