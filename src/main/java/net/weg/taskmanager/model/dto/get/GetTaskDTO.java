@@ -1,5 +1,6 @@
 package net.weg.taskmanager.model.dto.get;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,15 +32,14 @@ public class GetTaskDTO {
     private Status currentStatus;
 
     private PriorityRecord priority ;
-
+    @JsonIgnore
     private User creator;
-
+    @JsonIgnore
     private Project project;
-
     private Collection<Property> properties;
 
     private Collection<Subtask> subtasks;
-
+    @JsonIgnore
     private Collection<User> associates;
 
     private Integer statusListIndex;

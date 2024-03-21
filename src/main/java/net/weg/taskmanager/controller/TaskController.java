@@ -2,7 +2,6 @@ package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Priority;
-import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.UserTask;
 
 //OLHAR PARA JUNTAR AS DTOs MAIS TARDE
@@ -11,9 +10,9 @@ import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 
 
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
+import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.model.record.PriorityRecord;
-import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,7 +57,7 @@ public class TaskController {
     }
 
     @PatchMapping("/property/{taskId}")
-    public GetTaskDTO patchProperty(@RequestBody Property property, @PathVariable Long taskId) {
+    public GetTaskDTO patchProperty(@RequestBody net.weg.taskmanager.model.property.Property property, @PathVariable Long taskId) {
         return taskService.patchProperty(property,taskId);
     }
 
@@ -67,9 +66,16 @@ public class TaskController {
         return taskService.getUserTask(userId, taskId);
     }
 
-    @PutMapping("/property/put")
-    public PropertyValue putPropertyValue(@RequestBody PropertyValue propertyValue) {
-        return taskService.putPropertyValue(propertyValue);
+    @PutMapping("/property/put/{propertyId}")
+    public Property putPropertyValue(@PathVariable Long propertyId,
+                                     @RequestBody PropertyValue propertyValue) {
+        Property propertyOfPropertyValue = taskService.putPropertyValue(propertyValue, propertyId);
+        return propertyOfPropertyValue;
+    }
+
+    @GetMapping("/property/get/getall")
+    public Collection<net.weg.taskmanager.model.property.Property> getAllProperties() {
+        return taskService.getAllProperties();
     }
 
     @GetMapping("/priorities")

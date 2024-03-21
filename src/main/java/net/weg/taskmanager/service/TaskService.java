@@ -8,6 +8,8 @@ import net.weg.taskmanager.model.UserTaskId;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
+import net.weg.taskmanager.model.property.Property;
+import net.weg.taskmanager.service.processor.PropertyProcessor;
 import net.weg.taskmanager.service.processor.TaskProcessor;
 
 import net.weg.taskmanager.model.Priority;
@@ -15,7 +17,6 @@ import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
-import net.weg.taskmanager.model.property.Property;
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.stereotype.Service;
@@ -32,8 +33,8 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final PropertyRepository propertyRepository;
     private final UserTaskRepository userTaskRepository;
+    private final UserRepository userRepository;
     //    private final ModelMapper modelMapper;
-    private final PropertiesRepository propertiesRepository;
     private final PropertyValueRepository propertyValueRepository;
 
     private final UserRepository userRepository;
@@ -52,8 +53,33 @@ public class TaskService {
     }
 
 
-    public PropertyValue putPropertyValue(PropertyValue propertyValue) {
-        return this.propertyValueRepository.save(propertyValue);
+    public Property putPropertyValue(PropertyValue propertyValue,
+                                     Long propertyId) {
+
+        PropertyValue propertyValueReturn = this.propertyValueRepository.save(propertyValue);
+        Property propertyOfPropertyValue = this.propertyRepository.findById(propertyId).get();
+
+        if (propertyOfPropertyValue.getPropertyType().name().equals("MultiSelectValue") ||
+                propertyOfPropertyValue.getPropertyType().name().equals("UniSelectValue")) {
+            propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
+        } else {
+
+            propertyOfPropertyValue.getPropertyValues().forEach(propertyValue1 -> {
+                propertyValue1.setProperty(null);
+            });
+
+            this.propertyRepository.save(propertyOfPropertyValue);
+
+            propertyValueReturn.setProperty(propertyOfPropertyValue);
+            propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
+        }
+        this.propertyRepository.save(propertyOfPropertyValue);
+
+        return PropertyProcessor.getInstance().resolveProperty(propertyOfPropertyValue);
+    }
+
+    public Collection<Property> getAllProperties() {
+        return this.propertyRepository.findAll();
     }
 
     public UserTask getUserTask(Long userId, Long taskId) {
@@ -70,7 +96,7 @@ public class TaskService {
             property.setId(null);
         }
 
-        property = this.propertiesRepository.save(property);
+        property = this.propertyRepository.save(property);
         task.getProperties().add(property);
 
         GetTaskDTO getTaskDTO = new GetTaskDTO();
@@ -142,7 +168,6 @@ public class TaskService {
         prioritySaved.backgroundColor = putTaskDTO.getPriority().backgroundColor();
         BeanUtils.copyProperties(putTaskDTO, task);
         task.setPriority(prioritySaved);
-
         setStatusListIndex(task);
 
         Task updatedTask = taskRepository.save(task);

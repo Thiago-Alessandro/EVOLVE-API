@@ -29,8 +29,8 @@ public class Project {
     @Column(nullable = false)
     private Boolean favorited = false;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private File image;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    private File image;
     private String imageColor;
     @JoinColumn(nullable = false)
     @ManyToOne()

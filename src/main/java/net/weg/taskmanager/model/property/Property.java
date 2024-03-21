@@ -26,7 +26,7 @@ public class Property {
     @JsonIgnore
     private Project project;  // Possivelmente relacionada
 
-    @OneToMany(mappedBy = "property")
+    @OneToMany(mappedBy = "property",orphanRemoval = true)
     private Collection<PropertyValue> propertyValues; //
 
     @Enumerated(EnumType.STRING)

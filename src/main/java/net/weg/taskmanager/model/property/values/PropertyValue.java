@@ -1,9 +1,11 @@
 package net.weg.taskmanager.model.property.values;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import net.weg.taskmanager.model.property.Property;
 
 @Entity
@@ -15,9 +17,11 @@ public class PropertyValue {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @OneToOne(cascade = CascadeType.ALL)
-    private Value<?> value;
+    private Value value;
     @ManyToOne
+    @ToString.Exclude
     private Property property;
+    private String propertyType;
 
 //    public PropertyValue() {
 //        if(property != null) {
