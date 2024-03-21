@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.Subtask;
 import net.weg.taskmanager.model.User;
+import net.weg.taskmanager.model.dto.get.ShortUserDTO;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.record.PriorityRecord;
 
@@ -33,7 +34,7 @@ public class PutTaskDTO {
 
     private Collection<Subtask> subtasks;
 
-    private Collection<User> associates;
+    private Collection<ShortUserDTO> associates;
 
     private Integer statusListIndex;
 

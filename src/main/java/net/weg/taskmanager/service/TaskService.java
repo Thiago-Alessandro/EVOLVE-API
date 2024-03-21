@@ -37,8 +37,6 @@ public class TaskService {
     //    private final ModelMapper modelMapper;
     private final PropertyValueRepository propertyValueRepository;
 
-    private final UserRepository userRepository;
-
     public UserTask setWorkedTime(UserTask userTask) {
 
         UserTask changingUserTask = userTaskRepository.findByUserIdAndTaskId(userTask.getUserId(), userTask.getTaskId());

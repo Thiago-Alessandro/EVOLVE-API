@@ -46,7 +46,10 @@ public class TaskController {
         return taskService.create(postTaskDTO);}
 
     @PutMapping
-    public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO){return taskService.update(putTaskDTO);}
+    public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO){
+        GetTaskDTO getTaskDTO = taskService.update(putTaskDTO);
+        return taskService.update(putTaskDTO);
+    }
 
     @GetMapping("/status/{id}")
     public Collection<GetTaskDTO> getTasksByStatus(@PathVariable Long id){return taskService.getTasksByStatus(id);}
