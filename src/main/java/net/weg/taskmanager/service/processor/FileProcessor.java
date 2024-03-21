@@ -6,7 +6,7 @@ public class FileProcessor {
 
     public static String addBase64Prefix(String base64Image) {
 
-        if(base64Image != null && !isStringAHashColor(base64Image) && !base64Image.contains(imageBase64Prefix)){
+        if(base64Image != null && !base64Image.contains(imageBase64Prefix)){
             return imageBase64Prefix + base64Image;
         }
         return base64Image;
@@ -19,9 +19,8 @@ public class FileProcessor {
         return false;
     }
 
-
-
     public static String getImageBase64Prefix() {
         return imageBase64Prefix;
     }
+
 }

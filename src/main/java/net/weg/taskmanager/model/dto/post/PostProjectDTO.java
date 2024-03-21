@@ -3,7 +3,8 @@ package net.weg.taskmanager.model.dto.post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.*;
+import net.weg.taskmanager.model.entity.Team;
+import net.weg.taskmanager.model.entity.User;
 
 import java.time.LocalDate;
 import java.util.Collection;

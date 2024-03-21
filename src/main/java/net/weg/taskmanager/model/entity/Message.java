@@ -1,13 +1,14 @@
-package net.weg.taskmanager.model;
+package net.weg.taskmanager.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.abstracts.Chat;
+import net.weg.taskmanager.model.enums.MessageStatus;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 @Entity
 @AllArgsConstructor

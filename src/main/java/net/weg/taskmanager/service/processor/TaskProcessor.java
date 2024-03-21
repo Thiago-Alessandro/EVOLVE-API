@@ -1,10 +1,16 @@
 package net.weg.taskmanager.service.processor;
 
 import lombok.NoArgsConstructor;
+<<<<<<< HEAD
 import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.property.Property;
+=======
+import net.weg.taskmanager.model.entity.Project;
+import net.weg.taskmanager.model.entity.Task;
+import net.weg.taskmanager.model.entity.User;
+>>>>>>> origin/feature/chat
 
 import java.util.ArrayList;
 @NoArgsConstructor

@@ -1,4 +1,4 @@
-package net.weg.taskmanager.model;
+package net.weg.taskmanager.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -6,12 +6,13 @@ import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.abstracts.Chat;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProjectChat extends Chat{
+public class ProjectChat extends Chat {
 
     @OneToOne(optional = false, mappedBy = "chat")
     @JoinColumn(updatable = false, unique = true)

@@ -1,7 +1,7 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.CardsPermission;
+import net.weg.taskmanager.model.entity.CardsPermission;
 import net.weg.taskmanager.repository.CardsPermissionRepository;
 import org.springframework.stereotype.Service;
 

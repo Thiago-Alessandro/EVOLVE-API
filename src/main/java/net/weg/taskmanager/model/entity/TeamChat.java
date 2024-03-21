@@ -1,17 +1,16 @@
-package net.weg.taskmanager.model;
+package net.weg.taskmanager.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Collection;
+import net.weg.taskmanager.model.abstracts.Chat;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class TeamChat extends Chat{
+public class TeamChat extends Chat {
 
     @OneToOne(optional = false, mappedBy = "chat")
     @JoinColumn(updatable = false, unique = true)

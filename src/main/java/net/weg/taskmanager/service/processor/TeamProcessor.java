@@ -1,22 +1,30 @@
 package net.weg.taskmanager.service.processor;
 
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.*;
+import net.weg.taskmanager.model.dto.get.GetTeamDTO;
+import net.weg.taskmanager.model.entity.Project;
+import net.weg.taskmanager.model.entity.Team;
+import net.weg.taskmanager.model.entity.TeamChat;
+import net.weg.taskmanager.model.entity.User;
+import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+
 @NoArgsConstructor
 public class TeamProcessor {
 
     private Team resolvingTeam;
     private String teamClassName = Team.class.getSimpleName();
     private ArrayList<String> resolvingCascade;
+    private GetTeamDTO getTeamDTO = new GetTeamDTO();
 
     public static TeamProcessor getInstance(){
         return new TeamProcessor();
     }
 
     public Team resolveTeam(Team team, ArrayList<String> _resolvingCascade){
-
         resolvingCascade = _resolvingCascade;
         resolvingCascade.add(teamClassName);
 
@@ -26,18 +34,31 @@ public class TeamProcessor {
         resolveTeamParticipants();
         resolveTeamAdministrator();
         resolveTeamProjects();
+
         resolvingCascade.remove(teamClassName);
-        return team;
+
+        return resolvingTeam;
     }
+
     public Team resolveTeam(Team team) {
         return resolveTeam(team, new ArrayList<>());
     }
 
+    public Collection<Team> resolveTeams(Collection<Team> teams) {
+        return resolveTeams(teams, new ArrayList<>());
+    }
+
+    public Collection<Team> resolveTeams(Collection<Team> teams, ArrayList<String> _resolvingCascade){
+        teams.forEach(team -> resolveTeam(team, _resolvingCascade));
+        return teams;
+    }
+
+//
 
     private void resolveTeamChat(){
         if(resolvingTeam.getChat() != null){
             if(resolvingCascade.contains(TeamChat.class.getSimpleName()) ){
-                resolvingTeam.setChat(null);
+                getTeamDTO.setChat(null);
                 return;
             }
             ChatProcessor.getInstance().resolveChat(resolvingTeam.getChat(), resolvingCascade);

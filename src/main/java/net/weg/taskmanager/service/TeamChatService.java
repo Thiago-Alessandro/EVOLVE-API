@@ -1,17 +1,15 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.TeamChat;
-import net.weg.taskmanager.model.User;
-import net.weg.taskmanager.model.UserChat;
+import net.weg.taskmanager.model.dto.get.GetTeamChatDTO;
+import net.weg.taskmanager.model.entity.TeamChat;
+import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.repository.TeamChatRepository;
-import net.weg.taskmanager.repository.UserChatRepository;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.service.processor.ChatProcessor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -19,21 +17,19 @@ public class TeamChatService {
 
     private final TeamChatRepository teamChatRepository;
     private final UserRepository userRepository;
+    private final ChatProcessor chatProcessor = new ChatProcessor();
 
-    public TeamChat findById(Long id){
+    public GetTeamChatDTO findById(Long id){
         TeamChat teamChat = teamChatRepository.findById(id).get();
-        ChatProcessor.getInstance().resolveChat(teamChat);
-        return teamChat;
+        return resolveAndGetDTO(teamChat);
     }
 
-    public Collection<TeamChat> finAll(){
+    public Collection<GetTeamChatDTO> finAll(){
         Collection<TeamChat> teamChats = teamChatRepository.findAll();
-        teamChats
-                .forEach(teamChat -> ChatProcessor.getInstance().resolveChat(teamChat));
-        return teamChats;
+        return resolveAndGetDTOS(teamChats);
     }
 
-    public Collection<TeamChat> findTeamChatsByUserId(Long id){
+    public Collection<GetTeamChatDTO> findTeamChatsByUserId(Long id){
         User user = userRepository.findById(id).get();
 
         Collection<TeamChat> userTeamChats =
@@ -41,10 +37,15 @@ public class TeamChatService {
                 .map(team -> teamChatRepository.findTeamChatByTeam_Id(team.getId()))
                 .toList();
 
-        userTeamChats.
-                forEach(teamChat -> ChatProcessor.getInstance().resolveChat(teamChat));
+        return resolveAndGetDTOS(userTeamChats);
+    }
 
-        return userTeamChats;
+    private GetTeamChatDTO resolveAndGetDTO(TeamChat teamChat){
+        chatProcessor.resolveChat(teamChat);
+        return new GetTeamChatDTO(teamChat);
+    }
+    private Collection<GetTeamChatDTO> resolveAndGetDTOS(Collection<TeamChat> teamChats){
+        return teamChats.stream().map(this::resolveAndGetDTO).toList();
     }
 
 }

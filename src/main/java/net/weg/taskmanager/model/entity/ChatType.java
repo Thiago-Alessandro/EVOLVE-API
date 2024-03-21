@@ -1,4 +1,4 @@
-package net.weg.taskmanager.model;
+package net.weg.taskmanager.model.entity;
 
 public enum ChatType {
 

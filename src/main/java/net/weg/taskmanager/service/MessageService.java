@@ -1,10 +1,8 @@
 package net.weg.taskmanager.service;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import net.weg.taskmanager.model.Message;
-import net.weg.taskmanager.model.MessageDTO;
-import net.weg.taskmanager.service.processor.ChatProcessor;
+import net.weg.taskmanager.model.entity.Message;
+import net.weg.taskmanager.model.entity.MessageDTO;
 import net.weg.taskmanager.service.processor.MessageProcessor;
 import net.weg.taskmanager.repository.ChatRepository;
 import net.weg.taskmanager.repository.MessageRepository;

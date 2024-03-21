@@ -2,17 +2,17 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 
-import net.weg.taskmanager.model.User;
-import net.weg.taskmanager.model.UserTask;
-import net.weg.taskmanager.model.UserTaskId;
-import net.weg.taskmanager.model.Task;
+import net.weg.taskmanager.model.entity.User;
+import net.weg.taskmanager.model.entity.UserTask;
+import net.weg.taskmanager.model.entity.UserTaskId;
+import net.weg.taskmanager.model.entity.Task;
 import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.service.processor.PropertyProcessor;
 import net.weg.taskmanager.service.processor.TaskProcessor;
 
-import net.weg.taskmanager.model.Priority;
+import net.weg.taskmanager.model.enums.Priority;
 import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.model.record.PriorityRecord;
@@ -90,50 +90,23 @@ public class TaskService {
 
     public GetTaskDTO patchProperty(Property property, Long taskId) {
         Task task = taskRepository.findById(taskId).get();
-        if (property.getId() == 0) {
-            property.setId(null);
-        }
 
         property = this.propertyRepository.save(property);
         task.getProperties().add(property);
 
-        GetTaskDTO getTaskDTO = new GetTaskDTO();
-        PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(), task.getPriority().backgroundColor);
-        BeanUtils.copyProperties(task, getTaskDTO);
-        getTaskDTO.setPriority(priorityRecord);
+        Task savedTask = taskRepository.save(task);
 
-        taskRepository.save(task);
-
-        return getTaskDTO;
+        return resolveAndGetDTO(savedTask);
     }
 
     public GetTaskDTO findById(Long id) {
         Task task = taskRepository.findById(id).get();
-        GetTaskDTO getTaskDTO = new GetTaskDTO();
-        PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(), task.getPriority().backgroundColor);
-        BeanUtils.copyProperties(task, getTaskDTO);
-        getTaskDTO.setPriority(priorityRecord);
-        TaskProcessor.getInstance().resolveTask(task);
-        return getTaskDTO;
+        return resolveAndGetDTO(task);
     }
 
     public Collection<GetTaskDTO> findAll() {
         Collection<Task> tasks = taskRepository.findAll();
-        Collection<GetTaskDTO> getTaskDTOS = new ArrayList<>();
-
-        for (Task task : tasks) {
-            TaskProcessor.getInstance().resolveTask(task);
-        }
-
-        for (Task taskFor : tasks) {
-            GetTaskDTO getTaskDTO = new GetTaskDTO();
-            PriorityRecord priorityRecord = new PriorityRecord(taskFor.getPriority().name(), taskFor.getPriority().backgroundColor);
-            BeanUtils.copyProperties(taskFor, getTaskDTO);
-            getTaskDTO.setPriority(priorityRecord);
-            getTaskDTOS.add(getTaskDTO);
-        }
-
-        return getTaskDTOS;
+        return resolveAndGetDTOS(tasks);
     }
 
     public void delete(Long id) {
@@ -150,16 +123,21 @@ public class TaskService {
         task.setPriority(prioritySaved);
 
         setStatusListIndex(task);
-        System.out.println(taskRepository.save(task).getProject().getName());
-                taskRepository.save(task);
+        taskRepository.save(task);
         Task task2 = taskRepository.findById(task.getId()).get();
-        System.out.println(task2.getProject().getName());
-        System.out.println(task2.getProject().getId());
         syncUserTaskTable(task2);
 
-        return transformToTaskDTO(task2);
-    }
 
+        return resolveAndGetDTO(task2);
+    }
+    private final TaskProcessor taskProcessor = new TaskProcessor();
+    private GetTaskDTO resolveAndGetDTO(Task task){
+        taskProcessor.resolveTask(task);
+        return new GetTaskDTO(task);
+    }
+    private Collection<GetTaskDTO> resolveAndGetDTOS(Collection<Task> tasks){
+        return tasks.stream().map(this::resolveAndGetDTO).toList();
+    }
     public GetTaskDTO update(PutTaskDTO putTaskDTO) {
         Task task = taskRepository.findById(putTaskDTO.getId()).get();
         Priority prioritySaved = Priority.valueOf(putTaskDTO.getPriority().name());
@@ -169,10 +147,10 @@ public class TaskService {
         setStatusListIndex(task);
 
         Task updatedTask = taskRepository.save(task);
-
         syncUserTaskTable(updatedTask);
 
-        return transformToTaskDTO(updatedTask);
+
+        return resolveAndGetDTO(updatedTask);
     }
 
     private void syncUserTaskTable(Task task) {

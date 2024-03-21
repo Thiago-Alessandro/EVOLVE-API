@@ -1,9 +1,9 @@
-package net.weg.taskmanager.model;
+package net.weg.taskmanager.model.entity;
 
 import lombok.Data;
+import net.weg.taskmanager.model.enums.MessageStatus;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 public class MessageDTO {

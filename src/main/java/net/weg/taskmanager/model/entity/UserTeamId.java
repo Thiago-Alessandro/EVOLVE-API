@@ -1,17 +1,15 @@
-package net.weg.taskmanager.model;
+package net.weg.taskmanager.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserTaskId implements Serializable {
+public class UserTeamId {
 
     private Long userId;
-    private Long taskId;
+    private Long teamId;
 
 }

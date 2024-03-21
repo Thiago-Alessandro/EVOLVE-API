@@ -1,7 +1,7 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.PropertiesPermission;
+import net.weg.taskmanager.model.entity.PropertiesPermission;
 import net.weg.taskmanager.repository.PropertiesPermissionRepository;
 import org.springframework.stereotype.Service;
 

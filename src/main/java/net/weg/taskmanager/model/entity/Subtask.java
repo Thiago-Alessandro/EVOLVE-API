@@ -1,4 +1,4 @@
-package net.weg.taskmanager.model;
+package net.weg.taskmanager.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,12 +9,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PropertiesPermission {
+@Data
+public class Subtask {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
+    private Boolean concluded;
+
 }

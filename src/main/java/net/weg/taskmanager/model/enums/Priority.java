@@ -1,4 +1,4 @@
-package net.weg.taskmanager.model;
+package net.weg.taskmanager.model.enums;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
