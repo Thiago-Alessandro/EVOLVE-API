@@ -61,7 +61,9 @@ public class TaskController {
     }
 
     @PatchMapping("/property/{taskId}")
-    public GetTaskDTO patchProperty(@RequestBody net.weg.taskmanager.model.property.Property property, @PathVariable Long taskId) {
+    public GetTaskDTO patchProperty(@RequestBody Property property, @PathVariable Long taskId) {
+        System.out.println("SOUT NA CONTROLLER PARA PROPERTY");
+        System.out.println(property);
         return taskService.patchProperty(property,taskId);
     }
 

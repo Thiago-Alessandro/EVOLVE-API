@@ -36,6 +36,7 @@ public class TaskService {
     private final UserRepository userRepository;
     //    private final ModelMapper modelMapper;
     private final PropertyValueRepository propertyValueRepository;
+    private final OptionRepository optionRepository;
 
     public UserTask setWorkedTime(UserTask userTask) {
 
@@ -90,7 +91,9 @@ public class TaskService {
 
     public GetTaskDTO patchProperty(Property property, Long taskId) {
         Task task = taskRepository.findById(taskId).get();
-
+        if(property.getOptions() != null) {
+            optionRepository.saveAll(property.getOptions());
+        }
         property = this.propertyRepository.save(property);
         task.getProperties().add(property);
 
