@@ -53,7 +53,7 @@ public class UserService {
 
     public GetUserDTO patchImage(Long id, MultipartFile image){
         User user = userRepository.findById(id).get();
-//        user.setImage(image);
+        user.setImage(image);
         User updatedUser = userRepository.save(user);
         return resolveAndGetDTO(updatedUser);
     }

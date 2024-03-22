@@ -48,7 +48,7 @@ public class TaskController {
 
     @PutMapping
     public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO){
-        GetTaskDTO getTaskDTO = taskService.update(putTaskDTO);
+//        GetTaskDTO getTaskDTO = taskService.update(putTaskDTO);
         return taskService.update(putTaskDTO);
     }
 

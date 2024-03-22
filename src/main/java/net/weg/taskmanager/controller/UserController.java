@@ -48,6 +48,6 @@ public class UserController {
         return userService.patchImage(id, image);
     }
     @GetMapping("/login/{email}")
-    public GetUserDTO findByEmail(@PathVariable String email){return userService.findByEmail(email);}
+    public GetUserDTO loginByEmail(@PathVariable String email){return userService.findByEmail(email);}
 
 }
