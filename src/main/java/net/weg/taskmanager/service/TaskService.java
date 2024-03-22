@@ -101,6 +101,7 @@ public class TaskService {
 
     public GetTaskDTO findById(Long id) {
         Task task = taskRepository.findById(id).get();
+
         return resolveAndGetDTO(task);
     }
 
@@ -133,6 +134,7 @@ public class TaskService {
     private final TaskProcessor taskProcessor = new TaskProcessor();
     private GetTaskDTO resolveAndGetDTO(Task task){
         taskProcessor.resolveTask(task);
+        System.out.println(task + "df");
         return new GetTaskDTO(task);
     }
     private Collection<GetTaskDTO> resolveAndGetDTOS(Collection<Task> tasks){
@@ -213,9 +215,7 @@ public class TaskService {
 
     private GetTaskDTO transformToTaskDTO(Task task){
         TaskProcessor.getInstance().resolveTask(task);
-        GetTaskDTO getTaskDTO = new GetTaskDTO();
-        BeanUtils.copyProperties(task, getTaskDTO);
-        return getTaskDTO;
+        return new GetTaskDTO(task);
     }
 
 
