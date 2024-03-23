@@ -2,10 +2,7 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 
-import net.weg.taskmanager.model.entity.User;
-import net.weg.taskmanager.model.entity.UserTask;
-import net.weg.taskmanager.model.entity.UserTaskId;
-import net.weg.taskmanager.model.entity.Task;
+import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
 import net.weg.taskmanager.model.property.Property;
@@ -21,10 +18,8 @@ import org.springframework.beans.BeanUtils;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -148,11 +143,25 @@ public class TaskService {
         task.setPriority(prioritySaved);
         setStatusListIndex(task);
 
+        task.setProgress(setProgress(task));
+
         Task updatedTask = taskRepository.save(task);
         syncUserTaskTable(updatedTask);
 
 
         return resolveAndGetDTO(updatedTask);
+    }
+
+    private double setProgress(Task task){
+       Collection<Subtask> totalConcludedSubtasks = task.getSubtasks().stream().filter(Subtask::getConcluded).toList();
+       double total = task.getSubtasks().size();
+        System.out.println(total);
+        double totalConcluded  = totalConcludedSubtasks.size();
+        System.out.println(totalConcluded);
+       double progress  = (totalConcluded/total)*100;
+        System.out.println("progresso: "+progress);
+        return progress;
+
     }
 
     private void syncUserTaskTable(Task task) {

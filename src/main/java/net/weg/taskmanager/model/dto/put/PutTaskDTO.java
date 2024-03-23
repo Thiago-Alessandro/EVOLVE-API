@@ -37,5 +37,6 @@ public class PutTaskDTO {
     private Collection<ShortUserDTO> associates;
 
     private Integer statusListIndex;
+    private Double progress;
 
 }
