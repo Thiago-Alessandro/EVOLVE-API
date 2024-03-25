@@ -14,11 +14,17 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.endpoints.internal.Value;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
 import java.util.UUID;
 
 @Service
@@ -101,6 +107,41 @@ public class AwsFileService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public String getOneById(long fileId) {
+        String keySecret = env.getProperty("keySecret");
+        String keyId = env.getProperty("keyId");
+        String bucketName = env.getProperty("bucket");
+        String region = "us-east-1";
+        AwsFile fileAws = this.awsFileRepository.findById(fileId).get();
+        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(keyId, keySecret);
+        try(
+                S3Presigner presigner = S3Presigner.builder().region(Region.US_EAST_1).credentialsProvider(StaticCredentialsProvider.create(awsCredentials)).build()
+                ) {
+            S3Client s3Client = S3Client.builder()
+                    .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
+                    .region(Region.US_EAST_1)
+                    .build();
+
+            if(doesBucketExist(s3Client, bucketName)) {
+                GetObjectRequest objectRequest = GetObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(fileAws.getAwsKey())
+                        .build();
+
+
+                GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                        .signatureDuration(Duration.ofMinutes(10))
+                        .getObjectRequest(objectRequest)
+                        .build();
+
+                PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
+
+                return presignedRequest.url().toExternalForm();
+            }
+        }
+        return null;
     }
 
     private boolean doesBucketExist(S3Client s3Client, String bucketName) {

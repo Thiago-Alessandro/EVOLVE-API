@@ -19,4 +19,9 @@ public class AwsFileController {
         return awsFileService.uploadFile(taskId, file);
     }
 
+    @GetMapping("/{fileId}")
+    public String getOne(@PathVariable Long fileId) {
+        return awsFileService.getOneById(fileId);
+    }
+
 }
