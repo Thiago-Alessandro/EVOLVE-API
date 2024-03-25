@@ -12,7 +12,7 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@IdClass(UserTeam.class)
+@IdClass(UserTeamId.class)
 public class UserTeam {
 
     @Id

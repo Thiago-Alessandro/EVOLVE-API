@@ -31,7 +31,7 @@ public class DataBaseConfig {
                     .builder()
                     .user(user)
                     .enabled(true)
-                    .authorities(List.of(Auth.GET, Auth.POST, Auth.DELETE))
+                    .authorities(List.of(Auth.GET, Auth.POST, Auth.DELETE,Auth.PUT))
                     .accountNonExpired(true)
                     .accountNonLocked(true)
                     .credentialsNonExpired(true)

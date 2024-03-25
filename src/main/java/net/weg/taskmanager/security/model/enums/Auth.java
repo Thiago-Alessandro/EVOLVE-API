@@ -1,12 +1,20 @@
 package net.weg.taskmanager.security.model.enums;
 
-
-    import lombok.AllArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
-@AllArgsConstructor
-public enum Auth implements GrantedAuthority {
+import java.net.http.HttpRequest;
 
+@AllArgsConstructor
+@NoArgsConstructor
+//@Entity
+public enum Auth implements GrantedAuthority {
     GET("Get"),
     POST("Post"),
     PUT("Put"),
@@ -18,4 +26,9 @@ public enum Auth implements GrantedAuthority {
         return name;
     }
 //    public static Autorizacao
+
+    public Auth getAuth(HttpServletRequest request) {
+//        Auth.valueOf()
+       return Auth.valueOf(request.getMethod());
+    }
 }
