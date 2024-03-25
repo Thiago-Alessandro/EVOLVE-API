@@ -2,6 +2,7 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.AwsFile;
+import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.repository.AwsFileRepository;
 import net.weg.taskmanager.repository.TaskRepository;
 import org.springframework.core.env.Environment;
@@ -13,13 +14,21 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.endpoints.internal.Value;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
 import java.util.UUID;
+
+import static com.mysql.cj.conf.PropertyKey.logger;
 
 @Service
 @AllArgsConstructor
@@ -50,6 +59,51 @@ public class AwsFileService {
 //        awsFile.setTask(taskRepository.findById(referenceId).get());
 //        return awsFile;
 //    }
+    public String getAws3(Long id){
+        String keyId = env.getProperty("keyId");
+        String keySecret = env.getProperty("keySecret");
+        AwsBasicCredentials awsBasicCredentials =  AwsBasicCredentials.create(keyId, keySecret);
+        String region = "us-east-1";
+        String bucketName = env.getProperty("bucket");
+        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(keyId, keySecret);
+
+
+        try (S3Client s3Client = S3Client.builder()
+                .credentialsProvider(StaticCredentialsProvider.create(awsBasicCredentials))
+                .region(Region.of(region))
+                .build()) {
+            if (doesBucketExist(s3Client, bucketName)) {
+               return createPresignedGetUrl(bucketName, awsFileRepository.findById(id).get().getAwsKey(), awsBasicCredentials);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return null;
+    }
+    public String createPresignedGetUrl(String bucketName, String keyName, AwsBasicCredentials basicCredentials) {
+        try (S3Presigner presigner = S3Presigner.builder().region(Region.US_EAST_1).credentialsProvider(StaticCredentialsProvider.create(basicCredentials)).build()) {
+
+            GetObjectRequest objectRequest = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key("22b11935-0722-4b24-8302-817ed3531a75")
+                    .build();
+
+            GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                    .signatureDuration(Duration.ofMinutes(10))  // The URL will expire in 10 minutes.
+                    .getObjectRequest(objectRequest)
+                    .build();
+
+            PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
+
+
+            return presignedRequest.url().toExternalForm();
+        }
+    }
+
 
     private final Environment env;
 
