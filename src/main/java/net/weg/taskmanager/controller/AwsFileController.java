@@ -14,6 +14,11 @@ public class AwsFileController {
 
     private final AwsFileService awsFileService;
 
+    @GetMapping("/{key}")
+    public String getOne(@PathVariable String key){
+        return awsFileService.findById(key);
+    }
+
     @PostMapping("/{taskId}")
     public boolean create(@PathVariable Long taskId, @RequestParam MultipartFile file){
         return awsFileService.uploadFile(taskId, file);

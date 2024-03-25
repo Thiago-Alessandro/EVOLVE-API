@@ -1,4 +1,4 @@
-package net.weg.taskmanager;
+package net.weg.taskmanager.configs;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
