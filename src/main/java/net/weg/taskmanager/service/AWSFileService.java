@@ -10,14 +10,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.awscore.presigner.PresignRequest;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
+
+import javax.print.DocFlavor;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
+import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -27,8 +36,36 @@ public class AWSFileService {
     private final Environment env;
     private final TaskRepository taskRepository;
 
-    public boolean create(Long taskId, MultipartFile file){
-        String keyID  = env.getProperty("keyId");
+    public String get(Long id) {
+        String keyID = env.getProperty("keyId");
+        String keySecret = env.getProperty("keySecret");
+        String bucketName = env.getProperty("bucket");
+        Optional<AWSFile> awsFile = aws.findById(id);
+        if (awsFile.isEmpty()) {
+            return "is not found";
+        }
+        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(keyID, keySecret);
+        if (doesBucketExist(S3Client.builder().credentialsProvider(StaticCredentialsProvider.create(awsCredentials)).region(Region.US_EAST_1).build(), bucketName)) {
+            try (S3Presigner presigner = S3Presigner.builder().credentialsProvider(StaticCredentialsProvider.create(awsCredentials)).region(Region.US_EAST_1).build()) {
+                GetObjectRequest objectRequest = GetObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(awsFile.get().getChaveAWS())
+                        .build();
+                GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                        .signatureDuration(Duration.ofMinutes(10))  // The URL will expire in 10 minutes.
+                        .getObjectRequest(objectRequest)
+                        .build();
+                PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
+                return presignedRequest.url().toExternalForm();
+            } catch (Exception e) {
+                return "died in the road!";
+            }
+        }
+        return null;
+    }
+
+    public boolean create(Long taskId, MultipartFile file) {
+        String keyID = env.getProperty("keyId");
         String keySecret = env.getProperty("keySecret");
         String bucketName = env.getProperty("bucket");
         String region = "us-east-1";
@@ -42,7 +79,6 @@ public class AWSFileService {
                 .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
                 .region(Region.of(region))
                 .build()) {
-
             if (!doesBucketExist(s3Client, bucketName)) {
                 return false;
             }
@@ -54,9 +90,9 @@ public class AWSFileService {
                         .key(randomId)
                         .contentType(file1.getType())
                         .build();
-
                 s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(fileInputStream, file.getSize()));
                 AWSFile awsFile = new AWSFile();
+                aws.save(awsFile);
                 awsFile.setChaveAWS(randomId);
                 awsFile.setNome(file.getOriginalFilename());
                 awsFile.setType(file.getContentType());

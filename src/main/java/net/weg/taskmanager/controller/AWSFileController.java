@@ -18,12 +18,16 @@ public class AWSFileController {
     public ResponseEntity<?> create(@PathVariable Long id, @RequestParam MultipartFile file){
         try {
             aws.create(id,file);
-            System.out.println("sout id:" + id);
+            System.out.println("sou da tarefa :" + id);
             return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
             e.getStackTrace();
             System.out.println("não foi nego");
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+    }
+    @GetMapping("/{id}")
+    public String getById(@PathVariable Long id){
+        return aws.get(id);
     }
 }
