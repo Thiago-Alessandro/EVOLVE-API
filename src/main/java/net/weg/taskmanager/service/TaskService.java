@@ -156,9 +156,13 @@ public class TaskService {
        Collection<Subtask> totalConcludedSubtasks = task.getSubtasks().stream().filter(Subtask::getConcluded).toList();
        double total = task.getSubtasks().size();
         System.out.println(total);
+        if(total==0){
+            return 0.0;
+        }
         double totalConcluded  = totalConcludedSubtasks.size();
         System.out.println(totalConcluded);
        double progress  = (totalConcluded/total)*100;
+
         System.out.println("progresso: "+progress);
         return progress;
 
