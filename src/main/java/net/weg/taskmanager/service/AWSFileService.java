@@ -111,33 +111,6 @@ public class AWSFileService {
 
             }
         }
-return null;
-
-    }
-
-    public String createPresignedUrl(String keyName) {
-
-        String keyID  = env.getProperty("keyId");
-        String keySecret = env.getProperty("keySecret");
-        String bucketName = env.getProperty("bucket");
-
-        try (S3Presigner presigner = S3Presigner.create()) {
-
-            PutObjectRequest objectRequest = PutObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(keyName)
-                    .build();
-
-            PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                    .signatureDuration(Duration.ofMinutes(10))  // The URL expires in 10 minutes.
-                    .putObjectRequest(objectRequest)
-                    .build();
-
-
-            PresignedPutObjectRequest presignedRequest = presigner.presignPutObject(presignRequest);
-            String myURL = presignedRequest.url().toString();
-            System.out.println(myURL);
-            return presignedRequest.url().toExternalForm();
-        }
+        return null;
     }
 }
