@@ -1,5 +1,6 @@
 package net.weg.taskmanager.service;
 import lombok.RequiredArgsConstructor;
+import net.weg.taskmanager.model.dto.utils.DTOUtils;
 import net.weg.taskmanager.model.entity.User;
 
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
@@ -40,39 +41,32 @@ public class ProjectService {
             for(Status statusFor : project.getStatusList()){
                 if(Objects.equals(status.getId(), statusFor.getId())){
                     BeanUtils.copyProperties(status, statusFor);
-                    return transformToGetProjectDTO(treatAndSave(project));
+                    return new GetProjectDTO(treatAndSave(project));
                 }
             }
             project.getStatusList().add(status);
         } else {
-            project.setStatusList(new ArrayList());
+            project.setStatusList(new ArrayList<>());
             project.getStatusList().add(status);
         }
-        return transformToGetProjectDTO(treatAndSave(project));
+        return new GetProjectDTO(treatAndSave(project));
     }
 
 
     public GetProjectDTO findById(Long id){
         Project project =  projectRepository.findById(id).get();
 
-        ProjectProcessor.getInstance().resolveProject(project);
+        projectProcessor.resolveProject(project);
 
-        return transformToGetProjectDTO(project);
+        return new GetProjectDTO(project);
     }
 
     public Collection<GetProjectDTO> findAll() {
         Collection<Project> projects =  projectRepository.findAll();
-        Collection<GetProjectDTO> getProjectDTOS = new HashSet<>();
 
-        projects.stream()
-                        .forEach(project -> {
-//                            project.setTasks();
-                            ProjectProcessor.getInstance().resolveProject(project);
-                            GetProjectDTO getProjectDTO = transformToGetProjectDTO(project);
-                            getProjectDTOS.add(getProjectDTO);
-                        });
+        projects.forEach(projectProcessor::resolveProject);
 
-        return getProjectDTOS;
+        return DTOUtils.projectToGetProjectDTOS(projects);
     }
 
     public GetProjectDTO create(PostProjectDTO projectDTO){
@@ -88,7 +82,7 @@ public class ProjectService {
         //Referencia o projeto nas suas propriedades
         propertiesSetProject(project);
 
-        return transformToGetProjectDTO(treatAndSave(project));
+        return new GetProjectDTO(treatAndSave(project));
     }
 
     public GetProjectDTO update(PutProjectDTO projectDTO){
@@ -98,7 +92,7 @@ public class ProjectService {
 
         updateProjectChat(project);
 
-        return transformToGetProjectDTO(treatAndSave(project));
+        return new GetProjectDTO(treatAndSave(project));
     }
 
     public void delete(Long id){
@@ -123,40 +117,16 @@ public class ProjectService {
         User user = userRepository.findById(id).get();
         Collection<Project> projects = projectRepository.findProjectsByMembersContaining(user);
 
-        Collection<GetProjectDTO> getProjectDTOS = new HashSet<>();
-        projects.forEach(project -> {
-                    ProjectProcessor.getInstance().resolveProject(project);
-                    GetProjectDTO getProjectDTO = transformToGetProjectDTO(project);
-                    getProjectDTOS.add(getProjectDTO);
-                });
-        return getProjectDTOS;
+        projects.forEach(projectProcessor::resolveProject);
+        return DTOUtils.projectToGetProjectDTOS(projects);
     }
 
 
     private Project treatAndSave(Project project){
         project.updateLastTimeEdited();
         Project savedProject = projectRepository.save(project);
-        ProjectProcessor.getInstance().resolveProject(savedProject);
+        projectProcessor.resolveProject(savedProject);
         return savedProject;
-    }
-    private GetProjectDTO transformToGetProjectDTO(Project project){
-        GetProjectDTO getProjectDTO = new GetProjectDTO();
-        Collection<GetTaskDTO> getTaskDTOS = new HashSet<>();
-
-        BeanUtils.copyProperties(project, getProjectDTO);
-
-        if(project.getTasks()!=null) {
-            project.getTasks().forEach((task -> {
-                GetTaskDTO getTaskDTO = new GetTaskDTO();
-                PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(), task.getPriority().backgroundColor);
-                BeanUtils.copyProperties(task, getTaskDTO);
-                getTaskDTO.setPriority(priorityRecord);
-                getTaskDTOS.add(getTaskDTO);
-            }));
-        }
-
-        getProjectDTO.setTasks(getTaskDTOS);
-        return getProjectDTO;
     }
 
     private void propertiesSetProject(Project project){
