@@ -14,7 +14,7 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserShortDTO {
+public class ShortUserDTO {
 
     private Long id;
     private String name;
@@ -23,7 +23,7 @@ public class UserShortDTO {
     private String imageColor;
     private Collection<GetTaskDTO> createdTasks;
 //    private Collection<UserChat> chats;
-    public UserShortDTO(User user){
+    public ShortUserDTO(User user){
         BeanUtils.copyProperties(user, this);
         this.image = DTOUtils.fileToGetFileDTO(user.getImage());
 //        this.createdTasks = DTOUtils.user.getCreatedTasks()
