@@ -42,8 +42,6 @@ public class TaskController {
 
     @PostMapping
     public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
-        System.out.println("postTaskDTO");
-        System.out.println(postTaskDTO.getProject().getId());
         return taskService.create(postTaskDTO);}
 
     @PutMapping

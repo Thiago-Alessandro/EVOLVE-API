@@ -21,11 +21,12 @@ public class ShortUserDTO {
     private String email;
     private GetFileDTO image;
     private String imageColor;
-    private Collection<GetTaskDTO> createdTasks;
+    private Collection<ShortTaskDTO> createdTasks;
 //    private Collection<UserChat> chats;
     public ShortUserDTO(User user){
         BeanUtils.copyProperties(user, this);
         this.image = DTOUtils.fileToGetFileDTO(user.getImage());
+//        this.createdTasks = DTOUtils.tasksToShortGetTaskDTOS(user.getCreatedTasks());
 //        this.createdTasks = DTOUtils.user.getCreatedTasks()
     }
 

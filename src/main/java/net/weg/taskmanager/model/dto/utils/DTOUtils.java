@@ -62,6 +62,21 @@ public class DTOUtils {
         return null;
     }
 
+    public static ShortTaskDTO taskToShortTaskDTO(Task task){
+        if(task != null){
+            return new ShortTaskDTO(task);
+        }
+        return null;
+    }
+    public static Collection<ShortTaskDTO> tasksToShortGetTaskDTOS(Collection<Task> tasks){
+        if(tasks != null){
+            return tasks.stream()
+                    .map(DTOUtils::taskToShortTaskDTO).toList();
+        }
+        return null;
+    }
+
+
     public static GetTeamDTO teamToGetTeamDTO(Team team){
         if(team != null){
             return new GetTeamDTO(team);

@@ -3,6 +3,7 @@ package net.weg.taskmanager.service;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.get.GetProjectChatDTO;
 import net.weg.taskmanager.model.dto.get.GetTeamChatDTO;
+import net.weg.taskmanager.model.entity.Project;
 import net.weg.taskmanager.model.entity.ProjectChat;
 import net.weg.taskmanager.model.entity.TeamChat;
 import net.weg.taskmanager.model.entity.User;
@@ -30,14 +31,16 @@ public class ProjectChatService {
                                         .map( project -> projectChatRepository.findProjectChatByProject_Id(project.getId())))
                         .toList();
 
+        return resolveAndGetDTOS(userProjectChats);
+    }
 
-        Collection<GetProjectChatDTO> projectChatDTOS = resolveAndGetDTOS(userProjectChats);
-        System.out.println(projectChatDTOS);
-        return projectChatDTOS;
+    public Collection<GetProjectChatDTO> findAll(){
+        Collection<ProjectChat> projects = projectChatRepository.findAll();
+        return resolveAndGetDTOS(projects);
     }
 
     private GetProjectChatDTO resolveAndGetDTO(ProjectChat projectChat){
-        chatProcessor.resolveChat(projectChat);
+//        chatProcessor.resolveChat(projectChat);
         return new GetProjectChatDTO(projectChat);
     }
     private Collection<GetProjectChatDTO> resolveAndGetDTOS(Collection<ProjectChat> projectChats){
