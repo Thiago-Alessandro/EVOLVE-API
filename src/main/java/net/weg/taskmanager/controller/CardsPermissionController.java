@@ -14,12 +14,12 @@ public class CardsPermissionController {
 
     private final CardsPermissionService permissionOfCardsService;
 
-    @GetMapping("/{id}")
-    public CardsPermission findById(@PathVariable Long id){return permissionOfCardsService.findById(id);}
+    @GetMapping("/{cardId}")
+    public CardsPermission findById(@PathVariable Long cardId){return permissionOfCardsService.findById(cardId);}
     @GetMapping
     public Collection<CardsPermission> findAll(){return permissionOfCardsService.findAll();}
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){permissionOfCardsService.delete(id);}
+    @DeleteMapping("/{cardId}")
+    public void delete(@PathVariable Long cardId){permissionOfCardsService.delete(cardId);}
     @PostMapping
     public CardsPermission create(@RequestBody CardsPermission cardsPermission){return permissionOfCardsService.create(cardsPermission);}
     @PutMapping

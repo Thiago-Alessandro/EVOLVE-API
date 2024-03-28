@@ -14,13 +14,13 @@ public class TeamController {
 
     private final TeamService teamService;
 
-    @GetMapping("/{id}")
-    public Team findById(@PathVariable Long id){return teamService.findById(id);}
+    @GetMapping("/{teamId}")
+    public Team findById(@PathVariable Long teamId){return teamService.findById(teamId);}
     @GetMapping
     public Collection<Team> findAll(){return teamService.findAll();}
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-        teamService.delete(id);}
+    @DeleteMapping("/{teamId}")
+    public void delete(@PathVariable Long teamId){
+        teamService.delete(teamId);}
     @PostMapping
     public Team create(@RequestBody Team team){return teamService.create(team);}
     @PutMapping

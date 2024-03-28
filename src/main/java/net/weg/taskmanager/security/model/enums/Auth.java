@@ -18,7 +18,8 @@ public enum Auth implements GrantedAuthority {
     GET("Get"),
     POST("Post"),
     PUT("Put"),
-    DELETE("Delete");
+    DELETE("Delete"),
+    PATCH("Patch");
     private String name;
 
     @Override

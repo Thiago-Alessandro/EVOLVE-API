@@ -42,7 +42,7 @@ public class User {
     @ManyToMany(mappedBy = "participants")
     private Collection<Team> teams;
     @OneToOne(cascade = CascadeType.ALL)
-//    @JsonIgnore
+    @JsonIgnore
     private UserDetailsEntity userDetailsEntity;
 
 

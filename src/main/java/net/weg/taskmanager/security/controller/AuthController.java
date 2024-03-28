@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.security.model.dto.UserLogin;
 import net.weg.taskmanager.security.util.Cookieutil;
 import net.weg.taskmanager.security.util.JwtUtil;
+import org.modelmapper.internal.bytebuddy.agent.builder.AgentBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,9 +30,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> authenticate(@RequestBody UserLogin user, HttpServletRequest request, HttpServletResponse response) {
+        System.out.println(user);
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+            System.out.println("1");
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            System.out.println("2");
 
 //            SecurityContext context = SecurityContextHolder.createEmptyContext();
 //            context.setAuthentication(authentication);
@@ -39,19 +43,23 @@ public class AuthController {
 //            SecurityContextHolder.setContext(context);
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            System.out.println("3");
             Cookie cookie = cookieutil.createCookie(userDetails);
+            System.out.println("4");
             response.addCookie(cookie);
-
             return ResponseEntity.ok("Autentificação bem-sucedida");
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Falha na autenticação");
+            System.out.println(e.getMessage());
+            System.out.println("cai no catch");
+            throw e;
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Falha na autenticação");
         }
     }
 
     @PostMapping("/logout")
     public /*ResponseEntity<String>*/ void logout(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Cookie cookie = cookieutil.getCookie(request,"JWT");
+            Cookie cookie = cookieutil.getCookie(request, "JWT");
             cookie.setMaxAge(0);
             response.addCookie(cookie);
 //            return ResponseEntity.ok("Logout bem-sucedido");

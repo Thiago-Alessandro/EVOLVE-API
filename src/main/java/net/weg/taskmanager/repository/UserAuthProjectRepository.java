@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserAuthProjectRepository extends JpaRepository<UserAuthProject, Long> {
-    boolean existsByUserIdAndProjectIdAndAuthorizationsContaining(Long userId, Long projectId, Auth auth);
+//    boolean existsByUserIdAndProjectIdAndAuthorizationsContaining(Long userId, Long projectId, Auth auth);
 //    boolean existsByAuthorizations_Name()
 //    boolean existsByAuthorizationsContaining_
 }

@@ -6,6 +6,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+//import lombok.NoArgsConstructor;
 import net.weg.taskmanager.security.service.AuthService;
 import net.weg.taskmanager.security.util.Cookieutil;
 import net.weg.taskmanager.security.util.JwtUtil;
@@ -22,6 +23,7 @@ import java.io.IOException;
 
 @Component
 @AllArgsConstructor
+//@NoArgsConstructor
 public class AuthFilter extends OncePerRequestFilter {
     private AuthService userDetailService;
     private final SecurityContextRepository securityContextRepository;

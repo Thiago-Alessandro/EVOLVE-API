@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
 public class UserAuthProjectService {
     private final UserAuthProjectRepository userAuthProjectRepository;
 
-    public boolean hasAuthorization(Long usuarioId, Long projetoId, HttpServletRequest request) {
-        Auth auth = Auth.valueOf(request.getMethod());
-        return userAuthProjectRepository.existsByUserIdAndProjectIdAndAuthorizationsContaining(usuarioId, projetoId, auth);
-    }
+//    public boolean hasAuthorization(Long usuarioId, Long projetoId, HttpServletRequest request) {
+//        Auth auth = Auth.valueOf(request.getMethod());
+//        return userAuthProjectRepository.existsByUserIdAndProjectIdAndAuthorizationsContaining(usuarioId, projetoId, auth);
+//    }
 }

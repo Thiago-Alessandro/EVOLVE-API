@@ -17,9 +17,9 @@ public class TeamChatController {
 
     private final TeamChatService teamChatService;
 
-    @GetMapping("/{id}")
-    public TeamChat findById(@PathVariable Long id){
-        return teamChatService.findById(id);
+    @GetMapping("/{teamChatId}")
+    public TeamChat findById(@PathVariable Long teamChatId){
+        return teamChatService.findById(teamChatId);
     }
 
     @GetMapping
@@ -27,9 +27,9 @@ public class TeamChatController {
         return teamChatService.finAll();
     }
 
-    @GetMapping("/user/{id}")
-    public Collection<TeamChat> findTeamChatsByUserId(@PathVariable Long id){
-        return teamChatService.findTeamChatsByUserId(id);
+    @GetMapping("/user/{userId}")
+    public Collection<TeamChat> findTeamChatsByUserId(@PathVariable Long userId){
+        return teamChatService.findTeamChatsByUserId(userId);
     }
 
 }

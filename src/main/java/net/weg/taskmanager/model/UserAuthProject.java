@@ -26,6 +26,6 @@ public class UserAuthProject {
     @JoinColumn(name = "projectId", insertable = false, updatable = false)
     private Task task;
 
-    @OneToMany
+    //    @OneToMany
     private Collection<Auth> authorizations;
 }

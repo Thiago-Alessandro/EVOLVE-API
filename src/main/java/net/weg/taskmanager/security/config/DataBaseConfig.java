@@ -25,13 +25,13 @@ public class DataBaseConfig {
         } catch (Exception e) {
             User user = new User();
             user.setName("teste");
-            user.setEmail("teste@");
+            user.setEmail("teste@" + (userRepository.findAll().size() + 1));
             user.setPassword(new BCryptPasswordEncoder().encode("teste123"));
             user.setUserDetailsEntity(UserDetailsEntity
                     .builder()
                     .user(user)
                     .enabled(true)
-                    .authorities(List.of(Auth.GET, Auth.POST, Auth.DELETE,Auth.PUT))
+                    .authorities(List.of(Auth.GET, Auth.POST, Auth.DELETE, Auth.PUT, Auth.PATCH))
                     .accountNonExpired(true)
                     .accountNonLocked(true)
                     .credentialsNonExpired(true)

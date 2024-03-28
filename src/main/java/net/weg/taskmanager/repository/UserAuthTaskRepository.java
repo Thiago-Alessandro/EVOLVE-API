@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserAuthTaskRepository extends JpaRepository<UserAuthTask, Long> {
-    boolean existsByUserIdAndTaskIdAndAuthorizationsContaining(Long userId, Long taskId, Auth auth);
+//    boolean existsByUserIdAndTaskIdAndAuthorizationsContaining(Long userId, Long taskId, Auth auth);
 }

@@ -26,7 +26,7 @@ public class UserAuthTask {
     @JoinColumn(name = "taskId", insertable = false, updatable = false)
     private Task task;
 
-    @OneToMany
+    //    @OneToMany
     private Collection<Auth> authorizations = null;
 
 }

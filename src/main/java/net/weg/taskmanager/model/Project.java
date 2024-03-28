@@ -41,7 +41,6 @@ public class Project {
     @Column(nullable = false)
     private LocalDateTime lastTimeEdited;
 
-
     //vai continuar msm?
     @ManyToMany
     @Column(nullable = false)

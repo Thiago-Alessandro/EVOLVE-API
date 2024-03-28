@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 public class UserAuthTaskService {
     private final UserAuthTaskRepository userAuthTaskRepository;
 
-    public boolean hasAuthorization(Long userId, Long taskId, HttpServletRequest request) {
-        Auth auth = Auth.valueOf(request.getMethod());
-        return userAuthTaskRepository.existsByUserIdAndTaskIdAndAuthorizationsContaining(userId,taskId,auth);
-    }
+//    public boolean hasAuthorization(Long userId, Long taskId, HttpServletRequest request) {
+//        Auth auth = Auth.valueOf(request.getMethod());
+//        return userAuthTaskRepository.existsByUserIdAndTaskIdAndAuthorizationsContaining(userId,taskId,auth);
+//    }
 }

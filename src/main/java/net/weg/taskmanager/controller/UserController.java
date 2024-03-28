@@ -18,13 +18,13 @@ public class UserController {
     private final ObjectMapper objectMapper;
     private final UserService userService;
 
-    @GetMapping("/{id}")
-    public User findById(@PathVariable Long id){return userService.findById(id);}
+    @GetMapping("/{userId}")
+    public User findById(@PathVariable Long userId){return userService.findById(userId);}
     @GetMapping
     public Collection<User> findAll(){return userService.findAll();}
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-        userService.delete(id);}
+    @DeleteMapping("/{userId}")
+    public void delete(@PathVariable Long userId){
+        userService.delete(userId);}
     @PostMapping
     public User create(@RequestBody PostUserDTO user){return userService.create(user);}
     
@@ -41,9 +41,9 @@ public class UserController {
         return userService.update(jsonUser, profilePhoto);
     }
     
-    @PatchMapping("/{id}")
-    public User patchImage(@PathVariable Long id, @RequestParam MultipartFile image){
-        return userService.patchImage(id, image);
+    @PatchMapping("/{userId}")
+    public User patchImage(@PathVariable Long userId, @RequestParam MultipartFile image){
+        return userService.patchImage(userId, image);
     }
     @GetMapping("/login/{email}")
     public User findByEmail(@PathVariable String email){return userService.findByEmail(email);}

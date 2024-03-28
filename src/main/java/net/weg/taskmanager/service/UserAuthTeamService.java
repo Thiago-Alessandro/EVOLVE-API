@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 public class UserAuthTeamService {
     private final UserAuthTeamRepository userAuthTeamRepository;
 
-    public boolean hasAuthorization(Long userId, Long teamId, HttpServletRequest request){
-        Auth auth = Auth.valueOf(request.getMethod());
-        return userAuthTeamRepository.existsByUserIdAndTeamIdAndAuthorizationsContaining(userId,teamId,auth);
-    }
+//    public boolean hasAuthorization(Long userId, Long teamId, HttpServletRequest request){
+//        Auth auth = Auth.valueOf(request.getMethod());
+//        return userAuthTeamRepository.existsByUserIdAndTeamIdAndAuthorizationsContaining(userId,teamId,auth);
+//    }
 }

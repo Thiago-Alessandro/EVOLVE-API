@@ -9,11 +9,11 @@ import net.weg.taskmanager.security.model.enums.Auth;
 
 import java.util.Collection;
 
-@NoArgsConstructor
+@Entity
 @AllArgsConstructor
 @Data
-@Entity
-@IdClass(UserAuthProjectId.class)
+@IdClass(UserAuthTeamId.class)
+@NoArgsConstructor
 public class UserAuthTeam {
     @Id
     private Long userId;
@@ -21,12 +21,12 @@ public class UserAuthTeam {
     private Long teamId;
 
     @ManyToOne
-    @JoinColumn(name = "userId",insertable = false, updatable = false)
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
     private User user;
     @ManyToOne
-    @JoinColumn(name = "teamId",insertable = false,updatable = false)
+    @JoinColumn(name = "teamId", insertable = false, updatable = false)
     private Team team;
 
-    @OneToMany
-    private Collection<Auth> authorizations;
+    //    @OneToMany
+    private Collection<Auth> authorizations = null;
 }

@@ -18,22 +18,35 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-    @GetMapping("/{id}")
-    public GetProjectDTO findById(@PathVariable Long id){return projectService.findById(id);}
+    @GetMapping("/{projectId}")
+    public GetProjectDTO findById(@PathVariable Long projectId) {
+        return projectService.findById(projectId);
+    }
+
     @GetMapping
-    public Collection<GetProjectDTO> findAll(){return projectService.findAll();}
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-        projectService.delete(id);}
+    public Collection<GetProjectDTO> findAll() {
+        return projectService.findAll();
+    }
+
+    @DeleteMapping("/{projectId}")
+    public void delete(@PathVariable Long projectId) {
+        projectService.delete(projectId);
+    }
+
     @PostMapping
-    public GetProjectDTO create(@RequestBody PostProjectDTO project){return projectService.create(project);}
+    public GetProjectDTO create(@RequestBody PostProjectDTO project) {
+        return projectService.create(project);
+    }
+
     @PutMapping
-    public GetProjectDTO update(@RequestBody PutProjectDTO project){return projectService.update(project);}
+    public GetProjectDTO update(@RequestBody PutProjectDTO project) {
+        return projectService.update(project);
+    }
 //    @GetMapping("/status")
 //    public Collection<Status> getStatus(){return projetoService.getAllStatus();}
 
     @PatchMapping("/{projectId}")
-    public GetProjectDTO updateStatusList(@PathVariable Long projectId, @RequestBody Status status){
+    public GetProjectDTO updateStatusList(@PathVariable Long projectId, @RequestBody Status status) {
         return projectService.updateStatusList(projectId, status);
     }
 

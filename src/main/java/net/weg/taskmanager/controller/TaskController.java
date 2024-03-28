@@ -28,17 +28,15 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @GetMapping("/{id}")
-
+    @GetMapping("/{taskId}")
     public GetTaskDTO findById(@PathVariable Long id){return taskService.findById(id);}
 
     @GetMapping
     public Collection<GetTaskDTO> findAll(){return taskService.findAll();}
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-        taskService.delete(id);}
-
+    @DeleteMapping("/{taskId}")
+    public void delete(@PathVariable Long taskId){
+        taskService.delete(taskId);}
 
     @PostMapping
     public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
@@ -49,7 +47,7 @@ public class TaskController {
     @PutMapping
     public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO){return taskService.update(putTaskDTO);}
 
-    @GetMapping("/status/{id}")
+    @GetMapping("/status/{statusId}")
     public Collection<GetTaskDTO> getTasksByStatus(@PathVariable Long id){return taskService.getTasksByStatus(id);}
 
     @PatchMapping("/userTask")
@@ -67,7 +65,7 @@ public class TaskController {
         return taskService.getUserTask(userId, taskId);
     }
 
-    @PutMapping("/property/put")
+    @PutMapping("/putProperty")
     public PropertyValue putPropertyValue(@RequestBody PropertyValue propertyValue) {
         return taskService.putPropertyValue(propertyValue);
     }

@@ -1,11 +1,13 @@
 package net.weg.taskmanager.security.config;
 
 import lombok.AllArgsConstructor;
+//import net.weg.taskmanager.security.PermitionRoute;
 import net.weg.taskmanager.security.service.AuthService;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -28,10 +30,11 @@ public class BeansConfig {
 //        return new BCryptPasswordEncoder();
 //    }
 
+
     @Bean
     public CorsConfigurationSource corsConfig() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.setAllowedOrigins(List.of("http://localhost:8798"));
+        corsConfig.setAllowedOrigins(List.of("http://localhost:8087"));
         corsConfig.setAllowedMethods(List.of("POST","PUT","DELETE","GET","PATCH"));
         corsConfig.setAllowCredentials(true);
         corsConfig.setAllowedHeaders(List.of("*"));
