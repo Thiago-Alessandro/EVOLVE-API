@@ -142,7 +142,6 @@ public class TaskService {
     private final TaskProcessor taskProcessor = new TaskProcessor();
     private GetTaskDTO resolveAndGetDTO(Task task){
         taskProcessor.resolveTask(task);
-        System.out.println(task + "df");
         return new GetTaskDTO(task);
     }
     private Collection<GetTaskDTO> resolveAndGetDTOS(Collection<Task> tasks){

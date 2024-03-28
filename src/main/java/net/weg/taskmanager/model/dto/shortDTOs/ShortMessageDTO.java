@@ -22,14 +22,14 @@ public class ShortMessageDTO {
 
     private Collection<GetFileDTO> attachments;
     private String content;
-    private GetUserDTO sender;
+    private ShortUserDTO sender;
     private LocalDateTime date;
     private MessageStatus status;
 
     public ShortMessageDTO(Message message){
         BeanUtils.copyProperties(message, this);
         this.attachments = DTOUtils.fileToGetFileDTOS(message.getAttachments());
-        this.sender = DTOUtils.userToGetUserDTO(message.getSender());
+        this.sender = DTOUtils.userToShortUserDTO(message.getSender());
     }
 
 }
