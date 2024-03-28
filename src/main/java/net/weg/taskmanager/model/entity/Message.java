@@ -29,6 +29,7 @@ public class Message {
     @Column(nullable = false)
     private LocalDateTime date = LocalDateTime.now();
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private MessageStatus status;
 
     @ManyToOne(optional = false)
