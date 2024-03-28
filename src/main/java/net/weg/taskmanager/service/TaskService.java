@@ -78,9 +78,8 @@ public class TaskService {
         return PropertyProcessor.getInstance().resolveProperty(propertyOfPropertyValue);
     }
 
-    public Property putPropertyOption(Collection<Option> newOptions,
-                                      Long propertyId) {
-
+    public Option putPropertyOption(Option newOption) {
+        return this.optionRepository.save(newOption);
     }
 
     public Collection<Property> getAllProperties() {

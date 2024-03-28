@@ -77,10 +77,9 @@ public class TaskController {
         return propertyOfPropertyValue;
     }
 
-    @PutMapping("/property/put/option/{propertyId}")
-    public Property putPropertyOption(@PathVariable Long propertyId,
-                                      @RequestBody Collection<Option> propertyOptions) {
-        return taskService.putPropertyOption(propertyOptions, propertyId);
+    @PutMapping("/property/put/option")
+    public Option putPropertyOption(@RequestBody Option newOption) {
+        return taskService.putPropertyOption(newOption);
     }
 
     @GetMapping("/property/get/getall")
