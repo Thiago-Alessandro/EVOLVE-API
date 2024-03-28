@@ -1,5 +1,6 @@
 package net.weg.taskmanager.controller;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.AllArgsConstructor;
 
 import net.weg.taskmanager.model.enums.Priority;
@@ -11,6 +12,7 @@ import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 
 
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
+import net.weg.taskmanager.model.property.Option;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.model.record.PriorityRecord;
@@ -42,8 +44,6 @@ public class TaskController {
 
     @PostMapping
     public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
-        System.out.println("postTaskDTO");
-        System.out.println(postTaskDTO.getProject().getId());
         return taskService.create(postTaskDTO);}
 
     @PutMapping
@@ -62,8 +62,6 @@ public class TaskController {
 
     @PatchMapping("/property/{taskId}")
     public GetTaskDTO patchProperty(@RequestBody Property property, @PathVariable Long taskId) {
-        System.out.println("SOUT NA CONTROLLER PARA PROPERTY");
-        System.out.println(property);
         return taskService.patchProperty(property,taskId);
     }
 
@@ -79,8 +77,14 @@ public class TaskController {
         return propertyOfPropertyValue;
     }
 
+    @PutMapping("/property/put/option/{propertyId}")
+    public Property putPropertyOption(@PathVariable Long propertyId,
+                                      @RequestBody Collection<Option> propertyOptions) {
+        return taskService.putPropertyOption(propertyOptions, propertyId);
+    }
+
     @GetMapping("/property/get/getall")
-    public Collection<net.weg.taskmanager.model.property.Property> getAllProperties() {
+    public Collection<Property> getAllProperties() {
         return taskService.getAllProperties();
     }
 

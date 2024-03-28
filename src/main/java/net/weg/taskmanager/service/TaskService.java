@@ -8,6 +8,7 @@ import net.weg.taskmanager.model.entity.UserTaskId;
 import net.weg.taskmanager.model.entity.Task;
 import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
+import net.weg.taskmanager.model.property.Option;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.service.processor.PropertyProcessor;
 import net.weg.taskmanager.service.processor.TaskProcessor;
@@ -75,6 +76,11 @@ public class TaskService {
         this.propertyRepository.save(propertyOfPropertyValue);
 
         return PropertyProcessor.getInstance().resolveProperty(propertyOfPropertyValue);
+    }
+
+    public Property putPropertyOption(Collection<Option> newOptions,
+                                      Long propertyId) {
+
     }
 
     public Collection<Property> getAllProperties() {
