@@ -28,7 +28,8 @@ public class ProjectChatService {
         Collection<ProjectChat> userProjectChats =
                 user.getTeams().stream()
                         .flatMap(team -> team.getProjects().stream()
-                                        .map( project -> projectChatRepository.findProjectChatByProject_Id(project.getId())))
+                                        .map( project -> projectChatRepository.findProjectChatByProject_Id(project.getId()))
+                                        .filter(projectChat -> projectChat.getUsers().contains(user)))
                         .toList();
 
         return resolveAndGetDTOS(userProjectChats);
