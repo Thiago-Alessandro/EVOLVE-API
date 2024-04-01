@@ -29,4 +29,11 @@ public class AwsFile {
 //    private byte[] awsKey;
     private String type;
 
+    public AwsFile(String name, Task task, String awsKey, String type) {
+        this.name = name;
+        this.task = task;
+        this.awsKey = awsKey;
+        this.type = type;
+    }
+
 }

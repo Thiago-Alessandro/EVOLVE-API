@@ -2,6 +2,7 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.AwsFile;
+import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.repository.AwsFileRepository;
 import net.weg.taskmanager.repository.TaskRepository;
 import org.springframework.core.env.Environment;
@@ -40,28 +41,114 @@ public class AwsFileService {
 
         AwsBasicCredentials awsCredentials = getAwsBasicCredentials();
 
-        try (S3Presigner presigner = S3Presigner.builder()
-                .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
-                .region(Region.of(region))
-                .build()) {
+        try (S3Presigner presigner = createS3Presigner(awsCredentials, Region.of(region))) {
 
-            GetObjectRequest objectRequest = GetObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(referenceKey)
-                    .build();
+            GetObjectRequest objectRequest = createGetObjectRequest(bucketName, referenceKey);
 
-            GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                    .signatureDuration(Duration.ofMinutes(10))  // The URL will expire in 10 minutes.
-                    .getObjectRequest(objectRequest)
-                    .build();
+            GetObjectPresignRequest presignRequest = createGetObjectPresignedRequest(objectRequest);
 
             PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
+
             return presignedRequest.url().toString();
         }
     }
 
+    public boolean uploadFile(Long referenceId, MultipartFile file) {
 
-//
+        String bucketName = env.getProperty("bucket");
+        String region = "us-east-1";
+
+        AwsBasicCredentials awsCredentials = getAwsBasicCredentials();
+
+        try (S3Client s3Client = createS3Client(awsCredentials, Region.of(region))) {
+
+            if (!doesBucketExist(s3Client, bucketName)) {
+                return false;
+            }
+
+            try (InputStream fileInputStream = file.getInputStream()) {
+
+                String fileKey = UUID.randomUUID().toString();
+                String contentType = file.getContentType();
+
+                PutObjectRequest putObjectRequest = createPutObjectRequest(bucketName, fileKey, contentType);
+
+                s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(fileInputStream, file.getSize()));
+
+                Task task = taskRepository.findById(referenceId).get();
+                AwsFile awsFile = new AwsFile( file.getOriginalFilename(), task, fileKey,  contentType);
+                awsFileRepository.save(awsFile);
+
+//                return awsFile;
+                return true;
+            } catch (IOException e) {
+//                e.printStackTrace();
+                return false;
+            }
+        } catch (Exception e) {
+//            e.printStackTrace();
+            return false;
+        }
+    }
+
+    //region auxiliarMethods
+
+    private S3Presigner createS3Presigner(AwsBasicCredentials awsBasicCredentials, Region region){
+        return S3Presigner.builder()
+                .credentialsProvider(StaticCredentialsProvider.create(awsBasicCredentials))
+                .region(region)
+                .build();
+    }
+
+    private GetObjectRequest createGetObjectRequest(String bucketName, String key){
+        return GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build();
+    }
+
+    private GetObjectPresignRequest createGetObjectPresignedRequest(GetObjectRequest getObjectRequest){
+        return  GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(10))  // The URL will expire in 10 minutes.
+                .getObjectRequest(getObjectRequest)
+                .build();
+    }
+
+    private S3Client createS3Client(AwsBasicCredentials awsBasicCredentials, Region region){
+        return S3Client.builder()
+                .credentialsProvider(StaticCredentialsProvider.create(awsBasicCredentials))
+                .region(region)
+                .build();
+    }
+
+    private PutObjectRequest createPutObjectRequest(String bucketName, String key, String contentType){
+        return PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .contentType(contentType)
+                .build();
+    }
+
+    private AwsBasicCredentials getAwsBasicCredentials(){
+        String keySecret = env.getProperty("keySecret");
+        String keyId = env.getProperty("keyId");
+        return AwsBasicCredentials.create(keyId, keySecret);
+    }
+
+    private boolean doesBucketExist(S3Client s3Client, String bucketName) {
+            return !s3Client.listBuckets().buckets().stream().filter(bucket -> bucket.name().equals(bucketName)).toList().isEmpty();
+//        try {
+////            s3Client.headBucket(b -> b.bucket(bucketName));
+////            s3Client.headBucket(builder -> builder.bucket(bucketName));
+//        return true;
+//        } catch (S3Exception e) {
+//            return false;
+//        }
+    }
+
+    //endregion
+
+
 //    public AwsFile create(Long referenceId, MultipartFile file){
 //        AwsFile awsFile = new AwsFile();
 //
@@ -84,68 +171,5 @@ public class AwsFileService {
 //        awsFile.setTask(taskRepository.findById(referenceId).get());
 //        return awsFile;
 //    }
-
-    public boolean uploadFile(Long referenceId, MultipartFile file) {
-
-        String bucketName = env.getProperty("bucket");
-        String region = "us-east-1";
-
-        AwsBasicCredentials awsCredentials = getAwsBasicCredentials();
-
-        try (S3Client s3Client = S3Client.builder()
-                .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
-                .region(Region.of(region))
-                .build()) {
-
-            if (!doesBucketExist(s3Client, bucketName)) {
-                return false;
-            }
-
-            String fileKey = UUID.randomUUID().toString();
-            String contentType = file.getContentType();
-
-            try (InputStream fileInputStream = file.getInputStream()) {
-                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(fileKey)
-                        .contentType(contentType)
-                        .build();
-
-                s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(fileInputStream, file.getSize()));
-
-                AwsFile awsFile = new AwsFile();
-                awsFile.setAwsKey(fileKey);
-                awsFile.setName(file.getOriginalFilename());
-                awsFile.setType(contentType);
-                awsFile.setTask(taskRepository.findById(referenceId).get());
-                awsFileRepository.save(awsFile);
-//                return awsFile;
-
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private AwsBasicCredentials getAwsBasicCredentials(){
-        String keySecret = env.getProperty("keySecret");
-        String keyId = env.getProperty("keyId");
-        return AwsBasicCredentials.create(keyId, keySecret);
-    }
-
-    private boolean doesBucketExist(S3Client s3Client, String bucketName) {
-        try {
-            s3Client.headBucket(b -> b.bucket(bucketName));
-            return true;
-        } catch (S3Exception e) {
-            return false;
-        }
-    }
-
 
 }
