@@ -21,5 +21,5 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     Collection<Task> getTaskByCurrentStatus(Status status);
 
     boolean existsByIdAndAssociatesContaining(Long taskId, User user);
-    boolean existsByIdAnd
+    boolean existsByCurrentStatus_IdAndAssociatesContaining(Long statusId, User user);
 }

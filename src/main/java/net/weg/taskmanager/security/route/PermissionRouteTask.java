@@ -41,7 +41,7 @@ public class PermissionRouteTask implements AuthorizationManager<RequestAuthoriz
             }
             return new AuthorizationDecision(existsByTask_IdAndUser_Id(userId, taskId, userDetails));
         }
-        return new AuthorizationDecision();
+        return new AuthorizationDecision(existsByStatus_IdAndUser(statusId, user));
     }
 
     private boolean existsByTaskIdAndUser(Long taskId, User user) {
@@ -50,6 +50,10 @@ public class PermissionRouteTask implements AuthorizationManager<RequestAuthoriz
 
     private boolean existsByTask_IdAndUser_Id(Long userId, Long taskId, UserDetailsEntity userDetails) {
         return userTaskRepository.existsByUserIdAndTaskIdAndUser_UserDetailsEntity(userId, taskId, userDetails);
+    }
+
+    private boolean existsByStatus_IdAndUser(Long statusId, User user) {
+        return taskRepository.existsByCurrentStatus_IdAndAssociatesContaining(statusId, user);
     }
 //    private boolean existsByStatus(Long)
 }
