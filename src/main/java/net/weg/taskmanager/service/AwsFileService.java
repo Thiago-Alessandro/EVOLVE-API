@@ -5,6 +5,7 @@ import net.weg.taskmanager.model.AwsFile;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.repository.AwsFileRepository;
 import net.weg.taskmanager.repository.TaskRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.Bucket;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
@@ -76,9 +78,8 @@ public class AwsFileService {
                 s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(fileInputStream, file.getSize()));
 
                 Task task = taskRepository.findById(referenceId).get();
-                AwsFile awsFile = new AwsFile( file.getOriginalFilename(), task, fileKey,  contentType);
+                AwsFile awsFile = new AwsFile(file.getOriginalFilename(), task, fileKey,  contentType);
                 awsFileRepository.save(awsFile);
-
 //                return awsFile;
                 return true;
             } catch (IOException e) {
@@ -136,14 +137,14 @@ public class AwsFileService {
     }
 
     private boolean doesBucketExist(S3Client s3Client, String bucketName) {
-            return !s3Client.listBuckets().buckets().stream().filter(bucket -> bucket.name().equals(bucketName)).toList().isEmpty();
-//        try {
-////            s3Client.headBucket(b -> b.bucket(bucketName));
-////            s3Client.headBucket(builder -> builder.bucket(bucketName));
-//        return true;
-//        } catch (S3Exception e) {
-//            return false;
-//        }
+        try {
+//            s3Client.headBucket(b -> b.bucket(bucketName));
+//            return !s3Client.listBuckets().buckets().stream().filter(bucket -> bucket.name().equals(bucketName)).toList().isEmpty();
+            s3Client.headBucket(builder -> builder.bucket(bucketName));
+            return true;
+        } catch (S3Exception e) {
+            return false;
+        }
     }
 
     //endregion
