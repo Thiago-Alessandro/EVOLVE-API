@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import net.weg.taskmanager.model.abstracts.Chat;
 import net.weg.taskmanager.model.dto.get.*;
-import net.weg.taskmanager.model.dto.shortDTOs.TeamShortDTO;
+import net.weg.taskmanager.model.dto.shortDTOs.*;
 import net.weg.taskmanager.model.entity.*;
-import net.weg.taskmanager.model.dto.shortDTOs.UserShortDTO;
 import net.weg.taskmanager.model.enums.Priority;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import org.modelmapper.ModelMapper;
@@ -14,7 +13,6 @@ import org.springframework.beans.BeanUtils;
 
 import java.util.Base64;
 import java.util.Collection;
-import java.util.Properties;
 
 @Data
 @AllArgsConstructor
@@ -22,16 +20,16 @@ public class DTOUtils {
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
-    public static UserShortDTO userToUserShort(User user){
+    public static ShortUserDTO userToShortUserDTO(User user){
         if (user != null) {
-            return new UserShortDTO(user);
+            return new ShortUserDTO(user);
         }
         return null;
     }
-    public static Collection<UserShortDTO> usersToUserShort(Collection<User> users){
+    public static Collection<ShortUserDTO> usersToShortUserDTO(Collection<User> users){
         if(users != null){
             return users.stream()
-                    .map(DTOUtils::userToUserShort).toList();
+                    .map(DTOUtils::userToShortUserDTO).toList();
         }
         return null;
     }
@@ -64,6 +62,21 @@ public class DTOUtils {
         return null;
     }
 
+    public static ShortTaskDTO taskToShortTaskDTO(Task task){
+        if(task != null){
+            return new ShortTaskDTO(task);
+        }
+        return null;
+    }
+    public static Collection<ShortTaskDTO> tasksToShortGetTaskDTOS(Collection<Task> tasks){
+        if(tasks != null){
+            return tasks.stream()
+                    .map(DTOUtils::taskToShortTaskDTO).toList();
+        }
+        return null;
+    }
+
+
     public static GetTeamDTO teamToGetTeamDTO(Team team){
         if(team != null){
             return new GetTeamDTO(team);
@@ -92,6 +105,22 @@ public class DTOUtils {
         return null;
     }
 
+    public static ShortMessageDTO messageToShortMessageDTO(Message message){
+        if(message != null){
+            return new ShortMessageDTO(message);
+        }
+        return null;
+    }
+    public static Collection<ShortMessageDTO> messageToShortMessageDTOS(Collection<Message> messages){
+        if(messages != null){
+            return messages.stream()
+                    .map(DTOUtils::messageToShortMessageDTO).toList();
+        }
+        return null;
+    }
+
+
+
     public static GetProjectDTO projectToGetProjectDTO(Project project){
         if(project != null){
             return new GetProjectDTO(project);
@@ -106,13 +135,28 @@ public class DTOUtils {
         return null;
     }
 
-    public static TeamShortDTO teamToShortTeamDTO(Team team){
-        if (team != null){
-            return new TeamShortDTO(team);
+    public static ShortProjectDTO projectToShortProjectDTO(Project project){
+        if(project != null){
+            return new ShortProjectDTO(project);
         }
         return null;
     }
-    public static Collection<TeamShortDTO> teamToShortTeamDTOS(Collection<Team> teams){
+    public static Collection<ShortProjectDTO> projectToShortProjectDTOS(Collection<Project> projects){
+        if(projects != null){
+            return projects.stream()
+                    .map(DTOUtils::projectToShortProjectDTO).toList();
+        }
+        return null;
+    }
+
+
+    public static ShortTeamDTO teamToShortTeamDTO(Team team){
+        if (team != null){
+            return new ShortTeamDTO(team);
+        }
+        return null;
+    }
+    public static Collection<ShortTeamDTO> teamToShortTeamDTOS(Collection<Team> teams){
         if (teams != null){
             return teams.stream().map(DTOUtils::teamToShortTeamDTO).toList();
         }
@@ -140,6 +184,20 @@ public class DTOUtils {
         if(chats != null){
             return chats.stream()
                     .map(DTOUtils::chatToGetChatDTO).toList();
+        }
+        return null;
+    }
+
+    public static ShortChatDTO chatToShortChatDTO(Chat chat){
+        if(chat != null){
+            return new ShortChatDTO(chat);
+        }
+        return null;
+    }
+    public static Collection<ShortChatDTO> chatToShortChatDTOS(Collection<Chat> chats){
+        if(chats != null){
+            return chats.stream()
+                    .map(DTOUtils::chatToShortChatDTO).toList();
         }
         return null;
     }

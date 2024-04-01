@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.dto.shortDTOs.TeamShortDTO;
+import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
 import net.weg.taskmanager.model.dto.utils.DTOUtils;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.property.Property;
@@ -36,7 +36,7 @@ public class GetProjectDTO {
     private Collection<Property> properties;
     private Collection<Status> statusList;
     private Collection<GetUserDTO> members;
-    private TeamShortDTO team;
+    private ShortTeamDTO team;
 
     @JsonIgnore
     private GetProjectChatDTO chat;

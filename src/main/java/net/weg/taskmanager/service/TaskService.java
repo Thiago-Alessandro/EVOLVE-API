@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
+import net.weg.taskmanager.model.property.Option;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.service.processor.PropertyProcessor;
 import net.weg.taskmanager.service.processor.TaskProcessor;
@@ -31,6 +32,7 @@ public class TaskService {
     private final UserRepository userRepository;
     //    private final ModelMapper modelMapper;
     private final PropertyValueRepository propertyValueRepository;
+    private final OptionRepository optionRepository;
 
     public UserTask setWorkedTime(UserTask userTask) {
 
@@ -71,6 +73,10 @@ public class TaskService {
         return PropertyProcessor.getInstance().resolveProperty(propertyOfPropertyValue);
     }
 
+    public Option putPropertyOption(Option newOption) {
+        return this.optionRepository.save(newOption);
+    }
+
     public Collection<Property> getAllProperties() {
         return this.propertyRepository.findAll();
     }
@@ -85,7 +91,9 @@ public class TaskService {
 
     public GetTaskDTO patchProperty(Property property, Long taskId) {
         Task task = taskRepository.findById(taskId).get();
-
+        if(property.getOptions() != null) {
+            optionRepository.saveAll(property.getOptions());
+        }
         property = this.propertyRepository.save(property);
         task.getProperties().add(property);
 
@@ -129,7 +137,6 @@ public class TaskService {
     private final TaskProcessor taskProcessor = new TaskProcessor();
     private GetTaskDTO resolveAndGetDTO(Task task){
         taskProcessor.resolveTask(task);
-        System.out.println(task + "df");
         return new GetTaskDTO(task);
     }
     private Collection<GetTaskDTO> resolveAndGetDTOS(Collection<Task> tasks){

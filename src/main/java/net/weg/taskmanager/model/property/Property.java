@@ -35,4 +35,7 @@ public class Property {
     @OneToMany
     private Collection<Option> options;
 
+    @OneToMany
+    private Collection<Option> currentOptions;
+
 }
