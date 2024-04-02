@@ -57,5 +57,6 @@ public class Task {
     private Collection<User> associates;
 
     private Integer statusListIndex;
+    private Double progress;
 
 }

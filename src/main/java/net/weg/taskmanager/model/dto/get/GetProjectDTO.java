@@ -48,6 +48,7 @@ public class GetProjectDTO {
         this.chat = DTOUtils.chatToGetProjectChatDTO(project.getChat());
         this.administrators = DTOUtils.usersToGetUserDTOs(project.getAdministrators());
         this.members = DTOUtils.usersToGetUserDTOs(project.getMembers());
+        this.tasks = DTOUtils.tasksToGetTaskDTOS(project.getTasks());
     }
 
 }

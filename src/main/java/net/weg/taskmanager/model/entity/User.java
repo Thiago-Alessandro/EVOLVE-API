@@ -23,7 +23,8 @@ public class User {
     private String name;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
+
     private String email;
 
     @OneToOne(cascade = CascadeType.ALL)
