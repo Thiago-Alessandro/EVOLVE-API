@@ -64,13 +64,13 @@ public class ProjectService {
         Collection<Project> projects =  projectRepository.findAll();
         Collection<GetProjectDTO> getProjectDTOS = new HashSet<>();
 
-        projects.stream()
-                        .forEach(project -> {
+        projects
+                .forEach(project -> {
 //                            project.setTasks();
-                            ProjectProcessor.getInstance().resolveProject(project);
-                            GetProjectDTO getProjectDTO = transformToGetProjectDTO(project);
-                            getProjectDTOS.add(getProjectDTO);
-                        });
+                    ProjectProcessor.getInstance().resolveProject(project);
+                    GetProjectDTO getProjectDTO = transformToGetProjectDTO(project);
+                    getProjectDTOS.add(getProjectDTO);
+                });
 
         return getProjectDTOS;
     }
@@ -140,23 +140,7 @@ public class ProjectService {
         return savedProject;
     }
     private GetProjectDTO transformToGetProjectDTO(Project project){
-        GetProjectDTO getProjectDTO = new GetProjectDTO();
-        Collection<GetTaskDTO> getTaskDTOS = new HashSet<>();
-
-        BeanUtils.copyProperties(project, getProjectDTO);
-
-        if(project.getTasks()!=null) {
-            project.getTasks().forEach((task -> {
-                GetTaskDTO getTaskDTO = new GetTaskDTO();
-                PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(), task.getPriority().backgroundColor);
-                BeanUtils.copyProperties(task, getTaskDTO);
-                getTaskDTO.setPriority(priorityRecord);
-                getTaskDTOS.add(getTaskDTO);
-            }));
-        }
-
-        getProjectDTO.setTasks(getTaskDTOS);
-        return getProjectDTO;
+        return new GetProjectDTO(project);
     }
 
     private void propertiesSetProject(Project project){
