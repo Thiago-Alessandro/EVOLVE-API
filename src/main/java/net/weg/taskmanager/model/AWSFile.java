@@ -1,4 +1,4 @@
-package net.weg.taskmanager.model.record;
+package net.weg.taskmanager.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

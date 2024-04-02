@@ -1,7 +1,6 @@
 package net.weg.taskmanager.repository;
 
-import net.weg.taskmanager.model.File;
-import net.weg.taskmanager.model.record.AWSFile;
+import net.weg.taskmanager.model.AWSFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

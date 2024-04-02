@@ -22,7 +22,7 @@ public class AWSFileController {
             return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
             e.getStackTrace();
-            System.out.println("não foi nego");
+//            System.out.println("não foi nego");
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
