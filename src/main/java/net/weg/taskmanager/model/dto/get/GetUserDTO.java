@@ -27,6 +27,8 @@ public class GetUserDTO {
     private Collection<GetTaskDTO> createdTasks;
     private Collection<GetTeamDTO> managedTeams;
     private Collection<GetTeamDTO> teams;
+    private  String theme;
+
 
     public GetUserDTO(User user){
         BeanUtils.copyProperties(user, this);

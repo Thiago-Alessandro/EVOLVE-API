@@ -35,36 +35,13 @@ public class AwsFileService {
 
     private final AwsFileRepository awsFileRepository;
     private final TaskRepository taskRepository;
-    //
-//    public AwsFile create(Long referenceId, MultipartFile file){
-//        AwsFile awsFile = new AwsFile();
-//
-//        String keySecret = env.getProperty("keySecret");
-//        String bucket = env.getProperty("bucket");
-//        String keyId = env.getProperty("keySId");
-//
-//        AwsCredentials credentials = AwsBasicCredentials.create(keyId,
-//                keySecret);
-//
-//        AmazonS3 s3client = AmazonS3ClientBuilder
-//                .standard()
-//                .withCredentials(new AWSStaticCredentialsProvider(credentials))
-//                .withRegion(Regions.US_EAST_2)
-//                .build();
-//
-//        awsFile.setAwsKey(UUID.randomUUID());
-//        awsFile.setName(file.getOriginalFilename());
-//        awsFile.setType(file.getContentType());
-//        awsFile.setTask(taskRepository.findById(referenceId).get());
-//        return awsFile;
-//    }
+
     public String getAws3(Long id){
         String keyId = env.getProperty("keyId");
         String keySecret = env.getProperty("keySecret");
         AwsBasicCredentials awsBasicCredentials =  AwsBasicCredentials.create(keyId, keySecret);
         String region = "us-east-1";
         String bucketName = env.getProperty("bucket");
-        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(keyId, keySecret);
 
 
         try (S3Client s3Client = S3Client.builder()
@@ -124,7 +101,6 @@ public class AwsFileService {
                 return false;
             }
 
-//            String fileKey = file.getOriginalFilename(); // Assumindo que você deseja usar o nome original do arquivo como chave
             String fileKey = UUID.randomUUID().toString();
             String contentType = file.getContentType();
 

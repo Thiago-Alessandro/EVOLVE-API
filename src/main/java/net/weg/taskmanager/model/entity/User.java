@@ -38,6 +38,7 @@ public class User {
     private Collection<Team> managedTeams;
     @ManyToMany(mappedBy = "participants")
     private Collection<Team> teams;
+    private String theme = "light";
 
 
     @Override

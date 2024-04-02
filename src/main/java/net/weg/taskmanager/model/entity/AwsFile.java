@@ -22,7 +22,7 @@ public class AwsFile {
 
     @Column(nullable = false)
     private String name;
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     private Task task;
     @Column(nullable = false)
     private String awsKey;
