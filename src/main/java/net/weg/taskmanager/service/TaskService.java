@@ -107,6 +107,13 @@ public class TaskService {
         return resolveAndGetDTO(savedTask);
     }
 
+    public Collection<User> patchAssociate(Long taskId, Collection<User> associates){
+        Task task = taskRepository.findById(taskId).get();
+        task.setAssociates(associates);
+
+        return taskRepository.save(task).getAssociates();
+    }
+
     public GetTaskDTO findById(Long id) {
         Task task = taskRepository.findById(id).get();
 
