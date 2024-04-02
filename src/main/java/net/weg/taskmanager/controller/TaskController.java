@@ -3,6 +3,7 @@ package net.weg.taskmanager.controller;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.AllArgsConstructor;
 
+import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.enums.Priority;
 import net.weg.taskmanager.model.entity.UserTask;
@@ -67,7 +68,8 @@ public class TaskController {
     }
 
     @PatchMapping("property/associates/{taskId}")
-    public Collection<User> patchAssociate(@PathVariable Long taskId, @RequestBody Collection<User> associates) {
+    public Collection<GetUserDTO> patchAssociate(@PathVariable Long taskId, @RequestBody Collection<User> associates) {
+        System.out.println("CHEGOU NA CONTROLLER");
         return taskService.patchAssociate(taskId,associates);
     }
 

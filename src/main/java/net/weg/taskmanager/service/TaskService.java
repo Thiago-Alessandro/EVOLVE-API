@@ -2,6 +2,8 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 
+import net.weg.taskmanager.model.dto.get.GetUserDTO;
+import net.weg.taskmanager.model.dto.utils.DTOUtils;
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.entity.UserTask;
 import net.weg.taskmanager.model.entity.UserTaskId;
@@ -107,11 +109,11 @@ public class TaskService {
         return resolveAndGetDTO(savedTask);
     }
 
-    public Collection<User> patchAssociate(Long taskId, Collection<User> associates){
+    public Collection<GetUserDTO> patchAssociate(Long taskId, Collection<User> associates){
         Task task = taskRepository.findById(taskId).get();
         task.setAssociates(associates);
 
-        return taskRepository.save(task).getAssociates();
+        return DTOUtils.usersToGetUserDTOs(taskRepository.save(task).getAssociates());
     }
 
     public GetTaskDTO findById(Long id) {
