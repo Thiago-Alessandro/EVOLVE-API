@@ -16,7 +16,9 @@ import java.util.List;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = DataValue.class, name = "DataValue"),
         @JsonSubTypes.Type(value = TextValue.class, name = "TextValue"),
-        @JsonSubTypes.Type(value = IntegerValue.class, name = "IntegerValue")
+        @JsonSubTypes.Type(value = IntegerValue.class, name = "IntegerValue"),
+        @JsonSubTypes.Type(value = AssociatesValue.class, name = "AssociatesValue"),
+        @JsonSubTypes.Type(value = DoubleValue.class, name = "DoubleValue")
 })
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Value <T>{

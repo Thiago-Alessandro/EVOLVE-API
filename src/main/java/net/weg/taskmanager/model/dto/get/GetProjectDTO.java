@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
+import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 import net.weg.taskmanager.model.dto.utils.DTOUtils;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.property.Property;
@@ -26,16 +27,16 @@ public class GetProjectDTO {
     private Boolean favorited;
     private GetFileDTO image;
     private String imageColor;
-    private GetUserDTO creator;
+    private ShortUserDTO creator;
     private LocalDate finalDate;
     private LocalDate creationDate;
     private LocalDateTime lastTimeEdited;
 
     //vai continuar msm?
-    private Collection<GetUserDTO> administrators;
+    private Collection<ShortUserDTO> administrators;
     private Collection<Property> properties;
     private Collection<Status> statusList;
-    private Collection<GetUserDTO> members;
+    private Collection<ShortUserDTO> members;
     private ShortTeamDTO team;
 
     @JsonIgnore
@@ -46,8 +47,9 @@ public class GetProjectDTO {
         BeanUtils.copyProperties(project, this);
         this.image = DTOUtils.fileToGetFileDTO(project.getImage());
         this.chat = DTOUtils.chatToGetProjectChatDTO(project.getChat());
-        this.administrators = DTOUtils.usersToGetUserDTOs(project.getAdministrators());
-        this.members = DTOUtils.usersToGetUserDTOs(project.getMembers());
+        this.administrators = DTOUtils.usersToShortUserDTO(project.getAdministrators());
+        this.members = DTOUtils.usersToShortUserDTO(project.getMembers());
+        this.creator = DTOUtils.userToShortUserDTO(project.getCreator());
         this.tasks = DTOUtils.tasksToGetTaskDTOS(project.getTasks());
     }
 

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.dto.shortDTOs.ShortProjectDTO;
+import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 import net.weg.taskmanager.model.dto.utils.DTOUtils;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.property.Property;
@@ -35,24 +37,24 @@ public class GetTaskDTO {
     private PriorityRecord priority ;
 
 
-    private GetUserDTO creator;
+    private ShortUserDTO creator;
 
-    private GetProjectDTO project;
+    private ShortProjectDTO project;
 
     private Collection<Property> properties;
 
     private Collection<Subtask> subtasks;
 
-    private Collection<GetUserDTO> associates;
+    private Collection<ShortUserDTO> associates;
 
     private Integer statusListIndex;
     private Double progress;
 
     public GetTaskDTO(Task task){
         BeanUtils.copyProperties(task, this);
-        this.creator = DTOUtils.userToGetUserDTO(task.getCreator());
-        this.associates = DTOUtils.usersToGetUserDTOs(task.getAssociates());
-        this.project = DTOUtils.projectToGetProjectDTO(task.getProject());
+        this.creator = DTOUtils.userToShortUserDTO(task.getCreator());
+        this.associates = DTOUtils.usersToShortUserDTO(task.getAssociates());
+        this.project = DTOUtils.projectToShortProjectDTO(task.getProject());
         this.priority = DTOUtils.priorityToPriorityRecord(task.getPriority());
     }
 
