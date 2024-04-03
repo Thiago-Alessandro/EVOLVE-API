@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import lombok.ToString;
 import net.weg.taskmanager.model.enums.Priority;
 import net.weg.taskmanager.model.property.Property;
 
@@ -62,4 +63,11 @@ public class Task {
     private Integer statusListIndex;
     private Double progress;
 
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

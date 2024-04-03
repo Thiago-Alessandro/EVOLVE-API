@@ -58,8 +58,10 @@ public class TaskService {
 
     public Comment patchNewComment(Long taskId, Comment newComment) {
         Task task = taskRepository.findById(taskId).get();
+        newComment.setTask(task);
         Comment commentSaved = commentRepository.save(newComment);
-        task.getComments().add(commentSaved);
+        System.out.println(commentSaved);
+        System.out.println(task.getComments());
         return commentSaved;
     }
 
