@@ -42,6 +42,7 @@ public class AWSFileService {
         String region = "us-east-1";
         String randomId = UUID.randomUUID().toString();
         File file1 = new File(file, randomId);
+        aws.save(file1);
 
         AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(keyID, keySecret);
 
@@ -62,7 +63,6 @@ public class AWSFileService {
                         .build();
 
                 s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(fileInputStream, file.getSize()));
-                aws.save(file1);
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -98,7 +98,7 @@ public class AWSFileService {
                         .build();
 
                 GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                        .signatureDuration(Duration.ofMinutes(10))  // The URL will expire in 10 minutes.
+                        .signatureDuration(Duration.ofMinutes(10))
                         .getObjectRequest(objectRequest)
                         .build();
 
