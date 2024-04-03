@@ -28,7 +28,7 @@ public class GetUserDTO {
     private Collection<ShortTaskDTO> createdTasks;
     private Collection<GetTeamDTO> managedTeams;
     private Collection<GetTeamDTO> teams;
-
+    private String theme;
     public GetUserDTO(User user){
         BeanUtils.copyProperties(user, this);
         this.image = DTOUtils.fileToGetFileDTO(user.getImage());

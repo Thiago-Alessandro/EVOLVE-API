@@ -22,6 +22,7 @@ public class User {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
+
     private String password;
     @Column(nullable = false, unique = true)
 
@@ -39,7 +40,7 @@ public class User {
     private Collection<Team> managedTeams;
     @ManyToMany(mappedBy = "participants")
     private Collection<Team> teams;
-
+    private String theme;
 
     @Override
     public boolean equals(Object o) {

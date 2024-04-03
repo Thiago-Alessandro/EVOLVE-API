@@ -84,6 +84,25 @@ public class UserService {
        return resolveAndGetDTO(userRepository.findByEmail(email));
     }
 
+    public GetUserDTO patchTheme(Long userId,String theme){
+        User user = userRepository.findById(userId).get();
+        user.setTheme(theme);
+        return resolveAndGetDTO(userRepository.save(user));
+    }
+
+    public GetUserDTO patchEmail(Long userId,String email){
+        User user = userRepository.findById(userId).get();
+        user.setEmail(email);
+        return resolveAndGetDTO(userRepository.save(user));
+    }
+
+    public GetUserDTO patchPassword(Long userId,String password){
+        User user = userRepository.findById(userId).get();
+        user.setPassword(password);
+        return resolveAndGetDTO(userRepository.save(user));
+    }
+
+
     private GetUserDTO resolveAndGetDTO(User user){
         User resolvedUser = userProcessor.resolveUser(user);
         return new GetUserDTO(resolvedUser);

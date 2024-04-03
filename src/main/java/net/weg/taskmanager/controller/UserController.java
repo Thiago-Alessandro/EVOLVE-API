@@ -50,4 +50,19 @@ public class UserController {
     @GetMapping("/login/{email}")
     public GetUserDTO loginByEmail(@PathVariable String email){return userService.findByEmail(email);}
 
+    @PatchMapping("/theme/{userId}/{theme}")
+    public GetUserDTO patchTheme(@PathVariable Long userId, @PathVariable String theme){
+        return userService.patchTheme(userId, theme);
+    }
+
+    @PatchMapping("/email/{userId}/{email}")
+    public GetUserDTO patchEmail(@PathVariable Long userId, @PathVariable String email){
+        return userService.patchEmail(userId, email);
+    }
+
+    @PatchMapping("/password/{userId}/{password}")
+    public GetUserDTO patchPassword(@PathVariable Long userId, @PathVariable String password){
+        return userService.patchPassword(userId, password);
+    }
+
 }
