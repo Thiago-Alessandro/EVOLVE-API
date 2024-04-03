@@ -22,6 +22,7 @@ public class Status {
     private Integer columnIndex;
 
     public Status(String name, String backgroundColor, String textColor, Boolean enabled) {
+        this.id = this.id;
         this.name = name;
         this.backgroundColor = backgroundColor;
         this.textColor = textColor;

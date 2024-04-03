@@ -3,6 +3,7 @@ package net.weg.taskmanager.model.dto.post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.entity.Status;
 import net.weg.taskmanager.model.entity.Team;
 import net.weg.taskmanager.model.entity.User;
 
@@ -21,6 +22,7 @@ public class PostProjectDTO {
     private User creator;
     private Collection<User> administrators;
     private LocalDate finalDate;
+    private Collection<Status> statusList;
     private Collection<User> members;
     private Team team;
 }

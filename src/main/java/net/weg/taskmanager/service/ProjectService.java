@@ -74,11 +74,16 @@ public class ProjectService {
         Project project = new Project();
         BeanUtils.copyProperties(projectDTO, project);
 
-        updateProjectChat(project);
+        Collection<Status> listaNova = new HashSet<>();
 
+        for (Status st: projectDTO.getStatusList()){
+            listaNova.add(new Status(st.getName(), st.getBackgroundColor(), st.getTextColor(), st.getEnabled()));
+        }
+        project.setStatusList(listaNova);
+
+        updateProjectChat(project);
         //Adiciona o projeto ao BD para que seja criado o seu Id
         projectRepository.save(project);
-
         //Referencia o projeto nas suas propriedades
         propertiesSetProject(project);
 

@@ -26,7 +26,9 @@ public class ProjectController {
     public void delete(@PathVariable Long id){
         projectService.delete(id);}
     @PostMapping
-    public GetProjectDTO create(@RequestBody PostProjectDTO project){return projectService.create(project);}
+    public GetProjectDTO create(@RequestBody PostProjectDTO project){
+        System.out.println("não é aqui 1");
+        return projectService.create(project);}
     @PutMapping
     public GetProjectDTO update(@RequestBody PutProjectDTO project){return projectService.update(project);}
 //    @GetMapping("/status")
