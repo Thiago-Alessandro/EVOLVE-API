@@ -49,6 +49,8 @@ public class Project {
     @Column(nullable = false)
     private Collection<User> administrators;
 
+    @OneToMany(mappedBy = "project")
+    private Collection<Comment> comments;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Collection<Property> properties;

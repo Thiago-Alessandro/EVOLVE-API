@@ -36,6 +36,7 @@ public class TaskService {
     //    private final ModelMapper modelMapper;
     private final PropertyValueRepository propertyValueRepository;
     private final OptionRepository optionRepository;
+    private final CommentRepository commentRepository;
 
     public UserTask setWorkedTime(UserTask userTask) {
 
@@ -48,6 +49,30 @@ public class TaskService {
         }
 
         return changingUserTask;
+    }
+
+    public Collection<Comment> getAllCommentsOfTask(Long taskId) {
+        Task task = taskRepository.findById(taskId).get();
+        return task.getComments();
+    }
+
+    public Comment patchNewComment(Long taskId, Comment newComment) {
+        Task task = taskRepository.findById(taskId).get();
+        Comment commentSaved = commentRepository.save(newComment);
+        task.getComments().add(commentSaved);
+        return commentSaved;
+    }
+
+    public void deleteComment(Long commentId, Long taskId) {
+        Task task = taskRepository.findById(taskId).get();
+
+        task.getComments().forEach(commentFor -> {
+            if(commentFor.getId() == commentId) {
+                task.getComments().remove(commentFor);
+            }
+        });
+
+        commentRepository.deleteById(commentId);
     }
 
 

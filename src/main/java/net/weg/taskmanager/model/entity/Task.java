@@ -38,6 +38,9 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private Priority priority ;
 
+    @OneToMany(mappedBy = "task")
+    private Collection<Comment> comments;
+
     @ManyToOne
     @JoinColumn(nullable = false)
     private User creator;
