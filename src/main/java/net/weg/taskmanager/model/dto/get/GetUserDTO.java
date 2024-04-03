@@ -1,5 +1,6 @@
 package net.weg.taskmanager.model.dto.get;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

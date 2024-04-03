@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.AllArgsConstructor;
 
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
+import net.weg.taskmanager.model.entity.Comment;
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.enums.Priority;
 import net.weg.taskmanager.model.entity.UserTask;
@@ -106,4 +107,20 @@ public class TaskController {
         return taskService.getTasksByUserId(userId);
     }
 
+    @GetMapping("/comments/getAll/{taskId}")
+    public Collection<Comment> getAllCommentsOfTask(@PathVariable Long taskId) {
+        return taskService.getAllCommentsOfTask(taskId);
+    }
+
+    @PatchMapping("/comments/patch/{taskId}")
+    public Comment patchNewComment(@PathVariable Long taskId,
+                                   @RequestBody Comment newComment) {
+        return taskService.patchNewComment(taskId, newComment);
+    }
+
+    @DeleteMapping("/comments/delete/{commentId}/{taskId}")
+    public void deleteComment(@PathVariable Long commentId,
+                              @PathVariable Long taskId) {
+        taskService.deleteComment(commentId,taskId);
+    }
 }

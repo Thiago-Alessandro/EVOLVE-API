@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import lombok.ToString;
 import net.weg.taskmanager.model.enums.Priority;
 import net.weg.taskmanager.model.property.Property;
 
@@ -38,6 +39,9 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private Priority priority ;
 
+    @OneToMany(mappedBy = "task")
+    private Collection<Comment> comments;
+
     @ManyToOne
     @JoinColumn(nullable = false)
     private User creator;
@@ -59,4 +63,11 @@ public class Task {
     private Integer statusListIndex;
     private Double progress;
 
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

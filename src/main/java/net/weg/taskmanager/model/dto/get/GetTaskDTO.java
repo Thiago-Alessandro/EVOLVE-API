@@ -28,6 +28,7 @@ public class GetTaskDTO {
 
     private LocalDate finalDate;
     private LocalDate creationDate;
+    private Collection<GetCommentDTO> comments;
     private LocalDate scheduledDate;
     private LocalDateTime lastTimeEdited;
     private String description;
@@ -56,6 +57,7 @@ public class GetTaskDTO {
         this.associates = DTOUtils.usersToShortUserDTO(task.getAssociates());
         this.project = DTOUtils.projectToShortProjectDTO(task.getProject());
         this.priority = DTOUtils.priorityToPriorityRecord(task.getPriority());
+        this.comments = task.getComments() != null ? task.getComments().stream().map(GetCommentDTO::new).toList() : null;
     }
 
 }
