@@ -12,6 +12,7 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @IdClass(UserTaskId.class)
+@Table(name = "user_task")
 public class UserTask {
 
     public UserTask(){

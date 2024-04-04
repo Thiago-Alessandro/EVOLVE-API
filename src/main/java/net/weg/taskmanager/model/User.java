@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,6 +43,9 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     private UserDetailsEntity userDetailsEntity;
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private Collection<UserProject> projectsAcess;
 
 
     @Override

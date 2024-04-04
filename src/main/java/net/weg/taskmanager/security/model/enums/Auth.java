@@ -1,9 +1,7 @@
 package net.weg.taskmanager.security.model.enums;
 
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -32,4 +30,5 @@ public enum Auth implements GrantedAuthority {
 //        Auth.valueOf()
        return Auth.valueOf(request.getMethod());
     }
+
 }

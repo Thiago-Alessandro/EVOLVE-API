@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserAuthTeamId implements Serializable {
+public class UserHierarchyTeamId implements Serializable {
     private Long userId;
     private Long teamId;
 }

@@ -25,7 +25,7 @@ public class ProjectProcessor {
         resolveProjectTasks();
         resolveProjectCreator();
         resolveProjectMembers();
-        resolveProjectAdministrators();
+//        resolveProjectAdministrators();
         resolveProjectTeam();
         reolveProjectChat();
 
@@ -70,16 +70,16 @@ public class ProjectProcessor {
         }
     }
 
-    private void resolveProjectAdministrators(){
-        if(resolvingProject.getAdministrators()!=null){
-            if(resolvingCascade.contains(User.class.getSimpleName())){
-                resolvingProject.setAdministrators(null);
-                return;
-            }
-            resolvingProject.getAdministrators().stream()
-                    .forEach(user -> UserProcessor.getInstance().resolveUser(user, resolvingCascade));
-        }
-    }
+//    private void resolveProjectAdministrators(){
+//        if(resolvingProject.getAdministrators()!=null){
+//            if(resolvingCascade.contains(User.class.getSimpleName())){
+//                resolvingProject.setAdministrators(null);
+//                return;
+//            }
+//            resolvingProject.getAdministrators().stream()
+//                    .forEach(user -> UserProcessor.getInstance().resolveUser(user, resolvingCascade));
+//        }
+//    }
 
     private void resolveProjectProperties(){
 

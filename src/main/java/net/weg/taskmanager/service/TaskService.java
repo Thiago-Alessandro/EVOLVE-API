@@ -125,7 +125,7 @@ public class TaskService {
 
         setStatusListIndex(task);
         System.out.println(taskRepository.save(task).getProject().getName());
-                taskRepository.save(task);
+        taskRepository.save(task);
         Task task2 = taskRepository.findById(task.getId()).get();
         System.out.println(task2.getProject().getName());
         System.out.println(task2.getProject().getId());
@@ -156,7 +156,7 @@ public class TaskService {
 
         TaskProcessor.getInstance().resolveTask(updatedTask);
         GetTaskDTO getTaskDTO = new GetTaskDTO();
-        BeanUtils.copyProperties(updatedTask,getTaskDTO);
+        BeanUtils.copyProperties(updatedTask, getTaskDTO);
         return getTaskDTO;
     }
 
@@ -171,13 +171,15 @@ public class TaskService {
                     userTaskRepository.save(userTask);
                 }
             }
-
-            userTaskRepository.findAll().stream()
-                    .filter(userTask -> Objects.equals(userTask.getTaskId(), task.getId()))
-                    .filter(userTask -> !task.getAssociates().contains(userTask.getUser()))
-                    .forEach(userTask -> userTaskRepository.delete(userTask));
+            deleteUserTaskIfUserIsNotAssociate(task);
         }
+    }
 
+    private void deleteUserTaskIfUserIsNotAssociate(Task task) {
+        userTaskRepository.findAll().stream()
+                .filter(userTask -> Objects.equals(userTask.getTaskId(), task.getId()))
+                .filter(userTask -> !task.getAssociates().contains(userTask.getUser()))
+                .forEach(userTask -> userTaskRepository.delete(userTask));
     }
 
     private void setStatusListIndex(Task task) {
@@ -214,5 +216,6 @@ public class TaskService {
 
         return getTaskDTOS;
     }
+
 
 }

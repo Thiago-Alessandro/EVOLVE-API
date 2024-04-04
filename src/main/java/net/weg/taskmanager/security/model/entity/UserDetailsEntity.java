@@ -5,11 +5,9 @@ import lombok.*;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.security.model.enums.Auth;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
 //com a criacao de uma segunda entity é bom deixar as necessidades de autentificacao na impleentacao do userDetails,
 //e os atributos necessarios para a aplicacao na classe usuario

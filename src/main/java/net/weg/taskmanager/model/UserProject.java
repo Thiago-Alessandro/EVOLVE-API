@@ -4,16 +4,15 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.security.model.enums.Auth;
-
-import java.util.Collection;
+import net.weg.taskmanager.security.model.entity.ProfileAcess;
 
 @Entity
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
-@IdClass(UserAuthProjectId.class)
-public class UserAuthProject {
+@IdClass(UserProjectId.class)
+public class UserProject {
+
     @Id
     private Long userId;
     @Id
@@ -24,8 +23,14 @@ public class UserAuthProject {
     private User user;
     @ManyToOne
     @JoinColumn(name = "projectId", insertable = false, updatable = false)
-    private Task task;
+    private Project project;
 
-    //    @OneToMany
-    private Collection<Auth> authorizations;
+    @ManyToOne
+    private ProfileAcess acessProfile;
+
+    public UserProject(Long userId, Long projectId, ProfileAcess acessProfile) {
+        this.userId = userId;
+        this.projectId = projectId;
+        this.acessProfile = acessProfile;
+    }
 }

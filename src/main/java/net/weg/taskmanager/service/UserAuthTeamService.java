@@ -1,15 +1,13 @@
 package net.weg.taskmanager.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.repository.UserAuthTeamRepository;
-import net.weg.taskmanager.security.model.enums.Auth;
+import net.weg.taskmanager.repository.UserHierarchyTeamRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 public class UserAuthTeamService {
-    private final UserAuthTeamRepository userAuthTeamRepository;
+    private final UserHierarchyTeamRepository userHierarchyTeamRepository;
 
 //    public boolean hasAuthorization(Long userId, Long teamId, HttpServletRequest request){
 //        Auth auth = Auth.valueOf(request.getMethod());

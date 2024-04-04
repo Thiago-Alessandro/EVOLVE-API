@@ -34,7 +34,7 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         httpSecurity.authorizeHttpRequests(autorizeRequests -> autorizeRequests
-                .requestMatchers(HttpMethod.DELETE, "/project").hasAuthority("DELETE")
+                .requestMatchers(HttpMethod.DELETE, "/project/{projectId}").hasAuthority("DELETE")
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
                 .requestMatchers(HttpMethod.GET, "/authorization/").permitAll()

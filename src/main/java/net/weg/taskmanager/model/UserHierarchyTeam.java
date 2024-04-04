@@ -5,16 +5,14 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.security.model.enums.Auth;
-
-import java.util.Collection;
+import net.weg.taskmanager.security.model.entity.ProfileAcess;
 
 @Entity
 @AllArgsConstructor
 @Data
-@IdClass(UserAuthTeamId.class)
+@IdClass(UserHierarchyTeamId.class)
 @NoArgsConstructor
-public class UserAuthTeam {
+public class UserHierarchyTeam {
     @Id
     private Long userId;
     @Id
@@ -27,6 +25,6 @@ public class UserAuthTeam {
     @JoinColumn(name = "teamId", insertable = false, updatable = false)
     private Team team;
 
-    //    @OneToMany
-    private Collection<Auth> authorizations = null;
+    @ManyToOne
+    private ProfileAcess hierarchy;
 }
