@@ -60,12 +60,10 @@ public class TaskService {
         Task task = taskRepository.findById(taskId).get();
         newComment.setTask(task);
         Comment commentSaved = commentRepository.save(newComment);
-        System.out.println(commentSaved);
-        System.out.println(task.getComments());
         return commentSaved;
     }
 
-    public void deleteComment(Long commentId, Long taskId) {
+    public Collection<Comment> deleteComment(Long commentId, Long taskId) {
         Task task = taskRepository.findById(taskId).get();
 
         task.getComments().forEach(commentFor -> {
@@ -75,6 +73,8 @@ public class TaskService {
         });
 
         commentRepository.deleteById(commentId);
+
+        return task.getComments();
     }
 
 

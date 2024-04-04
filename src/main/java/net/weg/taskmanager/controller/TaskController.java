@@ -119,8 +119,8 @@ public class TaskController {
     }
 
     @DeleteMapping("/comments/delete/{commentId}/{taskId}")
-    public void deleteComment(@PathVariable Long commentId,
+    public Collection<Comment> deleteComment(@PathVariable Long commentId,
                               @PathVariable Long taskId) {
-        taskService.deleteComment(commentId,taskId);
+        return taskService.deleteComment(commentId,taskId);
     }
 }
