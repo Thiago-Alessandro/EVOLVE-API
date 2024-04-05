@@ -1,9 +1,12 @@
 package net.weg.taskmanager.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -14,8 +17,14 @@ public class Historic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
+    @JsonIgnore
     private User user;
     private String description;
-    private String time;
-    private String date;
+    private LocalDateTime dateTime;
+
+    public Historic(User userForHistoric, String s, LocalDateTime now) {
+        this.user = userForHistoric;
+        this.description = s;
+        this.dateTime = now;
+    }
 }

@@ -63,14 +63,14 @@ public class TaskController {
         return taskService.setWorkedTime(userTask);
     }
 
-    @PatchMapping("/property/{taskId}")
-    public GetTaskDTO patchProperty(@RequestBody Property property, @PathVariable Long taskId) {
-        return taskService.patchProperty(property,taskId);
+    @PatchMapping("/property/{taskId}/{userId}")
+    public GetTaskDTO patchProperty(@RequestBody Property property, @PathVariable Long taskId, @PathVariable Long userId) {
+        return taskService.patchProperty(property,taskId, userId);
     }
 
-    @PatchMapping("property/associates/{taskId}")
-    public Collection<GetUserDTO> patchAssociate(@PathVariable Long taskId, @RequestBody Collection<User> associates) {
-        return taskService.patchAssociate(taskId,associates);
+    @PatchMapping("property/associates/{taskId}/{userId}")
+    public Collection<GetUserDTO> patchAssociate(@PathVariable Long taskId, @RequestBody Collection<User> associates, @PathVariable Long userId) {
+        return taskService.patchAssociate(taskId,associates,userId);
     }
 
     @GetMapping("/userTask/{userId}/{taskId}")
@@ -78,16 +78,17 @@ public class TaskController {
         return taskService.getUserTask(userId, taskId);
     }
 
-    @PutMapping("/property/put/{propertyId}")
+    @PutMapping("/property/put/{propertyId}/{userId}")
     public Property putPropertyValue(@PathVariable Long propertyId,
-                                     @RequestBody PropertyValue propertyValue) {
-        Property propertyOfPropertyValue = taskService.putPropertyValue(propertyValue, propertyId);
+                                     @RequestBody PropertyValue propertyValue,
+                                     @PathVariable Long userId) {
+        Property propertyOfPropertyValue = taskService.putPropertyValue(propertyValue, propertyId, userId);
         return propertyOfPropertyValue;
     }
 
-    @PutMapping("/property/put/option")
-    public Option putPropertyOption(@RequestBody Option newOption) {
-        return taskService.putPropertyOption(newOption);
+    @PutMapping("/property/put/option/{userId}")
+    public Option putPropertyOption(@RequestBody Option newOption, @PathVariable Long userId) {
+        return taskService.putPropertyOption(newOption,userId);
     }
 
     @GetMapping("/property/get/getall")
@@ -111,15 +112,15 @@ public class TaskController {
         return taskService.getAllCommentsOfTask(taskId);
     }
 
-    @PatchMapping("/comments/patch/{taskId}")
+    @PatchMapping("/comments/patch/{taskId}/{userId}")
     public Comment patchNewComment(@PathVariable Long taskId,
-                                   @RequestBody Comment newComment) {
-        return taskService.patchNewComment(taskId, newComment);
+                                   @RequestBody Comment newComment, @PathVariable Long userId) {
+        return taskService.patchNewComment(taskId, newComment, userId);
     }
 
-    @DeleteMapping("/comments/delete/{commentId}/{taskId}")
+    @DeleteMapping("/comments/delete/{commentId}/{taskId}/{userId}")
     public Collection<Comment> deleteComment(@PathVariable Long commentId,
-                              @PathVariable Long taskId) {
-        return taskService.deleteComment(commentId,taskId);
+                              @PathVariable Long taskId, @PathVariable Long userId) {
+        return taskService.deleteComment(commentId,taskId,userId);
     }
 }

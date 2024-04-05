@@ -37,6 +37,8 @@ public class GetTaskDTO {
 
     private PriorityRecord priority ;
 
+    private Collection<Historic> historic;
+
 
     private ShortUserDTO creator;
 

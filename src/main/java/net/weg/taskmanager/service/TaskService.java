@@ -22,6 +22,8 @@ import org.springframework.beans.BeanUtils;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,6 +39,7 @@ public class TaskService {
     private final PropertyValueRepository propertyValueRepository;
     private final OptionRepository optionRepository;
     private final CommentRepository commentRepository;
+    private final HistoricRepository historicRepository;
 
     public UserTask setWorkedTime(UserTask userTask) {
 
@@ -56,30 +59,53 @@ public class TaskService {
         return task.getComments();
     }
 
-    public Comment patchNewComment(Long taskId, Comment newComment) {
+    public Comment patchNewComment(Long taskId, Comment newComment, Long userId) {
+        User userForHistoric = userRepository.findById(userId).get();
         Task task = taskRepository.findById(taskId).get();
         newComment.setTask(task);
         Comment commentSaved = commentRepository.save(newComment);
+
+        Historic historic = new Historic(
+                userForHistoric,
+                userForHistoric.getName()+" adicionou um comentário",
+                LocalDateTime.now()
+        );
+
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        task.getHistoric().add(savedHistoric);
+
+        taskRepository.save(task);
+
         return commentSaved;
     }
 
-    public Collection<Comment> deleteComment(Long commentId, Long taskId) {
+    public Collection<Comment> deleteComment(Long commentId, Long taskId, Long userId) {
+        User userForHistoric = userRepository.findById(userId).get();
+        Comment commentForRemove = commentRepository.findById(commentId).get();
         Task task = taskRepository.findById(taskId).get();
 
-        task.getComments().forEach(commentFor -> {
-            if(commentFor.getId() == commentId) {
-                task.getComments().remove(commentFor);
-            }
-        });
-
         commentRepository.deleteById(commentId);
+
+
+        Historic historic = new Historic(
+                userForHistoric,
+                userForHistoric.getName()+" deletou um comentário",
+                LocalDateTime.now()
+        );
+
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        task.getHistoric().add(savedHistoric);
+
+        taskRepository.save(task);
 
         return task.getComments();
     }
 
 
     public Property putPropertyValue(PropertyValue propertyValue,
-                                     Long propertyId) {
+                                     Long propertyId, Long userId) {
 
         PropertyValue propertyValueReturn = this.propertyValueRepository.save(propertyValue);
         Property propertyOfPropertyValue = this.propertyRepository.findById(propertyId).get();
@@ -103,7 +129,7 @@ public class TaskService {
         return PropertyProcessor.getInstance().resolveProperty(propertyOfPropertyValue);
     }
 
-    public Option putPropertyOption(Option newOption) {
+    public Option putPropertyOption(Option newOption, Long userId) {
         return this.optionRepository.save(newOption);
     }
 
@@ -119,7 +145,7 @@ public class TaskService {
         return userTaskRepository.findById(userTaskId).get();
     }
 
-    public GetTaskDTO patchProperty(Property property, Long taskId) {
+    public GetTaskDTO patchProperty(Property property, Long taskId, Long userId) {
         Task task = taskRepository.findById(taskId).get();
         if(property.getOptions() != null) {
             optionRepository.saveAll(property.getOptions());
@@ -132,7 +158,7 @@ public class TaskService {
         return resolveAndGetDTO(savedTask);
     }
 
-    public Collection<GetUserDTO> patchAssociate(Long taskId, Collection<User> associates){
+    public Collection<GetUserDTO> patchAssociate(Long taskId, Collection<User> associates, Long userId){
         Task task = taskRepository.findById(taskId).get();
         task.setAssociates(associates);
 
