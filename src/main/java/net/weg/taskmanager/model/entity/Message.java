@@ -23,6 +23,7 @@ public class Message {
     @Column(columnDefinition = "LONGBLOB")
     @OneToMany()
     private Collection<File> attachments;
+    @Column(length = 1000)
     private String content;
     @ManyToOne(optional = false)
     private User sender;

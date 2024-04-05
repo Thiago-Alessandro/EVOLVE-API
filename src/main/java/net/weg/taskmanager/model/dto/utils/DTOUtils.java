@@ -245,7 +245,7 @@ public class DTOUtils {
     }
 
     public static GetFileDTO fileToGetFileDTO(File file){
-        if(file!=null){
+        if(file!=null && file.getData().length>0){
             GetFileDTO getFileDTO = new GetFileDTO();
             BeanUtils.copyProperties(file, getFileDTO);
             getFileDTO.setData(formatFileDataBytesToBase64String(file));

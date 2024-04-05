@@ -81,7 +81,11 @@ public class UserService {
     }
 
     public GetUserDTO findByEmail(String email){
-       return resolveAndGetDTO(userRepository.findByEmail(email));
+        User loggedUser = userRepository.findByEmail(email);
+        if(loggedUser != null){
+            return resolveAndGetDTO(loggedUser);
+        }
+        return null;
     }
 
     public GetUserDTO patchTheme(Long userId,String theme){
