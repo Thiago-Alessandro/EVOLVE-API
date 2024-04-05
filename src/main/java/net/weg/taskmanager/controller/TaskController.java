@@ -70,7 +70,6 @@ public class TaskController {
 
     @PatchMapping("property/associates/{taskId}")
     public Collection<GetUserDTO> patchAssociate(@PathVariable Long taskId, @RequestBody Collection<User> associates) {
-        System.out.println("CHEGOU NA CONTROLLER");
         return taskService.patchAssociate(taskId,associates);
     }
 

@@ -33,6 +33,9 @@ public class Task {
 
     private String description;
 
+    @OneToMany
+    private Collection<Historic> historic;
+
     @ManyToOne()
     private Status currentStatus;
 
