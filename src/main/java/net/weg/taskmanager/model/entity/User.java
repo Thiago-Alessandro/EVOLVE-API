@@ -41,6 +41,12 @@ public class User {
     @ManyToMany(mappedBy = "participants")
     private Collection<Team> teams;
     private String theme;
+    private String primaryColor;
+    private String secondaryColor;
+    private String primaryDarkColor;
+    private String secondaryDarkColor;
+
+
 
     @Override
     public boolean equals(Object o) {
