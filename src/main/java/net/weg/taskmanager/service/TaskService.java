@@ -90,7 +90,7 @@ public class TaskService {
 
         Historic historic = new Historic(
                 userForHistoric,
-                userForHistoric.getName()+" deletou um comentário",
+                userForHistoric.getName()+" deletou um comentário.",
                 LocalDateTime.now()
         );
 
@@ -146,12 +146,23 @@ public class TaskService {
     }
 
     public GetTaskDTO patchProperty(Property property, Long taskId, Long userId) {
+        User userForHistoric = userRepository.findById(userId).get();
         Task task = taskRepository.findById(taskId).get();
         if(property.getOptions() != null) {
             optionRepository.saveAll(property.getOptions());
         }
         property = this.propertyRepository.save(property);
         task.getProperties().add(property);
+
+        Historic historic = new Historic(
+                userForHistoric,
+                userForHistoric.getName()+" adicionou uma propriedade "+property.getPropertyType().toString()+".",
+                LocalDateTime.now()
+        );
+
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        task.getHistoric().add(savedHistoric);
 
         Task savedTask = taskRepository.save(task);
 

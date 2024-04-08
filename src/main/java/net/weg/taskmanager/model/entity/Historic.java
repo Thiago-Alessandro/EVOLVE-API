@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Historic {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @OneToOne
+    @ManyToOne
     @JsonIgnore
     private User user;
     private String description;
