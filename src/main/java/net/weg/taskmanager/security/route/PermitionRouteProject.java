@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 @AllArgsConstructor
 public class PermitionRouteProject implements AuthorizationManager<RequestAuthorizationContext> {
     private ProjectRepository repository;
+
     @Override
     public void verify(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
         AuthorizationManager.super.verify(authentication, object);
@@ -32,14 +33,21 @@ public class PermitionRouteProject implements AuthorizationManager<RequestAuthor
         User user = userDetails.getUser();
         Map<String, String> mapper = object.getVariables();
         Long projectId = Long.parseLong(mapper.get("projectId"));
-        return new AuthorizationDecision(isUserAuthorized(projectId, user, Auth.valueOf(request.getMethod())));
+        if (isUserOnProject(projectId, user)) {
+            return new AuthorizationDecision(isUserAuthorized(projectId, user, Auth.valueOf(request.getMethod())));
+        }
+        return new AuthorizationDecision(false);
     }
 
-    private boolean isUserAuthorized(Long projectId, User user, Auth auth){
+    private boolean isUserAuthorized(Long projectId, User user, Auth auth) {
         return user.getProjectsAcess()
                 .stream().filter(projectAcess -> projectAcess.getProjectId().equals(projectId))
                 .anyMatch(projectAcess -> projectAcess.getAcessProfile().getAuths().contains(auth)
                 );
 //        return repository.existsByIdAndMembersContaining(projectId,user);
+    }
+
+    private boolean isUserOnProject(Long projectId, User user) {
+        return repository.existsByIdAndMembersContaining(projectId, user);
     }
 }

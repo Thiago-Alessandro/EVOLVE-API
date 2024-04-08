@@ -42,9 +42,11 @@ public class Team {
     private Boolean personalWorkspace = false;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Collection<ProfileAcess> hierarchies;
+    private Collection<ProfileAcess> profileAcesses;
+    @ManyToOne
+    private ProfileAcess defaultProfileAcess;
 
-    private void setDefaultHierarchy() {
+    private void setDefaultAcessProfile() {
         Auth authDelete = Auth.DELETE;
         Auth authPut = Auth.PUT;
         Auth authGet = Auth.GET;
@@ -59,9 +61,10 @@ public class Team {
 
         Collection<ProfileAcess> defaultHierarchies = new HashSet<>();
         defaultHierarchies.add(new ProfileAcess("LIDER", lider));
+        //criador
 
         Collection<Auth> administrador = new HashSet<>();
-
+        //lista adms
         administrador.add(authPost);
         administrador.add(authGet);
         administrador.add(authPut);
@@ -81,10 +84,10 @@ public class Team {
 
         defaultHierarchies.add(new ProfileAcess("CONVIDADO", convidado));
 
-        if (this.getHierarchies() != null) {
-            this.getHierarchies().addAll(defaultHierarchies);
+        if (this.getProfileAcesses() != null) {
+            this.getProfileAcesses().addAll(defaultHierarchies);
         } else {
-            this.setHierarchies(defaultHierarchies);
+            this.setProfileAcesses(defaultHierarchies);
         }
     }
 
@@ -104,6 +107,7 @@ public class Team {
     public Team() {
         this.chat = new TeamChat();
         this.chat.setTeam(this);
+        setDefaultAcessProfile();
     }
 
 }

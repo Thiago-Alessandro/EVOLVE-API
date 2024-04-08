@@ -34,7 +34,7 @@ public class TaskController {
     @GetMapping
     public Collection<GetTaskDTO> findAll(){return taskService.findAll();}
 
-    @DeleteMapping("/{projectId}/{taskId}")
+    @DeleteMapping("/{taskId}")
     public void delete(@PathVariable Long taskId){
         taskService.delete(taskId);}
 
@@ -47,7 +47,7 @@ public class TaskController {
     @PutMapping
     public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO){return taskService.update(putTaskDTO);}
 
-    @GetMapping("/status/{projectId}/{statusId}")
+    @GetMapping("/status/{statusId}")
     public Collection<GetTaskDTO> getTasksByStatus(@PathVariable Long id){return taskService.getTasksByStatus(id);}
 
     @PatchMapping("/userTask")

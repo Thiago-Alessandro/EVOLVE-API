@@ -46,6 +46,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private Collection<UserProject> projectsAcess;
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private Collection<UserTeam> teamAcess;
 
 
     @Override

@@ -10,6 +10,7 @@ import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.security.model.entity.ProfileAcess;
+import net.weg.taskmanager.security.repository.ProfileAcessRepository;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -72,6 +73,7 @@ public class ProjectService {
 
         return getProjectDTOS;
     }
+    private final ProfileAcessRepository profileAcessRepository;
 
     public GetProjectDTO create(PostProjectDTO projectDTO) {
 
@@ -90,6 +92,7 @@ public class ProjectService {
 
         //Referencia o projeto nas suas propriedades
         propertiesSetProject(project);
+        project.setDefaultProfileAcess(profileAcessRepository.findByProject_IdAndName(project.getId(), "ADMINISTRADOR"));
 
         return transformToGetProjectDTO(treatAndSave(project));
     }
@@ -129,7 +132,7 @@ public class ProjectService {
     }
 
 
-    private UserProjectRepository userProjectRepository;
+    private final UserProjectRepository userProjectRepository;
 
     private void syncUserProjectTable(Project project) {
         if (project.getMembers() != null) {
@@ -138,7 +141,7 @@ public class ProjectService {
                     .filter(member -> doesUserProjectTableExists(member, project))
                     .forEach( member -> userProjectRepository.save(createDefaultUserProject(member, project)));
 
-            deleteUserTaskIfUserIsNotAssociate(project);
+            deleteUserProjectIfUserIsNotAssociate(project);
         }
     }
 
@@ -150,7 +153,7 @@ public class ProjectService {
         return !userProjectRepository.existsById(new UserProjectId(member.getId(), project.getId()));
     }
 
-    private void deleteUserTaskIfUserIsNotAssociate(Project project) {
+    private void deleteUserProjectIfUserIsNotAssociate(Project project) {
         userProjectRepository.findAll().stream()
                 .filter(userProject -> Objects.equals(userProject.getProjectId(), project.getId()))
                 .filter(userProject -> !project.getMembers().contains(userProject.getUser()))

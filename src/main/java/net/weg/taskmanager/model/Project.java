@@ -72,7 +72,7 @@ public class Project {
     @ManyToOne
     private ProfileAcess defaultProfileAcess;
 
-    private void setDefaultHierarchy() {
+    private void setDefaultAcessProfile() {
         Auth authDelete = Auth.DELETE;
         Auth authPut = Auth.PUT;
         Auth authGet = Auth.GET;
@@ -141,7 +141,6 @@ public class Project {
         this.creationDate = LocalDate.now();
         updateLastTimeEdited();
         setDefaultStatus();
-        setDefaultHierarchy();
+        setDefaultAcessProfile();
     }
-
 }
