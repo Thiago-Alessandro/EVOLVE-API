@@ -13,7 +13,7 @@ import java.net.http.HttpRequest;
 @NoArgsConstructor
 //@Entity
 public enum Auth implements GrantedAuthority {
-    GET("Get"),
+    GET("GET"),
     POST("Post"),
     PUT("Put"),
     DELETE("Delete"),

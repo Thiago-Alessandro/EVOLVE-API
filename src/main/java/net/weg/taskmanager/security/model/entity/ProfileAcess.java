@@ -22,9 +22,9 @@ public class ProfileAcess {
 //    @ManyToOne
 //    @Enumerated(EnumType.ORDINAL)
     private Collection<Auth> auths;
-    @ManyToOne
-    @JsonIgnore
-    private Project project;
+//    @ManyToOne
+//    @JsonIgnore
+//    private Project project;
 
     public ProfileAcess(String name, Collection<Auth> auths) {
         this.name = name;

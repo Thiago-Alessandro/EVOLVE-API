@@ -29,7 +29,7 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping("/{taskId}")
-    public GetTaskDTO findById(@PathVariable Long id){return taskService.findById(id);}
+    public GetTaskDTO findById(@PathVariable Long taskId){return taskService.findById(taskId);}
 
     @GetMapping
     public Collection<GetTaskDTO> findAll(){return taskService.findAll();}
@@ -48,7 +48,7 @@ public class TaskController {
     public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO){return taskService.update(putTaskDTO);}
 
     @GetMapping("/status/{statusId}")
-    public Collection<GetTaskDTO> getTasksByStatus(@PathVariable Long id){return taskService.getTasksByStatus(id);}
+    public Collection<GetTaskDTO> getTasksByStatus(@PathVariable Long statusId){return taskService.getTasksByStatus(statusId);}
 
     @PatchMapping("/userTask")
     public UserTask setWorkedTime(@RequestBody UserTask userTask){

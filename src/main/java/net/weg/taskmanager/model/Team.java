@@ -1,8 +1,10 @@
 package net.weg.taskmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 import net.weg.taskmanager.security.model.entity.ProfileAcess;
 import net.weg.taskmanager.security.model.enums.Auth;
 

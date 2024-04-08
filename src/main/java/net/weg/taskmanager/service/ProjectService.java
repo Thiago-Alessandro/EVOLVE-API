@@ -14,6 +14,8 @@ import net.weg.taskmanager.security.repository.ProfileAcessRepository;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.PropertyEditorRegistrar;
+import org.springframework.data.jpa.repository.query.JSqlParserUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -83,18 +85,26 @@ public class ProjectService {
         updateProjectChat(project);
 
         //Adiciona o projeto ao BD para que seja criado o seu Id
-        projectRepository.save(project);
+        Project projectSaved = projectRepository.save(project);
 
-//        project.getCreator()
+//        projectSaved.setProfileAcesses(projectSaved.getProfileAcesses().stream()
+//                .peek(p -> p.setProject(projectSaved)).toList());
 
+//        Project savedAgain = projectRepository.save(projectSaved);
 
-        syncUserProjectTable(project);
+        project.getCreator();
 
         //Referencia o projeto nas suas propriedades
-        propertiesSetProject(project);
-        project.setDefaultProfileAcess(profileAcessRepository.findByProject_IdAndName(project.getId(), "ADMINISTRADOR"));
+        propertiesSetProject(projectSaved);
+        ProfileAcess pfAccess = projectSaved.getProfileAcesses().stream().filter(pf -> pf.getName().equals("ADMINISTRADOR")).findFirst().orElse(null);
+        project.setDefaultProfileAcess(pfAccess);
 
-        return transformToGetProjectDTO(treatAndSave(project));
+        Project savedAgain = projectRepository.save(projectSaved);
+
+        syncUserProjectTable(savedAgain);
+
+
+        return transformToGetProjectDTO(treatAndSave(savedAgain));
     }
 
     private void setCreatorProfileAcess(Project project){
@@ -136,7 +146,6 @@ public class ProjectService {
 
     private void syncUserProjectTable(Project project) {
         if (project.getMembers() != null) {
-
             project.getMembers().stream()
                     .filter(member -> doesUserProjectTableExists(member, project))
                     .forEach( member -> userProjectRepository.save(createDefaultUserProject(member, project)));
@@ -145,8 +154,16 @@ public class ProjectService {
         }
     }
 
+    private final UserRepository userRepository;
     private UserProject createDefaultUserProject(User member, Project project){
-        return new UserProject(member.getId(), project.getId(), project.getDefaultProfileAcess());
+        UserProject userProject = new UserProject(member.getId(), project.getId(), member, project, project.getDefaultProfileAcess());
+
+        UserProject userProjectSaved = userProjectRepository.save(userProject);
+        User user = userRepository.findById(member.getId()).get();
+
+        user.getProjectsAcess().add(userProjectSaved);
+
+        return userProject;
     }
 
     private boolean doesUserProjectTableExists(User member, Project project){

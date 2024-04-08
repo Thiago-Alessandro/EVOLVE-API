@@ -68,6 +68,7 @@ public class Project {
     private Collection<Task> tasks;
     //    private Collection<User> colo
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "project_id")
     private Collection<ProfileAcess> profileAcesses;
     @ManyToOne
     private ProfileAcess defaultProfileAcess;
@@ -95,7 +96,8 @@ public class Project {
         administrador.add(authGet);
         administrador.add(authPut);
 
-        defaultHierarchies.add(new ProfileAcess("ADMINISTRADOR", administrador));
+       ProfileAcess administradorAcess = new ProfileAcess("ADMINISTRADOR", administrador);
+       defaultHierarchies.add(administradorAcess);
 
         Collection<Auth> colaborador = new HashSet<>();
 

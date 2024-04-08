@@ -43,7 +43,7 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     private UserDetailsEntity userDetailsEntity;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
     @JsonIgnore
     private Collection<UserProject> projectsAcess;
     @OneToMany(mappedBy = "user")
