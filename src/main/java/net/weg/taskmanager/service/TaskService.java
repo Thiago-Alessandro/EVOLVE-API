@@ -10,6 +10,7 @@ import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
 import net.weg.taskmanager.model.property.Option;
 import net.weg.taskmanager.model.property.Property;
+import net.weg.taskmanager.model.property.PropertyType;
 import net.weg.taskmanager.service.processor.PropertyProcessor;
 import net.weg.taskmanager.service.processor.TaskProcessor;
 
@@ -105,10 +106,13 @@ public class TaskService {
 
 
     public Property putPropertyValue(PropertyValue propertyValue,
-                                     Long propertyId, Long userId) {
-
+                                     Long propertyId, Long userId, Long taskId) {
+        Task taskForHistoric = this.taskRepository.findById(taskId).get();
+        User userForHistoric = this.userRepository.findById(userId).get();
         PropertyValue propertyValueReturn = this.propertyValueRepository.save(propertyValue);
         Property propertyOfPropertyValue = this.propertyRepository.findById(propertyId).get();
+        Historic historic = new Historic();
+
 
         if (propertyOfPropertyValue.getPropertyType().name().equals("MultiSelectValue") ||
                 propertyOfPropertyValue.getPropertyType().name().equals("UniSelectValue")) {
@@ -124,7 +128,25 @@ public class TaskService {
             propertyValueReturn.setProperty(propertyOfPropertyValue);
             propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
         }
+
         this.propertyRepository.save(propertyOfPropertyValue);
+
+
+
+        if(propertyOfPropertyValue.getPropertyType() == PropertyType.DataValue || propertyOfPropertyValue.getPropertyType() == PropertyType.IntegerValue ||
+                propertyOfPropertyValue.getPropertyType() == PropertyType.TextValue || propertyOfPropertyValue.getPropertyType() == PropertyType.DoubleValue ) {
+             historic = new Historic(
+                    userForHistoric,
+                    userForHistoric.getName() + " mudou o valor da propriedade " + propertyOfPropertyValue.getName() + " para " + propertyValue.getValue().getValue().toString(),
+                    LocalDateTime.now()
+            );
+            Historic savedHistoric = this.historicRepository.save(historic);
+
+            taskForHistoric.getHistoric().add(savedHistoric);
+
+            taskRepository.save(taskForHistoric);
+        }
+
 
         return PropertyProcessor.getInstance().resolveProperty(propertyOfPropertyValue);
     }
@@ -154,11 +176,71 @@ public class TaskService {
         property = this.propertyRepository.save(property);
         task.getProperties().add(property);
 
-        Historic historic = new Historic(
-                userForHistoric,
-                userForHistoric.getName()+" adicionou uma propriedade "+property.getPropertyType().toString()+".",
-                LocalDateTime.now()
-        );
+        Historic historic = new Historic();
+
+        if(property.getPropertyType().toString() == "IntegerValue") {
+
+                    historic = new Historic(
+                    userForHistoric,
+                    userForHistoric.getName() + " criou uma propriedade de número chamada " + property.getName(),
+                    LocalDateTime.now()
+            );
+
+        }
+        if(property.getPropertyType().toString() == "DoubleValue") {
+
+                    historic = new Historic(
+                    userForHistoric,
+                    userForHistoric.getName() + " criou uma propriedade de decimal chamada " + property.getName(),
+                    LocalDateTime.now()
+            );
+
+        }
+        if(property.getPropertyType().toString() == "DataValue") {
+
+                    historic = new Historic(
+                    userForHistoric,
+                    userForHistoric.getName() + " criou uma propriedade de calendário chamada " + property.getName(),
+                    LocalDateTime.now()
+            );
+
+        }
+        if(property.getPropertyType().toString() == "AssociatesValue") {
+
+                    historic = new Historic(
+                    userForHistoric,
+                    userForHistoric.getName() + " criou uma propriedade de pessoas chamada " + property.getName(),
+                    LocalDateTime.now()
+            );
+
+        }
+        if(property.getPropertyType().toString() == "MultiSelectValue") {
+
+                    historic = new Historic(
+                    userForHistoric,
+                    userForHistoric.getName() + " criou uma propriedade de multiselect chamada " + property.getName(),
+                    LocalDateTime.now()
+            );
+
+        }
+        if(property.getPropertyType().toString() == "TextValue") {
+
+                    historic = new Historic(
+                    userForHistoric,
+                    userForHistoric.getName() + " criou uma propriedade de texto chamada " + property.getName(),
+                    LocalDateTime.now()
+            );
+
+        }
+        if(property.getPropertyType().toString() == "UniSelectValue") {
+
+                    historic = new Historic(
+                    userForHistoric,
+                    userForHistoric.getName() + " criou uma propriedade de uniselect chamada " + property.getName(),
+                    LocalDateTime.now()
+            );
+
+        }
 
         Historic savedHistoric = this.historicRepository.save(historic);
 
@@ -216,8 +298,29 @@ public class TaskService {
     private Collection<GetTaskDTO> resolveAndGetDTOS(Collection<Task> tasks){
         return tasks.stream().map(this::resolveAndGetDTO).toList();
     }
-    public GetTaskDTO update(PutTaskDTO putTaskDTO) {
+    public GetTaskDTO update(PutTaskDTO putTaskDTO, Long userId) {
         Task task = taskRepository.findById(putTaskDTO.getId()).get();
+        User userForHistoric = userRepository.findById(userId).get();
+        putTaskDTO.getProperties().forEach(property -> {
+            property.getCurrentOptions().forEach(currentOption -> {
+                task.getProperties().forEach(property1 -> {
+                    property1.getCurrentOptions().forEach(currentOption1 -> {
+                        if(currentOption != currentOption1) {
+                            Historic historic = new Historic(
+                                    userForHistoric,
+                                    userForHistoric.getName() + " mudou o valor da propriedade " + property.getName() + " para " + currentOption1.getValue(),
+                                    LocalDateTime.now()
+                            );
+                            Historic savedHistoric = this.historicRepository.save(historic);
+
+                            task.getHistoric().add(savedHistoric);
+
+                            taskRepository.save(task);
+                        }
+                    });
+                });
+            });
+        });
         Priority prioritySaved = Priority.valueOf(putTaskDTO.getPriority().name());
         prioritySaved.backgroundColor = putTaskDTO.getPriority().backgroundColor();
         BeanUtils.copyProperties(putTaskDTO, task);

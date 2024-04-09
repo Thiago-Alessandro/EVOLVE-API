@@ -49,10 +49,10 @@ public class TaskController {
     public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
         return taskService.create(postTaskDTO);}
 
-    @PutMapping
-    public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO){
+    @PutMapping("/{userId}")
+    public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO,@PathVariable Long userId){
 //        GetTaskDTO getTaskDTO = taskService.update(putTaskDTO);
-        return taskService.update(putTaskDTO);
+        return taskService.update(putTaskDTO,userId);
     }
 
     @GetMapping("/status/{id}")
@@ -78,11 +78,12 @@ public class TaskController {
         return taskService.getUserTask(userId, taskId);
     }
 
-    @PutMapping("/property/put/{propertyId}/{userId}")
+    @PutMapping("/property/put/{propertyId}/{userId}/{taskId}")
     public Property putPropertyValue(@PathVariable Long propertyId,
                                      @RequestBody PropertyValue propertyValue,
-                                     @PathVariable Long userId) {
-        Property propertyOfPropertyValue = taskService.putPropertyValue(propertyValue, propertyId, userId);
+                                     @PathVariable Long userId,
+                                     @PathVariable Long taskId) {
+        Property propertyOfPropertyValue = taskService.putPropertyValue(propertyValue, propertyId, userId, taskId);
         return propertyOfPropertyValue;
     }
 
