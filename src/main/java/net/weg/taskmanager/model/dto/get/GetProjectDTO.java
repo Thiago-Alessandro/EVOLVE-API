@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.dto.shortDTOs.ShortTaskDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 import net.weg.taskmanager.model.dto.utils.DTOUtils;
@@ -41,7 +42,7 @@ public class GetProjectDTO {
 
     @JsonIgnore
     private GetProjectChatDTO chat;
-    private Collection<GetTaskDTO> tasks;
+    private Collection<ShortTaskDTO> tasks;
 
     public GetProjectDTO(Project project){
         BeanUtils.copyProperties(project, this);
@@ -50,7 +51,7 @@ public class GetProjectDTO {
         this.administrators = DTOUtils.usersToShortUserDTO(project.getAdministrators());
         this.members = DTOUtils.usersToShortUserDTO(project.getMembers());
         this.creator = DTOUtils.userToShortUserDTO(project.getCreator());
-        this.tasks = DTOUtils.tasksToGetTaskDTOS(project.getTasks());
+        this.tasks = DTOUtils.tasksToShortGetTaskDTOS(project.getTasks());
     }
 
 }
