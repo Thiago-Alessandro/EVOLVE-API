@@ -1,17 +1,13 @@
 package net.weg.taskmanager.security.route.task.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Project;
-import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.repository.TaskRepository;
 import net.weg.taskmanager.repository.UserTaskRepository;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
-import net.weg.taskmanager.security.model.enums.Auth;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
@@ -21,9 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Map;
 import java.util.function.Supplier;
 
 @AllArgsConstructor

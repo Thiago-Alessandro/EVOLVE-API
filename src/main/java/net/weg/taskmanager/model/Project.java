@@ -1,6 +1,5 @@
 package net.weg.taskmanager.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +9,7 @@ import lombok.ToString;
 import net.weg.taskmanager.model.property.Property;
 //import net.weg.taskmanager.security.model.CustomPermission;
 import net.weg.taskmanager.security.model.entity.ProfileAcess;
-import net.weg.taskmanager.security.model.enums.Auth;
+import net.weg.taskmanager.security.model.enums.Permission;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -74,55 +73,55 @@ public class Project {
     @ManyToOne
     private ProfileAcess defaultProfileAcess;
 
-    private void setDefaultAcessProfile() {
-        Auth authDelete = Auth.DELETE;
-        Auth authPut = Auth.PUT;
-        Auth authGet = Auth.GET;
-        Auth authPost = Auth.POST;
-        Auth authPatch = Auth.PATCH;
-
-        Collection<Auth> lider = new HashSet<>();
-
-        lider.add(authDelete);
-        lider.add(authPost);
-        lider.add(authGet);
-        lider.add(authPut);
-        lider.add(authPatch);
-
-        Collection<ProfileAcess> defaultHierarchies = new HashSet<>();
-        defaultHierarchies.add(new ProfileAcess("LIDER", lider));
-        //criador
-
-        Collection<Auth> administrador = new HashSet<>();
-        //lista adms
-        administrador.add(authPost);
-        administrador.add(authGet);
-        administrador.add(authPut);
-        administrador.add(authPatch);
-
-       ProfileAcess administradorAcess = new ProfileAcess("ADMINISTRADOR", administrador);
-       defaultHierarchies.add(administradorAcess);
-
-        Collection<Auth> colaborador = new HashSet<>();
-
-        colaborador.add(authGet);
-        colaborador.add(authPut);
-        colaborador.add(authPatch);
-
-        defaultHierarchies.add(new ProfileAcess("COLABORADOR", colaborador));
-
-        Collection<Auth> convidado = new HashSet<>();
-
-        convidado.add(authGet);
-
-        defaultHierarchies.add(new ProfileAcess("CONVIDADO", convidado));
-
-        if (this.getProfileAcesses() != null) {
-            this.getProfileAcesses().addAll(defaultHierarchies);
-        } else {
-            this.setProfileAcesses(defaultHierarchies);
-        }
-    }
+//    private void setDefaultAcessProfile() {
+//        Permission authDelete = Permission.DELETE;
+//        Permission authPut = Permission.PUT;
+//        Permission authGet = Permission.GET;
+//        Permission authPost = Permission.POST;
+//        Permission authPatch = Permission.PATCH;
+//
+//        Collection<Permission> lider = new HashSet<>();
+//
+//        lider.add(authDelete);
+//        lider.add(authPost);
+//        lider.add(authGet);
+//        lider.add(authPut);
+//        lider.add(authPatch);
+//
+//        Collection<ProfileAcess> defaultHierarchies = new HashSet<>();
+//        defaultHierarchies.add(new ProfileAcess("LIDER", lider));
+//        //criador
+//
+//        Collection<Permission> administrador = new HashSet<>();
+//        //lista adms
+//        administrador.add(authPost);
+//        administrador.add(authGet);
+//        administrador.add(authPut);
+//        administrador.add(authPatch);
+//
+//       ProfileAcess administradorAcess = new ProfileAcess("ADMINISTRADOR", administrador);
+//       defaultHierarchies.add(administradorAcess);
+//
+//        Collection<Permission> colaborador = new HashSet<>();
+//
+//        colaborador.add(authGet);
+//        colaborador.add(authPut);
+//        colaborador.add(authPatch);
+//
+//        defaultHierarchies.add(new ProfileAcess("COLABORADOR", colaborador));
+//
+//        Collection<Permission> convidado = new HashSet<>();
+//
+//        convidado.add(authGet);
+//
+//        defaultHierarchies.add(new ProfileAcess("CONVIDADO", convidado));
+//
+//        if (this.getProfileAcesses() != null) {
+//            this.getProfileAcesses().addAll(defaultHierarchies);
+//        } else {
+//            this.setProfileAcesses(defaultHierarchies);
+//        }
+//    }
 
     private void setDefaultStatus() {
         Collection<Status> defaultStatus = new HashSet<>();
@@ -148,6 +147,6 @@ public class Project {
         this.creationDate = LocalDate.now();
         updateLastTimeEdited();
         setDefaultStatus();
-        setDefaultAcessProfile();
+//        setDefaultAcessProfile();
     }
 }

@@ -2,10 +2,7 @@ package net.weg.taskmanager.security.service;
 
 import lombok.AllArgsConstructor;
 
-import net.weg.taskmanager.model.User;
-import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
-import net.weg.taskmanager.security.model.enums.Auth;
 //import net.weg.taskmanager.security.repository.AuthRepository;
 import net.weg.taskmanager.security.repository.UserDetailsEntityRepository;
 import org.springframework.security.core.userdetails.UserDetails;

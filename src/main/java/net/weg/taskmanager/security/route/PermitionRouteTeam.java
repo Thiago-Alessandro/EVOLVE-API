@@ -6,8 +6,7 @@ import net.weg.taskmanager.model.User;
 //import net.weg.taskmanager.repository.UserHierarchyTeamRepository;
 import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
-import net.weg.taskmanager.security.model.enums.Auth;
-import net.weg.taskmanager.security.repository.UserDetailsEntityRepository;
+import net.weg.taskmanager.security.model.enums.Permission;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
@@ -36,7 +35,7 @@ public class PermitionRouteTeam implements AuthorizationManager<RequestAuthoriza
         Map<String, String> mapper = object.getVariables();
         Long teamId = Long.parseLong(mapper.get("teamId"));
         if (isUserInTeam(teamId, user)) {
-            return new AuthorizationDecision(isUserAuthorized(teamId, user, Auth.valueOf(request.getMethod())));
+            return new AuthorizationDecision(isUserAuthorized(teamId, user, Permission.valueOf(request.getMethod())));
         }
         return new AuthorizationDecision(false);
     }
@@ -45,7 +44,7 @@ public class PermitionRouteTeam implements AuthorizationManager<RequestAuthoriza
         return teamRepository.existsByIdAndParticipantsContaining(teamId, user);
     }
 
-    private boolean isUserAuthorized(Long teamId, User user, Auth auth) {
+    private boolean isUserAuthorized(Long teamId, User user, Permission auth) {
         return user.getTeamAcess()
                 .stream().filter(teamAcess -> teamAcess.getTeamId().equals(teamId))
                 .anyMatch(teamAcess -> teamAcess.getAcessProfile().getAuths().contains(auth)

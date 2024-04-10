@@ -1,34 +1,37 @@
 package net.weg.taskmanager.security.model.enums;
 
 
-import jakarta.persistence.Entity;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.net.http.HttpRequest;
-
 @AllArgsConstructor
 @NoArgsConstructor
 //@Entity
-public enum Auth implements GrantedAuthority {
-    GET("GET"),
-    POST("Post"),
-    PUT("Put"),
-    DELETE("Delete"),
-    PATCH("Patch");
-    private String name;
+public enum Permission implements GrantedAuthority {
+
+    EDIT_TEAM_INFO,
+    MANAGE_PARTICIPANTS,
+    CREATE_PROJECT,
+    TEAM_CREATOR,
+    TEAM_VIEW,
+    EDIT_PROJECT_INFO,
+    MANAGE_MEMBERS,
+    CREATE_TASK,
+    PROJECT_CREATOR,
+    PROJECT_VIEW;
+
 
     @Override
     public String getAuthority() {
-        return name;
+        return name();
     }
 //    public static Autorizacao
 
-    public Auth getAuth(HttpServletRequest request) {
+    public Permission getAuth(HttpServletRequest request) {
 //        Auth.valueOf()
-       return Auth.valueOf(request.getMethod());
+       return Permission.valueOf(request.getMethod());
     }
 
 }

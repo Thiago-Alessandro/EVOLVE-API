@@ -102,6 +102,7 @@ public class ProjectService {
         Project savedAgain = projectRepository.save(projectSaved);
 
         syncUserProjectTable(savedAgain);
+        System.out.println(pfAccess.getAuths());
 
         return transformToGetProjectDTO(treatAndSave(savedAgain));
     }
@@ -224,15 +225,13 @@ public class ProjectService {
     private boolean updateMemberProfileAcess(Long projectId, Long memberId, String profileAcessName) {
         Project project = projectRepository.findById(projectId).get();
         User member = userRepository.findById(memberId).get();
-        if (member == project.getCreator()) {
-            UserProject userProject = userProjectRepository.findByUserIdAndProjectId(member.getId(), project.getId());
-            ProfileAcess profileAcess = profileAcessRepository.findByName(profileAcessName);
-            Boolean existsOnProject = projectRepository.existsByIdAndProfileAcessesContaining(project.getId(), profileAcess);
-            if (existsOnProject) {
-                userProject.setAcessProfile(profileAcess);
-                userProjectRepository.save(userProject);
-                return true;
-            }
+        UserProject userProject = userProjectRepository.findByUserIdAndProjectId(member.getId(), project.getId());
+        ProfileAcess profileAcess = profileAcessRepository.findByName(profileAcessName);
+        Boolean existsOnProject = projectRepository.existsByIdAndProfileAcessesContaining(project.getId(), profileAcess);
+        if (existsOnProject) {
+            userProject.setAcessProfile(profileAcess);
+            userProjectRepository.save(userProject);
+            return true;
         }
         return false;
     }

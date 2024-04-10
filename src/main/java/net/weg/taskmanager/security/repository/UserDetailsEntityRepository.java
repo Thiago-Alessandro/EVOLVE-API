@@ -1,8 +1,7 @@
 package net.weg.taskmanager.security.repository;
 
-import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
-import net.weg.taskmanager.security.model.enums.Auth;
+import net.weg.taskmanager.security.model.enums.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +15,7 @@ public interface UserDetailsEntityRepository extends JpaRepository<UserDetailsEn
 
     Optional<UserDetailsEntity> findByUsername(String name);
 
-    default Collection<Auth> findAllById(Long id) {
+    default Collection<Permission> findAllById(Long id) {
         UserDetailsEntity userDE = findById(id).get();
         return userDE.getAuthorities();
     }

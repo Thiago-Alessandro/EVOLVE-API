@@ -6,11 +6,10 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Team;
 import net.weg.taskmanager.model.User;
-import net.weg.taskmanager.repository.ProjectRepository;
-import net.weg.taskmanager.repository.TeamRepository;
-import net.weg.taskmanager.repository.UserRepository;
+import net.weg.taskmanager.model.UserTeam;
+import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
-import net.weg.taskmanager.security.model.enums.Auth;
+import net.weg.taskmanager.security.model.enums.Permission;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
@@ -26,6 +25,7 @@ public class PermitionRouteProject implements AuthorizationManager<RequestAuthor
     private ProjectRepository projectRepository;
     private UserRepository userRepository;
     private final TeamRepository teamRepository;
+    private final UserTeamRepository userTeamRepository;
 
     @Override
     public void verify(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
@@ -45,14 +45,16 @@ public class PermitionRouteProject implements AuthorizationManager<RequestAuthor
         Long projectId = Long.parseLong(mapper.get("projectId"));
         Project project = projectRepository.findById(projectId).get();
         Team team = teamRepository.findTeamByProjectsContaining(project);
-
+        UserTeam userTeam = userTeamRepository.findByUserIdAndTeamId(user.getId(),team.getId());
+        System.out.println("to aaqui");
+        System.out.println(userTeam.getAcessProfile().getAuths());
         if (isUserOnProject(projectId, user)) {
-            return new AuthorizationDecision(isUserAuthorized(team.getId(), user, Auth.valueOf(request.getMethod())));
+            return new AuthorizationDecision(isUserAuthorized(team.getId(), user, Permission.valueOf(request.getMethod())));
         }
         return new AuthorizationDecision(false);
     }
 
-    private boolean isUserAuthorized(Long teamId, User user, Auth auth) {
+    private boolean isUserAuthorized(Long teamId, User user, Permission auth) {
         return user.getTeamAcess()
                 .stream().filter(teamAcess -> teamAcess.getTeamId().equals(teamId))
                 .anyMatch(teamAcess -> teamAcess.getAcessProfile().getAuths().contains(auth)

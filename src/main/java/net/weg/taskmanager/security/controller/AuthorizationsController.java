@@ -1,7 +1,7 @@
 package net.weg.taskmanager.security.controller;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.security.model.enums.Auth;
+import net.weg.taskmanager.security.model.enums.Permission;
 import net.weg.taskmanager.security.service.AuthorizationService;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +14,7 @@ public class AuthorizationsController {
     private final AuthorizationService authorizationService;
 
     @GetMapping("/{id}")
-    public Collection<Auth> getAllAuthorizations(@PathVariable Long id){
+    public Collection<Permission> getAllAuthorizations(@PathVariable Long id){
         return authorizationService.getAllAuthorizations(id);
     }
 }

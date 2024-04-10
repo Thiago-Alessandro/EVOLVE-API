@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserTeamRepository extends JpaRepository<UserTeam, UserTeamId> {
+    UserTeam findByUserIdAndTeamId(Long userId, Long teamId);
 }

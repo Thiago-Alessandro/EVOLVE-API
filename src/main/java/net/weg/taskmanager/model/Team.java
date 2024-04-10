@@ -1,16 +1,12 @@
 package net.weg.taskmanager.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.ToString;
 import net.weg.taskmanager.security.model.entity.ProfileAcess;
-import net.weg.taskmanager.security.model.enums.Auth;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 @Entity
 @Data
@@ -48,50 +44,50 @@ public class Team {
     @ManyToOne
     private ProfileAcess defaultProfileAcess;
 
-    private void setDefaultAcessProfile() {
-        Auth authDelete = Auth.DELETE;
-        Auth authPut = Auth.PUT;
-        Auth authGet = Auth.GET;
-        Auth authPost = Auth.POST;
-
-        Collection<Auth> lider = new HashSet<>();
-
-        lider.add(authDelete);
-        lider.add(authPost);
-        lider.add(authGet);
-        lider.add(authPut);
-
-        Collection<ProfileAcess> defaultHierarchies = new HashSet<>();
-        defaultHierarchies.add(new ProfileAcess("LIDER", lider));
-        //criador
-
-        Collection<Auth> administrador = new HashSet<>();
-        //lista adms
-        administrador.add(authPost);
-        administrador.add(authGet);
-        administrador.add(authPut);
-
-        defaultHierarchies.add(new ProfileAcess("ADMINISTRADOR", administrador));
-
-        Collection<Auth> colaborador = new HashSet<>();
-
-        colaborador.add(authGet);
-        colaborador.add(authPut);
-
-        defaultHierarchies.add(new ProfileAcess("COLABORADOR", colaborador));
-
-        Collection<Auth> convidado = new HashSet<>();
-
-        convidado.add(authGet);
-
-        defaultHierarchies.add(new ProfileAcess("CONVIDADO", convidado));
-
-        if (this.getProfileAcesses() != null) {
-            this.getProfileAcesses().addAll(defaultHierarchies);
-        } else {
-            this.setProfileAcesses(defaultHierarchies);
-        }
-    }
+//    private void setDefaultAcessProfile() {
+//        Permission authDelete = Permission.DELETE;
+//        Permission authPut = Permission.PUT;
+//        Permission authGet = Permission.GET;
+//        Permission authPost = Permission.POST;
+//
+//        Collection<Permission> lider = new HashSet<>();
+//
+//        lider.add(authDelete);
+//        lider.add(authPost);
+//        lider.add(authGet);
+//        lider.add(authPut);
+//
+//        Collection<ProfileAcess> defaultHierarchies = new HashSet<>();
+//        defaultHierarchies.add(new ProfileAcess("LIDER", lider));
+//        //criador
+//
+//        Collection<Permission> administrador = new HashSet<>();
+//        //lista adms
+//        administrador.add(authPost);
+//        administrador.add(authGet);
+//        administrador.add(authPut);
+//
+//        defaultHierarchies.add(new ProfileAcess("ADMINISTRADOR", administrador));
+//
+//        Collection<Permission> colaborador = new HashSet<>();
+//
+//        colaborador.add(authGet);
+//        colaborador.add(authPut);
+//
+//        defaultHierarchies.add(new ProfileAcess("COLABORADOR", colaborador));
+//
+//        Collection<Permission> convidado = new HashSet<>();
+//
+//        convidado.add(authGet);
+//
+//        defaultHierarchies.add(new ProfileAcess("CONVIDADO", convidado));
+//
+//        if (this.getProfileAcesses() != null) {
+//            this.getProfileAcesses().addAll(defaultHierarchies);
+//        } else {
+//            this.setProfileAcesses(defaultHierarchies);
+//        }
+//    }
 
     public Team(User user) {
         this.name = user.getName() + " Workspace";
@@ -109,7 +105,7 @@ public class Team {
     public Team() {
         this.chat = new TeamChat();
         this.chat.setTeam(this);
-        setDefaultAcessProfile();
+//        setDefaultAcessProfile();
     }
 
 }

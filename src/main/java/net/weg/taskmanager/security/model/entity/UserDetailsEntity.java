@@ -3,7 +3,7 @@ package net.weg.taskmanager.security.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import net.weg.taskmanager.model.User;
-import net.weg.taskmanager.security.model.enums.Auth;
+import net.weg.taskmanager.security.model.enums.Permission;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -31,7 +31,7 @@ public class UserDetailsEntity implements UserDetails {
     private boolean enabled = true;
 //    @OneToMany
 //    @Enumerated(EnumType.STRING)
-    private Collection<Auth> authorities = null;
+    private Collection<Permission> authorities = null;
     private boolean accountNonExpired = true;
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
