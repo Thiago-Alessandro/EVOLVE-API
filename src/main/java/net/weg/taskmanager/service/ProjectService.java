@@ -12,6 +12,7 @@ import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.security.model.entity.ProfileAcess;
 import net.weg.taskmanager.security.repository.ProfileAcessRepository;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
+import org.modelmapper.AbstractProvider;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyEditorRegistrar;
@@ -75,6 +76,7 @@ public class ProjectService {
 
         return getProjectDTOS;
     }
+
     private final ProfileAcessRepository profileAcessRepository;
 
     public GetProjectDTO create(PostProjectDTO projectDTO) {
@@ -92,8 +94,6 @@ public class ProjectService {
 
 //        Project savedAgain = projectRepository.save(projectSaved);
 
-        project.getCreator();
-
         //Referencia o projeto nas suas propriedades
         propertiesSetProject(projectSaved);
         ProfileAcess pfAccess = projectSaved.getProfileAcesses().stream().filter(pf -> pf.getName().equals("ADMINISTRADOR")).findFirst().orElse(null);
@@ -103,11 +103,10 @@ public class ProjectService {
 
         syncUserProjectTable(savedAgain);
 
-
         return transformToGetProjectDTO(treatAndSave(savedAgain));
     }
 
-    private void setCreatorProfileAcess(Project project){
+    private void setCreatorProfileAcess(Project project) {
 //        UserProject userProject = new UserProject(project.getCreator().getId(), project.getId(),)
     }
 
@@ -148,14 +147,15 @@ public class ProjectService {
         if (project.getMembers() != null) {
             project.getMembers().stream()
                     .filter(member -> doesUserProjectTableExists(member, project))
-                    .forEach( member -> userProjectRepository.save(createDefaultUserProject(member, project)));
+                    .forEach(member -> userProjectRepository.save(createDefaultUserProject(member, project)));
 
             deleteUserProjectIfUserIsNotAssociate(project);
         }
     }
 
     private final UserRepository userRepository;
-    private UserProject createDefaultUserProject(User member, Project project){
+
+    private UserProject createDefaultUserProject(User member, Project project) {
         UserProject userProject = new UserProject(member.getId(), project.getId(), member, project, project.getDefaultProfileAcess());
 
         UserProject userProjectSaved = userProjectRepository.save(userProject);
@@ -166,7 +166,7 @@ public class ProjectService {
         return userProject;
     }
 
-    private boolean doesUserProjectTableExists(User member, Project project){
+    private boolean doesUserProjectTableExists(User member, Project project) {
         return !userProjectRepository.existsById(new UserProjectId(member.getId(), project.getId()));
     }
 
@@ -221,5 +221,19 @@ public class ProjectService {
         project.getChat().setUsers(project.getMembers());
     }
 
-
+    private boolean updateMemberProfileAcess(Long projectId, Long memberId, String profileAcessName) {
+        Project project = projectRepository.findById(projectId).get();
+        User member = userRepository.findById(memberId).get();
+        if (member == project.getCreator()) {
+            UserProject userProject = userProjectRepository.findByUserIdAndProjectId(member.getId(), project.getId());
+            ProfileAcess profileAcess = profileAcessRepository.findByName(profileAcessName);
+            Boolean existsOnProject = projectRepository.existsByIdAndProfileAcessesContaining(project.getId(), profileAcess);
+            if (existsOnProject) {
+                userProject.setAcessProfile(profileAcess);
+                userProjectRepository.save(userProject);
+                return true;
+            }
+        }
+        return false;
+    }
 }

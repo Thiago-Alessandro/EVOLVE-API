@@ -22,8 +22,6 @@ public class UserTeam {
     private PropertiesPermission permissionOfProperties;
     @ManyToOne
     private CardsPermission permissionOfCards;
-    //    @OneToMany
-//    private Collection<Auth> authorizations;
 
     @ManyToOne
     @JoinColumn(name = "userId", insertable = false, updatable = false)
@@ -38,6 +36,14 @@ public class UserTeam {
     public UserTeam(Long userId, Long teamId, ProfileAcess acessProfile) {
         this.userId = userId;
         this.teamId = teamId;
+        this.acessProfile = acessProfile;
+    }
+
+    public UserTeam(Long userId, Long teamId, User user, Team team, ProfileAcess acessProfile) {
+        this.userId = userId;
+        this.teamId = teamId;
+        this.user = user;
+        this.team = team;
         this.acessProfile = acessProfile;
     }
 }

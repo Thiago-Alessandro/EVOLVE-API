@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProfileAcessRepository extends JpaRepository<ProfileAcess, Long> {
+
+    ProfileAcess findByName(String name);
 }

@@ -6,8 +6,6 @@ import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserTaskRepository extends JpaRepository<UserTask, UserTaskId> {
-
+    boolean existsByUserIdAndTaskId(Long userId, Long taskId);
     UserTask findByUserIdAndTaskId(Long userId, Long taskId);
-    boolean existsByUserIdAndTaskIdAndUser_UserDetailsEntity(Long userId, Long taskId, UserDetailsEntity userDetails);
-
 }

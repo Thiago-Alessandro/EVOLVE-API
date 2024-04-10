@@ -19,12 +19,7 @@ public class ProfileAcess {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-//    @ManyToOne
-//    @Enumerated(EnumType.ORDINAL)
     private Collection<Auth> auths;
-//    @ManyToOne
-//    @JsonIgnore
-//    private Project project;
 
     public ProfileAcess(String name, Collection<Auth> auths) {
         this.name = name;

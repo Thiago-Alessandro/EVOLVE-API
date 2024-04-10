@@ -1,5 +1,6 @@
 package net.weg.taskmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -78,6 +79,7 @@ public class Project {
         Auth authPut = Auth.PUT;
         Auth authGet = Auth.GET;
         Auth authPost = Auth.POST;
+        Auth authPatch = Auth.PATCH;
 
         Collection<Auth> lider = new HashSet<>();
 
@@ -85,6 +87,7 @@ public class Project {
         lider.add(authPost);
         lider.add(authGet);
         lider.add(authPut);
+        lider.add(authPatch);
 
         Collection<ProfileAcess> defaultHierarchies = new HashSet<>();
         defaultHierarchies.add(new ProfileAcess("LIDER", lider));
@@ -95,6 +98,7 @@ public class Project {
         administrador.add(authPost);
         administrador.add(authGet);
         administrador.add(authPut);
+        administrador.add(authPatch);
 
        ProfileAcess administradorAcess = new ProfileAcess("ADMINISTRADOR", administrador);
        defaultHierarchies.add(administradorAcess);
@@ -103,6 +107,7 @@ public class Project {
 
         colaborador.add(authGet);
         colaborador.add(authPut);
+        colaborador.add(authPatch);
 
         defaultHierarchies.add(new ProfileAcess("COLABORADOR", colaborador));
 

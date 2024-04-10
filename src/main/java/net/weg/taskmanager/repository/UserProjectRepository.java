@@ -12,4 +12,5 @@ public interface UserProjectRepository extends JpaRepository<UserProject, UserPr
 //    boolean existsByAuthorizationsContaining_
 
     //Hierarchy findByUserIdAndProjectIdAndHierarchy_AuthsContaining(Long userId, Long projectId, Auth auth);
+    UserProject findByUserIdAndProjectId(Long userId, Long projectId);
 }

@@ -3,7 +3,9 @@ package net.weg.taskmanager.service;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.*;
 import net.weg.taskmanager.repository.TeamRepository;
+import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.repository.UserTeamRepository;
+import net.weg.taskmanager.security.model.entity.ProfileAcess;
 import net.weg.taskmanager.service.processor.TeamProcessor;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +40,14 @@ public class TeamService {
     public Team create(Team team) {
         updateTeamChat(team);
         Team createdTeam = teamRepository.save(team);
-        return TeamProcessor.getInstance().resolveTeam(createdTeam);
+
+        ProfileAcess pfAccess = createdTeam.getProfileAcesses().stream().filter(pf -> pf.getName().equals("ADMINISTRADOR")).findFirst().orElse(null);
+        createdTeam.setDefaultProfileAcess(pfAccess);
+
+        Team teamSaved = teamRepository.save(createdTeam);
+        syncUserProjectTable(teamSaved) ;
+
+        return TeamProcessor.getInstance().resolveTeam(teamSaved);
     }
 
     public Team update(Team team) {
@@ -61,9 +70,17 @@ public class TeamService {
             deleteUserProjectIfUserIsNotAssociate(team);
         }
     }
+    private final UserRepository userRepository;
 
     private UserTeam createDefaultUserTeam(User member, Team team) {
-        return new UserTeam(member.getId(), team.getId(), team.getDefaultProfileAcess());
+        UserTeam userTeam = new UserTeam(member.getId(), team.getId(), member, team, team.getDefaultProfileAcess());
+
+        UserTeam userTeamSaved = userTeamRepository.save(userTeam);
+        User user = userRepository.findById(member.getId()).get();
+
+        user.getTeamAcess().add(userTeamSaved);
+
+        return userTeamSaved;
     }
 
     private boolean doesUserTeamTableExists(User member, Team team) {

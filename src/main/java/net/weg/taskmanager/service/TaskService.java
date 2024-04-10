@@ -91,24 +91,24 @@ public class TaskService {
         return getTaskDTO;
     }
 
-    public Collection<GetTaskDTO> findAll() {
-        Collection<Task> tasks = taskRepository.findAll();
-        Collection<GetTaskDTO> getTaskDTOS = new ArrayList<>();
-
-        for (Task task : tasks) {
-            TaskProcessor.getInstance().resolveTask(task);
-        }
-
-        for (Task taskFor : tasks) {
-            GetTaskDTO getTaskDTO = new GetTaskDTO();
-            PriorityRecord priorityRecord = new PriorityRecord(taskFor.getPriority().name(), taskFor.getPriority().backgroundColor);
-            BeanUtils.copyProperties(taskFor, getTaskDTO);
-            getTaskDTO.setPriority(priorityRecord);
-            getTaskDTOS.add(getTaskDTO);
-        }
-
-        return getTaskDTOS;
-    }
+//    public Collection<GetTaskDTO> findAll(Long projectId) {
+//        Collection<Task> tasks = taskRepository.findAllByProject_Id(projectId);
+//        Collection<GetTaskDTO> getTaskDTOS = new ArrayList<>();
+//
+//        for (Task task : tasks) {
+//            TaskProcessor.getInstance().resolveTask(task);
+//        }
+//
+//        for (Task taskFor : tasks) {
+//            GetTaskDTO getTaskDTO = new GetTaskDTO();
+//            PriorityRecord priorityRecord = new PriorityRecord(taskFor.getPriority().name(), taskFor.getPriority().backgroundColor);
+//            BeanUtils.copyProperties(taskFor, getTaskDTO);
+//            getTaskDTO.setPriority(priorityRecord);
+//            getTaskDTOS.add(getTaskDTO);
+//        }
+//
+//        return getTaskDTOS;
+//    }
 
     public void delete(Long id) {
         Collection<Property> properties = taskRepository.findById(id).get().getProperties();

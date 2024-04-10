@@ -31,8 +31,8 @@ public class TaskController {
     @GetMapping("/{taskId}")
     public GetTaskDTO findById(@PathVariable Long taskId){return taskService.findById(taskId);}
 
-    @GetMapping
-    public Collection<GetTaskDTO> findAll(){return taskService.findAll();}
+//    @GetMapping
+//    public Collection<GetTaskDTO> findAll(){return taskService.findAll();}
 
     @DeleteMapping("/{taskId}")
     public void delete(@PathVariable Long taskId){
@@ -40,8 +40,8 @@ public class TaskController {
 
     @PostMapping
     public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
-        System.out.println("postTaskDTO");
-        System.out.println(postTaskDTO.getProject().getId());
+//        System.out.println("postTaskDTO");
+//        System.out.println(postTaskDTO.getProject().getId());
         return taskService.create(postTaskDTO);}
 
     @PutMapping

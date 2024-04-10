@@ -1,4 +1,4 @@
-package net.weg.taskmanager.security.route;
+package net.weg.taskmanager.security.route.task;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -35,37 +35,45 @@ public class PermissionRouteTask implements AuthorizationManager<RequestAuthoriz
     public AuthorizationDecision check(Supplier<Authentication> supplier, RequestAuthorizationContext object) {
         Authentication authentication = supplier.get();
         HttpServletRequest request = object.getRequest();
+
         UserDetailsEntity userDetails = (UserDetailsEntity) authentication.getPrincipal();
         User user = userDetails.getUser();
+
         Map<String, String> mapper = object.getVariables();
         Long statusId = Long.parseLong(mapper.get("statusId"));
         Long taskId = Long.parseLong(mapper.get("taskId"));
-        Task task = taskRepository.findById(taskId).get();
         Long userId = Long.parseLong(mapper.get("userId"));
+
+        Task task = taskRepository.findById(taskId).get();
         Project project = task.getProject();
+
         if (statusId == null) {
             if (userId == null) {
-                if (existsByTaskIdAndUser(taskId, user)) {
+                if (existsByIdAndAssociatesContaining(taskId, user)) {
                     return new AuthorizationDecision(isUserAuthorized(project.getId(), user, Auth.valueOf(request.getMethod())));
                 }
             }
-            if (existsByTask_IdAndUser_Id(userId, taskId, userDetails)){
-                return new AuthorizationDecision(isUserAuthorized(project.getId(), user, Auth.valueOf(request.getMethod())));
+            if (userId == user.getId()) {
+                if (existsByUserIdAndTaskId(userId, taskId)) {
+                    return new AuthorizationDecision(isUserAuthorized(project.getId(), user, Auth.valueOf(request.getMethod())));
+                }
             }
-        }
-        if(existsByStatus_IdAndUser(statusId, user)){
+        } else if (existsByStatus_IdAndUser(statusId, user)) {
+            return new AuthorizationDecision(isUserAuthorized(project.getId(), user, Auth.valueOf(request.getMethod())));
+        } else if (statusId == null && taskId == null && userId == null) {
             return new AuthorizationDecision(isUserAuthorized(project.getId(), user, Auth.valueOf(request.getMethod())));
         }
         return new AuthorizationDecision(false);
     }
 
-    private boolean existsByTaskIdAndUser(Long taskId, User user) {
+    private boolean existsByIdAndAssociatesContaining(Long taskId, User user) {
         return taskRepository.existsByIdAndAssociatesContaining(taskId, user);
     }
 
-    private boolean existsByTask_IdAndUser_Id(Long userId, Long taskId, UserDetailsEntity userDetails) {
-        return userTaskRepository.existsByUserIdAndTaskIdAndUser_UserDetailsEntity(userId, taskId, userDetails);
+    private boolean existsByUserIdAndTaskId(Long userId, Long taskId) {
+        return userTaskRepository.existsByUserIdAndTaskId(userId, taskId);
     }
+
 
     private boolean existsByStatus_IdAndUser(Long statusId, User user) {
         return taskRepository.existsByCurrentStatus_IdAndAssociatesContaining(statusId, user);
@@ -76,7 +84,5 @@ public class PermissionRouteTask implements AuthorizationManager<RequestAuthoriz
                 .stream().filter(projectAcess -> projectAcess.getProjectId().equals(projectId))
                 .anyMatch(projectAcess -> projectAcess.getAcessProfile().getAuths().contains(auth)
                 );
-//        return repository.existsByIdAndMembersContaining(projectId,user);
     }
-//    private boolean existsByStatus(Long)
 }

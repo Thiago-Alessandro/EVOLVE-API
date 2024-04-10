@@ -24,10 +24,10 @@ public class Task {
     @Column(nullable = false)
     private Boolean favorited = false;
 
-    private LocalDate finalDate;
-    private LocalDate creationDate = LocalDate.now();
+    private LocalDateTime finalDate;
+    private LocalDateTime creationDate = LocalDateTime.now();
     private LocalDateTime lastTimeEdited = LocalDateTime.now();
-    private LocalDate scheduledDate;
+    private LocalDateTime scheduledDate;
 
     private String description;
 
