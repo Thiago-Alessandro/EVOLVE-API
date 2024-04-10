@@ -17,16 +17,13 @@ import net.weg.taskmanager.service.processor.TaskProcessor;
 import net.weg.taskmanager.model.enums.Priority;
 import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.property.values.PropertyValue;
-import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -41,6 +38,7 @@ public class TaskService {
     private final OptionRepository optionRepository;
     private final CommentRepository commentRepository;
     private final HistoricRepository historicRepository;
+    private final HistoricService historicService;
 
     public UserTask setWorkedTime(UserTask userTask) {
 
@@ -61,20 +59,11 @@ public class TaskService {
     }
 
     public Comment patchNewComment(Long taskId, Comment newComment, Long userId) {
-        User userForHistoric = userRepository.findById(userId).get();
         Task task = taskRepository.findById(taskId).get();
         newComment.setTask(task);
         Comment commentSaved = commentRepository.save(newComment);
 
-        Historic historic = new Historic(
-                userForHistoric,
-                userForHistoric.getName() + " adicionou um comentário",
-                LocalDateTime.now()
-        );
-
-        Historic savedHistoric = this.historicRepository.save(historic);
-
-        task.getHistoric().add(savedHistoric);
+        task = historicService.patchNewCommentHistoric(taskId,userId);
 
         taskRepository.save(task);
 
@@ -331,29 +320,29 @@ public class TaskService {
         Task task = taskRepository.findById(putTaskDTO.getId()).get();
         User userForHistoric = userRepository.findById(userId).get();
 
-        putTaskDTO.getProperties().forEach(property -> {
-            task.getProperties().forEach(property1 -> {
-                if (property.getCurrentOptions() != property1.getCurrentOptions()) {
-                    ArrayList<String> currentOptionListUpdate = new ArrayList<>();
-                    property.getCurrentOptions().forEach(currentOption -> {
-                        currentOptionListUpdate.add(currentOption.getValue());
-                    });
-                    String description =  userForHistoric.getName() + " mudou o valor da propriedade " + property.getName() + " para " + currentOptionListUpdate.stream().toList();
-                    description = description.replace("[","");
-                    description = description.replace("]","");
-                    Historic historic = new Historic(
-                            userForHistoric,
-                            description,
-                            LocalDateTime.now()
-                    );
-                    Historic savedHistoric = this.historicRepository.save(historic);
+            putTaskDTO.getProperties().forEach(property -> {
+                task.getProperties().forEach(property1 -> {
+                    if (property.getCurrentOptions() != property1.getCurrentOptions()) {
+                        ArrayList<String> currentOptionListUpdate = new ArrayList<>();
+                        property.getCurrentOptions().forEach(currentOption -> {
+                            currentOptionListUpdate.add(currentOption.getValue());
+                        });
+                        String description = userForHistoric.getName() + " mudou o valor da propriedade " + property.getName() + " para " + currentOptionListUpdate.stream().toList();
+                        description = description.replace("[", "");
+                        description = description.replace("]", "");
+                        Historic historic = new Historic(
+                                userForHistoric,
+                                description,
+                                LocalDateTime.now()
+                        );
+                        Historic savedHistoric = this.historicRepository.save(historic);
 
-                    task.getHistoric().add(savedHistoric);
+                        task.getHistoric().add(savedHistoric);
 
-                    taskRepository.save(task);
-                }
+                        taskRepository.save(task);
+                    }
+                });
             });
-        });
 
         if (!putTaskDTO.getCurrentStatus().getName().equals(task.getCurrentStatus().getName())) {
             Historic historic = new Historic(
