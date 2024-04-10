@@ -68,7 +68,7 @@ public class TaskService {
 
         Historic historic = new Historic(
                 userForHistoric,
-                userForHistoric.getName()+" adicionou um comentário",
+                userForHistoric.getName() + " adicionou um comentário",
                 LocalDateTime.now()
         );
 
@@ -91,7 +91,7 @@ public class TaskService {
 
         Historic historic = new Historic(
                 userForHistoric,
-                userForHistoric.getName()+" deletou um comentário.",
+                userForHistoric.getName() + " deletou um comentário.",
                 LocalDateTime.now()
         );
 
@@ -132,10 +132,9 @@ public class TaskService {
         this.propertyRepository.save(propertyOfPropertyValue);
 
 
-
-        if(propertyOfPropertyValue.getPropertyType() == PropertyType.DataValue || propertyOfPropertyValue.getPropertyType() == PropertyType.IntegerValue ||
-                propertyOfPropertyValue.getPropertyType() == PropertyType.TextValue || propertyOfPropertyValue.getPropertyType() == PropertyType.DoubleValue ) {
-             historic = new Historic(
+        if (propertyOfPropertyValue.getPropertyType() == PropertyType.DataValue || propertyOfPropertyValue.getPropertyType() == PropertyType.IntegerValue ||
+                propertyOfPropertyValue.getPropertyType() == PropertyType.TextValue || propertyOfPropertyValue.getPropertyType() == PropertyType.DoubleValue) {
+            historic = new Historic(
                     userForHistoric,
                     userForHistoric.getName() + " mudou o valor da propriedade " + propertyOfPropertyValue.getName() + " para " + propertyValue.getValue().getValue().toString(),
                     LocalDateTime.now()
@@ -170,7 +169,7 @@ public class TaskService {
     public GetTaskDTO patchProperty(Property property, Long taskId, Long userId) {
         User userForHistoric = userRepository.findById(userId).get();
         Task task = taskRepository.findById(taskId).get();
-        if(property.getOptions() != null) {
+        if (property.getOptions() != null) {
             optionRepository.saveAll(property.getOptions());
         }
         property = this.propertyRepository.save(property);
@@ -178,63 +177,63 @@ public class TaskService {
 
         Historic historic = new Historic();
 
-        if(property.getPropertyType().toString() == "IntegerValue") {
+        if (property.getPropertyType().toString() == "IntegerValue") {
 
-                    historic = new Historic(
+            historic = new Historic(
                     userForHistoric,
                     userForHistoric.getName() + " criou uma propriedade de número chamada " + property.getName(),
                     LocalDateTime.now()
             );
 
         }
-        if(property.getPropertyType().toString() == "DoubleValue") {
+        if (property.getPropertyType().toString() == "DoubleValue") {
 
-                    historic = new Historic(
+            historic = new Historic(
                     userForHistoric,
                     userForHistoric.getName() + " criou uma propriedade de decimal chamada " + property.getName(),
                     LocalDateTime.now()
             );
 
         }
-        if(property.getPropertyType().toString() == "DataValue") {
+        if (property.getPropertyType().toString() == "DataValue") {
 
-                    historic = new Historic(
+            historic = new Historic(
                     userForHistoric,
                     userForHistoric.getName() + " criou uma propriedade de calendário chamada " + property.getName(),
                     LocalDateTime.now()
             );
 
         }
-        if(property.getPropertyType().toString() == "AssociatesValue") {
+        if (property.getPropertyType().toString() == "AssociatesValue") {
 
-                    historic = new Historic(
+            historic = new Historic(
                     userForHistoric,
                     userForHistoric.getName() + " criou uma propriedade de pessoas chamada " + property.getName(),
                     LocalDateTime.now()
             );
 
         }
-        if(property.getPropertyType().toString() == "MultiSelectValue") {
+        if (property.getPropertyType().toString() == "MultiSelectValue") {
 
-                    historic = new Historic(
+            historic = new Historic(
                     userForHistoric,
                     userForHistoric.getName() + " criou uma propriedade de multiselect chamada " + property.getName(),
                     LocalDateTime.now()
             );
 
         }
-        if(property.getPropertyType().toString() == "TextValue") {
+        if (property.getPropertyType().toString() == "TextValue") {
 
-                    historic = new Historic(
+            historic = new Historic(
                     userForHistoric,
                     userForHistoric.getName() + " criou uma propriedade de texto chamada " + property.getName(),
                     LocalDateTime.now()
             );
 
         }
-        if(property.getPropertyType().toString() == "UniSelectValue") {
+        if (property.getPropertyType().toString() == "UniSelectValue") {
 
-                    historic = new Historic(
+            historic = new Historic(
                     userForHistoric,
                     userForHistoric.getName() + " criou uma propriedade de uniselect chamada " + property.getName(),
                     LocalDateTime.now()
@@ -251,9 +250,35 @@ public class TaskService {
         return resolveAndGetDTO(savedTask);
     }
 
-    public Collection<GetUserDTO> patchAssociate(Long taskId, Collection<User> associates, Long userId){
+    public Collection<GetUserDTO> patchAssociate(Long taskId, Collection<User> associates, Long userId) {
+        User userForHistoric = userRepository.findById(userId).get();
         Task task = taskRepository.findById(taskId).get();
         task.setAssociates(associates);
+        ArrayList<String> currentUsersAssociates = new ArrayList<>();
+        associates.forEach(user -> {
+            currentUsersAssociates.add(userRepository.findById(user.getId()).get().getName());
+        });
+
+        String description =  userForHistoric.getName() + " associou " + currentUsersAssociates.stream().toList() + " a tarefa";
+        description = description.replace("[","");
+        description = description.replace("]","");
+
+        if (associates.size() == 2) {
+            description = description.replace(","," e");
+        }
+
+        Historic historic = new Historic();
+
+        historic = new Historic(
+                userForHistoric,
+                description,
+                LocalDateTime.now()
+        );
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        task.getHistoric().add(savedHistoric);
+
+        taskRepository.save(task);
 
         return DTOUtils.usersToGetUserDTOs(taskRepository.save(task).getAssociates());
     }
@@ -290,41 +315,80 @@ public class TaskService {
 
         return resolveAndGetDTO(task2);
     }
+
     private final TaskProcessor taskProcessor = new TaskProcessor();
-    private GetTaskDTO resolveAndGetDTO(Task task){
+
+    private GetTaskDTO resolveAndGetDTO(Task task) {
         taskProcessor.resolveTask(task);
         return new GetTaskDTO(task);
     }
-    private Collection<GetTaskDTO> resolveAndGetDTOS(Collection<Task> tasks){
+
+    private Collection<GetTaskDTO> resolveAndGetDTOS(Collection<Task> tasks) {
         return tasks.stream().map(this::resolveAndGetDTO).toList();
     }
+
     public GetTaskDTO update(PutTaskDTO putTaskDTO, Long userId) {
         Task task = taskRepository.findById(putTaskDTO.getId()).get();
         User userForHistoric = userRepository.findById(userId).get();
+
         putTaskDTO.getProperties().forEach(property -> {
-            property.getCurrentOptions().forEach(currentOption -> {
-                task.getProperties().forEach(property1 -> {
-                    property1.getCurrentOptions().forEach(currentOption1 -> {
-                        if(currentOption != currentOption1) {
-                            Historic historic = new Historic(
-                                    userForHistoric,
-                                    userForHistoric.getName() + " mudou o valor da propriedade " + property.getName() + " para " + currentOption1.getValue(),
-                                    LocalDateTime.now()
-                            );
-                            Historic savedHistoric = this.historicRepository.save(historic);
-
-                            task.getHistoric().add(savedHistoric);
-
-                            taskRepository.save(task);
-                        }
+            task.getProperties().forEach(property1 -> {
+                if (property.getCurrentOptions() != property1.getCurrentOptions()) {
+                    ArrayList<String> currentOptionListUpdate = new ArrayList<>();
+                    property.getCurrentOptions().forEach(currentOption -> {
+                        currentOptionListUpdate.add(currentOption.getValue());
                     });
-                });
+                    String description =  userForHistoric.getName() + " mudou o valor da propriedade " + property.getName() + " para " + currentOptionListUpdate.stream().toList();
+                    description = description.replace("[","");
+                    description = description.replace("]","");
+                    Historic historic = new Historic(
+                            userForHistoric,
+                            description,
+                            LocalDateTime.now()
+                    );
+                    Historic savedHistoric = this.historicRepository.save(historic);
+
+                    task.getHistoric().add(savedHistoric);
+
+                    taskRepository.save(task);
+                }
             });
         });
-        Priority prioritySaved = Priority.valueOf(putTaskDTO.getPriority().name());
-        prioritySaved.backgroundColor = putTaskDTO.getPriority().backgroundColor();
+
+        if (!putTaskDTO.getCurrentStatus().getName().equals(task.getCurrentStatus().getName())) {
+            Historic historic = new Historic(
+                    userForHistoric,
+                    userForHistoric.getName() + " mudou o valor da propriedade status para " + putTaskDTO.getCurrentStatus().getName(),
+                    LocalDateTime.now()
+            );
+            Historic savedHistoric = this.historicRepository.save(historic);
+
+            task.getHistoric().add(savedHistoric);
+
+            taskRepository.save(task);
+        }
+
+        if (!putTaskDTO.getPriority().name().toUpperCase().equals(task.getPriority().name())) {
+            Priority prioritySaved = Priority.valueOf(putTaskDTO.getPriority().name());
+            prioritySaved.backgroundColor = putTaskDTO.getPriority().backgroundColor();
+            BeanUtils.copyProperties(putTaskDTO, task);
+            task.setPriority(prioritySaved);
+
+            Historic historic = new Historic(
+                    userForHistoric,
+                    userForHistoric.getName() + " mudou o valor da propriedade prioridade para " + putTaskDTO.getPriority().name().toLowerCase(),
+                    LocalDateTime.now()
+            );
+            Historic savedHistoric = this.historicRepository.save(historic);
+
+            task.getHistoric().add(savedHistoric);
+
+            taskRepository.save(task);
+
+        }
+
         BeanUtils.copyProperties(putTaskDTO, task);
-        task.setPriority(prioritySaved);
+
         setStatusListIndex(task);
 
         task.setProgress(setProgress(task));
@@ -336,18 +400,15 @@ public class TaskService {
         return resolveAndGetDTO(updatedTask);
     }
 
-    private double setProgress(Task task){
-       Collection<Subtask> totalConcludedSubtasks = task.getSubtasks().stream().filter(Subtask::getConcluded).toList();
-       double total = task.getSubtasks().size();
-        System.out.println(total);
-        if(total==0){
+    private double setProgress(Task task) {
+        Collection<Subtask> totalConcludedSubtasks = task.getSubtasks().stream().filter(Subtask::getConcluded).toList();
+        double total = task.getSubtasks().size();
+        if (total == 0) {
             return 0.0;
         }
-        double totalConcluded  = totalConcludedSubtasks.size();
-        System.out.println(totalConcluded);
-       double progress  = (totalConcluded/total)*100;
+        double totalConcluded = totalConcludedSubtasks.size();
+        double progress = (totalConcluded / total) * 100;
 
-        System.out.println("progresso: "+progress);
         return progress;
 
     }
@@ -389,7 +450,7 @@ public class TaskService {
         }
     }
 
-    public Collection<GetTaskDTO> getTasksByUserId(Long id){
+    public Collection<GetTaskDTO> getTasksByUserId(Long id) {
 
         User user = userRepository.findById(id).get();
 
@@ -400,17 +461,17 @@ public class TaskService {
 
         associatedTasks.forEach((task -> getTaskDTOS.add(transformToTaskDTO(task))));
         createdTasks.forEach(createdTask ->
-            associatedTasks.forEach(associatedTask -> {
-                if (!createdTask.getId().equals(associatedTask.getId())){
-                    getTaskDTOS.add(transformToTaskDTO(createdTask));
-                }
-            })
+                associatedTasks.forEach(associatedTask -> {
+                    if (!createdTask.getId().equals(associatedTask.getId())) {
+                        getTaskDTOS.add(transformToTaskDTO(createdTask));
+                    }
+                })
         );
 
         return getTaskDTOS;
     }
 
-    private GetTaskDTO transformToTaskDTO(Task task){
+    private GetTaskDTO transformToTaskDTO(Task task) {
         TaskProcessor.getInstance().resolveTask(task);
         return new GetTaskDTO(task);
     }
