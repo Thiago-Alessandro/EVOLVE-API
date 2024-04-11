@@ -3,8 +3,12 @@ package net.weg.taskmanager.model.dto.shortDTOs;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.dto.utils.DTOUtils;
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.get.PriorityRecordConverter;
+import net.weg.taskmanager.model.dto.converter.shorts.ShortProjectConverter;
+import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
 import net.weg.taskmanager.model.entity.*;
+import net.weg.taskmanager.model.enums.Priority;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import org.springframework.beans.BeanUtils;
 
@@ -46,10 +50,13 @@ public class ShortTaskDTO {
     private Integer statusListIndex;
 
     public ShortTaskDTO(Task task){
+        Converter<ShortUserDTO, User> userConverter = new ShortUserConverter();
+        Converter<ShortProjectDTO, Project> projectConverter = new ShortProjectConverter();
+        Converter<PriorityRecord, Priority> priorityConverter = new PriorityRecordConverter();
         BeanUtils.copyProperties(task, this);
-        this.creator = DTOUtils.userToShortUserDTO(task.getCreator());
-        this.project = DTOUtils.projectToShortProjectDTO(task.getProject());
-        this.priority = DTOUtils.priorityToPriorityRecord(task.getPriority());
+        this.creator = userConverter.convertOne(task.getCreator());
+        this.project = projectConverter.convertOne(task.getProject());
+        this.priority = priorityConverter.convertOne(task.getPriority());
     }
 
 }

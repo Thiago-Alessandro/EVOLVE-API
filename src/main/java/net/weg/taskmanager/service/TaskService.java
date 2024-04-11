@@ -3,9 +3,11 @@ package net.weg.taskmanager.service;
 import lombok.AllArgsConstructor;
 
 
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.get.GetTaskConverter;
+import net.weg.taskmanager.model.dto.converter.get.GetUserConverter;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
-import net.weg.taskmanager.model.dto.utils.DTOUtils;
 import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
 import net.weg.taskmanager.model.property.Option;
@@ -16,14 +18,12 @@ import net.weg.taskmanager.service.processor.TaskProcessor;
 import net.weg.taskmanager.model.enums.Priority;
 import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.property.values.PropertyValue;
-import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -37,6 +37,7 @@ public class TaskService {
     private final PropertyValueRepository propertyValueRepository;
     private final OptionRepository optionRepository;
     private final CommentRepository commentRepository;
+    private final Converter<GetTaskDTO, Task> converter = new GetTaskConverter();
 
     public UserTask setWorkedTime(UserTask userTask) {
 
@@ -135,8 +136,8 @@ public class TaskService {
     public Collection<GetUserDTO> patchAssociate(Long taskId, Collection<User> associates){
         Task task = taskRepository.findById(taskId).get();
         task.setAssociates(associates);
-
-        return DTOUtils.usersToGetUserDTOs(taskRepository.save(task).getAssociates());
+        Converter<GetUserDTO, User> userConverter = new GetUserConverter();
+        return userConverter.convertAll(taskRepository.save(task).getAssociates());
     }
 
     public GetTaskDTO findById(Long id) {

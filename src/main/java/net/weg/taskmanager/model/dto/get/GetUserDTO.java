@@ -1,15 +1,13 @@
 package net.weg.taskmanager.model.dto.get;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.get.*;
+import net.weg.taskmanager.model.dto.converter.shorts.ShortTaskConverter;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortTaskDTO;
-import net.weg.taskmanager.model.dto.utils.DTOUtils;
-import net.weg.taskmanager.model.entity.Task;
-import net.weg.taskmanager.model.entity.Team;
-import net.weg.taskmanager.model.entity.User;
-import net.weg.taskmanager.model.entity.UserChat;
+import net.weg.taskmanager.model.entity.*;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Collection;
@@ -21,7 +19,6 @@ public class GetUserDTO {
 
     private Long id;
     private String name;
-//    private String password;
     private String email;
     private GetFileDTO image;
     private String imageColor;
@@ -31,12 +28,17 @@ public class GetUserDTO {
     private Collection<GetTeamDTO> teams;
     private String theme;
     public GetUserDTO(User user){
+        Converter<GetFileDTO, File> fileConverter = new GetFileConverter();
+        Converter<ShortTaskDTO, Task> taskConverter = new ShortTaskConverter();
+        Converter<GetUserChatDTO, UserChat> userChatConverter = new GetUserChatConverter();
+        Converter<GetTeamDTO, Team> teamConverter = new GetTeamConverter();
+
         BeanUtils.copyProperties(user, this);
-        this.image = DTOUtils.fileToGetFileDTO(user.getImage());
-        this.createdTasks = DTOUtils.tasksToShortGetTaskDTOS(user.getCreatedTasks());
-        this.chats = DTOUtils.chatToGetUserChatDTOS(user.getChats());
-        this.teams = DTOUtils.teamsToGetTeamDTOS(user.getTeams());
-        this.managedTeams = DTOUtils.teamsToGetTeamDTOS(user.getManagedTeams());
+        this.image = fileConverter.convertOne(user.getImage());
+        this.createdTasks = taskConverter.convertAll(user.getCreatedTasks());
+        this.chats = userChatConverter.convertAll(user.getChats());
+        this.teams = teamConverter.convertAll(user.getTeams());
+        this.managedTeams = teamConverter.convertAll(user.getManagedTeams());
     }
 
 }

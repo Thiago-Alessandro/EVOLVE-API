@@ -3,10 +3,13 @@ package net.weg.taskmanager.model.dto.shortDTOs;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
+import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
 import net.weg.taskmanager.model.dto.get.GetFileDTO;
-import net.weg.taskmanager.model.dto.get.GetUserDTO;
-import net.weg.taskmanager.model.dto.utils.DTOUtils;
+import net.weg.taskmanager.model.entity.File;
 import net.weg.taskmanager.model.entity.Message;
+import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.enums.MessageStatus;
 import org.springframework.beans.BeanUtils;
 
@@ -27,9 +30,11 @@ public class ShortMessageDTO {
     private MessageStatus status;
 
     public ShortMessageDTO(Message message){
+        Converter<GetFileDTO, File> fileConverter = new GetFileConverter();
+        Converter<ShortUserDTO, User> userConverter = new ShortUserConverter();
         BeanUtils.copyProperties(message, this);
-        this.attachments = DTOUtils.fileToGetFileDTOS(message.getAttachments());
-        this.sender = DTOUtils.userToShortUserDTO(message.getSender());
+        this.attachments = fileConverter.convertAll(message.getAttachments());
+        this.sender = userConverter.convertOne(message.getSender());
     }
 
 }
