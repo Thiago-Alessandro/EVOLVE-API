@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 import net.weg.taskmanager.model.dto.utils.DTOUtils;
@@ -44,12 +46,13 @@ public class GetProjectDTO {
     private Collection<GetTaskDTO> tasks;
 
     public GetProjectDTO(Project project){
+        Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
         BeanUtils.copyProperties(project, this);
         this.image = DTOUtils.fileToGetFileDTO(project.getImage());
         this.chat = DTOUtils.chatToGetProjectChatDTO(project.getChat());
-        this.administrators = DTOUtils.usersToShortUserDTO(project.getAdministrators());
-        this.members = DTOUtils.usersToShortUserDTO(project.getMembers());
-        this.creator = DTOUtils.userToShortUserDTO(project.getCreator());
+        this.administrators = shortUserConverter.convertAll(project.getAdministrators());
+        this.members = shortUserConverter.convertAll(project.getMembers());
+        this.creator = shortUserConverter.convertOne(project.getCreator());
         this.tasks = DTOUtils.tasksToGetTaskDTOS(project.getTasks());
     }
 
