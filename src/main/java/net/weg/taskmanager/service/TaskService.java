@@ -63,7 +63,7 @@ public class TaskService {
         newComment.setTask(task);
         Comment commentSaved = commentRepository.save(newComment);
 
-        task = historicService.patchNewCommentHistoric(taskId,userId);
+        task = historicService.patchNewCommentHistoric(taskId, userId);
 
         taskRepository.save(task);
 
@@ -71,40 +71,20 @@ public class TaskService {
     }
 
     public Collection<Comment> deleteComment(Long commentId, Long taskId, Long userId) {
-        User userForHistoric = userRepository.findById(userId).get();
-        Comment commentForRemove = commentRepository.findById(commentId).get();
         Task task = taskRepository.findById(taskId).get();
 
         commentRepository.deleteById(commentId);
-
-
-        Historic historic = new Historic(
-                userForHistoric,
-                userForHistoric.getName() + " deletou um comentário.",
-                LocalDateTime.now()
-        );
-
-        Historic savedHistoric = this.historicRepository.save(historic);
-
-        task.getHistoric().add(savedHistoric);
-
-        taskRepository.save(task);
+        task = historicService.deleteCommentHistoric(taskId, userId);
 
         return task.getComments();
     }
 
 
-    public Property putPropertyValue(PropertyValue propertyValue,
-                                     Long propertyId, Long userId, Long taskId) {
-        Task taskForHistoric = this.taskRepository.findById(taskId).get();
-        User userForHistoric = this.userRepository.findById(userId).get();
+    public Property putPropertyValue(PropertyValue propertyValue, Long propertyId, Long userId, Long taskId) {
         PropertyValue propertyValueReturn = this.propertyValueRepository.save(propertyValue);
         Property propertyOfPropertyValue = this.propertyRepository.findById(propertyId).get();
-        Historic historic = new Historic();
 
-
-        if (propertyOfPropertyValue.getPropertyType().name().equals("MultiSelectValue") ||
-                propertyOfPropertyValue.getPropertyType().name().equals("UniSelectValue")) {
+        if (propertyOfPropertyValue.getPropertyType().name().equals("MultiSelectValue") || propertyOfPropertyValue.getPropertyType().name().equals("UniSelectValue")) {
             propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
         } else {
 
@@ -120,21 +100,7 @@ public class TaskService {
 
         this.propertyRepository.save(propertyOfPropertyValue);
 
-
-        if (propertyOfPropertyValue.getPropertyType() == PropertyType.DataValue || propertyOfPropertyValue.getPropertyType() == PropertyType.IntegerValue ||
-                propertyOfPropertyValue.getPropertyType() == PropertyType.TextValue || propertyOfPropertyValue.getPropertyType() == PropertyType.DoubleValue) {
-            historic = new Historic(
-                    userForHistoric,
-                    userForHistoric.getName() + " mudou o valor da propriedade " + propertyOfPropertyValue.getName() + " para " + propertyValue.getValue().getValue().toString(),
-                    LocalDateTime.now()
-            );
-            Historic savedHistoric = this.historicRepository.save(historic);
-
-            taskForHistoric.getHistoric().add(savedHistoric);
-
-            taskRepository.save(taskForHistoric);
-        }
-
+        this.historicService.putPropertyValueHistoric(propertyOfPropertyValue, propertyValueReturn, userId, taskId);
 
         return PropertyProcessor.getInstance().resolveProperty(propertyOfPropertyValue);
     }
@@ -156,7 +122,6 @@ public class TaskService {
     }
 
     public GetTaskDTO patchProperty(Property property, Long taskId, Long userId) {
-        User userForHistoric = userRepository.findById(userId).get();
         Task task = taskRepository.findById(taskId).get();
         if (property.getOptions() != null) {
             optionRepository.saveAll(property.getOptions());
@@ -164,83 +129,12 @@ public class TaskService {
         property = this.propertyRepository.save(property);
         task.getProperties().add(property);
 
-        Historic historic = new Historic();
-
-        if (property.getPropertyType().toString() == "IntegerValue") {
-
-            historic = new Historic(
-                    userForHistoric,
-                    userForHistoric.getName() + " criou uma propriedade de número chamada " + property.getName(),
-                    LocalDateTime.now()
-            );
-
-        }
-        if (property.getPropertyType().toString() == "DoubleValue") {
-
-            historic = new Historic(
-                    userForHistoric,
-                    userForHistoric.getName() + " criou uma propriedade de decimal chamada " + property.getName(),
-                    LocalDateTime.now()
-            );
-
-        }
-        if (property.getPropertyType().toString() == "DataValue") {
-
-            historic = new Historic(
-                    userForHistoric,
-                    userForHistoric.getName() + " criou uma propriedade de calendário chamada " + property.getName(),
-                    LocalDateTime.now()
-            );
-
-        }
-        if (property.getPropertyType().toString() == "AssociatesValue") {
-
-            historic = new Historic(
-                    userForHistoric,
-                    userForHistoric.getName() + " criou uma propriedade de pessoas chamada " + property.getName(),
-                    LocalDateTime.now()
-            );
-
-        }
-        if (property.getPropertyType().toString() == "MultiSelectValue") {
-
-            historic = new Historic(
-                    userForHistoric,
-                    userForHistoric.getName() + " criou uma propriedade de multiselect chamada " + property.getName(),
-                    LocalDateTime.now()
-            );
-
-        }
-        if (property.getPropertyType().toString() == "TextValue") {
-
-            historic = new Historic(
-                    userForHistoric,
-                    userForHistoric.getName() + " criou uma propriedade de texto chamada " + property.getName(),
-                    LocalDateTime.now()
-            );
-
-        }
-        if (property.getPropertyType().toString() == "UniSelectValue") {
-
-            historic = new Historic(
-                    userForHistoric,
-                    userForHistoric.getName() + " criou uma propriedade de uniselect chamada " + property.getName(),
-                    LocalDateTime.now()
-            );
-
-        }
-
-        Historic savedHistoric = this.historicRepository.save(historic);
-
-        task.getHistoric().add(savedHistoric);
-
-        Task savedTask = taskRepository.save(task);
+        Task savedTask = historicService.patchProperty(property, userId, taskId);
 
         return resolveAndGetDTO(savedTask);
     }
 
     public Collection<GetUserDTO> patchAssociate(Long taskId, Collection<User> associates, Long userId) {
-        User userForHistoric = userRepository.findById(userId).get();
         Task task = taskRepository.findById(taskId).get();
         task.setAssociates(associates);
         ArrayList<String> currentUsersAssociates = new ArrayList<>();
@@ -248,26 +142,7 @@ public class TaskService {
             currentUsersAssociates.add(userRepository.findById(user.getId()).get().getName());
         });
 
-        String description =  userForHistoric.getName() + " associou " + currentUsersAssociates.stream().toList() + " a tarefa";
-        description = description.replace("[","");
-        description = description.replace("]","");
-
-        if (associates.size() == 2) {
-            description = description.replace(","," e");
-        }
-
-        Historic historic = new Historic();
-
-        historic = new Historic(
-                userForHistoric,
-                description,
-                LocalDateTime.now()
-        );
-        Historic savedHistoric = this.historicRepository.save(historic);
-
-        task.getHistoric().add(savedHistoric);
-
-        taskRepository.save(task);
+        task = historicService.patchAssociateHistoric(taskId, userId, associates, currentUsersAssociates);
 
         return DTOUtils.usersToGetUserDTOs(taskRepository.save(task).getAssociates());
     }
@@ -320,61 +195,7 @@ public class TaskService {
         Task task = taskRepository.findById(putTaskDTO.getId()).get();
         User userForHistoric = userRepository.findById(userId).get();
 
-            putTaskDTO.getProperties().forEach(property -> {
-                task.getProperties().forEach(property1 -> {
-                    if (property.getCurrentOptions() != property1.getCurrentOptions()) {
-                        ArrayList<String> currentOptionListUpdate = new ArrayList<>();
-                        property.getCurrentOptions().forEach(currentOption -> {
-                            currentOptionListUpdate.add(currentOption.getValue());
-                        });
-                        String description = userForHistoric.getName() + " mudou o valor da propriedade " + property.getName() + " para " + currentOptionListUpdate.stream().toList();
-                        description = description.replace("[", "");
-                        description = description.replace("]", "");
-                        Historic historic = new Historic(
-                                userForHistoric,
-                                description,
-                                LocalDateTime.now()
-                        );
-                        Historic savedHistoric = this.historicRepository.save(historic);
-
-                        task.getHistoric().add(savedHistoric);
-
-                        taskRepository.save(task);
-                    }
-                });
-            });
-
-        if (!putTaskDTO.getCurrentStatus().getName().equals(task.getCurrentStatus().getName())) {
-            Historic historic = new Historic(
-                    userForHistoric,
-                    userForHistoric.getName() + " mudou o valor da propriedade status para " + putTaskDTO.getCurrentStatus().getName(),
-                    LocalDateTime.now()
-            );
-            Historic savedHistoric = this.historicRepository.save(historic);
-
-            task.getHistoric().add(savedHistoric);
-
-            taskRepository.save(task);
-        }
-
-        if (!putTaskDTO.getPriority().name().toUpperCase().equals(task.getPriority().name())) {
-            Priority prioritySaved = Priority.valueOf(putTaskDTO.getPriority().name());
-            prioritySaved.backgroundColor = putTaskDTO.getPriority().backgroundColor();
-            BeanUtils.copyProperties(putTaskDTO, task);
-            task.setPriority(prioritySaved);
-
-            Historic historic = new Historic(
-                    userForHistoric,
-                    userForHistoric.getName() + " mudou o valor da propriedade prioridade para " + putTaskDTO.getPriority().name().toLowerCase(),
-                    LocalDateTime.now()
-            );
-            Historic savedHistoric = this.historicRepository.save(historic);
-
-            task.getHistoric().add(savedHistoric);
-
-            taskRepository.save(task);
-
-        }
+        task = historicService.generalUpdateHistoric(putTaskDTO,task,userForHistoric);
 
         BeanUtils.copyProperties(putTaskDTO, task);
 
@@ -414,10 +235,7 @@ public class TaskService {
                 }
             }
 
-            userTaskRepository.findAll().stream()
-                    .filter(userTask -> Objects.equals(userTask.getTaskId(), task.getId()))
-                    .filter(userTask -> !task.getAssociates().contains(userTask.getUser()))
-                    .forEach(userTask -> userTaskRepository.delete(userTask));
+            userTaskRepository.findAll().stream().filter(userTask -> Objects.equals(userTask.getTaskId(), task.getId())).filter(userTask -> !task.getAssociates().contains(userTask.getUser())).forEach(userTask -> userTaskRepository.delete(userTask));
         }
 
     }
@@ -449,13 +267,11 @@ public class TaskService {
         Collection<GetTaskDTO> getTaskDTOS = new HashSet<>();
 
         associatedTasks.forEach((task -> getTaskDTOS.add(transformToTaskDTO(task))));
-        createdTasks.forEach(createdTask ->
-                associatedTasks.forEach(associatedTask -> {
-                    if (!createdTask.getId().equals(associatedTask.getId())) {
-                        getTaskDTOS.add(transformToTaskDTO(createdTask));
-                    }
-                })
-        );
+        createdTasks.forEach(createdTask -> associatedTasks.forEach(associatedTask -> {
+            if (!createdTask.getId().equals(associatedTask.getId())) {
+                getTaskDTOS.add(transformToTaskDTO(createdTask));
+            }
+        }));
 
         return getTaskDTOS;
     }
@@ -472,10 +288,9 @@ public class TaskService {
 
         Collection<Task> tasks = taskRepository.getTaskByCurrentStatus(statusRepository.findById(id).get());
         Collection<GetTaskDTO> getTaskDTOS = new ArrayList<>();
-        tasks
-                .forEach((task) -> {
-                    getTaskDTOS.add(transformToTaskDTO(task));
-                });
+        tasks.forEach((task) -> {
+            getTaskDTOS.add(transformToTaskDTO(task));
+        });
 
         return getTaskDTOS;
     }
