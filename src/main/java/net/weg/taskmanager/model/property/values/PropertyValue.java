@@ -20,6 +20,7 @@ public class PropertyValue {
     private Value value;
     @ManyToOne
     @ToString.Exclude
+    @JsonIgnore
     private Property property;
     private String propertyType;
 

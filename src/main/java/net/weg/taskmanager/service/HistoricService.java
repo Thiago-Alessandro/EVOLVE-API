@@ -2,10 +2,7 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
-import net.weg.taskmanager.model.entity.Comment;
-import net.weg.taskmanager.model.entity.Historic;
-import net.weg.taskmanager.model.entity.Task;
-import net.weg.taskmanager.model.entity.User;
+import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.enums.Priority;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.property.PropertyType;
@@ -187,34 +184,25 @@ public class HistoricService {
     public Task generalUpdateHistoric(PutTaskDTO putTaskDTO, Task task, User userForHistoric) {
 
         //for select
-        putTaskDTO.getProperties().forEach(property -> {
-            task.getProperties().forEach(property1 -> {
-                if (property.getCurrentOptions() != property1.getCurrentOptions()) {
-                    ArrayList<String> currentOptionListUpdate = new ArrayList<>();
-                    property.getCurrentOptions().forEach(currentOption -> {
-                        currentOptionListUpdate.add(currentOption.getValue());
-                    });
-                    String description = userForHistoric.getName() + " mudou o valor da propriedade " + property.getName() + " para " + currentOptionListUpdate.stream().toList();
-                    description = description.replace("[", "");
-                    description = description.replace("]", "");
-                    Historic historic = new Historic(userForHistoric, description, LocalDateTime.now());
-                    Historic savedHistoric = this.historicRepository.save(historic);
-
-                    task.getHistoric().add(savedHistoric);
-
-                    taskRepository.save(task);
-                }
-            });
-        });
-        // for status
-        if (!putTaskDTO.getCurrentStatus().getName().equals(task.getCurrentStatus().getName())) {
-            Historic historic = new Historic(userForHistoric, userForHistoric.getName() + " mudou o valor da propriedade status para " + putTaskDTO.getCurrentStatus().getName(), LocalDateTime.now());
-            Historic savedHistoric = this.historicRepository.save(historic);
-
-            task.getHistoric().add(savedHistoric);
-
-            taskRepository.save(task);
-        }
+//        putTaskDTO.getProperties().forEach(property -> {
+//            task.getProperties().forEach(property1 -> {
+//                if (property.getCurrentOptions() != property1.getCurrentOptions()) {
+//                    ArrayList<String> currentOptionListUpdate = new ArrayList<>();
+//                    property.getCurrentOptions().forEach(currentOption -> {
+//                        currentOptionListUpdate.add(currentOption.getValue());
+//                    });
+//                    String description = userForHistoric.getName() + " mudou o valor da propriedade " + property.getName() + " para " + currentOptionListUpdate.stream().toList();
+//                    description = description.replace("[", "");
+//                    description = description.replace("]", "");
+//                    Historic historic = new Historic(userForHistoric, description, LocalDateTime.now());
+//                    Historic savedHistoric = this.historicRepository.save(historic);
+//
+//                    task.getHistoric().add(savedHistoric);
+//
+//                    taskRepository.save(task);
+//                }
+//            });
+//        });
         // for priority
         if (!putTaskDTO.getPriority().name().toUpperCase().equals(task.getPriority().name())) {
             Priority prioritySaved = Priority.valueOf(putTaskDTO.getPriority().name());
@@ -232,6 +220,26 @@ public class HistoricService {
         }
 
         return task;
+    }
+
+    public Task updateCurrentStatusHistoric(User user,Task task, Status status) {
+        Historic historic =
+                new Historic(user, user.getName() + " mudou o valor da propriedade status para " + status.getName(), LocalDateTime.now());
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        task.getHistoric().add(savedHistoric);
+
+        return taskRepository.save(task);
+    }
+
+    public Task updateCurrentPriorityHistoric(Task task, User user, Priority priority) {
+        Historic historic =
+                new Historic(user, user.getName() + " mudou o valor da propriedade prioridade para " + priority.name().toLowerCase(), LocalDateTime.now());
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        task.getHistoric().add(savedHistoric);
+
+        return taskRepository.save(task);
     }
 
 }

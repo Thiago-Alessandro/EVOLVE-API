@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.AllArgsConstructor;
 
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
-import net.weg.taskmanager.model.entity.Comment;
-import net.weg.taskmanager.model.entity.User;
+import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.enums.Priority;
-import net.weg.taskmanager.model.entity.UserTask;
 
 //OLHAR PARA JUNTAR AS DTOs MAIS TARDE
 import net.weg.taskmanager.model.dto.post.PostTaskDTO;
@@ -123,5 +121,19 @@ public class TaskController {
     public Collection<Comment> deleteComment(@PathVariable Long commentId,
                               @PathVariable Long taskId, @PathVariable Long userId) {
         return taskService.deleteComment(commentId,taskId,userId);
+    }
+
+    @PatchMapping("/update/{taskId}/currentStatus/{userId}")
+    public GetTaskDTO updateCurrentStatus(@PathVariable Long taskId,
+                                    @PathVariable Long userId,
+                                    @RequestBody Status newCurrentStatus) {
+        return taskService.updateCurrentStatus(taskId,userId,newCurrentStatus);
+    }
+
+    @PatchMapping("/update/{taskId}/{userId}/currentPriority")
+    public GetTaskDTO updateCurrentPriority(@PathVariable Long taskId,
+                                            @PathVariable Long userId,
+                                            @RequestBody PriorityRecord priorityRecord) {
+        return taskService.updateCurrentPriority(taskId,userId,priorityRecord);
     }
 }

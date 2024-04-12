@@ -11,6 +11,7 @@ import net.weg.taskmanager.model.dto.put.PutTaskDTO;
 import net.weg.taskmanager.model.property.Option;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.property.PropertyType;
+import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.service.processor.PropertyProcessor;
 import net.weg.taskmanager.service.processor.TaskProcessor;
 
@@ -145,6 +146,30 @@ public class TaskService {
         task = historicService.patchAssociateHistoric(taskId, userId, associates, currentUsersAssociates);
 
         return DTOUtils.usersToGetUserDTOs(taskRepository.save(task).getAssociates());
+    }
+
+    public GetTaskDTO updateCurrentStatus(Long taskId, Long userId, Status status) {
+        Task task = this.taskRepository.findById(taskId).get();
+        User user = this.userRepository.findById(userId).get();
+
+        task.setCurrentStatus(status);
+
+        task = historicService.updateCurrentStatusHistoric(user,task,status);
+
+        return new GetTaskDTO(task);
+    }
+
+    public GetTaskDTO updateCurrentPriority(Long taskId, Long userId, PriorityRecord priorityRecord) {
+        Task task = this.taskRepository.findById(taskId).get();
+        User user = this.userRepository.findById(userId).get();
+        Priority priority = Priority.valueOf(priorityRecord.name());
+
+        task.setPriority(priority);
+
+        task = historicService.updateCurrentPriorityHistoric(task, user, priority);
+        System.out.println(task.getPriority());
+
+        return new GetTaskDTO(task);
     }
 
     public GetTaskDTO findById(Long id) {
