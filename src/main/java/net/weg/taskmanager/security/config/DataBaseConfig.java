@@ -24,6 +24,7 @@ public class DataBaseConfig {
     @PostConstruct
     public void init() {
         createDefaultUser();
+        createDefaultUser2();
         createTeamProfileAccess();
         createProjectProfileAccess();
     }
@@ -64,6 +65,29 @@ public class DataBaseConfig {
                     .accountNonLocked(true)
                     .credentialsNonExpired(true)
                     .username("teste")
+                    .password(new BCryptPasswordEncoder().encode("teste123"))
+                    .build());
+            userRepository.save(user);
+        }
+    }
+
+    private void createDefaultUser2() {
+        try {
+            repository.findByUsername("teste2").get();
+        } catch (Exception e) {
+            User user = new User();
+            user.setName("teste2");
+            user.setEmail("teste2@" + (userRepository.findAll().size() + 1));
+            user.setPassword(new BCryptPasswordEncoder().encode("teste123"));
+            user.setUserDetailsEntity(UserDetailsEntity
+                    .builder()
+                    .user(user)
+                    .enabled(true)
+//                    .authorities(List.of(Permission.GET, Permission.POST, Permission.DELETE, Permission.PUT, Permission.PATCH))
+                    .accountNonExpired(true)
+                    .accountNonLocked(true)
+                    .credentialsNonExpired(true)
+                    .username("teste2")
                     .password(new BCryptPasswordEncoder().encode("teste123"))
                     .build());
             userRepository.save(user);

@@ -6,9 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
-@AllArgsConstructor
-@NoArgsConstructor
-//@Entity
+
 public enum Permission implements GrantedAuthority {
 
     EDIT_TEAM_INFO,

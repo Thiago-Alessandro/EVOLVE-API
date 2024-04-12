@@ -73,56 +73,6 @@ public class Project {
     @ManyToOne
     private ProfileAcess defaultProfileAcess;
 
-//    private void setDefaultAcessProfile() {
-//        Permission authDelete = Permission.DELETE;
-//        Permission authPut = Permission.PUT;
-//        Permission authGet = Permission.GET;
-//        Permission authPost = Permission.POST;
-//        Permission authPatch = Permission.PATCH;
-//
-//        Collection<Permission> lider = new HashSet<>();
-//
-//        lider.add(authDelete);
-//        lider.add(authPost);
-//        lider.add(authGet);
-//        lider.add(authPut);
-//        lider.add(authPatch);
-//
-//        Collection<ProfileAcess> defaultHierarchies = new HashSet<>();
-//        defaultHierarchies.add(new ProfileAcess("LIDER", lider));
-//        //criador
-//
-//        Collection<Permission> administrador = new HashSet<>();
-//        //lista adms
-//        administrador.add(authPost);
-//        administrador.add(authGet);
-//        administrador.add(authPut);
-//        administrador.add(authPatch);
-//
-//       ProfileAcess administradorAcess = new ProfileAcess("ADMINISTRADOR", administrador);
-//       defaultHierarchies.add(administradorAcess);
-//
-//        Collection<Permission> colaborador = new HashSet<>();
-//
-//        colaborador.add(authGet);
-//        colaborador.add(authPut);
-//        colaborador.add(authPatch);
-//
-//        defaultHierarchies.add(new ProfileAcess("COLABORADOR", colaborador));
-//
-//        Collection<Permission> convidado = new HashSet<>();
-//
-//        convidado.add(authGet);
-//
-//        defaultHierarchies.add(new ProfileAcess("CONVIDADO", convidado));
-//
-//        if (this.getProfileAcesses() != null) {
-//            this.getProfileAcesses().addAll(defaultHierarchies);
-//        } else {
-//            this.setProfileAcesses(defaultHierarchies);
-//        }
-//    }
-
     private void setDefaultStatus() {
         Collection<Status> defaultStatus = new HashSet<>();
         defaultStatus.add(new Status("pendente", "#7CD5F4", "#000000", true));

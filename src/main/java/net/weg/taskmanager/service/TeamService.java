@@ -6,6 +6,7 @@ import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.repository.UserTeamRepository;
 import net.weg.taskmanager.security.model.entity.ProfileAcess;
+import net.weg.taskmanager.security.service.ProfileAcessService;
 import net.weg.taskmanager.service.processor.TeamProcessor;
 import org.springframework.stereotype.Service;
 
@@ -37,15 +38,16 @@ public class TeamService {
         teamRepository.deleteById(id);
     }
 
+    private final ProfileAcessService profileAcessService;
     public Team create(Team team) {
         updateTeamChat(team);
         Team createdTeam = teamRepository.save(team);
 
-        ProfileAcess pfAccess = createdTeam.getProfileAcesses().stream().filter(pf -> pf.getName().equals("ADMINISTRADOR")).findFirst().orElse(null);
-        createdTeam.setDefaultProfileAcess(pfAccess);
+//        ProfileAcess pfAccess = createdTeam.getProfileAcesses().stream().filter(pf -> pf.getName().equals("ADMINISTRADOR")).findFirst().orElse(null);
+        createdTeam.setDefaultProfileAcess(profileAcessService.getProfileAcessByName("TEAM_COLABORATOR"));
 
         Team teamSaved = teamRepository.save(createdTeam);
-        syncUserProjectTable(teamSaved) ;
+        syncUserProjectTable(teamSaved);
 
         return TeamProcessor.getInstance().resolveTeam(teamSaved);
     }
@@ -91,6 +93,6 @@ public class TeamService {
         userTeamRepository.findAll().stream()
                 .filter(userTeam -> Objects.equals(userTeam.getTeamId(), team.getId()))
                 .filter(userTeam -> !team.getParticipants().contains(userTeam.getUser()))
-                .forEach(userTeam -> userTeamRepository.delete(userTeam));
+                .forEach(userTeamRepository::delete);
     }
 }

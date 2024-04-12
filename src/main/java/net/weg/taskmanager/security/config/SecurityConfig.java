@@ -43,32 +43,33 @@ public class SecurityConfig {
                 //LOGOUT
                 .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
 
-                //TASK
-                .requestMatchers(HttpMethod.POST, "/task").access(permissionRouteTaskPOST)
-                .requestMatchers(HttpMethod.GET, "task/{taskId}").access(permissionTask)
-                .requestMatchers(HttpMethod.GET,"/task/status/{statusId}").access(permissionTask)
-                .requestMatchers(HttpMethod.GET, "/task/userTask/{userId}/{taskId}").access(permissionTask)
-                .requestMatchers(HttpMethod.GET, "/task/priorities").access(permissionTask)
-                .requestMatchers(HttpMethod.PUT, "/task").access(permissionTask)
-                .requestMatchers(HttpMethod.PUT, "/task/putProperty").access(permissionTask)
-                .requestMatchers(HttpMethod.PATCH, "task/userTask").access(permissionTask)
-                .requestMatchers(HttpMethod.PATCH, "task/property/{taskId}").access(permissionTask)
-                .requestMatchers(HttpMethod.DELETE, "task/{taskId}").access(permissionTask)
+//                //TASK
+//                .requestMatchers(HttpMethod.POST, "/task").access(permissionRouteTaskPOST)
+//                .requestMatchers(HttpMethod.GET, "task/{taskId}").access(permissionTask)
+//                .requestMatchers(HttpMethod.GET,"/task/status/{statusId}").access(permissionTask)
+//                .requestMatchers(HttpMethod.GET, "/task/userTask/{userId}/{taskId}").access(permissionTask)
+//                .requestMatchers(HttpMethod.GET, "/task/priorities").access(permissionTask)
+//                .requestMatchers(HttpMethod.PUT, "/task").access(permissionTask)
+//                .requestMatchers(HttpMethod.PUT, "/task/putProperty").access(permissionTask)
+//                .requestMatchers(HttpMethod.PATCH, "task/userTask").access(permissionTask)
+//                .requestMatchers(HttpMethod.PATCH, "task/property/{taskId}").access(permissionTask)
+//                .requestMatchers(HttpMethod.DELETE, "task/{taskId}").access(permissionTask)
+//
+//                //PROJECT
+//                .requestMatchers(HttpMethod.GET, "/project/{projectId}").access(permissionProject)
+//                .requestMatchers(HttpMethod.DELETE, "/project/{projectId}").access(permissionProject)
+//                .requestMatchers(HttpMethod.PATCH, "/project/{projectId}").access(permissionProject)
+//
+//                //TEAM
+//                .requestMatchers(HttpMethod.GET, "/team/{teamId}").access(permissionTeam)
+//                .requestMatchers(HttpMethod.DELETE, "/team/{teamId}").access(permissionTeam)
+//
+//                //USER
+//                .requestMatchers(HttpMethod.GET, "/user/login/{email}").access(permissionUser)
+//                .requestMatchers(HttpMethod.GET, "/user/{userId}").access(permissionUser)
+//                .requestMatchers(HttpMethod.DELETE, "/user/{userId}").access(permissionUser)
+//                .requestMatchers(HttpMethod.PATCH, "/user/{userId}").access(permissionUser)
 
-                //PROJECT
-                .requestMatchers(HttpMethod.GET, "/project/{projectId}").access(permissionProject)
-                .requestMatchers(HttpMethod.DELETE, "/project/{projectId}").access(permissionProject)
-                .requestMatchers(HttpMethod.PATCH, "/project/{projectId}").access(permissionProject)
-
-                //TEAM
-                .requestMatchers(HttpMethod.GET, "/team/{teamId}").access(permissionTeam)
-                .requestMatchers(HttpMethod.DELETE, "/team/{teamId}").access(permissionTeam)
-
-                //USER
-                .requestMatchers(HttpMethod.GET, "/user/login/{email}").access(permissionUser)
-                .requestMatchers(HttpMethod.GET, "/user/{userId}").access(permissionUser)
-                .requestMatchers(HttpMethod.DELETE, "/user/{userId}").access(permissionUser)
-                .requestMatchers(HttpMethod.PATCH, "/user/{userId}").access(permissionUser)
                 .anyRequest().authenticated());
 
         httpSecurity.securityContext((context) -> context.securityContextRepository(repo));

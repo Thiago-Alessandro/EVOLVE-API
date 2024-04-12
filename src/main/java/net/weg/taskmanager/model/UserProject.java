@@ -1,5 +1,6 @@
 package net.weg.taskmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,9 +20,11 @@ public class UserProject {
     private Long projectId;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     private User user;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "projectId", insertable = false, updatable = false)
     private Project project;
 

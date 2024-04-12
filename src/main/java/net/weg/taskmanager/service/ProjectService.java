@@ -11,6 +11,7 @@ import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.security.model.entity.ProfileAcess;
 import net.weg.taskmanager.security.repository.ProfileAcessRepository;
+import net.weg.taskmanager.security.service.ProfileAcessService;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
 import org.modelmapper.AbstractProvider;
 import org.modelmapper.ModelMapper;
@@ -34,7 +35,11 @@ public class ProjectService {
     private final StatusRepository statusRepository;
     private final TeamRepository teamRepository;
     private final PropertyRepository propertyRepository;
+    private final UserRepository userRepository;
+    private final UserProjectRepository userProjectRepository;
     private final ModelMapper modelMapper;
+
+    private final ProfileAcessService profileAcessService;
 
     public GetProjectDTO updateStatusList(Long id, Status status) {
         Project project = projectRepository.findById(id).get();
@@ -47,7 +52,7 @@ public class ProjectService {
             }
             project.getStatusList().add(status);
         } else {
-            project.setStatusList(new ArrayList());
+            project.setStatusList(new ArrayList<>());
             project.getStatusList().add(status);
         }
         return transformToGetProjectDTO(treatAndSave(project));
@@ -66,9 +71,8 @@ public class ProjectService {
         Collection<Project> projects = projectRepository.findAll();
         Collection<GetProjectDTO> getProjectDTOS = new HashSet<>();
 
-        projects.stream()
+        projects
                 .forEach(project -> {
-//                            project.setTasks();
                     ProjectProcessor.getInstance().resolveProject(project);
                     GetProjectDTO getProjectDTO = transformToGetProjectDTO(project);
                     getProjectDTOS.add(getProjectDTO);
@@ -77,8 +81,6 @@ public class ProjectService {
         return getProjectDTOS;
     }
 
-    private final ProfileAcessRepository profileAcessRepository;
-
     public GetProjectDTO create(PostProjectDTO projectDTO) {
 
         Project project = new Project();
@@ -86,34 +88,25 @@ public class ProjectService {
 
         updateProjectChat(project);
 
+        project.setDefaultProfileAcess(profileAcessService.getProfileAcessByName("PROJECT_COLABORATOR"));
         //Adiciona o projeto ao BD para que seja criado o seu Id
         Project projectSaved = projectRepository.save(project);
 
-//        projectSaved.setProfileAcesses(projectSaved.getProfileAcesses().stream()
-//                .peek(p -> p.setProject(projectSaved)).toList());
-
-//        Project savedAgain = projectRepository.save(projectSaved);
-
         //Referencia o projeto nas suas propriedades
         propertiesSetProject(projectSaved);
-        ProfileAcess pfAccess = projectSaved.getProfileAcesses().stream().filter(pf -> pf.getName().equals("ADMINISTRADOR")).findFirst().orElse(null);
-        project.setDefaultProfileAcess(pfAccess);
 
-        Project savedAgain = projectRepository.save(projectSaved);
+        syncUserProjectTable(projectSaved);
 
-        syncUserProjectTable(savedAgain);
-        System.out.println(pfAccess.getAuths());
-
-        return transformToGetProjectDTO(treatAndSave(savedAgain));
+        return transformToGetProjectDTO(treatAndSave(projectSaved));
     }
-
+    private final UserProjectService userProjectService;
     private void setCreatorProfileAcess(Project project) {
-//        UserProject userProject = new UserProject(project.getCreator().getId(), project.getId(),)
+        Long creatorId = project.getCreator().getId();
+        Long projectId = project.getId();
+        ProfileAcess profileAcess = profileAcessService.getProfileAcessByName("PROJECT_CREATOR");
+        UserProject userProject = new UserProject(creatorId, projectId, profileAcess);
+        userProjectService.create(userProject);
     }
-
-//    private ProfileAcess getProfileAcessNamedLider(Project project){
-////        return project.getProfileAcesses().stream().findFirst(profileAcess -> profileAcess.)
-//    }
 
     public GetProjectDTO update(PutProjectDTO projectDTO) {
 
@@ -121,6 +114,7 @@ public class ProjectService {
         modelMapper.map(projectDTO, project);
 
         updateProjectChat(project);
+        syncUserProjectTable(project);
 
         return transformToGetProjectDTO(treatAndSave(project));
     }
@@ -142,8 +136,6 @@ public class ProjectService {
     }
 
 
-    private final UserProjectRepository userProjectRepository;
-
     private void syncUserProjectTable(Project project) {
         if (project.getMembers() != null) {
             project.getMembers().stream()
@@ -154,17 +146,14 @@ public class ProjectService {
         }
     }
 
-    private final UserRepository userRepository;
 
     private UserProject createDefaultUserProject(User member, Project project) {
         UserProject userProject = new UserProject(member.getId(), project.getId(), member, project, project.getDefaultProfileAcess());
 
-        UserProject userProjectSaved = userProjectRepository.save(userProject);
-        User user = userRepository.findById(member.getId()).get();
 
-        user.getProjectsAcess().add(userProjectSaved);
+//        member.getProjectsAcess().add(userProjectSaved);
 
-        return userProject;
+        return userProjectRepository.save(userProject);
     }
 
     private boolean doesUserProjectTableExists(User member, Project project) {
@@ -175,7 +164,7 @@ public class ProjectService {
         userProjectRepository.findAll().stream()
                 .filter(userProject -> Objects.equals(userProject.getProjectId(), project.getId()))
                 .filter(userProject -> !project.getMembers().contains(userProject.getUser()))
-                .forEach(userProject -> userProjectRepository.delete(userProject));
+                .forEach(userProjectRepository::delete);
     }
 
     private Project treatAndSave(Project project) {
@@ -207,7 +196,7 @@ public class ProjectService {
 
     private void propertiesSetProject(Project project) {
         //Verifica se há alguma propriedade no projeto
-        if (project.getProperties() != null && project.getProperties().size() > 0) {
+        if (project.getProperties() != null && !project.getProperties().isEmpty()) {
             //Passa pela lista de propriedades do projeto
             for (Property propriedade : project.getProperties()) {
                 //Adiciona a referencia do projeto na propriedade
@@ -226,7 +215,7 @@ public class ProjectService {
         Project project = projectRepository.findById(projectId).get();
         User member = userRepository.findById(memberId).get();
         UserProject userProject = userProjectRepository.findByUserIdAndProjectId(member.getId(), project.getId());
-        ProfileAcess profileAcess = profileAcessRepository.findByName(profileAcessName);
+        ProfileAcess profileAcess = profileAcessService.getProfileAcessByName(profileAcessName);
         Boolean existsOnProject = projectRepository.existsByIdAndProfileAcessesContaining(project.getId(), profileAcess);
         if (existsOnProject) {
             userProject.setAcessProfile(profileAcess);
