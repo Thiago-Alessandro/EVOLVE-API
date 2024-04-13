@@ -91,6 +91,10 @@ public class TaskService {
         return getTaskDTO;
     }
 
+    public void deleteAll(Collection<Task> tasks){
+        tasks.forEach(task -> delete(task.getId()));
+    }
+
 //    public Collection<GetTaskDTO> findAll(Long projectId) {
 //        Collection<Task> tasks = taskRepository.findAllByProject_Id(projectId);
 //        Collection<GetTaskDTO> getTaskDTOS = new ArrayList<>();

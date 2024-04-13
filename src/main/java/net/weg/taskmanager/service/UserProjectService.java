@@ -11,8 +11,10 @@ public class UserProjectService {
 
     private final UserProjectRepository repository;
 
-    UserProject create(UserProject userProject){
+    public UserProject create(UserProject userProject){
         return repository.save(userProject);
     }
+
+    public UserProject update(UserProject userProject){return repository.save(userProject);}
 
 }

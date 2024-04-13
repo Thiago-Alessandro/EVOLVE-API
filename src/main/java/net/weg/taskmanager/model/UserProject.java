@@ -36,4 +36,12 @@ public class UserProject {
         this.projectId = projectId;
         this.acessProfile = acessProfile;
     }
+
+    public UserProject(User user, Project project) {
+        this.userId = user.getId();
+        this.projectId = project.getId();
+        this.user = user;
+        this.project = project;
+        this.acessProfile = project.getDefaultProfileAccess();
+    }
 }
