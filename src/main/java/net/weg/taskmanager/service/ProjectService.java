@@ -146,7 +146,7 @@ public class ProjectService {
 
     private void createDefaultUserProject(User member, Project project) {
         UserProject userProject = new UserProject(member, project);
-        userProjectRepository.save(userProject);
+        userProjectService.create(userProject);
     }
 
     private boolean doesUserProjectTableExists(User member, Project project) {
