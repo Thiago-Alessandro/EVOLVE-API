@@ -41,6 +41,7 @@ public class TaskService {
     private final CommentRepository commentRepository;
     private final HistoricRepository historicRepository;
     private final HistoricService historicService;
+    private final SubTaskRepository subTaskRepository;
 
     public UserTask setWorkedTime(UserTask userTask) {
 
@@ -87,11 +88,10 @@ public class TaskService {
         Property propertyOfPropertyValue = this.propertyRepository.findById(propertyId).get();
 
 
+        this.propertyRepository.save(propertyOfPropertyValue);
 
-            this.propertyRepository.save(propertyOfPropertyValue);
-
-            propertyValueReturn.setProperty(propertyOfPropertyValue);
-            propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
+        propertyValueReturn.setProperty(propertyOfPropertyValue);
+        propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
 
 
         this.propertyRepository.save(propertyOfPropertyValue);
@@ -101,8 +101,22 @@ public class TaskService {
         return PropertyProcessor.getInstance().resolveProperty(propertyOfPropertyValue);
     }
 
-    public Option putPropertyOption(Option newOption, Long userId) {
-        return this.optionRepository.save(newOption);
+    public Option putPropertyOption(Option newOption, Long userId, Long taskId, Long propertyId) {
+        Property property = this.propertyRepository.findById(propertyId).get();
+        this.historicService.putPropertyOptionHistoric(newOption, userId, taskId, propertyId);
+        Option savedOption = this.optionRepository.save(newOption);
+        property.getOptions().add(savedOption);
+        this.propertyRepository.save(property);
+        return savedOption;
+    }
+
+    public Property deletePropertyOption(Long userId, Long taskId, Long propertyId, Long optionId) {
+        Property property = this.propertyRepository.findById(propertyId).get();
+        Option option = this.optionRepository.findById(Math.toIntExact(optionId)).get();
+        this.historicService.deletePropertyOptionHistoric(userId, taskId, propertyId, optionId);
+        property.getOptions().remove(option);
+        this.optionRepository.delete(option);
+        return this.propertyRepository.save(property);
     }
 
     public Collection<Property> getAllProperties() {
@@ -120,16 +134,16 @@ public class TaskService {
     public Property updatePropertyCurrentOptions(Collection<Option> newCurrentOptions, Long propertyId, Long taskId, Long userId) {
         Property property = propertyRepository.findById(propertyId).get();
         newCurrentOptions.forEach(newCurrentOption -> {
-            if(!property.getCurrentOptions().contains(newCurrentOption)) {
-                historicService.updatePropertyCurrentOptions(userId,taskId,newCurrentOption,property);
+            if (!property.getCurrentOptions().contains(newCurrentOption)) {
+                historicService.updatePropertyCurrentOptions(userId, taskId, newCurrentOption, property);
             }
         });
 
-        if(newCurrentOptions.size() < property.getCurrentOptions().size()) {
+        if (newCurrentOptions.size() < property.getCurrentOptions().size()) {
             property.getCurrentOptions().forEach(oldCurrentOption -> {
-                        if(!newCurrentOptions.contains(oldCurrentOption)) {
-                            historicService.oldPropertyCurrentOptions(userId,taskId,oldCurrentOption,property);
-                        }
+                if (!newCurrentOptions.contains(oldCurrentOption)) {
+                    historicService.oldPropertyCurrentOptions(userId, taskId, oldCurrentOption, property);
+                }
             });
         }
 
@@ -176,7 +190,7 @@ public class TaskService {
 
         task.setCurrentStatus(status);
 
-        task = historicService.updateCurrentStatusHistoric(user,task,status);
+        task = historicService.updateCurrentStatusHistoric(user, task, status);
 
         return new GetTaskDTO(task);
     }
@@ -242,7 +256,7 @@ public class TaskService {
         Task task = taskRepository.findById(putTaskDTO.getId()).get();
         User userForHistoric = userRepository.findById(userId).get();
 
-        task = historicService.generalUpdateHistoric(putTaskDTO,task,userForHistoric);
+        task = historicService.generalUpdateHistoric(putTaskDTO, task, userForHistoric);
 
         BeanUtils.copyProperties(putTaskDTO, task);
 
@@ -342,7 +356,7 @@ public class TaskService {
         return getTaskDTOS;
     }
 
-    public GetTaskDTO updateTaskName(Long taskId,Long userId, String name) {
+    public GetTaskDTO updateTaskName(Long taskId, Long userId, String name) {
         Task task = taskRepository.findById(taskId).get();
         task.setName(name);
         taskRepository.save(task);
@@ -353,7 +367,24 @@ public class TaskService {
         Task task = taskRepository.findById(taskId).get();
         task.setFinalDate(newFinalDate);
         taskRepository.save(task);
+        task = historicService.updateTaskFinalDateHistoric(taskId, userId, newFinalDate);
         return transformToTaskDTO(task);
     }
 
+    public GetTaskDTO patchSubtask(Subtask subtask, Long taskId, Long userId) {
+        Task task = taskRepository.findById(taskId).get();
+        this.subTaskRepository.save(subtask);
+        task.getSubtasks().add(subtask);
+        this.taskRepository.save(task);
+        task = this.historicService.patchSubtaskHistoric(subtask, userId, taskId);
+        return transformToTaskDTO(task);
+    }
+
+    public GetTaskDTO deleteSubtask(Long subtaskId, Long taskId, Long userId) {
+        Subtask subtask = subTaskRepository.findById(subtaskId).get();
+        Task task = this.historicService.deleteSubtaskHistoric(subtaskId, userId, taskId);
+        task.getSubtasks().remove(subtask);
+        subTaskRepository.delete(subtask);
+        return transformToTaskDTO(task);
+    }
 }

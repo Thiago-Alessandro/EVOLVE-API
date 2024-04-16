@@ -91,9 +91,30 @@ public class TaskController {
         return propertyOfPropertyValue;
     }
 
-    @PutMapping("/property/put/option/{userId}")
-    public Option putPropertyOption(@RequestBody Option newOption, @PathVariable Long userId) {
-        return taskService.putPropertyOption(newOption,userId);
+    @PutMapping("/property/put/option/{userId}/{taskId}/{propertyId}")
+    public Option putPropertyOption(@RequestBody Option newOption,
+                                    @PathVariable Long userId,
+                                    @PathVariable Long taskId,
+                                    @PathVariable Long propertyId) {
+        return taskService.putPropertyOption(newOption,userId, taskId, propertyId);
+    }
+
+    @DeleteMapping("/property/delete/option/{userId}/{taskId}/{propertyId}/{optionId}")
+    public Property deletePropertyOption(@PathVariable Long userId,
+                                     @PathVariable Long taskId,
+                                     @PathVariable Long propertyId,
+                                     @PathVariable Long optionId) {
+        return taskService.deletePropertyOption(userId, taskId, propertyId, optionId);
+    }
+
+    @PatchMapping("/subtask/{taskId}/{userId}")
+    public GetTaskDTO patchSubtask(@RequestBody Subtask subtask, @PathVariable Long taskId, @PathVariable Long userId) {
+        return taskService.patchSubtask(subtask,taskId, userId);
+    }
+
+    @DeleteMapping("/subtask/delete/{subtaskId}/{taskId}/{userId}")
+    public GetTaskDTO deleteSubtask(@PathVariable Long subtaskId, @PathVariable Long taskId, @PathVariable Long userId) {
+        return taskService.deleteSubtask(subtaskId, taskId, userId);
     }
 
     @GetMapping("/property/get/getall")

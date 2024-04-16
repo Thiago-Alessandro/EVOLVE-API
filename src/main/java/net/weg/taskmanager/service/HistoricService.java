@@ -8,12 +8,11 @@ import net.weg.taskmanager.model.property.Option;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.property.PropertyType;
 import net.weg.taskmanager.model.property.values.PropertyValue;
-import net.weg.taskmanager.repository.HistoricRepository;
-import net.weg.taskmanager.repository.TaskRepository;
-import net.weg.taskmanager.repository.UserRepository;
+import net.weg.taskmanager.repository.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +23,8 @@ public class HistoricService {
     private final HistoricRepository historicRepository;
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
+    private final PropertyRepository propertyRepository;
+    private final SubTaskRepository subTaskRepository;
 
     public Task patchNewCommentHistoric(Long taskId, Long userId) {
         User userForHistoric = userRepository.findById(userId).get();
@@ -81,6 +82,105 @@ public class HistoricService {
         }
     }
 
+    public Task putPropertyOptionHistoric(Option newOption, Long userId, Long taskId, Long propertyId) {
+        Property property = propertyRepository.findById(propertyId).get();
+        User userForHistoric = userRepository.findById(userId).get();
+        Task taskForHistoric = taskRepository.findById(taskId).get();
+
+        Historic historic = new Historic(
+                userForHistoric,
+                userForHistoric.getName() + " criou uma opção chamada "+newOption.getValue()+" para propriedade "+property.getName(),
+                LocalDateTime.now()
+        );
+
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        taskForHistoric.getHistoric().add(savedHistoric);
+
+        taskRepository.save(taskForHistoric);
+
+        return taskForHistoric;
+    }
+
+    public Task deletePropertyOptionHistoric(Long userId, Long taskId, Long propertyId, Long optionId) {
+        Property property = propertyRepository.findById(propertyId).get();
+        User userForHistoric = userRepository.findById(userId).get();
+        Task taskForHistoric = taskRepository.findById(taskId).get();
+
+        Option option = property.getOptions().stream().filter(option1 -> option1.getId().equals(optionId)).findFirst().get();
+
+        Historic historic = new Historic(
+                userForHistoric,
+                userForHistoric.getName() + " deletou a opção chamada "+option.getValue()+" da propriedade "+property.getName(),
+                LocalDateTime.now()
+        );
+
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        taskForHistoric.getHistoric().add(savedHistoric);
+
+        taskRepository.save(taskForHistoric);
+
+        return taskForHistoric;
+    }
+
+    public Task updateTaskFinalDateHistoric(Long taskId, Long userId, LocalDate newFinalDate) {
+        User userForHistoric = userRepository.findById(userId).get();
+        Task taskForHistoric = taskRepository.findById(taskId).get();
+
+        Historic historic = new Historic(
+                userForHistoric,
+                userForHistoric.getName() + " mudou a data final da tarefa para "+newFinalDate.toString(),
+                LocalDateTime.now()
+        );
+
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        taskForHistoric.getHistoric().add(savedHistoric);
+
+        taskRepository.save(taskForHistoric);
+
+        return taskForHistoric;
+    }
+
+    public Task patchSubtaskHistoric(Subtask subtask, Long userId, Long taskId) {
+        User userForHistoric = userRepository.findById(userId).get();
+        Task taskForHistoric = taskRepository.findById(taskId).get();
+
+        Historic historic = new Historic(
+                userForHistoric,
+                userForHistoric.getName() + " criou uma subtarefa chamada "+subtask.getName(),
+                LocalDateTime.now()
+        );
+
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        taskForHistoric.getHistoric().add(savedHistoric);
+
+        taskRepository.save(taskForHistoric);
+
+        return taskForHistoric;
+    }
+
+    public Task deleteSubtaskHistoric(Long subtaskId, Long taskId, Long userId) {
+        User userForHistoric = userRepository.findById(userId).get();
+        Task taskForHistoric = taskRepository.findById(taskId).get();
+        Subtask subtask = subTaskRepository.findById(subtaskId).get();
+
+        Historic historic = new Historic(
+                userForHistoric,
+                userForHistoric.getName() + " deletou a subtarefa chamada "+subtask.getName(),
+                LocalDateTime.now()
+        );
+
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        taskForHistoric.getHistoric().add(savedHistoric);
+
+        taskRepository.save(taskForHistoric);
+
+        return taskForHistoric;
+    }
     public Task patchProperty(Property property, Long userId, Long taskId) {
         Historic historic = new Historic();
         User userForHistoric = userRepository.findById(userId).get();
