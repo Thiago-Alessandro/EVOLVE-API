@@ -58,7 +58,7 @@ public class TeamService {
         Team team = teamRepository.findById(teamId).get();
         team.setName(name);
         Team savedTeam = teamRepository.save(team);
-        return resolveAndGetDTO(savedTeam);
+        return new GetTeamDTO(savedTeam);
     }
 
     private void updateTeamChat(Team team){
