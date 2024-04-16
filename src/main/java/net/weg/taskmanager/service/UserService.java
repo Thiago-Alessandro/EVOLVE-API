@@ -27,7 +27,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final TeamRepository teamRepository;
-//    private final UserProcessor userProcessor = new UserProcessor();
     private final Converter<GetUserDTO, User> converter = new GetUserConverter();
 
     public GetUserDTO findById(Long id){
@@ -107,34 +106,25 @@ public class UserService {
     public GetUserDTO patchPrimaryColor(Long userId,String primaryColor){
         User user = userRepository.findById(userId).get();
         user.setPrimaryColor(primaryColor);
-        return resolveAndGetDTO(userRepository.save(user));
+        return converter.convertOne(userRepository.save(user));
     }
     public GetUserDTO patchSecondaryColor(Long userId,String secondaryColor){
         User user = userRepository.findById(userId).get();
         user.setSecondaryColor(secondaryColor);
-        return resolveAndGetDTO(userRepository.save(user));
+        return converter.convertOne(userRepository.save(user));
     }
     public GetUserDTO patchPrimaryDarkColor(Long userId,String primaryColor){
         User user = userRepository.findById(userId).get();
         user.setPrimaryDarkColor(primaryColor);
-        return resolveAndGetDTO(userRepository.save(user));
+        return converter.convertOne(userRepository.save(user));
     }
     public GetUserDTO patchSecondaryDarkColor(Long userId,String secondaryColor){
         User user = userRepository.findById(userId).get();
         user.setSecondaryDarkColor(secondaryColor);
-        return resolveAndGetDTO(userRepository.save(user));
+        return converter.convertOne(userRepository.save(user));
     }
 
 
-
-//    private GetUserDTO resolveAndGetDTO(User user){
-//        User resolvedUser = userProcessor.resolveUser(user);
-//        return new GetUserDTO(resolvedUser);
-//    }
-
-//    private Collection<GetUserDTO> resolveAndGetDTOS(Collection<User> users){
-//        return users.stream().map(this::resolveAndGetDTO).toList();
-//    }
 
     private User setDefaultTeam(User user){
         if (user.getTeams()==null){

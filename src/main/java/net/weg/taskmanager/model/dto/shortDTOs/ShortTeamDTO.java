@@ -23,13 +23,14 @@ public class ShortTeamDTO {
     private String name;
     private GetFileDTO image;
     private String imageColor;
-//    private ShortUserDTO administrator;
-//    private Collection<ShortUserDTO> participants;
+    private ShortUserDTO administrator;
+    private Collection<ShortUserDTO> participants;
 
     public ShortTeamDTO(Team team){
         Converter<ShortUserDTO, User> userConverter = new ShortUserConverter();
         Converter<GetFileDTO, File> fileConverter = new GetFileConverter();
         BeanUtils.copyProperties(team, this);
+
         this.administrator = userConverter.convertOne(team.getAdministrator());
         this.participants = userConverter.convertAll(team.getParticipants());
         this.image = fileConverter.convertOne(team.getImage());

@@ -8,6 +8,7 @@ import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
 import net.weg.taskmanager.model.dto.converter.get.GetProjectChatConverter;
 import net.weg.taskmanager.model.dto.converter.get.GetTaskConverter;
+import net.weg.taskmanager.model.dto.converter.shorts.ShortTaskConverter;
 import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortTaskDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
@@ -52,7 +53,7 @@ public class GetProjectDTO {
         Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
         Converter<GetFileDTO, File> fileDTOConverter = new GetFileConverter();
         Converter<GetProjectChatDTO, ProjectChat> projectChatDTOConverter = new GetProjectChatConverter();
-        Converter<GetTaskDTO, Task> taskDTOCOnverter = new GetTaskConverter();
+        Converter<ShortTaskDTO, Task> taskDTOCOnverter = new ShortTaskConverter();
 
         BeanUtils.copyProperties(project, this);
         this.image = fileDTOConverter.convertOne(project.getImage());
