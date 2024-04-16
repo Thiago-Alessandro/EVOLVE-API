@@ -105,6 +105,27 @@ public class UserService {
         user.setPassword(password);
         return resolveAndGetDTO(userRepository.save(user));
     }
+    public GetUserDTO patchPrimaryColor(Long userId,String primaryColor){
+        User user = userRepository.findById(userId).get();
+        user.setPrimaryColor(primaryColor);
+        return resolveAndGetDTO(userRepository.save(user));
+    }
+    public GetUserDTO patchSecondaryColor(Long userId,String secondaryColor){
+        User user = userRepository.findById(userId).get();
+        user.setSecondaryColor(secondaryColor);
+        return resolveAndGetDTO(userRepository.save(user));
+    }
+    public GetUserDTO patchPrimaryDarkColor(Long userId,String primaryColor){
+        User user = userRepository.findById(userId).get();
+        user.setPrimaryDarkColor(primaryColor);
+        return resolveAndGetDTO(userRepository.save(user));
+    }
+    public GetUserDTO patchSecondaryDarkColor(Long userId,String secondaryColor){
+        User user = userRepository.findById(userId).get();
+        user.setSecondaryDarkColor(secondaryColor);
+        return resolveAndGetDTO(userRepository.save(user));
+    }
+
 
 
     private GetUserDTO resolveAndGetDTO(User user){

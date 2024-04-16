@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Data
 @NoArgsConstructor
@@ -41,7 +42,7 @@ public class ShortTaskDTO {
 
 //    private Collection<Subtask> subtasks;
 
-//    private Collection<ShortUserDTO> associates;
+    private Collection<ShortUserDTO> associates;
 
     private Integer statusListIndex;
 
@@ -50,6 +51,7 @@ public class ShortTaskDTO {
         this.creator = DTOUtils.userToShortUserDTO(task.getCreator());
         this.project = DTOUtils.projectToShortProjectDTO(task.getProject());
         this.priority = DTOUtils.priorityToPriorityRecord(task.getPriority());
+        this.associates = DTOUtils.usersToShortUserDTO(task.getAssociates());
     }
 
 }

@@ -19,13 +19,13 @@ public class ShortTeamDTO {
     private String name;
     private GetFileDTO image;
     private String imageColor;
-    private ShortUserDTO administrator;
-    private Collection<ShortUserDTO> participants;
+//    private ShortUserDTO administrator;
+//    private Collection<ShortUserDTO> participants;
 
     public ShortTeamDTO(Team team){
         BeanUtils.copyProperties(team, this);
-        this.administrator = DTOUtils.userToShortUserDTO(team.getAdministrator());
-        this.participants = DTOUtils.usersToShortUserDTO(team.getParticipants());
+//        this.administrator = DTOUtils.userToShortUserDTO(team.getAdministrator());
+//        this.participants = DTOUtils.usersToShortUserDTO(team.getParticipants());
         this.image = DTOUtils.fileToGetFileDTO(team.getImage());
     }
 
