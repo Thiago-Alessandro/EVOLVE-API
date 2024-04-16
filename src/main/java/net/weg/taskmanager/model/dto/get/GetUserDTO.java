@@ -30,6 +30,10 @@ public class GetUserDTO {
     private Collection<GetTeamDTO> managedTeams;
     private Collection<GetTeamDTO> teams;
     private String theme;
+    private String primaryColor;
+    private String secondaryColor;
+    private String primaryDarkColor;
+    private String secondaryDarkColor;
     public GetUserDTO(User user){
         BeanUtils.copyProperties(user, this);
         this.image = DTOUtils.fileToGetFileDTO(user.getImage());
