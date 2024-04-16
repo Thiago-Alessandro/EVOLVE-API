@@ -3,9 +3,13 @@ package net.weg.taskmanager.model.dto.get;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
+import net.weg.taskmanager.model.dto.converter.get.GetProjectConverter;
+import net.weg.taskmanager.model.dto.converter.get.GetTeamChatConverter;
+import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
-import net.weg.taskmanager.model.dto.utils.DTOUtils;
-import net.weg.taskmanager.model.entity.Team;
+import net.weg.taskmanager.model.entity.*;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Collection;
@@ -26,12 +30,17 @@ public class GetTeamDTO{
     private Boolean personalWorkspace;
 
     public GetTeamDTO(Team team){
+        Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
+        Converter<GetFileDTO, File> fileDTOConverter = new GetFileConverter();
+        Converter<GetTeamChatDTO, TeamChat> teamChatDTOConverter = new GetTeamChatConverter();
+        Converter<GetProjectDTO, Project> projectDTOConverter = new GetProjectConverter();
+
         BeanUtils.copyProperties(team, this);
-        this.participants = DTOUtils.usersToShortUserDTO(team.getParticipants());
-        this.administrator = DTOUtils.userToShortUserDTO(team.getAdministrator());
-        this.image = DTOUtils.fileToGetFileDTO(team.getImage());
-        this.chat = DTOUtils.chatToGetTeamChatDTO(team.getChat());
-        this.projects = DTOUtils.projectToGetProjectDTOS(team.getProjects());
+        this.participants = shortUserConverter.convertAll(team.getParticipants());
+        this.administrator = shortUserConverter.convertOne(team.getAdministrator());
+        this.image = fileDTOConverter.convertOne(team.getImage());
+        this.chat = teamChatDTOConverter.convertOne(team.getChat());
+        this.projects = projectDTOConverter.convertAll(team.getProjects());
     }
 
 }

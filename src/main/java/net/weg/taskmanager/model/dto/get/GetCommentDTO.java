@@ -1,16 +1,10 @@
 package net.weg.taskmanager.model.dto.get;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import lombok.Data;
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
-import net.weg.taskmanager.model.dto.utils.DTOUtils;
 import net.weg.taskmanager.model.entity.Comment;
-import net.weg.taskmanager.model.entity.Project;
-import net.weg.taskmanager.model.entity.Task;
 import net.weg.taskmanager.model.entity.User;
 import org.springframework.beans.BeanUtils;
 
@@ -26,7 +20,8 @@ public class GetCommentDTO {
     private String timeDayAndMonth;
 
     public GetCommentDTO(Comment comment){
+        Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
         BeanUtils.copyProperties(comment, this);
-        this.user = DTOUtils.userToShortUserDTO(comment.getUser());
+        this.user = shortUserConverter.convertOne(comment.getUser());
     }
 }

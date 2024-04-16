@@ -3,9 +3,13 @@ package net.weg.taskmanager.model.dto.shortDTOs;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
+import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
 import net.weg.taskmanager.model.dto.get.GetFileDTO;
-import net.weg.taskmanager.model.dto.utils.DTOUtils;
+import net.weg.taskmanager.model.entity.File;
 import net.weg.taskmanager.model.entity.Team;
+import net.weg.taskmanager.model.entity.User;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Collection;
@@ -23,10 +27,13 @@ public class ShortTeamDTO {
 //    private Collection<ShortUserDTO> participants;
 
     public ShortTeamDTO(Team team){
+        Converter<ShortUserDTO, User> userConverter = new ShortUserConverter();
+        Converter<GetFileDTO, File> fileConverter = new GetFileConverter();
         BeanUtils.copyProperties(team, this);
-//        this.administrator = DTOUtils.userToShortUserDTO(team.getAdministrator());
-//        this.participants = DTOUtils.usersToShortUserDTO(team.getParticipants());
-        this.image = DTOUtils.fileToGetFileDTO(team.getImage());
+        this.administrator = userConverter.convertOne(team.getAdministrator());
+        this.participants = userConverter.convertAll(team.getParticipants());
+        this.image = fileConverter.convertOne(team.getImage());
+
     }
 
 }

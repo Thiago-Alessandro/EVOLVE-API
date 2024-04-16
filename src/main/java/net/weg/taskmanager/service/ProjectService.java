@@ -1,16 +1,15 @@
 package net.weg.taskmanager.service;
 import lombok.RequiredArgsConstructor;
-import net.weg.taskmanager.model.dto.utils.DTOUtils;
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.get.GetProjectConverter;
 import net.weg.taskmanager.model.entity.User;
 
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
-import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.entity.Project;
 import net.weg.taskmanager.model.entity.Status;
 import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.model.property.Property;
-import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
 import org.modelmapper.ModelMapper;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
 
 @Service
@@ -34,6 +32,7 @@ public class ProjectService {
     private final PropertyRepository propertyRepository;
     private final ModelMapper modelMapper;
     private final ProjectProcessor projectProcessor = new ProjectProcessor();
+    private final Converter<GetProjectDTO, Project> converter = new GetProjectConverter();
     
     public GetProjectDTO updateStatusList(Long id, Status status){
         Project project = projectRepository.findById(id).get();
@@ -41,7 +40,7 @@ public class ProjectService {
             for(Status statusFor : project.getStatusList()){
                 if(Objects.equals(status.getId(), statusFor.getId())){
                     BeanUtils.copyProperties(status, statusFor);
-                    return new GetProjectDTO(treatAndSave(project));
+                    return converter.convertOne(treatAndSave(project));
                 }
             }
             project.getStatusList().add(status);
@@ -49,7 +48,7 @@ public class ProjectService {
             project.setStatusList(new ArrayList<>());
             project.getStatusList().add(status);
         }
-        return new GetProjectDTO(treatAndSave(project));
+        return converter.convertOne(treatAndSave(project));
     }
 
 
@@ -65,7 +64,7 @@ public class ProjectService {
         Collection<Project> projects =  projectRepository.findAll();
         projects.forEach(projectProcessor::resolveProject);
 
-        return DTOUtils.projectToGetProjectDTOS(projects);
+        return converter.convertAll(projects);
     }
 
     public GetProjectDTO create(PostProjectDTO projectDTO){
@@ -81,7 +80,7 @@ public class ProjectService {
         //Referencia o projeto nas suas propriedades
         propertiesSetProject(project);
 
-        return new GetProjectDTO(treatAndSave(project));
+        return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO update(PutProjectDTO projectDTO){
@@ -91,7 +90,7 @@ public class ProjectService {
 
         updateProjectChat(project);
 
-        return new GetProjectDTO(treatAndSave(project));
+        return converter.convertOne(treatAndSave(project));
     }
 
     public void delete(Long id){
@@ -117,7 +116,7 @@ public class ProjectService {
         Collection<Project> projects = projectRepository.findProjectsByMembersContaining(user);
 
         projects.forEach(projectProcessor::resolveProject);
-        return DTOUtils.projectToGetProjectDTOS(projects);
+        return converter.convertAll(projects);
     }
 
 
