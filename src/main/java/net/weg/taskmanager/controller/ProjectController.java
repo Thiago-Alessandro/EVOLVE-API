@@ -23,17 +23,17 @@ public class ProjectController {
         return projectService.findById(projectId);
     }
 
-    @GetMapping
-    public Collection<GetProjectDTO> findAll() {
-        return projectService.findAll();
-    }
+//    @GetMapping
+//    public Collection<GetProjectDTO> findAll() {
+//        return projectService.findAll();
+//    }
 
     @DeleteMapping("/{projectId}")
     public void delete(@PathVariable Long projectId) {
         projectService.delete(projectId);
     }
 
-    @PostMapping
+    @PostMapping("/{teamId}")
     public GetProjectDTO create(@RequestBody PostProjectDTO project) {
         return projectService.create(project);
     }

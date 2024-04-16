@@ -101,7 +101,12 @@ public class Project {
 //        setDefaultAcessProfile();
     }
 
-    public Project(PostProjectDTO projectDTO){
+    public Project(PostProjectDTO projectDTO) {
         BeanUtils.copyProperties(projectDTO, this);
+        this.chat = new ProjectChat();
+        this.chat.setProject(this);
+        this.creationDate = LocalDate.now();
+        updateLastTimeEdited();
+        setDefaultStatus();
     }
 }

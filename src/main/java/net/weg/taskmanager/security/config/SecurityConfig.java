@@ -2,12 +2,19 @@ package net.weg.taskmanager.security.config;
 
 import lombok.AllArgsConstructor;
 //import net.weg.taskmanager.security.PermitionRoute;
+import net.weg.taskmanager.security.route.project.delete.DeleteProjectPermissionRoute;
+import net.weg.taskmanager.security.route.project.get.GetProjectPermissionRoute;
+import net.weg.taskmanager.security.route.project.post.PostProjectPermissionRoute;
 import net.weg.taskmanager.security.route.task.PermissionRouteTask;
 import net.weg.taskmanager.security.route.PermitionRouteProject;
 import net.weg.taskmanager.security.route.PermitionRouteTeam;
 import net.weg.taskmanager.security.filtro.AuthFilter;
 import net.weg.taskmanager.security.route.PermitionRouteUser;
-import net.weg.taskmanager.security.route.task.post.PermissionRouteTaskPOST;
+//import net.weg.taskmanager.security.route.task.post.PermissionRouteTaskPOST;
+import net.weg.taskmanager.security.route.task.delete.DeleteTaskPermissionRoute;
+import net.weg.taskmanager.security.route.task.get.GetTasByIdPermissionRoute;
+import net.weg.taskmanager.security.route.task.get.GetTaskByStatusPermissionRoute;
+import net.weg.taskmanager.security.route.task.post.PostTaskPermissionRoute;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,11 +33,16 @@ public class SecurityConfig {
     private final SecurityContextRepository repo;
     private final AuthFilter authFilter;
 
-    private final PermitionRouteTeam permissionTeam;
-    private final PermitionRouteProject permissionProject;
-    private final PermitionRouteUser permissionUser;
-    private final PermissionRouteTask permissionTask;
-    private final PermissionRouteTaskPOST permissionRouteTaskPOST;
+    //task
+    private final PostTaskPermissionRoute postTaskPermissionRoute;
+    private final GetTasByIdPermissionRoute getTasByIdPermissionRoute;
+    private final GetTaskByStatusPermissionRoute getTaskByStatusPermissionRoute;
+    private final DeleteTaskPermissionRoute deleteTaskPermissionRoute;
+
+    //project
+    private final PostProjectPermissionRoute postProjectPermissionRoute;
+    private final GetProjectPermissionRoute getProjectPermissionRoute;
+    private final DeleteProjectPermissionRoute deleteProjectPermissionRoute;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -43,21 +55,22 @@ public class SecurityConfig {
                 //LOGOUT
                 .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
 
-//                //TASK
-//                .requestMatchers(HttpMethod.POST, "/task").access(permissionRouteTaskPOST)
-//                .requestMatchers(HttpMethod.GET, "task/{taskId}").access(permissionTask)
-//                .requestMatchers(HttpMethod.GET,"/task/status/{statusId}").access(permissionTask)
+                //TASK
+                .requestMatchers(HttpMethod.POST, "/task/{projectId}").access(postTaskPermissionRoute)
+                .requestMatchers(HttpMethod.GET, "/task/{projectId}{taskId}").access(getTasByIdPermissionRoute)
+                .requestMatchers(HttpMethod.GET, "/task/{projectId}/status/{statusId}").access(getTaskByStatusPermissionRoute)
 //                .requestMatchers(HttpMethod.GET, "/task/userTask/{userId}/{taskId}").access(permissionTask)
 //                .requestMatchers(HttpMethod.GET, "/task/priorities").access(permissionTask)
 //                .requestMatchers(HttpMethod.PUT, "/task").access(permissionTask)
 //                .requestMatchers(HttpMethod.PUT, "/task/putProperty").access(permissionTask)
 //                .requestMatchers(HttpMethod.PATCH, "task/userTask").access(permissionTask)
 //                .requestMatchers(HttpMethod.PATCH, "task/property/{taskId}").access(permissionTask)
-//                .requestMatchers(HttpMethod.DELETE, "task/{taskId}").access(permissionTask)
+                .requestMatchers(HttpMethod.DELETE, "task/{projectId}/{taskId}").access(deleteTaskPermissionRoute)
 //
-//                //PROJECT
-//                .requestMatchers(HttpMethod.GET, "/project/{projectId}").access(permissionProject)
-//                .requestMatchers(HttpMethod.DELETE, "/project/{projectId}").access(permissionProject)
+                //PROJECT
+                .requestMatchers(HttpMethod.POST, "/project/{teamId}").access(postTaskPermissionRoute)
+                .requestMatchers(HttpMethod.GET, "/project/{projectId}").access(getProjectPermissionRoute)
+                .requestMatchers(HttpMethod.DELETE, "/project/{projectId}").access(deleteProjectPermissionRoute)
 //                .requestMatchers(HttpMethod.PATCH, "/project/{projectId}").access(permissionProject)
 //
 //                //TEAM

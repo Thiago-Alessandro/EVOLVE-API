@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -84,6 +85,7 @@ public class ProjectService {
     public GetProjectDTO create(PostProjectDTO projectDTO) {
 
         Project project = new Project(projectDTO);
+//        updateProjectChat(project);
         //Recupera projeto com id
         Project projectSaved = projectRepository.save(project);
 
@@ -154,7 +156,8 @@ public class ProjectService {
     }
 
     private void deleteUserProjectIfUserIsNotAssociate(Project project) {
-        userProjectRepository.findAll().stream()
+        Collection<UserProject> userProjects = userProjectRepository.findAll();
+        userProjects.stream()
                 .filter(userProject -> Objects.equals(userProject.getProjectId(), project.getId()))
                 .filter(userProject -> !project.getMembers().contains(userProject.getUser()))
                 .forEach(userProjectRepository::delete);
@@ -174,7 +177,7 @@ public class ProjectService {
         User member = userRepository.findById(memberId).get();
         UserProject userProject = userProjectRepository.findByUserIdAndProjectId(member.getId(), project.getId());
         ProfileAcess profileAcess = profileAcessService.getProfileAcessByName(profileAcessName);
-        boolean existsOnProject = projectRepository.existsByIdAndProfileAcessesContaining(project.getId(), profileAcess);
+        boolean existsOnProject = projectRepository.existsByIdAndProfileAccessesContaining(project.getId(), profileAcess);
         if (existsOnProject) {
             userProject.setAcessProfile(profileAcess);
             userProjectRepository.save(userProject);
@@ -214,4 +217,5 @@ public class ProjectService {
     }
 
     //endregion
+
 }
