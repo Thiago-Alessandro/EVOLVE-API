@@ -23,6 +23,7 @@ import org.springframework.beans.BeanUtils;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -85,19 +86,13 @@ public class TaskService {
         PropertyValue propertyValueReturn = this.propertyValueRepository.save(propertyValue);
         Property propertyOfPropertyValue = this.propertyRepository.findById(propertyId).get();
 
-        if (propertyOfPropertyValue.getPropertyType().name().equals("MultiSelectValue") || propertyOfPropertyValue.getPropertyType().name().equals("UniSelectValue")) {
-            propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
-        } else {
 
-            propertyOfPropertyValue.getPropertyValues().forEach(propertyValue1 -> {
-                propertyValue1.setProperty(null);
-            });
 
             this.propertyRepository.save(propertyOfPropertyValue);
 
             propertyValueReturn.setProperty(propertyOfPropertyValue);
             propertyOfPropertyValue.getPropertyValues().add(propertyValueReturn);
-        }
+
 
         this.propertyRepository.save(propertyOfPropertyValue);
 
@@ -122,6 +117,27 @@ public class TaskService {
         return userTaskRepository.findById(userTaskId).get();
     }
 
+    public Property updatePropertyCurrentOptions(Collection<Option> newCurrentOptions, Long propertyId, Long taskId, Long userId) {
+        Property property = propertyRepository.findById(propertyId).get();
+        newCurrentOptions.forEach(newCurrentOption -> {
+            if(!property.getCurrentOptions().contains(newCurrentOption)) {
+                historicService.updatePropertyCurrentOptions(userId,taskId,newCurrentOption,property);
+            }
+        });
+
+        if(newCurrentOptions.size() < property.getCurrentOptions().size()) {
+            property.getCurrentOptions().forEach(oldCurrentOption -> {
+                        if(!newCurrentOptions.contains(oldCurrentOption)) {
+                            historicService.oldPropertyCurrentOptions(userId,taskId,oldCurrentOption,property);
+                        }
+            });
+        }
+
+        property.setCurrentOptions(newCurrentOptions);
+
+        return propertyRepository.save(property);
+    }
+
     public GetTaskDTO patchProperty(Property property, Long taskId, Long userId) {
         Task task = taskRepository.findById(taskId).get();
         if (property.getOptions() != null) {
@@ -135,15 +151,21 @@ public class TaskService {
         return resolveAndGetDTO(savedTask);
     }
 
-    public Collection<GetUserDTO> patchAssociate(Long taskId, Collection<User> associates, Long userId) {
+    public Collection<GetUserDTO> patchAssociate(Long taskId, Collection<GetUserDTO> associates, Long userId) {
+        Collection<User> newList = new ArrayList<>();
         Task task = taskRepository.findById(taskId).get();
-        task.setAssociates(associates);
+        associates.forEach(associate -> {
+            User user = new User();
+            BeanUtils.copyProperties(associate, user);
+            newList.add(user);
+        });
+        task.setAssociates(newList);
         ArrayList<String> currentUsersAssociates = new ArrayList<>();
         associates.forEach(user -> {
             currentUsersAssociates.add(userRepository.findById(user.getId()).get().getName());
         });
 
-        task = historicService.patchAssociateHistoric(taskId, userId, associates, currentUsersAssociates);
+        task = historicService.patchAssociateHistoric(taskId, userId, newList, currentUsersAssociates);
 
         return DTOUtils.usersToGetUserDTOs(taskRepository.save(task).getAssociates());
     }
@@ -318,6 +340,20 @@ public class TaskService {
         });
 
         return getTaskDTOS;
+    }
+
+    public GetTaskDTO updateTaskName(Long taskId,Long userId, String name) {
+        Task task = taskRepository.findById(taskId).get();
+        task.setName(name);
+        taskRepository.save(task);
+        return transformToTaskDTO(task);
+    }
+
+    public GetTaskDTO updateTaskFinalDate(Long taskId, Long userId, LocalDate newFinalDate) {
+        Task task = taskRepository.findById(taskId).get();
+        task.setFinalDate(newFinalDate);
+        taskRepository.save(task);
+        return transformToTaskDTO(task);
     }
 
 }

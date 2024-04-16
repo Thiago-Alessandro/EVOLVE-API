@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.enums.Priority;
+import net.weg.taskmanager.model.property.Option;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.property.PropertyType;
 import net.weg.taskmanager.model.property.values.PropertyValue;
@@ -220,6 +221,32 @@ public class HistoricService {
         }
 
         return task;
+    }
+
+    public Task updatePropertyCurrentOptions(Long userId, Long taskId, Option option,Property property) {
+        User user = userRepository.findById(userId).get();
+        Task task = taskRepository.findById(taskId).get();
+
+        Historic historic =
+                new Historic(user,user.getName() + " adicionou uma nova opção atual chamada "+option.getValue()+ " a propriedade "+property.getName(),LocalDateTime.now());
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        task.getHistoric().add(savedHistoric);
+
+        return taskRepository.save(task);
+    }
+
+    public Task oldPropertyCurrentOptions(Long userId, Long taskId, Option option,Property property) {
+        User user = userRepository.findById(userId).get();
+        Task task = taskRepository.findById(taskId).get();
+
+        Historic historic =
+                new Historic(user,user.getName() + " removeu uma opção atual chamada "+option.getValue()+ " da propriedade "+property.getName(),LocalDateTime.now());
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        task.getHistoric().add(savedHistoric);
+
+        return taskRepository.save(task);
     }
 
     public Task updateCurrentStatusHistoric(User user,Task task, Status status) {

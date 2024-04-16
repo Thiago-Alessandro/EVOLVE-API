@@ -20,6 +20,7 @@ import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,8 +68,13 @@ public class TaskController {
     }
 
     @PatchMapping("property/associates/{taskId}/{userId}")
-    public Collection<GetUserDTO> patchAssociate(@PathVariable Long taskId, @RequestBody Collection<User> associates, @PathVariable Long userId) {
+    public Collection<GetUserDTO> patchAssociate(@PathVariable Long taskId, @RequestBody Collection<GetUserDTO> associates, @PathVariable Long userId) {
         return taskService.patchAssociate(taskId,associates,userId);
+    }
+
+    @PutMapping("/update/finalDate/{taskId}/{userId}/calendar/{newFinalDate}")
+    public GetTaskDTO updateTaskFinalDate(@PathVariable Long taskId, @PathVariable Long userId, @PathVariable LocalDate newFinalDate) {
+        return taskService.updateTaskFinalDate(taskId,userId,newFinalDate);
     }
 
     @GetMapping("/userTask/{userId}/{taskId}")
@@ -130,10 +136,25 @@ public class TaskController {
         return taskService.updateCurrentStatus(taskId,userId,newCurrentStatus);
     }
 
+    @PatchMapping("update/{taskId}/currentOptions/{userId}/{propertyId}")
+    public Property updatePropertyOptions(@PathVariable Long taskId,
+                                          @PathVariable Long userId,
+                                          @PathVariable Long propertyId,
+                                          @RequestBody Collection<Option> newCurrentOptions) {
+        return taskService.updatePropertyCurrentOptions(newCurrentOptions, propertyId, taskId, userId);
+    }
+
     @PatchMapping("/update/{taskId}/{userId}/currentPriority")
     public GetTaskDTO updateCurrentPriority(@PathVariable Long taskId,
                                             @PathVariable Long userId,
                                             @RequestBody PriorityRecord priorityRecord) {
         return taskService.updateCurrentPriority(taskId,userId,priorityRecord);
+    }
+
+    @PatchMapping("/update/{taskId}/name/{userId}/{name}")
+    public GetTaskDTO updateTaskName(@PathVariable Long taskId,
+                                     @PathVariable Long userId,
+                                     @PathVariable String name) {
+        return taskService.updateTaskName(taskId,userId,name);
     }
 }
