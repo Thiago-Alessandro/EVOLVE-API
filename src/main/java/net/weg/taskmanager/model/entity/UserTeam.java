@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@IdClass(UserTeam.class)
+@IdClass(UserTeamId.class)
 public class UserTeam {
 
     @Id

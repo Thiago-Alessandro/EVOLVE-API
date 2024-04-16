@@ -54,6 +54,13 @@ public class TeamService {
         return teams;
     }
 
+    public GetTeamDTO patchTeamName(Long teamId, String name){
+        Team team = teamRepository.findById(teamId).get();
+        team.setName(name);
+        Team savedTeam = teamRepository.save(team);
+        return resolveAndGetDTO(savedTeam);
+    }
+
     private void updateTeamChat(Team team){
         team.getChat().setUsers(team.getParticipants());
     }
