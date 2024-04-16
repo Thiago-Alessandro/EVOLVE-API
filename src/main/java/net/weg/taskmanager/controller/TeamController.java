@@ -13,25 +13,30 @@ import java.util.Collection;
 @AllArgsConstructor
 public class TeamController {
 
-    private final TeamService teamService;
+    private final TeamService service;
 
     @GetMapping("/{id}")
-    public GetTeamDTO findById(@PathVariable Long id){return teamService.findById(id);}
+    public GetTeamDTO findById(@PathVariable Long id){return service.findById(id);}
     @GetMapping
-    public Collection<GetTeamDTO> findAll(){return teamService.findAll();}
+    public Collection<GetTeamDTO> findAll(){return service.findAll();}
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
-        teamService.delete(id);}
+        service.delete(id);}
     @PostMapping
-    public GetTeamDTO create(@RequestBody Team team){return teamService.create(team);}
+    public GetTeamDTO create(@RequestBody Team team){return service.create(team);}
     @PutMapping
     public GetTeamDTO update(@RequestBody Team team){
 //        System.out.println(team);
-        return teamService.update(team);}
+        return service.update(team);}
 
     @GetMapping("/user/{userId}")
     public Collection<Team> findTeamsByUserId(@PathVariable Long userId){
-        return teamService.findTeamsByUserId(userId);
+        return service.findTeamsByUserId(userId);
+    }
+
+    @PatchMapping("/{teamId}")
+    public GetTeamDTO patchTeamName(@PathVariable Long teamId, @RequestParam String name){
+        return service.patchTeamName(teamId, name);
     }
 
 }

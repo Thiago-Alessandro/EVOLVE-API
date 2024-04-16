@@ -22,7 +22,7 @@ public class ShortUserDTO {
     private String email;
     private GetFileDTO image;
     private String imageColor;
-    private Collection<ShortTaskDTO> createdTasks;
+//    private Collection<ShortTaskDTO> createdTasks;
 //    private Collection<UserChat> chats;
     public ShortUserDTO(User user){
         Converter<GetFileDTO, File> fileConverter = new GetFileConverter();

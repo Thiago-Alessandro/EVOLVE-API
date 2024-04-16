@@ -9,6 +9,7 @@ import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
 import net.weg.taskmanager.model.dto.converter.get.GetProjectChatConverter;
 import net.weg.taskmanager.model.dto.converter.get.GetTaskConverter;
 import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
+import net.weg.taskmanager.model.dto.shortDTOs.ShortTaskDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 import net.weg.taskmanager.model.entity.*;
@@ -45,7 +46,7 @@ public class GetProjectDTO {
 
     @JsonIgnore
     private GetProjectChatDTO chat;
-    private Collection<GetTaskDTO> tasks;
+    private Collection<ShortTaskDTO> tasks;
 
     public GetProjectDTO(Project project){
         Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
@@ -60,6 +61,7 @@ public class GetProjectDTO {
         this.members = shortUserConverter.convertAll(project.getMembers());
         this.creator = shortUserConverter.convertOne(project.getCreator());
         this.tasks = taskDTOCOnverter.convertAll(project.getTasks());
+
     }
 
 }

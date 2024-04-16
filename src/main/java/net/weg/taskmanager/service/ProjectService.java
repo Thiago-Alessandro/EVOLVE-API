@@ -55,7 +55,7 @@ public class ProjectService {
     public GetProjectDTO findById(Long id){
         Project project =  projectRepository.findById(id).get();
 
-        projectProcessor.resolveProject(project);
+     //   projectProcessor.resolveProject(project);
 
         return new GetProjectDTO(project);
     }

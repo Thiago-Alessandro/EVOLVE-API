@@ -27,6 +27,10 @@ public class GetUserDTO {
     private Collection<GetTeamDTO> managedTeams;
     private Collection<GetTeamDTO> teams;
     private String theme;
+    private String primaryColor;
+    private String secondaryColor;
+    private String primaryDarkColor;
+    private String secondaryDarkColor;
     public GetUserDTO(User user){
         Converter<GetFileDTO, File> fileConverter = new GetFileConverter();
         Converter<ShortTaskDTO, Task> taskConverter = new ShortTaskConverter();
