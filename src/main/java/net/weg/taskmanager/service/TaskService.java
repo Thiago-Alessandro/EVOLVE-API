@@ -42,6 +42,7 @@ public class TaskService {
     private final HistoricRepository historicRepository;
     private final HistoricService historicService;
     private final SubTaskRepository subTaskRepository;
+    private final ProjectRepository projectRepository;
 
     public UserTask setWorkedTime(UserTask userTask) {
 
@@ -165,6 +166,17 @@ public class TaskService {
         return resolveAndGetDTO(savedTask);
     }
 
+    public GetTaskDTO deleteProperty(Long taskId, Long userId, Long propertyId) {
+        Task task = taskRepository.findById(taskId).get();
+        Property property = propertyRepository.findById(propertyId).get();
+
+        Task taskSaved = historicService.deletePropertyHistoric(taskId,userId,propertyId);
+
+        taskSaved.getProperties().remove(property);
+        propertyRepository.deleteById(propertyId);
+        return transformToTaskDTO(taskRepository.save(taskSaved));
+    }
+
     public Collection<GetUserDTO> patchAssociate(Long taskId, Collection<GetUserDTO> associates, Long userId) {
         Collection<User> newList = new ArrayList<>();
         Task task = taskRepository.findById(taskId).get();
@@ -239,6 +251,17 @@ public class TaskService {
 
 
         return resolveAndGetDTO(task2);
+    }
+
+    public void deleteTask(Long taskId) {
+        Task task = this.taskRepository.findById(taskId).get();
+        Project projectOfTask = this.projectRepository.findById(task.getProject().getId()).get();
+
+        this.taskRepository.deleteById(taskId);
+
+        projectOfTask.getTasks().remove(task);
+        this.projectRepository.save(projectOfTask);
+
     }
 
     private final TaskProcessor taskProcessor = new TaskProcessor();

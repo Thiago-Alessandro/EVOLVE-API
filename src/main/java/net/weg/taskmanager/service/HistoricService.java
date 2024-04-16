@@ -336,6 +336,20 @@ public class HistoricService {
         return taskRepository.save(task);
     }
 
+    public Task deletePropertyHistoric(Long taskId, Long userId, Long propertyId) {
+        User user = userRepository.findById(userId).get();
+        Task task = taskRepository.findById(taskId).get();
+        Property property = propertyRepository.findById(propertyId).get();
+
+        Historic historic =
+                new Historic(user,user.getName() + " removeu a propriedade "+property.getName(),LocalDateTime.now());
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        task.getHistoric().add(savedHistoric);
+
+        return taskRepository.save(task);
+    }
+
     public Task oldPropertyCurrentOptions(Long userId, Long taskId, Option option,Property property) {
         User user = userRepository.findById(userId).get();
         Task task = taskRepository.findById(taskId).get();

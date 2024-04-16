@@ -178,4 +178,16 @@ public class TaskController {
                                      @PathVariable String name) {
         return taskService.updateTaskName(taskId,userId,name);
     }
+
+    @DeleteMapping("/property/delete/{taskId}/{userId}/{propertyId}")
+    public GetTaskDTO deleteProperty(@PathVariable Long taskId,
+                                     @PathVariable Long userId,
+                                     @PathVariable Long propertyId) {
+        return taskService.deleteProperty(taskId,userId,propertyId);
+    }
+
+    @DeleteMapping("/delete/{taskId}")
+    public void deleteTask(@PathVariable Long taskId) {
+        taskService.deleteTask(taskId);
+    }
 }
