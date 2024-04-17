@@ -47,13 +47,13 @@ public class GetProjectDTO {
 
     @JsonIgnore
     private GetProjectChatDTO chat;
-    private Collection<ShortTaskDTO> tasks;
+    private Collection<GetTaskDTO> tasks;
 
     public GetProjectDTO(Project project){
         Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
         Converter<GetFileDTO, File> fileDTOConverter = new GetFileConverter();
         Converter<GetProjectChatDTO, ProjectChat> projectChatDTOConverter = new GetProjectChatConverter();
-        Converter<ShortTaskDTO, Task> taskDTOCOnverter = new ShortTaskConverter();
+        Converter<GetTaskDTO, Task> taskDTOCOnverter = new GetTaskConverter();
 
         BeanUtils.copyProperties(project, this);
         this.image = fileDTOConverter.convertOne(project.getImage());
