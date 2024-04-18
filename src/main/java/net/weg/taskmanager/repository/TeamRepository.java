@@ -17,4 +17,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     Team findTeamByProjectsContaining(Project project);
     Collection<Team> findTeamsByParticipantsContaining(User user);
 
+    Collection<Project> findAllById(Long id);
+
+
 }

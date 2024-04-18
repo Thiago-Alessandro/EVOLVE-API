@@ -28,5 +28,6 @@ public class PostTaskDTO {
     private Collection<User> associates;
     private Integer statusListIndex;
     private Collection<Property> properties;
+    private Double conclusionPercentage;
 
 }

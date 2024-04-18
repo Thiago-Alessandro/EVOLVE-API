@@ -1,6 +1,9 @@
 package net.weg.taskmanager.service;
 import lombok.RequiredArgsConstructor;
+import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.utils.DTOUtils;
+import net.weg.taskmanager.model.entity.Dashboard.Chart;
+import net.weg.taskmanager.model.entity.Team;
 import net.weg.taskmanager.model.entity.User;
 
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
@@ -16,11 +19,10 @@ import net.weg.taskmanager.service.processor.ProjectProcessor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 //@AllArgsConstructor
@@ -33,6 +35,7 @@ public class ProjectService {
     private final TeamRepository teamRepository;
     private final PropertyRepository propertyRepository;
     private final ModelMapper modelMapper;
+    private  final ChartService chartService;
     private final ProjectProcessor projectProcessor = new ProjectProcessor();
     
     public GetProjectDTO updateStatusList(Long id, Status status){
@@ -55,9 +58,7 @@ public class ProjectService {
 
     public GetProjectDTO findById(Long id){
         Project project =  projectRepository.findById(id).get();
-
-        projectProcessor.resolveProject(project);
-
+        project.setCharts(chartService.getChartsValues(project));
         return new GetProjectDTO(project);
     }
 
@@ -73,12 +74,17 @@ public class ProjectService {
         Project project = new Project();
         BeanUtils.copyProperties(projectDTO, project);
 
+        Collection<Status> listaNova = new HashSet<>();
+
+        for (Status st: projectDTO.getStatusList()){
+            listaNova.add(new Status(st.getName(), st.getBackgroundColor(), st.getTextColor(), st.getEnabled()));
+        }
+        project.setStatusList(listaNova);
+
         updateProjectChat(project);
-
-        //Adiciona o projeto ao BD para que seja criado o seu Id
+//Adiciona o projeto ao BD para que seja criado o seu Id
         projectRepository.save(project);
-
-        //Referencia o projeto nas suas propriedades
+//Referencia o projeto nas suas propriedades
         propertiesSetProject(project);
 
         return new GetProjectDTO(treatAndSave(project));
@@ -120,6 +126,19 @@ public class ProjectService {
         return DTOUtils.projectToGetProjectDTOS(projects);
     }
 
+    public Collection<GetProjectDTO> getProjectsByTeam(Long teamId, Long userId){
+
+        Team team = teamRepository.findById(teamId).get();
+
+        if(team.getParticipants().contains(userRepository.findById(userId).get())){
+            Collection<Project> projects = projectRepository.findAllByTeam_Id(teamId);
+            projects.forEach(projectProcessor::resolveProject);
+            return DTOUtils.projectToGetProjectDTOS(projects);
+        }
+
+        throw new RuntimeException("Usuario não presente no time");
+    }
+
 
     private Project treatAndSave(Project project){
         project.updateLastTimeEdited();
@@ -145,6 +164,31 @@ public class ProjectService {
         project.getChat().setUsers(project.getMembers());
     }
 
+    public GetProjectDTO patchImage(Long id, MultipartFile image) {
+        Project project = projectRepository.findById(id).get();
+        project.setImage(image);
+        return new GetProjectDTO(treatAndSave(project));
+    }
 
+    public GetProjectDTO deleteUserFromProject(Long idProject, Collection<User> usersToRemove) {
+        Project project = projectRepository.findById(idProject).get();
 
+        Long creatorId = project.getCreator().getId();
+
+        Set<Long> userIdsToRemove = usersToRemove.stream()
+                .filter(user -> !user.getId().equals(creatorId))
+                .map(User::getId)
+                .collect(Collectors.toSet());
+
+        Set<User> updatedMembers = project.getMembers().stream()
+                .filter(user -> !userIdsToRemove.contains(user.getId()))
+                .collect(Collectors.toSet());
+
+        project.setMembers(updatedMembers);
+        return new GetProjectDTO(treatAndSave(project));
+    }
+
+    public Collection<Chart> getCharts(Long idProject) {
+        return chartService.getChartsValues(projectRepository.findById(idProject).get());
+    }
 }

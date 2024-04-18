@@ -48,7 +48,7 @@ public class GetTaskDTO {
     private Collection<ShortUserDTO> associates;
 
     private Integer statusListIndex;
-    private Double progress;
+    private Double conclusionPercentage;
 
     public GetTaskDTO(Task task){
         BeanUtils.copyProperties(task, this);

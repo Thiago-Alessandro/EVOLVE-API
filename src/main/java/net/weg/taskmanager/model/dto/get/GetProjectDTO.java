@@ -8,6 +8,7 @@ import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 import net.weg.taskmanager.model.dto.utils.DTOUtils;
 import net.weg.taskmanager.model.entity.*;
+import net.weg.taskmanager.model.entity.Dashboard.Chart;
 import net.weg.taskmanager.model.property.Property;
 import org.springframework.beans.BeanUtils;
 
@@ -38,6 +39,7 @@ public class GetProjectDTO {
     private Collection<Status> statusList;
     private Collection<ShortUserDTO> members;
     private ShortTeamDTO team;
+    private Collection<Chart> charts;
 
     @JsonIgnore
     private GetProjectChatDTO chat;
@@ -52,5 +54,7 @@ public class GetProjectDTO {
         this.creator = DTOUtils.userToShortUserDTO(project.getCreator());
         this.tasks = DTOUtils.tasksToGetTaskDTOS(project.getTasks());
     }
+
+
 
 }

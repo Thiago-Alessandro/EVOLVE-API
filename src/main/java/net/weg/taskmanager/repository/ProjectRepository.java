@@ -14,4 +14,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     Collection<Project> findProjectsByMembersContaining(User user);
 
+    Collection<Project> findAllByTeam_Id(Long id);
+
 }

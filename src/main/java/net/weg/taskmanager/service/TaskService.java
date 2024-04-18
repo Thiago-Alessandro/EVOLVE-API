@@ -98,7 +98,7 @@ public class TaskService {
             optionRepository.saveAll(property.getOptions());
         }
         property = this.propertyRepository.save(property);
-        task.getProperties().add(property);
+//        task.getProperties().add(property);
 
         Task savedTask = taskRepository.save(task);
 
@@ -160,7 +160,7 @@ public class TaskService {
         task.setPriority(prioritySaved);
         setStatusListIndex(task);
 
-        task.setProgress(setProgress(task));
+        task.setConclusionPercentage(setProgress(task));
 
         Task updatedTask = taskRepository.save(task);
         syncUserTaskTable(updatedTask);
