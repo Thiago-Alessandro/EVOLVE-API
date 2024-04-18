@@ -2,6 +2,7 @@ package net.weg.taskmanager.service;
 import lombok.RequiredArgsConstructor;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetProjectConverter;
+import net.weg.taskmanager.model.entity.Team;
 import net.weg.taskmanager.model.entity.User;
 
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 //@AllArgsConstructor
@@ -31,6 +34,7 @@ public class ProjectService {
     private final TeamRepository teamRepository;
     private final PropertyRepository propertyRepository;
     private final ModelMapper modelMapper;
+    private final ChartService chartService;
     private final ProjectProcessor projectProcessor = new ProjectProcessor();
     private final Converter<GetProjectDTO, Project> converter = new GetProjectConverter();
     
@@ -57,6 +61,7 @@ public class ProjectService {
 
      //   projectProcessor.resolveProject(project);
 
+        project.setCharts(chartService.getChartsValues(project));
         return new GetProjectDTO(project);
     }
 
@@ -119,6 +124,19 @@ public class ProjectService {
         return converter.convertAll(projects);
     }
 
+    public Collection<GetProjectDTO> getProjectsByTeam(Long teamId, Long userId){
+
+        Team team = teamRepository.findById(teamId).get();
+
+        if(team.getParticipants().contains(userRepository.findById(userId).get())){
+            Collection<Project> projects = projectRepository.findAllByTeam_Id(teamId);
+            projects.forEach(projectProcessor::resolveProject);
+            return converter.convertAll(projects);
+        }
+
+        throw new RuntimeException("Usuario não encontrado no time");
+    }
+
 
     private Project treatAndSave(Project project){
         project.updateLastTimeEdited();
@@ -142,6 +160,24 @@ public class ProjectService {
 
     private void updateProjectChat(Project project){
         project.getChat().setUsers(project.getMembers());
+    }
+
+    public GetProjectDTO deleteUserFromProject(Long idProject, Collection<User> usersToRemove) {
+        Project project = projectRepository.findById(idProject).get();
+
+        Long creatorId = project.getCreator().getId();
+
+        Set<Long> userIdsToRemove = usersToRemove.stream()
+                .filter(user -> !user.getId().equals(creatorId))
+                .map(User::getId)
+                .collect(Collectors.toSet());
+
+        Set<User> updatedMembers = project.getMembers().stream()
+                .filter(user -> !userIdsToRemove.contains(user.getId()))
+                .collect(Collectors.toSet());
+
+        project.setMembers(updatedMembers);
+        return converter.convertOne(treatAndSave(project));
     }
 
 

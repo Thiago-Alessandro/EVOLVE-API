@@ -6,6 +6,7 @@ import lombok.Data;
 
 import lombok.ToString;
 
+import net.weg.taskmanager.model.entity.DashBoard.Chart;
 import net.weg.taskmanager.model.property.Property;
 
 import java.time.LocalDate;
@@ -64,24 +65,27 @@ public class Project {
     @JoinColumn(nullable = false)
     private Team team;
 
+    @OneToMany
+    private Collection<Chart> charts;
+
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     private ProjectChat chat;
 
     @OneToMany(mappedBy = "project")
     private Collection<Task> tasks;
 
-    public void setDefaultStatus() {
-        Collection<Status> defaultStatus = new HashSet<>();
-        defaultStatus.add(new Status("pendente", "#7CD5F4", "#000000",true));
-        defaultStatus.add(new Status("em progresso", "#FCEC62", "#000000",true));
-        defaultStatus.add(new Status("concluido", "#86C19F", "#000000",true));
-        defaultStatus.add(new Status("não atribuido", "#9CA3AE", "#000000",true));
-        if(this.getStatusList()!=null){
-            this.getStatusList().addAll(defaultStatus);
-        } else{
-            this.setStatusList((defaultStatus));
-        }
-    }
+//    public void setDefaultStatus() {
+//        Collection<Status> defaultStatus = new HashSet<>();
+//        defaultStatus.add(new Status("pendente", "#7CD5F4", "#000000",true));
+//        defaultStatus.add(new Status("em progresso", "#FCEC62", "#000000",true));
+//        defaultStatus.add(new Status("concluido", "#86C19F", "#000000",true));
+//        defaultStatus.add(new Status("não atribuido", "#9CA3AE", "#000000",true));
+//        if(this.getStatusList()!=null){
+//            this.getStatusList().addAll(defaultStatus);
+//        } else{
+//            this.setStatusList((defaultStatus));
+//        }
+//    }
 
     public void updateLastTimeEdited() {
         this.lastTimeEdited = LocalDateTime.now();
@@ -94,7 +98,7 @@ public class Project {
 //        this.chat.setUsers(this.members);
         this.creationDate = LocalDate.now();
         updateLastTimeEdited();
-        setDefaultStatus();
+//        setDefaultStatus();
     }
 
 }
