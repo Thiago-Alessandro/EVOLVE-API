@@ -272,7 +272,7 @@ public class TaskService {
     private final TaskProcessor taskProcessor = new TaskProcessor();
 
     private GetTaskDTO resolveAndGetDTO(Task task) {
-        taskProcessor.resolveTask(task);
+      //  taskProcessor.resolveTask(task);
         return new GetTaskDTO(task);
     }
 
@@ -300,16 +300,19 @@ public class TaskService {
     }
 
     private double setProgress(Task task) {
-        Collection<Subtask> totalConcludedSubtasks = task.getSubtasks().stream().filter(Subtask::getConcluded).toList();
-        double total = task.getSubtasks().size();
-        if (total == 0) {
-            return 0.0;
+        if(task.getSubtasks()!=null){
+            Collection<Subtask> totalConcludedSubtasks = task.getSubtasks().stream().filter(Subtask::getConcluded).toList();
+            double total = task.getSubtasks().size();
+            if (total == 0) {
+                return 0.0;
+            }
+            double totalConcluded = totalConcludedSubtasks.size();
+            double progress = (totalConcluded / total) * 100;
+
+            return progress;
         }
-        double totalConcluded = totalConcludedSubtasks.size();
-        double progress = (totalConcluded / total) * 100;
 
-        return progress;
-
+        return 0;
     }
 
     private void syncUserTaskTable(Task task) {
