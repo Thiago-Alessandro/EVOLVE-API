@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.dto.get.GetFileDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class User {
     }
 
 
-    public void setImage(MultipartFile image) {
+    public void setImageFromMultipartFile(MultipartFile image) {
         File file = new File();
         try {
             file.setData(image.getBytes());

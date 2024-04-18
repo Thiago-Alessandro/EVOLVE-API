@@ -3,9 +3,11 @@ package net.weg.taskmanager.controller;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.entity.Team;
 import net.weg.taskmanager.model.dto.get.GetTeamDTO;
+import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.service.TeamService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.InvalidAttributeValueException;
 import java.util.Collection;
 
 @RestController
@@ -22,21 +24,32 @@ public class TeamController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
         service.delete(id);}
-    @PostMapping
-    public GetTeamDTO create(@RequestBody Team team){return service.create(team);}
+    @PostMapping("/admin/{adminId}")
+    public GetTeamDTO create(@PathVariable Long adminId){return service.create(adminId);}
     @PutMapping
     public GetTeamDTO update(@RequestBody Team team){
-//        System.out.println(team);
-        return service.update(team);}
+        return service.update(team);
+    }
 
     @GetMapping("/user/{userId}")
     public Collection<Team> findTeamsByUserId(@PathVariable Long userId){
         return service.findTeamsByUserId(userId);
     }
 
-    @PatchMapping("/{teamId}")
-    public GetTeamDTO patchTeamName(@PathVariable Long teamId, @RequestParam String name){
+
+    @PatchMapping("/{teamId}/name")
+    public GetTeamDTO patchTeamName(@PathVariable Long teamId, @RequestParam String name) throws InvalidAttributeValueException {
         return service.patchTeamName(teamId, name);
+    }
+
+    @PatchMapping("/{teamId}/participants")
+    public GetTeamDTO patchParticipants(@PathVariable Long teamId, @RequestParam Collection<User> participants) throws InvalidAttributeValueException {
+        return service.patchParticipants(teamId, participants);
+    }
+
+    @PatchMapping("/{teamId}/imageColor")
+    public GetTeamDTO patchImageColor(@PathVariable Long teamId, @RequestParam String imageColor) throws InvalidAttributeValueException {
+        return service.patchImageColor(teamId, imageColor);
     }
 
 }
