@@ -20,7 +20,6 @@ public class PostProjectDTO {
     private String name;
     private String description;
     private String imageColor;
-    private GetFileDTO image;
     private User creator;
     private Collection<User> administrators;
     private LocalDate finalDate;

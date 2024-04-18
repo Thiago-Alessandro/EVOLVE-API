@@ -16,6 +16,7 @@ import net.weg.taskmanager.service.processor.ProjectProcessor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -181,5 +182,9 @@ public class ProjectService {
     }
 
 
-
+    public GetProjectDTO patchImage(Long id, MultipartFile image) {
+        Project project = projectRepository.findById(id).get();
+        project.setImage(image);
+        return new GetProjectDTO(treatAndSave(project));
+    }
 }

@@ -8,6 +8,7 @@ import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.service.ProjectService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 
@@ -55,6 +56,11 @@ public class ProjectController {
     @PatchMapping("/{idProject}/delete-user")
     public GetProjectDTO deleteUserFromProject(@PathVariable Long idProject, @RequestBody Collection<User> users){
         return projectService.deleteUserFromProject(idProject, users);
+    }
+
+    @PatchMapping("/{id}/setImage")
+    public GetProjectDTO patchImage(@PathVariable Long id, @RequestParam MultipartFile image){
+        return projectService.patchImage(id, image);
     }
 
 }
