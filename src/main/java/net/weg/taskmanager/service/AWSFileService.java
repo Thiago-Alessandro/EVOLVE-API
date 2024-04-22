@@ -107,9 +107,7 @@ public class AWSFileService {
 
 
                 return presignedRequest.url().toExternalForm();
-            } catch (Exception ignore){
-
-            }
+            } catch (Exception ignore){}
         }
         return null;
     }
