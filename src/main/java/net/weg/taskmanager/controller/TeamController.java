@@ -6,6 +6,7 @@ import net.weg.taskmanager.model.dto.get.GetTeamDTO;
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.service.TeamService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.InvalidAttributeValueException;
 import java.util.Collection;
@@ -50,6 +51,11 @@ public class TeamController {
     @PatchMapping("/{teamId}/imageColor")
     public GetTeamDTO patchImageColor(@PathVariable Long teamId, @RequestParam String imageColor) throws InvalidAttributeValueException {
         return service.patchImageColor(teamId, imageColor);
+    }
+
+    @PatchMapping("/{teamId}/image")
+    public GetTeamDTO patchImage(@PathVariable Long teamId, @RequestParam MultipartFile image) throws InvalidAttributeValueException {
+        return service.patchImage(teamId, image);
     }
 
 }

@@ -3,8 +3,11 @@ package net.weg.taskmanager.model.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Setter;
+import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
 import net.weg.taskmanager.utils.ColorUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,6 +24,7 @@ public class Team {
     private String name;
 //    private String descricao;
 
+    @Setter
     @OneToOne(cascade = CascadeType.ALL)
     private File image;
     private String imageColor;
@@ -58,5 +62,10 @@ public class Team {
         this.chat = new TeamChat();
         this.chat.setTeam(this);
     }
+
+    public void setImage(MultipartFile image) {
+        this.image = GetFileConverter.buildFileFromMultipartFile(image);
+    }
+
 
 }

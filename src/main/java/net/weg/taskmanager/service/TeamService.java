@@ -10,6 +10,7 @@ import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.service.processor.TeamProcessor;
 import net.weg.taskmanager.utils.ColorUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.InvalidAttributeValueException;
 import java.util.Collection;
@@ -101,6 +102,15 @@ public class TeamService {
             return saveAndGetDTO(team);
         }
         throw new InvalidAttributeValueException("ImageColor in Team can not be null");
+    }
+
+    public GetTeamDTO patchImage(Long teamId, MultipartFile image) throws InvalidAttributeValueException {
+        if(image != null){
+            Team team = findTeamById(teamId);
+            team.setImage(image);
+            return saveAndGetDTO(team);
+        }
+        throw new InvalidAttributeValueException("Image on Team can not be null");
     }
 
 
