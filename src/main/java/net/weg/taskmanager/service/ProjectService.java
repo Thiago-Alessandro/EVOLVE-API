@@ -61,8 +61,9 @@ public class ProjectService {
         Project project =  projectRepository.findById(id).get();
 
      //   projectProcessor.resolveProject(project);
-
-        project.setCharts(chartService.getChartsValues(project));
+        if(!project.getDashboards().isEmpty()){
+            chartService.getChartsValues(project);
+        }
         return new GetProjectDTO(project);
     }
 

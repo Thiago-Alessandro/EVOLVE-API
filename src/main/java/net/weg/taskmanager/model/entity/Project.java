@@ -6,7 +6,7 @@ import lombok.Data;
 
 import lombok.ToString;
 
-import net.weg.taskmanager.model.entity.DashBoard.Chart;
+import net.weg.taskmanager.model.entity.DashBoard.Dashboard;
 import net.weg.taskmanager.model.property.Property;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.HashSet;
 
 @Entity
 @Data
@@ -68,7 +67,7 @@ public class Project {
     private Team team;
 
     @OneToMany
-    private Collection<Chart> charts;
+    private Collection<Dashboard> dashboards;
 
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     private ProjectChat chat;

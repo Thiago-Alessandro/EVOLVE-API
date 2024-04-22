@@ -5,25 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.*;
+import java.util.Collection;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Chart {
+public class Dashboard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String label;
+    private String name;
 
-    private Integer index;
+    @ElementCollection
+    private Collection<String> style;
 
-    @OneToMany(mappedBy = "chart", cascade = CascadeType.ALL)
-    private Collection<ChartData> data = new ArrayList<>();
-
-    public void setData(ChartData data) {
-        this.data.add(data);
-    }
+    @OneToMany
+    private Collection<Chart> charts;
 }
