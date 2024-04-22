@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.security.model.entity.ProfileAcess;
+import net.weg.taskmanager.security.model.entity.Role;
 
 @Entity
 @Data
@@ -31,19 +31,19 @@ public class UserTeam {
     private Team team;
 
     @ManyToOne
-    private ProfileAcess acessProfile;
+    private Role role;
 
-    public UserTeam(Long userId, Long teamId, ProfileAcess acessProfile) {
+    public UserTeam(Long userId, Long teamId, Role role) {
         this.userId = userId;
         this.teamId = teamId;
-        this.acessProfile = acessProfile;
+        this.role = role;
     }
 
-    public UserTeam(Long userId, Long teamId, User user, Team team, ProfileAcess acessProfile) {
+    public UserTeam(Long userId, Long teamId, User user, Team team, Role role) {
         this.userId = userId;
         this.teamId = teamId;
         this.user = user;
         this.team = team;
-        this.acessProfile = acessProfile;
+        this.role = role;
     }
 }

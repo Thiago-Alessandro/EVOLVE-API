@@ -5,7 +5,6 @@ import net.weg.taskmanager.model.*;
 import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.repository.UserTeamRepository;
-import net.weg.taskmanager.security.model.entity.ProfileAcess;
 import net.weg.taskmanager.security.service.ProfileAcessService;
 import net.weg.taskmanager.service.processor.TeamProcessor;
 import org.springframework.stereotype.Service;
@@ -44,7 +43,7 @@ public class TeamService {
         Team createdTeam = teamRepository.save(team);
 
 //        ProfileAcess pfAccess = createdTeam.getProfileAcesses().stream().filter(pf -> pf.getName().equals("ADMINISTRADOR")).findFirst().orElse(null);
-        createdTeam.setDefaultProfileAcess(profileAcessService.getProfileAcessByName("TEAM_COLABORATOR"));
+        createdTeam.setDefaultRole(profileAcessService.getProfileAcessByName("TEAM_COLABORATOR"));
 
         Team teamSaved = teamRepository.save(createdTeam);
         syncUserProjectTable(teamSaved);
@@ -75,7 +74,7 @@ public class TeamService {
     private final UserRepository userRepository;
 
     private UserTeam createDefaultUserTeam(User member, Team team) {
-        UserTeam userTeam = new UserTeam(member.getId(), team.getId(), member, team, team.getDefaultProfileAcess());
+        UserTeam userTeam = new UserTeam(member.getId(), team.getId(), member, team, team.getDefaultRole());
 
         UserTeam userTeamSaved = userTeamRepository.save(userTeam);
         User user = userRepository.findById(member.getId()).get();

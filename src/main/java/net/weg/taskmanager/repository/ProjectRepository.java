@@ -3,7 +3,7 @@ package net.weg.taskmanager.repository;
 import net.weg.taskmanager.model.Project;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.User;
-import net.weg.taskmanager.security.model.entity.ProfileAcess;
+import net.weg.taskmanager.security.model.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +15,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 //    Project findByProfileAcessesContaining(ProfileAcess profileAcess);
     boolean existsByIdAndMembersContainingAndTasksContaining(Long projectId, User user, Task task);
 
-    boolean existsByIdAndProfileAccessesContaining(Long id, ProfileAcess profileAcess);
+    boolean existsByIdAndProfileAccessesContaining(Long id, Role role);
 //    boolean existsByIdAndMembersContaining(Long projectId, User user);
 }

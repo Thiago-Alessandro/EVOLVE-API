@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserAuthorizedOnTeam {
-    public boolean isUserAuthorized(Long teamId, User user, Permission auth) {
+    public boolean isUserAuthorized(Long teamId, User user, Permission permission) {
         return user.getTeamAcess()
                 .stream().filter(teamAcess -> teamAcess.getTeamId().equals(teamId))
-                .anyMatch(teamAcess -> teamAcess.getAcessProfile().getAuths().contains(auth)
+                .anyMatch(teamAcess -> teamAcess.getRole().getPermissions().contains(permission)
                 );
     }
 }

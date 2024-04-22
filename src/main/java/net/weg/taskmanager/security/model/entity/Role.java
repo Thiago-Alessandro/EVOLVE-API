@@ -12,15 +12,15 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfileAcess {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Collection<Permission> auths;
+    private Collection<Permission> permissions;
 
-    public ProfileAcess(String name, Collection<Permission> auths) {
+    public Role(String name, Collection<Permission> permissions) {
         this.name = name;
-        this.auths = auths;
+        this.permissions = permissions;
     }
 }

@@ -1,4 +1,4 @@
-package net.weg.taskmanager.security.filtro;
+package net.weg.taskmanager.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

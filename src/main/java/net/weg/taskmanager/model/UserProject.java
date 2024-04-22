@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.security.model.entity.ProfileAcess;
+import net.weg.taskmanager.security.model.entity.Role;
 
 @Entity
 @AllArgsConstructor
@@ -29,12 +29,12 @@ public class UserProject {
     private Project project;
 
     @ManyToOne
-    private ProfileAcess acessProfile;
+    private Role role;
 
-    public UserProject(Long userId, Long projectId, ProfileAcess acessProfile) {
+    public UserProject(Long userId, Long projectId, Role acessProfile) {
         this.userId = userId;
         this.projectId = projectId;
-        this.acessProfile = acessProfile;
+        this.role = acessProfile;
     }
 
     public UserProject(User user, Project project) {
@@ -42,6 +42,6 @@ public class UserProject {
         this.projectId = project.getId();
         this.user = user;
         this.project = project;
-        this.acessProfile = project.getDefaultProfileAccess();
+        this.role = project.getDefaultProfileAccess();
     }
 }

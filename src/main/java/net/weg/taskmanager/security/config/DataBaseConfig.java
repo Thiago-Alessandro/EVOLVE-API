@@ -4,7 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.repository.UserRepository;
-import net.weg.taskmanager.security.model.entity.ProfileAcess;
+import net.weg.taskmanager.security.model.entity.Role;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import net.weg.taskmanager.security.model.enums.Permission;
 import net.weg.taskmanager.security.repository.ProfileAcessRepository;
@@ -31,20 +31,20 @@ public class DataBaseConfig {
 
     private void createTeamProfileAccess() {
         profileAcessRepository.saveAll(List.of(
-                new ProfileAcess("TEAM_CREATOR", List.of(Permission.EDIT_TEAM_INFO, Permission.MANAGE_PARTICIPANTS, Permission.CREATE_PROJECT, Permission.TEAM_CREATOR, Permission.TEAM_VIEW)),
-                new ProfileAcess("TEAM_ADM", List.of(Permission.EDIT_TEAM_INFO, Permission.MANAGE_PARTICIPANTS, Permission.CREATE_PROJECT, Permission.TEAM_VIEW)),
-                new ProfileAcess("TEAM_COLABORATOR", List.of(Permission.CREATE_PROJECT, Permission.TEAM_VIEW)),
-                new ProfileAcess("TEAM_VIEWER", List.of(Permission.TEAM_VIEW))
+                new Role("TEAM_CREATOR", List.of(Permission.EDIT_TEAM_INFO, Permission.MANAGE_PARTICIPANTS, Permission.CREATE_PROJECT, Permission.TEAM_CREATOR, Permission.TEAM_VIEW)),
+                new Role("TEAM_ADM", List.of(Permission.EDIT_TEAM_INFO, Permission.MANAGE_PARTICIPANTS, Permission.CREATE_PROJECT, Permission.TEAM_VIEW)),
+                new Role("TEAM_COLABORATOR", List.of(Permission.CREATE_PROJECT, Permission.TEAM_VIEW)),
+                new Role("TEAM_VIEWER", List.of(Permission.TEAM_VIEW))
         ));
 
     }
 
     private void createProjectProfileAccess() {
         profileAcessRepository.saveAll(List.of(
-                new ProfileAcess("PROJECT_CREATOR", List.of(Permission.EDIT_PROJECT_INFO, Permission.MANAGE_MEMBERS, Permission.CREATE_TASK, Permission.PROJECT_CREATOR, Permission.PROJECT_VIEW)),
-                new ProfileAcess("PROJECT_ADM", List.of(Permission.EDIT_PROJECT_INFO, Permission.MANAGE_MEMBERS, Permission.CREATE_TASK, Permission.PROJECT_VIEW)),
-                new ProfileAcess("PROJECT_COLABORATOR", List.of(Permission.CREATE_TASK, Permission.PROJECT_VIEW)),
-                new ProfileAcess("PROJECT_VIEWER", List.of(Permission.PROJECT_VIEW))
+                new Role("PROJECT_CREATOR", List.of(Permission.EDIT_PROJECT_INFO, Permission.MANAGE_MEMBERS, Permission.CREATE_TASK, Permission.PROJECT_CREATOR, Permission.PROJECT_VIEW)),
+                new Role("PROJECT_ADM", List.of(Permission.EDIT_PROJECT_INFO, Permission.MANAGE_MEMBERS, Permission.CREATE_TASK, Permission.PROJECT_VIEW)),
+                new Role("PROJECT_COLABORATOR", List.of(Permission.CREATE_TASK, Permission.PROJECT_VIEW)),
+                new Role("PROJECT_VIEWER", List.of(Permission.PROJECT_VIEW))
         ));
     }
 

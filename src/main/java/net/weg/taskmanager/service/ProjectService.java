@@ -8,14 +8,13 @@ import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
-import net.weg.taskmanager.security.model.entity.ProfileAcess;
+import net.weg.taskmanager.security.model.entity.Role;
 import net.weg.taskmanager.security.service.ProfileAcessService;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -117,15 +116,15 @@ public class ProjectService {
 
 
     private void setDefaultProfileAccess(Project project){
-        ProfileAcess profileAcess = profileAcessService.getProfileAcessByName("PROJECT_COLABORATOR");
-        project.setDefaultProfileAccess(profileAcess);
+        Role role = profileAcessService.getProfileAcessByName("PROJECT_COLABORATOR");
+        project.setDefaultProfileAccess(role);
     }
 
     private void setCreatorProfileAcess(Project project) {
         Long creatorId = project.getCreator().getId();
         Long projectId = project.getId();
-        ProfileAcess profileAcess = profileAcessService.getProfileAcessByName("PROJECT_CREATOR");
-        UserProject userProject = new UserProject(creatorId, projectId, profileAcess);
+        Role role = profileAcessService.getProfileAcessByName("PROJECT_CREATOR");
+        UserProject userProject = new UserProject(creatorId, projectId, role);
         userProjectService.create(userProject);
     }
 
@@ -176,10 +175,10 @@ public class ProjectService {
         Project project = projectRepository.findById(projectId).get();
         User member = userRepository.findById(memberId).get();
         UserProject userProject = userProjectRepository.findByUserIdAndProjectId(member.getId(), project.getId());
-        ProfileAcess profileAcess = profileAcessService.getProfileAcessByName(profileAcessName);
-        boolean existsOnProject = projectRepository.existsByIdAndProfileAccessesContaining(project.getId(), profileAcess);
+        Role role = profileAcessService.getProfileAcessByName(profileAcessName);
+        boolean existsOnProject = projectRepository.existsByIdAndProfileAccessesContaining(project.getId(), role);
         if (existsOnProject) {
-            userProject.setAcessProfile(profileAcess);
+            userProject.setRole(role);
             userProjectRepository.save(userProject);
             return true;
         }

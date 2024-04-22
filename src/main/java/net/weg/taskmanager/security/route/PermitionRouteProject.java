@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 @Component
 @AllArgsConstructor
 public class PermitionRouteProject implements AuthorizationManager<RequestAuthorizationContext> {
+
     private ProjectRepository projectRepository;
     private UserRepository userRepository;
     private final TeamRepository teamRepository;
@@ -47,17 +48,20 @@ public class PermitionRouteProject implements AuthorizationManager<RequestAuthor
         Team team = teamRepository.findTeamByProjectsContaining(project);
         UserTeam userTeam = userTeamRepository.findByUserIdAndTeamId(user.getId(),team.getId());
         System.out.println("to aaqui");
-        System.out.println(userTeam.getAcessProfile().getAuths());
+        System.out.println(userTeam.getRole().getPermissions());
         if (isUserOnProject(projectId, user)) {
+            System.out.println(request.getMethod());
+            System.out.println("request.getMethod()");
             return new AuthorizationDecision(isUserAuthorized(team.getId(), user, Permission.valueOf(request.getMethod())));
+            //deprecated
         }
         return new AuthorizationDecision(false);
     }
 
-    private boolean isUserAuthorized(Long teamId, User user, Permission auth) {
+    private boolean isUserAuthorized(Long teamId, User user, Permission permission) {
         return user.getTeamAcess()
                 .stream().filter(teamAcess -> teamAcess.getTeamId().equals(teamId))
-                .anyMatch(teamAcess -> teamAcess.getAcessProfile().getAuths().contains(auth)
+                .anyMatch(teamAcess -> teamAcess.getRole().getPermissions().contains(permission)
                 );
     }
 

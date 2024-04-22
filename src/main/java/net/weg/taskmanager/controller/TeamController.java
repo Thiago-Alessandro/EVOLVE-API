@@ -25,7 +25,6 @@ public class TeamController {
     public Team create(@RequestBody Team team){return teamService.create(team);}
     @PutMapping
     public Team update(@RequestBody Team team){
-//        System.out.println(team);
         return teamService.update(team);}
 
 }

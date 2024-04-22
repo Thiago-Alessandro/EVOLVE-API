@@ -3,7 +3,7 @@ package net.weg.taskmanager.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import net.weg.taskmanager.security.model.entity.ProfileAcess;
+import net.weg.taskmanager.security.model.entity.Role;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,9 +40,9 @@ public class Team {
     private Boolean personalWorkspace = false;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Collection<ProfileAcess> profileAcesses;
+    private Collection<Role> roles;
     @ManyToOne
-    private ProfileAcess defaultProfileAcess;
+    private Role defaultRole;
 
 //    private void setDefaultAcessProfile() {
 //        Permission authDelete = Permission.DELETE;

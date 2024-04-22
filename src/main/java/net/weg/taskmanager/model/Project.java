@@ -9,7 +9,7 @@ import lombok.ToString;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.property.Property;
 //import net.weg.taskmanager.security.model.CustomPermission;
-import net.weg.taskmanager.security.model.entity.ProfileAcess;
+import net.weg.taskmanager.security.model.entity.Role;
 import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDate;
@@ -70,9 +70,9 @@ public class Project {
     //    private Collection<User> colo
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "project_id")
-    private Collection<ProfileAcess> profileAccesses;
+    private Collection<Role> profileAccesses;
     @ManyToOne
-    private ProfileAcess defaultProfileAccess;
+    private Role defaultProfileAccess;
 
     private void setDefaultStatus() {
         Collection<Status> defaultStatus = new HashSet<>();

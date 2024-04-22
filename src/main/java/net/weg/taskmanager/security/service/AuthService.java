@@ -17,18 +17,12 @@ import java.util.Optional;
 public class AuthService implements UserDetailsService {
 
     private UserDetailsEntityRepository repository;
-//    private final AuthRepository authRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserDetailsEntity> userOptional = repository.findByUsername(username);
-        if (userOptional.isPresent()) {
-            return userOptional.get();
-        }
-//        else{
-//            userOptional = userRepository.findByUsuarioDetailsEntity_Id()
-//        }
-        throw new UsernameNotFoundException("Invalidated caches");
+        if (userOptional.isEmpty()) throw new UsernameNotFoundException("Invalidated caches");
+        return userOptional.get();
     }
 
 //    public Auth create(String name) {

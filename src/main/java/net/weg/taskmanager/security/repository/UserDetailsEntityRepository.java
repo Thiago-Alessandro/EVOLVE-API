@@ -15,11 +15,6 @@ public interface UserDetailsEntityRepository extends JpaRepository<UserDetailsEn
 
     Optional<UserDetailsEntity> findByUsername(String name);
 
-    default Collection<Permission> findAllById(Long id) {
-        UserDetailsEntity userDE = findById(id).get();
-        return userDE.getAuthorities();
-    }
-
     Optional<UserDetailsEntity> findByUser_IdAndUser_Teams_Id(Long userId,Long teamId);
 
     boolean existsByUser_Id_AndUser_Teams_Id(Long userId, Long teamId);
