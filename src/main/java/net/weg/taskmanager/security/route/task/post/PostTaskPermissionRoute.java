@@ -5,7 +5,7 @@ import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.repository.ProjectRepository;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import net.weg.taskmanager.security.model.enums.Permission;
-import net.weg.taskmanager.security.route.authorized.UserAuthorizedOnProject;
+import net.weg.taskmanager.security.route.authorized.ProjectPermissionManager;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 @AllArgsConstructor
 public class PostTaskPermissionRoute  implements AuthorizationManager<RequestAuthorizationContext> {
 
-    private final UserAuthorizedOnProject userAuthorizedOnProject;
+    private final ProjectPermissionManager projectPermissionManager;
     private final ProjectRepository projectRepository;
 //    private final PR
     @Override
@@ -31,6 +31,9 @@ public class PostTaskPermissionRoute  implements AuthorizationManager<RequestAut
         Authentication authentication = supplier.get();
 //        HttpServletRequest request = object.getRequest();
 
+        System.out.println(object.getRequest().getMethod());
+        //retorno: POST
+
         UserDetailsEntity userDetails = (UserDetailsEntity) authentication.getPrincipal();
         User user = userDetails.getUser();
 
@@ -38,7 +41,7 @@ public class PostTaskPermissionRoute  implements AuthorizationManager<RequestAut
         Long projectId = Long.parseLong(mapper.get("projectId"));
 
         if(projectRepository.existsByIdAndMembersContaining(projectId, user)){
-            return new AuthorizationDecision(userAuthorizedOnProject.isUserAuthorized(projectId,user, Permission.CREATE_TASK));
+            return new AuthorizationDecision(projectPermissionManager.isUserAuthorized(projectId,user, Permission.CREATE_TASK));
         }
         return new AuthorizationDecision(false);
     }

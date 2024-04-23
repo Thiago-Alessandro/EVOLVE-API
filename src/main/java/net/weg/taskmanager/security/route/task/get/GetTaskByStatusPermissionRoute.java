@@ -5,7 +5,7 @@ import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.repository.TaskRepository;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import net.weg.taskmanager.security.model.enums.Permission;
-import net.weg.taskmanager.security.route.authorized.UserAuthorizedOnProject;
+import net.weg.taskmanager.security.route.authorized.ProjectPermissionManager;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 @Component
 @AllArgsConstructor
 public class GetTaskByStatusPermissionRoute implements AuthorizationManager<RequestAuthorizationContext> {
-    private final UserAuthorizedOnProject userAuthorizedOnProject;
+    private final ProjectPermissionManager projectPermissionManager;
     private final TaskRepository taskRepository;
 
     @Override
@@ -38,7 +38,7 @@ public class GetTaskByStatusPermissionRoute implements AuthorizationManager<Requ
         Long statusId = Long.parseLong(mapper.get("statusId"));
 
         if (isUserOnTask(statusId, user)) {
-            return new AuthorizationDecision(userAuthorizedOnProject.isUserAuthorized(projectId, user, Permission.PROJECT_VIEW));
+            return new AuthorizationDecision(projectPermissionManager.isUserAuthorized(projectId, user, Permission.PROJECT_VIEW));
         }
 
         return new AuthorizationDecision(false);

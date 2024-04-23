@@ -20,13 +20,10 @@ import java.util.function.Supplier;
 @AllArgsConstructor
 @Component
 public class PostProjectPermissionRoute implements AuthorizationManager<RequestAuthorizationContext> {
+
     private final UserAuthorizedOnTeam userAuthorizedOnTeam;
     private final TeamRepository teamRepository;
 
-    @Override
-    public void verify(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
-        AuthorizationManager.super.verify(authentication, object);
-    }
 
     @Override
     public AuthorizationDecision check(Supplier<Authentication> supplier, RequestAuthorizationContext object) {

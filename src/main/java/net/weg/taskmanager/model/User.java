@@ -45,10 +45,10 @@ public class User {
     private UserDetailsEntity userDetailsEntity;
     @OneToMany(mappedBy = "user")
 //    @JsonIgnore
-    private Collection<UserProject> projectsAcess;
+    private Collection<UserProject> projectRoles;
     @OneToMany(mappedBy = "user")
     @JsonIgnore
-    private Collection<UserTeam> teamAcess;
+    private Collection<UserTeam> teamRoles;
 
 
     @Override

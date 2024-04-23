@@ -59,7 +59,7 @@ public class PermitionRouteProject implements AuthorizationManager<RequestAuthor
     }
 
     private boolean isUserAuthorized(Long teamId, User user, Permission permission) {
-        return user.getTeamAcess()
+        return user.getTeamRoles()
                 .stream().filter(teamAcess -> teamAcess.getTeamId().equals(teamId))
                 .anyMatch(teamAcess -> teamAcess.getRole().getPermissions().contains(permission)
                 );

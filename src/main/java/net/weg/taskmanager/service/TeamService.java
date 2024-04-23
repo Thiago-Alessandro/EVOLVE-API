@@ -79,7 +79,7 @@ public class TeamService {
         UserTeam userTeamSaved = userTeamRepository.save(userTeam);
         User user = userRepository.findById(member.getId()).get();
 
-        user.getTeamAcess().add(userTeamSaved);
+        user.getTeamRoles().add(userTeamSaved);
 
         return userTeamSaved;
     }
