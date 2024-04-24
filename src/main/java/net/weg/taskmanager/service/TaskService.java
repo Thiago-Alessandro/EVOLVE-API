@@ -12,7 +12,6 @@ import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
 import net.weg.taskmanager.model.property.Option;
 import net.weg.taskmanager.model.property.Property;
-import net.weg.taskmanager.model.property.PropertyType;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.service.processor.PropertyProcessor;
 import net.weg.taskmanager.service.processor.TaskProcessor;
@@ -24,10 +23,11 @@ import net.weg.taskmanager.repository.*;
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @AllArgsConstructor
@@ -297,6 +297,36 @@ public class TaskService {
 
 
         return resolveAndGetDTO(updatedTask);
+    }
+
+    public GetTaskDTO patchFile(Long taskId, MultipartFile file, Long userId){
+        Task task = taskRepository.findById(taskId).get();
+        User user = userRepository.findById(userId).get();
+
+        task = historicService.patchFileHistoric(taskId,userId,file);
+
+        task.setFile(file);
+        Task updatedTask = taskRepository.save(task);
+
+        return converter.convertOne(updatedTask);
+    }
+
+    public void deleteFile(Long taskId, Long fileId, Long userId) {
+        AtomicReference<File> newFile = new AtomicReference<>(new File());
+        Task task = taskRepository.findById(taskId).get();
+
+            task.getFiles().forEach(file -> {
+                if (file.getId().equals(fileId)) {
+                    historicService.deleteFileHistoric(taskId,userId,file);
+                     newFile.set(file);
+                }
+            });
+
+        if(newFile.get() != null) {
+            task.getFiles().remove(newFile.get());
+        }
+
+        taskRepository.save(task);
     }
 
     private double setProgress(Task task) {

@@ -56,6 +56,7 @@ public class GetTaskDTO {
 
     private Integer statusListIndex;
     private Double progress;
+    private Collection<File> files;
 
     public GetTaskDTO(Task task){
         Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
