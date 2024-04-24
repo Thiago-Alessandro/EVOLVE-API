@@ -35,6 +35,9 @@ public class Team {
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     private TeamChat chat;
 
+    @OneToMany
+    private Collection<TeamNotification> notifications;
+
     @Column(nullable = false)
     private Boolean personalWorkspace = false;
 
