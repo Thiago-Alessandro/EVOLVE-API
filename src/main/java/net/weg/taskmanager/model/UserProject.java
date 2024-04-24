@@ -42,6 +42,6 @@ public class UserProject {
         this.projectId = project.getId();
         this.user = user;
         this.project = project;
-        this.role = project.getDefaultProfileAccess();
+        this.role = project.getDefaultRole();
     }
 }

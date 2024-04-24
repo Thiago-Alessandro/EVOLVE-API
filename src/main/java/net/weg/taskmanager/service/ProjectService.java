@@ -6,19 +6,22 @@ import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.dto.put.PutProjectDTO;
+import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.security.model.entity.Role;
 import net.weg.taskmanager.security.service.ProfileAcessService;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
+import net.weg.taskmanager.utils.ColorUtils;
+import net.weg.taskmanager.utils.FileUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
+import javax.management.InvalidAttributeValueException;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 //@AllArgsConstructor
@@ -34,36 +37,15 @@ public class ProjectService {
     private final ModelMapper modelMapper;
 
 
-//    private final TeamRepository teamRepository;
     private final UserRepository userRepository;
     
     private final UserProjectService userProjectService;
     private final UserProjectRepository userProjectRepository;
 
 
-    public GetProjectDTO updateStatusList(Long id, Status status) {
-        Project project = projectRepository.findById(id).get();
-        if (project.getStatusList() != null) {
-            for (Status statusFor : project.getStatusList()) {
-                if (Objects.equals(status.getId(), statusFor.getId())) {
-                    BeanUtils.copyProperties(status, statusFor);
-                    return transformToGetProjectDTO(treatAndSave(project));
-                }
-            }
-            project.getStatusList().add(status);
-        } else {
-            project.setStatusList(new ArrayList<>());
-            project.getStatusList().add(status);
-        }
-        return transformToGetProjectDTO(treatAndSave(project));
-    }
-
-
     public GetProjectDTO findById(Long id) {
-        Project project = projectRepository.findById(id).get();
-
+        Project project = findProjectById(id);
         ProjectProcessor.getInstance().resolveProject(project);
-
         return transformToGetProjectDTO(project);
     }
 
@@ -82,34 +64,137 @@ public class ProjectService {
     }
 
     public GetProjectDTO create(PostProjectDTO projectDTO) {
-
         Project project = new Project(projectDTO);
 //        updateProjectChat(project);
         //Recupera projeto com id
         Project projectSaved = projectRepository.save(project);
-
         setCreatorProfileAcess(projectSaved);
         setDefaultProfileAccess(projectSaved);
-
         syncProjectInfos(projectSaved);
-
         return transformToGetProjectDTO(treatAndSave(projectSaved));
     }
 
-    public GetProjectDTO update(PutProjectDTO projectDTO) {
-
-        Project project = projectRepository.findById(projectDTO.getId()).get();
-        modelMapper.map(projectDTO, project);
-        syncProjectInfos(project);
-
-        return transformToGetProjectDTO(treatAndSave(project));
-    }
+//    public GetProjectDTO update(PutProjectDTO projectDTO) {
+//        Project project = findProjectById(projectDTO.getId());
+//        modelMapper.map(projectDTO, project);
+//        syncProjectInfos(project);
+//        return transformToGetProjectDTO(treatAndSave(project));
+//    }
 
     public void delete(Long id) {
-        Project project = projectRepository.findById(id).get();
+        Project project = findProjectById(id);
         taskService.deleteAll(project.getTasks());
         statusService.deleteAll(project.getStatusList());
         projectRepository.deleteById(id);
+    }
+
+    public Project findProjectById(Long projectId){
+        Optional<Project> optionalProject = projectRepository.findById(projectId);
+        if(optionalProject.isEmpty()) throw new NoSuchElementException();
+        return optionalProject.get();
+    }
+
+    public GetProjectDTO patchName(Long projectId, String name) throws InvalidAttributeValueException {
+        if(name == null) throw new InvalidAttributeValueException("Name on project cannot be null");
+        Project project = findProjectById(projectId);
+        project.setName(name);
+        syncProjectInfos(project);
+        return transformToGetProjectDTO(treatAndSave(project));
+    }
+
+    public GetProjectDTO patchDescription(Long projectId, String description) throws InvalidAttributeValueException {
+        if(description == null) throw new InvalidAttributeValueException("Description on project cannot be null");
+        Project project = findProjectById(projectId);
+        project.setDescription(description);
+        syncProjectInfos(project);
+        return transformToGetProjectDTO(treatAndSave(project));
+    }
+
+    public GetProjectDTO patchImage(Long projectId, MultipartFile image) throws InvalidAttributeValueException {
+        if(image == null) throw new InvalidAttributeValueException("Image on project cannot be null");
+        Project project = findProjectById(projectId);
+        project.setImage(FileUtils.buildFileFromMultipartFile(image));
+        syncProjectInfos(project);
+        return transformToGetProjectDTO(treatAndSave(project));
+    }
+
+    public GetProjectDTO patchImageRemove(Long projectId){
+        Project project = findProjectById(projectId);
+        project.setImage(null);
+        syncProjectInfos(project);
+        return transformToGetProjectDTO(treatAndSave(project));
+    }
+
+    public GetProjectDTO patchImageColor(Long projectId, String imageColor) throws InvalidAttributeValueException {
+        if(imageColor == null || !ColorUtils.isHexColorValid(imageColor)) throw new InvalidAttributeValueException("Not valid format for imageColor on Project. Expecting a hexCode");
+        Project project = findProjectById(projectId);
+        project.setImageColor((imageColor));
+        syncProjectInfos(project);
+        return transformToGetProjectDTO(treatAndSave(project));
+    }
+
+    public GetProjectDTO patchFinalDate(Long projectId, LocalDateTime finalDate) throws InvalidAttributeValueException {
+        Project project = findProjectById(projectId);
+        if(finalDate == null || finalDate.isBefore(project.getCreationDate())) throw new InvalidAttributeValueException("Image on project cannot be null");
+        project.setFinalDate(finalDate);
+        syncProjectInfos(project);
+        return transformToGetProjectDTO(treatAndSave(project));
+    }
+
+    public GetProjectDTO patchProperties(Long projectId, Collection<Property> properties) throws InvalidAttributeValueException {
+        //falta converter oq é ecebido do front (acho que recebe uma record)
+        if(properties == null) throw new InvalidAttributeValueException("Properties on project cannot be null");
+        Project project = findProjectById(projectId);
+        project.setProperties(properties);
+        syncProjectInfos(project);
+        return transformToGetProjectDTO(treatAndSave(project));
+    }
+
+    public GetProjectDTO patchStatusList(Long projectId, Collection<Status> statusList) throws InvalidAttributeValueException {
+        if(statusList == null) throw new InvalidAttributeValueException("StatusList on project cannot be null");
+        Project project = findProjectById(projectId);
+        project.setStatusList(statusList);
+        syncProjectInfos(project);
+        return transformToGetProjectDTO(treatAndSave(project));
+    }
+
+    public GetProjectDTO patchStatusListRemove(Long projectId, Long statusId) throws InvalidAttributeValueException {
+        Project project = findProjectById(projectId);
+        Status status = statusService.findStatusById(statusId);
+        if(!project.getStatusList().remove(status)) throw new NoSuchElementException("The project specified does not contains any status with id: " + statusId + " in statusList");
+        return transformToGetProjectDTO(treatAndSave(project));
+    }
+
+    public GetProjectDTO patchMembers(Long projectId, Collection<User> members) throws InvalidAttributeValueException {
+        if(members == null) throw new InvalidAttributeValueException("Members on project cannot be null");
+        Project project = findProjectById(projectId);
+        project.setMembers(members);
+        syncProjectInfos(project);
+        return transformToGetProjectDTO(treatAndSave(project));
+    }
+
+    public GetProjectDTO patchTasks(Long projectId,Collection<Task> tasks) throws InvalidAttributeValueException {
+        if(tasks == null) throw new InvalidAttributeValueException("Tasks on project cannot be null");
+        Project project = findProjectById(projectId);
+        project.setTasks(tasks);
+        syncProjectInfos(project);
+        return transformToGetProjectDTO(treatAndSave(project));
+    }
+
+    public GetProjectDTO patchTasksRemove(Long projectId, Long taskId) {
+        Project project = findProjectById(projectId);
+        Task task = taskService.findTaskById(taskId);
+        if(!project.getTasks().remove(task)) throw new NoSuchElementException("The especified project does not have task of id: " + taskId + " in tasks");
+        syncProjectInfos(project);
+        return transformToGetProjectDTO(treatAndSave(project));
+    }
+
+    public GetProjectDTO patchDefaultRole(Long projectId, Role defaultRole) throws InvalidAttributeValueException {
+        if(defaultRole == null) throw new InvalidAttributeValueException("DefaultRole on project cannot be null");
+        Project project = findProjectById(projectId);
+        project.setDefaultRole(defaultRole);
+        syncProjectInfos(project);
+        return transformToGetProjectDTO(treatAndSave(project));
     }
 
 
@@ -117,7 +202,7 @@ public class ProjectService {
 
     private void setDefaultProfileAccess(Project project){
         Role role = profileAcessService.getProfileAcessByName("PROJECT_COLABORATOR");
-        project.setDefaultProfileAccess(role);
+        project.setDefaultRole(role);
     }
 
     private void setCreatorProfileAcess(Project project) {
