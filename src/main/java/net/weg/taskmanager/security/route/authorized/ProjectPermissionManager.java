@@ -34,16 +34,18 @@ public class ProjectPermissionManager {
     }
 
     public boolean hasPostPermission(Long teamId, User user){
+        //somente quem tem permissao de crair projeeto no grupo pode criar projeto (permissao do grupo)
         return user.getTeamRoles().stream()
                 .filter(userTeam -> userTeam.getTeamId().equals(teamId))
-                .anyMatch(userTeam -> userTeam.getRole().getPermissions().contains(Permission.PROJECT_CREATOR));
+                .anyMatch(userTeam -> userTeam.getRole().getPermissions().contains(Permission.CREATE_PROJECT));
     }
 
-//    public boolean hasDeletePermission(Long projectId, User user){
-//        return user.getProjectRoles().stream()
-//                .filter(userProject -> userProject.getProjectId().equals(projectId))
-//                .anyMatch(userProject -> userProject.getRole().getPermissions().contains());
-//    }
+    public boolean hasDeletePermission(Long projectId, User user){
+        //somente o criador pode excluir o projeto
+        return user.getProjectRoles().stream()
+                .filter(userProject -> userProject.getProjectId().equals(projectId))
+                .anyMatch(userProject -> userProject.getRole().getPermissions().contains(Permission.PROJECT_CREATOR));
+    }
 
 
 }
