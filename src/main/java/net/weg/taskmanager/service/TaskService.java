@@ -21,9 +21,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -49,6 +47,11 @@ public class TaskService {
         return changingUserTask;
     }
 
+    public Task findTaskById(Long taskId){
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        if(optionalTask.isEmpty()) throw new NoSuchElementException();
+        return optionalTask.get();
+    }
 
     public PropertyValue putPropertyValue(PropertyValue propertyValue) {
         return this.propertyValueRepository.save(propertyValue);
@@ -63,7 +66,7 @@ public class TaskService {
     }
 
     public GetTaskDTO patchProperty(Property property, Long taskId) {
-        Task task = taskRepository.findById(taskId).get();
+        Task task = findTaskById(taskId);
         if (property.getId() == 0) {
             property.setId(null);
         }
@@ -82,7 +85,7 @@ public class TaskService {
     }
 
     public GetTaskDTO findById(Long id) {
-        Task task = taskRepository.findById(id).get();
+        Task task = findTaskById(id);
         GetTaskDTO getTaskDTO = new GetTaskDTO();
         PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(), task.getPriority().backgroundColor);
         BeanUtils.copyProperties(task, getTaskDTO);

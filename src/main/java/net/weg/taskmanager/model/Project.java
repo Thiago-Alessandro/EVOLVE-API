@@ -12,7 +12,6 @@ import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.security.model.entity.Role;
 import org.springframework.beans.BeanUtils;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -39,9 +38,9 @@ public class Project {
     private User creator;
 
     @Column(nullable = false)
-    private LocalDate finalDate;
+    private LocalDateTime finalDate;
     @Column(nullable = false)
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
     @Column(nullable = false)
     private LocalDateTime lastTimeEdited;
 
@@ -70,9 +69,9 @@ public class Project {
     //    private Collection<User> colo
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "project_id")
-    private Collection<Role> profileAccesses;
+    private Collection<Role> roles;
     @ManyToOne
-    private Role defaultProfileAccess;
+    private Role defaultRole;
 
     private void setDefaultStatus() {
         Collection<Status> defaultStatus = new HashSet<>();
@@ -95,7 +94,7 @@ public class Project {
         this.chat = new ProjectChat();
         this.chat.setProject(this);
 //        this.chat.setUsers(this.members);
-        this.creationDate = LocalDate.now();
+        this.creationDate = LocalDateTime.now();
         updateLastTimeEdited();
         setDefaultStatus();
 //        setDefaultAcessProfile();
@@ -105,7 +104,7 @@ public class Project {
         BeanUtils.copyProperties(projectDTO, this);
         this.chat = new ProjectChat();
         this.chat.setProject(this);
-        this.creationDate = LocalDate.now();
+        this.creationDate = LocalDateTime.now();
         updateLastTimeEdited();
         setDefaultStatus();
     }
