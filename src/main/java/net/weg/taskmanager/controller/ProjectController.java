@@ -23,7 +23,7 @@ import java.util.Collection;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/project")
-@CrossOrigin
+//@CrossOrigin
 public class ProjectController {
 
     private final ProjectService projectService;

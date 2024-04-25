@@ -15,6 +15,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 //    Project findByProfileAcessesContaining(ProfileAcess profileAcess);
     boolean existsByIdAndMembersContainingAndTasksContaining(Long projectId, User user, Task task);
 
-    boolean existsByIdAndProfileAccessesContaining(Long id, Role role);
+    boolean existsByIdAndRolesContaining(Long id, Role role);
 //    boolean existsByIdAndMembersContaining(Long projectId, User user);
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 
@@ -19,7 +20,7 @@ public class PostProjectDTO {
     private String imageColor;
     private User creator;
     private Collection<User> administrators;
-    private LocalDate finalDate;
+    private LocalDateTime finalDate;
     private Collection<User> members;
     private Team team;
 

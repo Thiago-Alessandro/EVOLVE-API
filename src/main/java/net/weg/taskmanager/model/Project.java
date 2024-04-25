@@ -52,7 +52,7 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Collection<Property> properties;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(nullable = false)
+    @JoinColumn()
     private Collection<Status> statusList;
     @ManyToMany
     @JoinColumn(nullable = false)
@@ -61,7 +61,7 @@ public class Project {
     @JoinColumn(nullable = false)
     private Team team;
 
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @OneToOne(optional = false)
     private ProjectChat chat;
 
     @OneToMany(mappedBy = "project")

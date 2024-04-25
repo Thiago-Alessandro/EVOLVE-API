@@ -21,7 +21,7 @@ public class PutProjectDTO {
     private String description;
     private File image;
     private String imageColor;
-    private LocalDate finalDate;
+    private LocalDateTime finalDate;
     private Collection<Property> properties;
     private Collection<User> members;
     private Collection<Task> tasks;

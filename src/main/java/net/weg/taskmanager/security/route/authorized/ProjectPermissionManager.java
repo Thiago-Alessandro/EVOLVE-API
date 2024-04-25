@@ -1,12 +1,18 @@
 package net.weg.taskmanager.security.route.authorized;
 
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.User;
+import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.security.model.enums.Permission;
+import net.weg.taskmanager.service.UserService;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 //@Data
-@NoArgsConstructor
+@AllArgsConstructor
 @Component
 public class ProjectPermissionManager {
     public boolean isUserAuthorized(Long projectId, User user, Permission permission) {
@@ -32,10 +38,14 @@ public class ProjectPermissionManager {
                         )
                 );
     }
+    private final UserService userService;
+    private final UserRepository userRepository;
 
+    @Transactional
     public boolean hasPostPermission(Long teamId, User user){
+        User user1 = userService.findUserById(user.getId());
         //somente quem tem permissao de crair projeeto no grupo pode criar projeto (permissao do grupo)
-        return user.getTeamRoles().stream()
+        return user1.getTeamRoles().stream()
                 .filter(userTeam -> userTeam.getTeamId().equals(teamId))
                 .anyMatch(userTeam -> userTeam.getRole().getPermissions().contains(Permission.CREATE_PROJECT));
     }

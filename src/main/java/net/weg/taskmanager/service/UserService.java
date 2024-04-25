@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collection;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -31,9 +29,15 @@ public class UserService {
     private final TeamRepository teamRepository;
 
     public User findById(Long id){
-        User user = userRepository.findById(id).get();
+        User user = findUserById(id);
         UserProcessor.getInstance().resolveUser(user);
         return user;
+    }
+
+    public User findUserById(Long userId){
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if(optionalUser.isEmpty()) throw new NoSuchElementException();
+        return optionalUser.get();
     }
 
     public Collection<User> findAll(){
@@ -55,7 +59,7 @@ public class UserService {
         return createdUser;}
 
     public User patchImage(Long id, MultipartFile image){
-        User user = userRepository.findById(id).get();
+        User user = findUserById(id);
         user.setImage(image);
         User updatedUser = userRepository.save(user);
         UserProcessor.getInstance().resolveUser(updatedUser);
@@ -63,7 +67,7 @@ public class UserService {
     }
 
     public User update(User updatingUser){
-        User user = userRepository.findById(updatingUser.getId()).get();
+        User user = findUserById(updatingUser.getId());
         modelMapper.map(updatingUser, user);
         User updatedUser  = userRepository.save(user);
         return UserProcessor.getInstance().resolveUser(updatedUser);

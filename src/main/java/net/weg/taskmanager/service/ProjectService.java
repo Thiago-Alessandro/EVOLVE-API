@@ -1,5 +1,7 @@
 package net.weg.taskmanager.service;
 
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import net.weg.taskmanager.model.*;
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
@@ -24,8 +26,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-//@AllArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
+//@RequiredArgsConstructor
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
@@ -34,11 +36,11 @@ public class ProjectService {
     private final StatusService statusService;
     private final PropertyService propertyService;
     private final ProfileAcessService profileAcessService;
-    private final ModelMapper modelMapper;
+    private final UserService userService;
+
+//    private final ModelMapper modelMapper;
 
 
-    private final UserRepository userRepository;
-    
     private final UserProjectService userProjectService;
     private final UserProjectRepository userProjectRepository;
 
@@ -63,15 +65,29 @@ public class ProjectService {
         return getProjectDTOS;
     }
 
+//    @Transactional
     public GetProjectDTO create(PostProjectDTO projectDTO) {
         Project project = new Project(projectDTO);
 //        updateProjectChat(project);
         //Recupera projeto com id
+        createProjectChat(project);
         Project projectSaved = projectRepository.save(project);
         setCreatorProfileAcess(projectSaved);
         setDefaultProfileAccess(projectSaved);
+
+
         syncProjectInfos(projectSaved);
         return transformToGetProjectDTO(treatAndSave(projectSaved));
+    }
+
+    private ProjectChatService projectChatService;
+
+    private void createProjectChat(Project project){
+        ProjectChat chat = new ProjectChat();
+        chat.setProject(project);
+        chat.setUsers(project.getMembers());
+        ProjectChat createdChat = projectChatService.create(chat);
+        project.setChat(createdChat);
     }
 
 //    public GetProjectDTO update(PutProjectDTO projectDTO) {
@@ -253,15 +269,16 @@ public class ProjectService {
     }
 
     private void updateProjectChat(Project project) {
-        project.getChat().setUsers(project.getMembers());
+        project.setChat(projectChatService.patchUsers(project.getChat().getId(), project.getMembers()));
+//        project.getChat().setUsers(project.getMembers());
     }
 
     private boolean updateMemberProfileAcess(Long projectId, Long memberId, String profileAcessName) {
-        Project project = projectRepository.findById(projectId).get();
-        User member = userRepository.findById(memberId).get();
+        Project project = findProjectById(projectId);
+        User member = userService.findUserById(memberId);
         UserProject userProject = userProjectRepository.findByUserIdAndProjectId(member.getId(), project.getId());
         Role role = profileAcessService.getProfileAcessByName(profileAcessName);
-        boolean existsOnProject = projectRepository.existsByIdAndProfileAccessesContaining(project.getId(), role);
+        boolean existsOnProject = projectRepository.existsByIdAndRolesContaining(project.getId(), role);
         if (existsOnProject) {
             userProject.setRole(role);
             userProjectRepository.save(userProject);

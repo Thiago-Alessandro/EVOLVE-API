@@ -2,6 +2,8 @@ package net.weg.taskmanager.security.config;
 
 import lombok.AllArgsConstructor;
 //import net.weg.taskmanager.security.PermitionRoute;
+import net.weg.taskmanager.security.route.authorized.ProjectPermissionManager;
+import net.weg.taskmanager.security.route.project.ProjectAuthorizationManager;
 import net.weg.taskmanager.security.route.project.delete.DeleteProjectPermissionRoute;
 import net.weg.taskmanager.security.route.project.get.GetProjectPermissionRoute;
 import net.weg.taskmanager.security.route.project.post.PostProjectPermissionRoute;
@@ -40,6 +42,8 @@ public class SecurityConfig {
     private final GetProjectPermissionRoute getProjectPermissionRoute;
     private final DeleteProjectPermissionRoute deleteProjectPermissionRoute;
 
+    private final ProjectAuthorizationManager projectAuthorizationManager;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
@@ -64,9 +68,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "task/{projectId}/{taskId}").access(deleteTaskPermissionRoute)
 //
                 //PROJECT
-                .requestMatchers(HttpMethod.POST, "/project/{teamId}").access(postTaskPermissionRoute)
-                .requestMatchers(HttpMethod.GET, "/project/{projectId}").access(getProjectPermissionRoute)
-                .requestMatchers(HttpMethod.DELETE, "/project/{projectId}").access(deleteProjectPermissionRoute)
+                .requestMatchers(HttpMethod.POST, "/project/{teamId}").access(projectAuthorizationManager)
+                .requestMatchers(HttpMethod.GET, "/project/{projectId}").access(projectAuthorizationManager)
+                .requestMatchers(HttpMethod.DELETE, "/project/{projectId}").access(projectAuthorizationManager)
+                .requestMatchers(HttpMethod.PATCH, "/project/{projectId}/name").access(projectAuthorizationManager)
 //                .requestMatchers(HttpMethod.PATCH, "/project/{projectId}").access(permissionProject)
 //
 //                //TEAM
