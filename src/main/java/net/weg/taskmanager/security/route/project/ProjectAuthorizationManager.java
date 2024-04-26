@@ -33,6 +33,9 @@ public class ProjectAuthorizationManager implements AuthorizationManager<Request
         String url = getUrlFromAuthRequest(reqContext);
         String method = reqContext.getRequest().getMethod();
         Map<String, String> mapper = reqContext.getVariables();
+        System.out.println(reqContext);
+        System.out.println(mapper);
+        System.out.println(url);
 
         return isAuthorized(user, method, mapper, url);
     }

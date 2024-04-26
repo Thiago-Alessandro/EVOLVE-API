@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.InvalidAttributeValueException;
-import javax.naming.directory.InvalidAttributesException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -73,13 +72,11 @@ public class ProjectService {
         return transformToGetProjectDTO(treatAndSave(projectSaved));
     }
 
-    private UserProject setCreator(User user, Project project){
+    private void setCreator(User user, Project project){
         Role role = roleService.getRoleByName("PROJECT_CREATOR");
         UserProject userProject = new UserProject(user.getId(), project.getId(), role);
         userProject.setManager(true);
-        UserProject createdUserProject = userProjectService.create(userProject);
-        project.setMembers(List.of(createdUserProject));
-        return createdUserProject;
+        userProjectService.create(userProject);
     }
 
     private ProjectChatService projectChatService;

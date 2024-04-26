@@ -36,7 +36,7 @@ public class ProjectPermissionManager {
     public boolean hasGetPermission(Long projectId, User user){
         //verifica se o usuario é membro da equipe dona do projeto que ele quer acessar
         User user1 = userService.findUserById(user.getId());
-        System.out.println(user1.getProjectRoles());
+//        System.out.println(user1.getProjectRoles());
         return user1.getProjectRoles().stream()
                 .filter(projectRole -> projectRole.getProjectId().equals(projectId))
                 .anyMatch(userProject -> user1.getTeamRoles().stream()

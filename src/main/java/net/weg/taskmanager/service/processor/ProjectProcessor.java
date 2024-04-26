@@ -63,11 +63,15 @@ public class ProjectProcessor {
     private void resolveProjectMembers(){
         if(resolvingProject.getMembers()!=null){
             if(resolvingCascade.contains(User.class.getSimpleName())){
-                resolvingProject.setMembers(null);
+                resolvingProject.setMembers(new ArrayList<>());
                 return;
             }
-            resolvingProject.getMembers().stream()
-                    .forEach(userProject -> UserProcessor.getInstance().resolveUser(userProject.getUser(), resolvingCascade));
+            resolvingProject.getMembers()
+                    .forEach(userProject -> {
+                        if(userProject.getUser()!=null){
+                            UserProcessor.getInstance().resolveUser(userProject.getUser(), resolvingCascade);
+                        }
+                    });
         }
     }
 
