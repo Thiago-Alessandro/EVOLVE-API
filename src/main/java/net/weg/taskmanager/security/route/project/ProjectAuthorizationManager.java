@@ -1,12 +1,12 @@
 package net.weg.taskmanager.security.route.project;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import net.weg.taskmanager.security.route.authorized.ProjectPermissionManager;
-import net.weg.taskmanager.service.UserService;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
@@ -26,59 +26,52 @@ public class ProjectAuthorizationManager implements AuthorizationManager<Request
 
     private final ProjectPermissionManager permissionManager;
 
+    @Transactional
     @Override
     public AuthorizationDecision check(Supplier<Authentication> supplier, RequestAuthorizationContext reqContext) {
-
         User user = getUserFromAuthSupplier(supplier);
-        String url = getUrlFromAuthRequest(reqContext);
+        String uri = getUriFromAuthRequest(reqContext);
         String method = reqContext.getRequest().getMethod();
-        Map<String, String> mapper = reqContext.getVariables();
-        System.out.println(reqContext);
-        System.out.println(mapper);
-        System.out.println(url);
-
-        return isAuthorized(user, method, mapper, url);
+        Map<String, String> variables = reqContext.getVariables();
+        return isAuthorized(user, method, variables, uri);
     }
 
-    private AuthorizationDecision isAuthorized(User user, String method, Map<String, String> mapper, String url){
+    private AuthorizationDecision isAuthorized(User user, String method, Map<String, String> variables, String uri){
         return switch (method){
-            case "POST" -> hasPostPermission(user, mapper);
-            case "GET" -> hasGetPermission(user, mapper);
-            case "DELETE" -> hasDeletePermission(user, mapper);
-            case "PATCH" -> hasPatchPermission(user, mapper, url);
+            case "POST" -> hasPostPermission(user, variables);
+            case "GET" -> hasGetPermission(user, variables);
+            case "DELETE" -> hasDeletePermission(user, variables);
+            case "PATCH" -> hasPatchPermission(user, variables, uri);
             default -> throw new MethodNotAllowedException(method, getAllowedHttpMethods());
         };
     }
 
-    private AuthorizationDecision hasGetPermission(User user, Map<String, String> mapper){
-        Long projectId = Long.parseLong(mapper.get("projectId"));
+    private AuthorizationDecision hasGetPermission(User user, Map<String, String> variables){
+        Long projectId = Long.parseLong(variables.get("projectId"));
         boolean isAuthorized = permissionManager.hasGetPermission(projectId, user);
         return new AuthorizationDecision(isAuthorized);
     }
 
-    private AuthorizationDecision hasPostPermission(User user, Map<String, String> mapper){
-        Long teamId = Long.parseLong(mapper.get("teamId"));
+    private AuthorizationDecision hasPostPermission(User user, Map<String, String> variables){
+        Long teamId = Long.parseLong(variables.get("teamId"));
         return new AuthorizationDecision(permissionManager.hasPostPermission(teamId, user));
     }
 
-    private AuthorizationDecision hasDeletePermission(User user, Map<String, String> mapper){
-        Long projectId = Long.parseLong(mapper.get("projectId"));
+    private AuthorizationDecision hasDeletePermission(User user, Map<String, String> variables){
+        Long projectId = Long.parseLong(variables.get("projectId"));
         return new AuthorizationDecision(permissionManager.hasDeletePermission(projectId, user));
     }
 
-    private AuthorizationDecision hasPatchPermission(User user, Map<String, String> mapper, String url){
-        Long projectId = Long.parseLong(mapper.get("projectId"));
+    private AuthorizationDecision hasPatchPermission(User user, Map<String, String> variables, String uri){
+        Long projectId = Long.parseLong(variables.get("projectId"));
         return new AuthorizationDecision(true);
     }
 
 
 
-    private String getUrlFromAuthRequest(RequestAuthorizationContext reqContext){
+    private String getUriFromAuthRequest(RequestAuthorizationContext reqContext){
         HttpServletRequest request = reqContext.getRequest();
-        String url = String.valueOf(request.getRequestURL());
-        System.out.println(request.getRequestURI());
-        System.out.println(url);
-        return url;
+        return String.valueOf(request.getRequestURI());
     }
 
     private final UserRepository userRepository;
