@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -14,11 +16,10 @@ public class TeamNotification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @OneToMany
+    private Collection<User> notificatedUsers;
     @ManyToOne
-    private User user;
-    @ManyToOne
-    @JsonIgnore
-    private Task task;
+    private User actionUser;
     @ManyToOne
     @JsonIgnore
     private Project project;
