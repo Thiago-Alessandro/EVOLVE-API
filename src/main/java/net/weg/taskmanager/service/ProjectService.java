@@ -1,27 +1,24 @@
 package net.weg.taskmanager.service;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import net.weg.taskmanager.model.*;
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
-import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.security.model.entity.Role;
-import net.weg.taskmanager.security.service.ProfileAcessService;
+import net.weg.taskmanager.security.service.RoleService;
 import net.weg.taskmanager.service.processor.ProjectProcessor;
 import net.weg.taskmanager.utils.ColorUtils;
 import net.weg.taskmanager.utils.FileUtils;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.InvalidAttributeValueException;
+import javax.naming.directory.InvalidAttributesException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -35,7 +32,7 @@ public class ProjectService {
     private final TaskService taskService;
     private final StatusService statusService;
     private final PropertyService propertyService;
-    private final ProfileAcessService profileAcessService;
+    private final RoleService roleService;
     private final UserService userService;
 
 //    private final ModelMapper modelMapper;
@@ -65,19 +62,24 @@ public class ProjectService {
         return getProjectDTOS;
     }
 
-//    @Transactional
     public GetProjectDTO create(PostProjectDTO projectDTO) {
         Project project = new Project(projectDTO);
-//        updateProjectChat(project);
-        //Recupera projeto com id
-        createProjectChat(project);
         Project projectSaved = projectRepository.save(project);
-        setCreatorProfileAcess(projectSaved);
+
+        setCreator(projectDTO.getCreator(), projectSaved);
+        createProjectChat(projectSaved);
         setDefaultProfileAccess(projectSaved);
 
-
-        syncProjectInfos(projectSaved);
         return transformToGetProjectDTO(treatAndSave(projectSaved));
+    }
+
+    private UserProject setCreator(User user, Project project){
+        Role role = roleService.getRoleByName("PROJECT_CREATOR");
+        UserProject userProject = new UserProject(user.getId(), project.getId(), role);
+        userProject.setManager(true);
+        UserProject createdUserProject = userProjectService.create(userProject);
+        project.setMembers(List.of(createdUserProject));
+        return createdUserProject;
     }
 
     private ProjectChatService projectChatService;
@@ -85,7 +87,6 @@ public class ProjectService {
     private void createProjectChat(Project project){
         ProjectChat chat = new ProjectChat();
         chat.setProject(project);
-        chat.setUsers(project.getMembers());
         ProjectChat createdChat = projectChatService.create(chat);
         project.setChat(createdChat);
     }
@@ -104,6 +105,7 @@ public class ProjectService {
         projectRepository.deleteById(id);
     }
 
+
     public Project findProjectById(Long projectId){
         Optional<Project> optionalProject = projectRepository.findById(projectId);
         if(optionalProject.isEmpty()) throw new NoSuchElementException();
@@ -114,7 +116,6 @@ public class ProjectService {
         if(name == null) throw new InvalidAttributeValueException("Name on project cannot be null");
         Project project = findProjectById(projectId);
         project.setName(name);
-        syncProjectInfos(project);
         return transformToGetProjectDTO(treatAndSave(project));
     }
 
@@ -122,7 +123,6 @@ public class ProjectService {
         if(description == null) throw new InvalidAttributeValueException("Description on project cannot be null");
         Project project = findProjectById(projectId);
         project.setDescription(description);
-        syncProjectInfos(project);
         return transformToGetProjectDTO(treatAndSave(project));
     }
 
@@ -130,14 +130,12 @@ public class ProjectService {
         if(image == null) throw new InvalidAttributeValueException("Image on project cannot be null");
         Project project = findProjectById(projectId);
         project.setImage(FileUtils.buildFileFromMultipartFile(image));
-        syncProjectInfos(project);
         return transformToGetProjectDTO(treatAndSave(project));
     }
 
     public GetProjectDTO patchImageRemove(Long projectId){
         Project project = findProjectById(projectId);
         project.setImage(null);
-        syncProjectInfos(project);
         return transformToGetProjectDTO(treatAndSave(project));
     }
 
@@ -145,7 +143,6 @@ public class ProjectService {
         if(imageColor == null || !ColorUtils.isHexColorValid(imageColor)) throw new InvalidAttributeValueException("Not valid format for imageColor on Project. Expecting a hexCode");
         Project project = findProjectById(projectId);
         project.setImageColor((imageColor));
-        syncProjectInfos(project);
         return transformToGetProjectDTO(treatAndSave(project));
     }
 
@@ -153,7 +150,6 @@ public class ProjectService {
         Project project = findProjectById(projectId);
         if(finalDate == null || finalDate.isBefore(project.getCreationDate())) throw new InvalidAttributeValueException("Image on project cannot be null");
         project.setFinalDate(finalDate);
-        syncProjectInfos(project);
         return transformToGetProjectDTO(treatAndSave(project));
     }
 
@@ -162,7 +158,7 @@ public class ProjectService {
         if(properties == null) throw new InvalidAttributeValueException("Properties on project cannot be null");
         Project project = findProjectById(projectId);
         project.setProperties(properties);
-        syncProjectInfos(project);
+        propertyService.createProjectPropertiesIfNotExists(project);
         return transformToGetProjectDTO(treatAndSave(project));
     }
 
@@ -170,22 +166,22 @@ public class ProjectService {
         if(statusList == null) throw new InvalidAttributeValueException("StatusList on project cannot be null");
         Project project = findProjectById(projectId);
         project.setStatusList(statusList);
-        syncProjectInfos(project);
         return transformToGetProjectDTO(treatAndSave(project));
     }
 
-    public GetProjectDTO patchStatusListRemove(Long projectId, Long statusId) throws InvalidAttributeValueException {
+    public GetProjectDTO patchStatusListRemove(Long projectId, Long statusId) {
         Project project = findProjectById(projectId);
         Status status = statusService.findStatusById(statusId);
         if(!project.getStatusList().remove(status)) throw new NoSuchElementException("The project specified does not contains any status with id: " + statusId + " in statusList");
         return transformToGetProjectDTO(treatAndSave(project));
     }
 
-    public GetProjectDTO patchMembers(Long projectId, Collection<User> members) throws InvalidAttributeValueException {
+    public GetProjectDTO patchMembers(Long projectId, Collection<UserProject> members) throws InvalidAttributeValueException {
         if(members == null) throw new InvalidAttributeValueException("Members on project cannot be null");
         Project project = findProjectById(projectId);
-        project.setMembers(members);
-        syncProjectInfos(project);
+        Collection<UserProject> filteredMembers = syncUserProjectTable(project, members);
+        project.setMembers(filteredMembers);
+        updateProjectChat(project);
         return transformToGetProjectDTO(treatAndSave(project));
     }
 
@@ -193,7 +189,6 @@ public class ProjectService {
         if(tasks == null) throw new InvalidAttributeValueException("Tasks on project cannot be null");
         Project project = findProjectById(projectId);
         project.setTasks(tasks);
-        syncProjectInfos(project);
         return transformToGetProjectDTO(treatAndSave(project));
     }
 
@@ -201,7 +196,6 @@ public class ProjectService {
         Project project = findProjectById(projectId);
         Task task = taskService.findTaskById(taskId);
         if(!project.getTasks().remove(task)) throw new NoSuchElementException("The especified project does not have task of id: " + taskId + " in tasks");
-        syncProjectInfos(project);
         return transformToGetProjectDTO(treatAndSave(project));
     }
 
@@ -209,7 +203,6 @@ public class ProjectService {
         if(defaultRole == null) throw new InvalidAttributeValueException("DefaultRole on project cannot be null");
         Project project = findProjectById(projectId);
         project.setDefaultRole(defaultRole);
-        syncProjectInfos(project);
         return transformToGetProjectDTO(treatAndSave(project));
     }
 
@@ -217,75 +210,76 @@ public class ProjectService {
 
 
     private void setDefaultProfileAccess(Project project){
-        Role role = profileAcessService.getProfileAcessByName("PROJECT_COLABORATOR");
+        Role role = roleService.getRoleByName("PROJECT_COLABORATOR");
         project.setDefaultRole(role);
     }
 
-    private void setCreatorProfileAcess(Project project) {
-        Long creatorId = project.getCreator().getId();
-        Long projectId = project.getId();
-        Role role = profileAcessService.getProfileAcessByName("PROJECT_CREATOR");
-        UserProject userProject = new UserProject(creatorId, projectId, role);
+
+
+//    private void setCreatorRole(Project project) {
+//        User creator = userProjectService.findProjectCreator(project.getId());
+//        Long creatorId = creator.getId();
+//        Long projectId = project.getId();
+//        Role role = roleService.getRoleByName("PROJECT_CREATOR");
+//        UserProject userProject = new UserProject(creatorId, projectId, role);
+//        userProjectService.create(userProject);
+//    }
+
+    private Collection<UserProject> syncUserProjectTable(Project project, Collection<UserProject> userProjects) {
+
+        userProjects.stream()
+                .filter(this::userProjectTableNotExists)
+                .forEach(this::createDefaultUserProject);
+
+        deleteUserProjectIfUserIsNotAssociate(project);
+        return userProjectService.findAllWithProjectId(project.getId());
+//        if (project.getMembers() != null) {
+//            project.getMembers().stream()
+//                    .filter(userProject -> !doesUserProjectTableExists(userProject.getUser(), project))
+//                    .forEach(userProject -> createDefaultUserProject(userProject.getUser(), project));
+//        }
+    }
+
+
+    private void createDefaultUserProject(UserProject userProject) {
+        Role defaultRole = userProject.getProject().getDefaultRole();
+        userProject.setRole(defaultRole);
         userProjectService.create(userProject);
     }
 
-    private void syncProjectInfos(Project project){
-        updateProjectChat(project);
-        createProjectProperties(project);
-        syncUserProjectTable(project);
-    }
-
-    private void syncUserProjectTable(Project project) {
-        if (project.getMembers() != null) {
-            project.getMembers().stream()
-                    .filter(member -> !doesUserProjectTableExists(member, project))
-                    .forEach(member -> createDefaultUserProject(member, project));
-
-            deleteUserProjectIfUserIsNotAssociate(project);
-        }
-    }
-
-
-    private void createDefaultUserProject(User member, Project project) {
-        UserProject userProject = new UserProject(member, project);
-        userProjectService.create(userProject);
-    }
-
-    private boolean doesUserProjectTableExists(User member, Project project) {
-        return userProjectRepository.existsById(new UserProjectId(member.getId(), project.getId()));
+    private boolean userProjectTableNotExists(UserProject userProject) {
+        boolean result = !userProjectService.existsById(new UserProjectId(userProject.getUserId(), userProject.getProjectId()));
+        System.out.println(userProjectRepository.findByUserIdAndProjectId(userProject.getUserId(), userProject.getProjectId()));
+        System.out.println(result);
+        return result;
     }
 
     private void deleteUserProjectIfUserIsNotAssociate(Project project) {
-        Collection<UserProject> userProjects = userProjectRepository.findAll();
+        Collection<UserProject> userProjects = userProjectService.findAllWithProjectId(project.getId());
         userProjects.stream()
-                .filter(userProject -> Objects.equals(userProject.getProjectId(), project.getId()))
                 .filter(userProject -> !project.getMembers().contains(userProject.getUser()))
-                .forEach(userProjectRepository::delete);
-    }
-
-
-    private void createProjectProperties(Project project) {
-        propertyService.createProjectPropertiesIfNotExists(project);
+                .forEach(userProjectService::delete);
     }
 
     private void updateProjectChat(Project project) {
-        project.setChat(projectChatService.patchUsers(project.getChat().getId(), project.getMembers()));
-//        project.getChat().setUsers(project.getMembers());
+        HashSet<User> members = new HashSet<>();
+        project.getMembers().forEach(userProject -> members.add(userProject.getUser()));
+        project.setChat(projectChatService.patchUsers(project.getChat().getId(), members));
     }
 
-    private boolean updateMemberProfileAcess(Long projectId, Long memberId, String profileAcessName) {
-        Project project = findProjectById(projectId);
-        User member = userService.findUserById(memberId);
-        UserProject userProject = userProjectRepository.findByUserIdAndProjectId(member.getId(), project.getId());
-        Role role = profileAcessService.getProfileAcessByName(profileAcessName);
-        boolean existsOnProject = projectRepository.existsByIdAndRolesContaining(project.getId(), role);
-        if (existsOnProject) {
-            userProject.setRole(role);
-            userProjectRepository.save(userProject);
-            return true;
-        }
-        return false;
-    }
+//    private boolean updateMemberProfileAcess(Long projectId, Long memberId, String profileAcessName) {
+//        Project project = findProjectById(projectId);
+//        User member = userService.findUserById(memberId);
+//        UserProject userProject = userProjectRepository.findByUserIdAndProjectId(member.getId(), project.getId());
+//        Role role = roleService.getRoleByName(profileAcessName);
+//        boolean existsOnProject = projectRepository.existsByIdAndRolesContaining(project.getId(), role);
+//        if (existsOnProject) {
+//            userProject.setRole(role);
+//            userProjectRepository.save(userProject);
+//            return true;
+//        }
+//        return false;
+//    }
 
 
     //region deprecated methods

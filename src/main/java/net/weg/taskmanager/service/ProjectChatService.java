@@ -1,5 +1,7 @@
 package net.weg.taskmanager.service;
 
+import jakarta.transaction.TransactionScoped;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Chat;
 import net.weg.taskmanager.model.ProjectChat;

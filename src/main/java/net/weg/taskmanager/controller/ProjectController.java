@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Status;
 import net.weg.taskmanager.model.Task;
 import net.weg.taskmanager.model.User;
+import net.weg.taskmanager.model.UserProject;
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.dto.put.PutProjectDTO;
@@ -135,7 +136,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/{projectId}/members")
-    public ResponseEntity<GetProjectDTO> patchMembers(@PathVariable Long projectId, @RequestParam Collection<User> members){
+    public ResponseEntity<GetProjectDTO> patchMembers(@PathVariable Long projectId, @RequestParam Collection<UserProject> members){
         try {
             return ResponseEntity.ok(projectService.patchMembers(projectId, members));
         } catch (Exception e){

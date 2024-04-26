@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Component
 public class ProjectPermissionManager {
+
+    private final UserService userService;
+
     public boolean isUserAuthorized(Long projectId, User user, Permission permission) {
         return user.getProjectRoles()
                 .stream().filter(projectAcess -> projectAcess.getProjectId().equals(projectId))
@@ -29,17 +32,18 @@ public class ProjectPermissionManager {
                 );
     }
 
+    @Transactional
     public boolean hasGetPermission(Long projectId, User user){
         //verifica se o usuario é membro da equipe dona do projeto que ele quer acessar
-        return user.getProjectRoles().stream()
+        User user1 = userService.findUserById(user.getId());
+        System.out.println(user1.getProjectRoles());
+        return user1.getProjectRoles().stream()
                 .filter(projectRole -> projectRole.getProjectId().equals(projectId))
-                .anyMatch(userProject -> user.getTeamRoles().stream()
+                .anyMatch(userProject -> user1.getTeamRoles().stream()
                         .anyMatch(userTeam -> userTeam.getTeam().equals(userProject.getProject().getTeam())
                         )
                 );
     }
-    private final UserService userService;
-    private final UserRepository userRepository;
 
     @Transactional
     public boolean hasPostPermission(Long teamId, User user){

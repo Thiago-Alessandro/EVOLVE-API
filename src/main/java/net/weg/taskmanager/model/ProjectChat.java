@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class ProjectChat extends Chat{
 
-    @OneToOne(optional = false, mappedBy = "chat")
-    @JoinColumn(updatable = false, unique = true)
+    @OneToOne(optional = false)
+    @JoinColumn(unique = true)
     //ao inserir, atualizar ou remover um projeto terá de ser criado, atualizado ou excuido seu chat
     private Project project;
 

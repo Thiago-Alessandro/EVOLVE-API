@@ -40,10 +40,10 @@ public class PostTaskPermissionRoute  implements AuthorizationManager<RequestAut
         Map<String, String> mapper = object.getVariables();
         Long projectId = Long.parseLong(mapper.get("projectId"));
 
-        if(projectRepository.existsByIdAndMembersContaining(projectId, user)){
+//        if(projectRepository.existsByIdAndMembersContaining(projectId, user)){
             return new AuthorizationDecision(projectPermissionManager.isUserAuthorized(projectId,user, Permission.CREATE_TASK));
-        }
-        return new AuthorizationDecision(false);
+//        }
+//        return new AuthorizationDecision(false);
     }
 
 }

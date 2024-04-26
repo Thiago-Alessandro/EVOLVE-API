@@ -25,19 +25,19 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column()
     private String name;
-    @Column(nullable = false)
+    @Column()
     private String description;
 
     @OneToOne(cascade = CascadeType.ALL)
     private File image;
     private String imageColor;
-    @JoinColumn(nullable = false)
-    @ManyToOne()
-    private User creator;
+//    @JoinColumn(nullable = false)
+//    @ManyToOne()
+//    private User creator;
 
-    @Column(nullable = false)
+    @Column()
     private LocalDateTime finalDate;
     @Column(nullable = false)
     private LocalDateTime creationDate;
@@ -52,24 +52,22 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Collection<Property> properties;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn()
     private Collection<Status> statusList;
-    @ManyToMany
-    @JoinColumn(nullable = false)
-    private Collection<User> members;
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(optional = false)
     private Team team;
 
-    @OneToOne(optional = false)
+    @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private ProjectChat chat;
 
     @OneToMany(mappedBy = "project")
     private Collection<Task> tasks;
     //    private Collection<User> colo
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "project_id")
-    private Collection<Role> roles;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "project")
+    private Collection<UserProject> members;
+//    @ManyToMany
+//    @JoinColumn(nullable = false)
+//    private Collection<User> members;
     @ManyToOne
     private Role defaultRole;
 
@@ -102,10 +100,8 @@ public class Project {
 
     public Project(PostProjectDTO projectDTO) {
         BeanUtils.copyProperties(projectDTO, this);
-        this.chat = new ProjectChat();
-        this.chat.setProject(this);
         this.creationDate = LocalDateTime.now();
-        updateLastTimeEdited();
         setDefaultStatus();
+        updateLastTimeEdited();
     }
 }

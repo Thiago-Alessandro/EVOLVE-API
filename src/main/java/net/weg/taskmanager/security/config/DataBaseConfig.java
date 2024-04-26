@@ -7,7 +7,7 @@ import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.security.model.entity.Role;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import net.weg.taskmanager.security.model.enums.Permission;
-import net.weg.taskmanager.security.repository.ProfileAcessRepository;
+import net.weg.taskmanager.security.repository.RoleRepository;
 import net.weg.taskmanager.security.repository.UserDetailsEntityRepository;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +19,7 @@ import java.util.List;
 public class DataBaseConfig {
     private final UserDetailsEntityRepository repository;
     private final UserRepository userRepository;
-    private final ProfileAcessRepository profileAcessRepository;
+    private final RoleRepository roleRepository;
 
     @PostConstruct
     public void init() {
@@ -30,7 +30,7 @@ public class DataBaseConfig {
     }
 
     private void createTeamProfileAccess() {
-        profileAcessRepository.saveAll(List.of(
+        roleRepository.saveAll(List.of(
                 new Role("TEAM_CREATOR", List.of(Permission.EDIT_TEAM_INFO, Permission.MANAGE_PARTICIPANTS, Permission.CREATE_PROJECT, Permission.TEAM_CREATOR, Permission.TEAM_VIEW)),
                 new Role("TEAM_ADM", List.of(Permission.EDIT_TEAM_INFO, Permission.MANAGE_PARTICIPANTS, Permission.CREATE_PROJECT, Permission.TEAM_VIEW)),
                 new Role("TEAM_COLABORATOR", List.of(Permission.CREATE_PROJECT, Permission.TEAM_VIEW)),
@@ -40,7 +40,7 @@ public class DataBaseConfig {
     }
 
     private void createProjectProfileAccess() {
-        profileAcessRepository.saveAll(List.of(
+        roleRepository.saveAll(List.of(
                 new Role("PROJECT_CREATOR", List.of(Permission.EDIT_PROJECT_INFO, Permission.MANAGE_MEMBERS, Permission.CREATE_TASK, Permission.PROJECT_CREATOR, Permission.PROJECT_VIEW)),
                 new Role("PROJECT_ADM", List.of(Permission.EDIT_PROJECT_INFO, Permission.MANAGE_MEMBERS, Permission.CREATE_TASK, Permission.PROJECT_VIEW)),
                 new Role("PROJECT_COLABORATOR", List.of(Permission.CREATE_TASK, Permission.PROJECT_VIEW)),

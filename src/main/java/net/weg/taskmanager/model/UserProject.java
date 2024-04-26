@@ -21,15 +21,18 @@ public class UserProject {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "userId", insertable = false, updatable = false)
+    @JoinColumn(name = "userId", insertable = false)
     private User user;
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "projectId", insertable = false, updatable = false)
+    @JoinColumn(name = "projectId", insertable = false)
     private Project project;
 
     @ManyToOne
     private Role role;
+
+    private boolean isManager = false;
+//    private boolean isAdm;
 
     public UserProject(Long userId, Long projectId, Role acessProfile) {
         this.userId = userId;

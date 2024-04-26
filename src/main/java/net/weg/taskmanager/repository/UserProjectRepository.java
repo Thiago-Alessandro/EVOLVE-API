@@ -5,6 +5,9 @@ import net.weg.taskmanager.model.UserProjectId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.Optional;
+
 @Repository
 public interface UserProjectRepository extends JpaRepository<UserProject, UserProjectId> {
 //    boolean existsByUserIdAndProjectIdAndHierarchy_AuthsContaining(Long userId, Long projectId, Auth auth);
@@ -12,5 +15,8 @@ public interface UserProjectRepository extends JpaRepository<UserProject, UserPr
 //    boolean existsByAuthorizationsContaining_
 
     //Hierarchy findByUserIdAndProjectIdAndHierarchy_AuthsContaining(Long userId, Long projectId, Auth auth);
+
+    Optional<Collection<UserProject>> findUserProjectsByProject_Id(Long projectId);
     UserProject findByUserIdAndProjectId(Long userId, Long projectId);
+    Optional<UserProject> findUserProjectByProject_IdAndIsManagerIsTrue(Long projectId);
 }

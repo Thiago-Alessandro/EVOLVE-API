@@ -15,13 +15,12 @@ import java.util.Collection;
 @NoArgsConstructor
 public class PostProjectDTO {
 
-    private String name;
-    private String description;
-    private String imageColor;
+//    private String name;
+//    private String description;
+//    private String imageColor;
+//    private LocalDateTime finalDate;
+//    private Collection<UserProject> members;
     private User creator;
-    private Collection<User> administrators;
-    private LocalDateTime finalDate;
-    private Collection<User> members;
     private Team team;
 
 //    //rever

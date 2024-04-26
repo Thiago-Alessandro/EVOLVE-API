@@ -39,21 +39,23 @@ public class DeleteProjectPermissionRoute implements AuthorizationManager<Reques
 
         Project project = projectRepository.findById(projectId).get();
 
-        if (isUserOnProject(projectId, user)) {
-            return new AuthorizationDecision(isUserCreator(project,user));
-        }
+//        if (isUserOnProject(projectId, user)) {
+//            return new AuthorizationDecision(isUserCreator(project,user));
+//        }
 
         return null;
     }
 
     private boolean isUserOnProject(Long projectId, User user) {
-        return projectRepository.existsByIdAndMembersContaining(projectId, user);
+//        return projectRepository.existsByIdAndMembersContaining(projectId, user);
+    return true;
+
     }
 
-    private boolean isUserCreator(Project project, User user) {
-        if (user == project.getCreator()) {
-            return true;
-        }
-        return false;
-    }
+//    private boolean isUserCreator(Project project, User user) {
+//        if (user == project.getCreator()) {
+//            return true;
+//        }
+//        return false;
+//    }
 }

@@ -5,7 +5,7 @@ import net.weg.taskmanager.model.*;
 import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.repository.UserTeamRepository;
-import net.weg.taskmanager.security.service.ProfileAcessService;
+import net.weg.taskmanager.security.service.RoleService;
 import net.weg.taskmanager.service.processor.TeamProcessor;
 import org.springframework.stereotype.Service;
 
@@ -37,13 +37,13 @@ public class TeamService {
         teamRepository.deleteById(id);
     }
 
-    private final ProfileAcessService profileAcessService;
+    private final RoleService roleService;
     public Team create(Team team) {
         updateTeamChat(team);
         Team createdTeam = teamRepository.save(team);
 
 //        ProfileAcess pfAccess = createdTeam.getProfileAcesses().stream().filter(pf -> pf.getName().equals("ADMINISTRADOR")).findFirst().orElse(null);
-        createdTeam.setDefaultRole(profileAcessService.getProfileAcessByName("TEAM_COLABORATOR"));
+        createdTeam.setDefaultRole(roleService.getRoleByName("TEAM_COLABORATOR"));
 
         Team teamSaved = teamRepository.save(createdTeam);
         syncUserProjectTable(teamSaved);

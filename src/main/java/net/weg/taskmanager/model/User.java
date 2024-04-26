@@ -43,8 +43,9 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     private UserDetailsEntity userDetailsEntity;
+
     @OneToMany(mappedBy = "user")
-//    @JsonIgnore
+//    @JoinColumn(name = "user")
     private Collection<UserProject> projectRoles;
     @OneToMany(mappedBy = "user")
     @JsonIgnore

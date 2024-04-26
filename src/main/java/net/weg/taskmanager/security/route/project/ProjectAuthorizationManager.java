@@ -78,14 +78,13 @@ public class ProjectAuthorizationManager implements AuthorizationManager<Request
         return url;
     }
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     private User getUserFromAuthSupplier(Supplier<Authentication> supplier){
         Authentication auth = supplier.get();
-        System.out.println(auth.getPrincipal());
         UserDetailsEntity userDetails = (UserDetailsEntity) auth.getPrincipal();
         User user = userDetails.getUser();
-        return userService.findUserById(user.getId());
+        return userRepository.findById(user.getId()).get();
     }
 
     private Collection<HttpMethod> getAllowedHttpMethods(){

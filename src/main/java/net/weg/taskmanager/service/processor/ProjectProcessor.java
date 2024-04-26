@@ -23,8 +23,9 @@ public class ProjectProcessor {
         resolvingProject = project;
 
         resolveProjectTasks();
-        resolveProjectCreator();
+//        resolveProjectCreator();
         resolveProjectMembers();
+
 //        resolveProjectAdministrators();
         resolveProjectTeam();
         reolveProjectChat();
@@ -49,15 +50,15 @@ public class ProjectProcessor {
         }
     }
 
-    private void resolveProjectCreator(){
-        if(resolvingProject.getCreator()!=null){
-            if(resolvingCascade.contains(User.class.getSimpleName())){
-                resolvingProject.setCreator(null);
-                return;
-            }
-            UserProcessor.getInstance().resolveUser(resolvingProject.getCreator(), resolvingCascade);
-        }
-    }
+//    private void resolveProjectCreator(){
+//        if(resolvingProject.getCreator()!=null){
+//            if(resolvingCascade.contains(User.class.getSimpleName())){
+//                resolvingProject.setCreator(null);
+//                return;
+//            }
+//            UserProcessor.getInstance().resolveUser(resolvingProject.getCreator(), resolvingCascade);
+//        }
+//    }
 
     private void resolveProjectMembers(){
         if(resolvingProject.getMembers()!=null){
@@ -66,7 +67,7 @@ public class ProjectProcessor {
                 return;
             }
             resolvingProject.getMembers().stream()
-                    .forEach(user -> UserProcessor.getInstance().resolveUser(user, resolvingCascade));
+                    .forEach(userProject -> UserProcessor.getInstance().resolveUser(userProject.getUser(), resolvingCascade));
         }
     }
 
