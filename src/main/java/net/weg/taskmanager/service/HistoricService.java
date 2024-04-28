@@ -26,6 +26,7 @@ public class HistoricService {
     private final TaskRepository taskRepository;
     private final PropertyRepository propertyRepository;
     private final SubTaskRepository subTaskRepository;
+    private final TeamNotificationService teamNotificationService;
 
     public Task patchNewCommentHistoric(Long taskId, Long userId) {
         User userForHistoric = userRepository.findById(userId).get();
@@ -38,6 +39,7 @@ public class HistoricService {
         );
 
         Historic savedHistoric = this.historicRepository.save(historic);
+        this.teamNotificationService.newCommentNotification(userId,taskId);
 
         taskForHistoric.getHistoric().add(savedHistoric);
 
