@@ -16,12 +16,10 @@ import net.weg.taskmanager.service.processor.ProjectProcessor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +32,7 @@ public class ProjectService {
     private final StatusRepository statusRepository;
     private final TeamRepository teamRepository;
     private final PropertyRepository propertyRepository;
+    private final DashboardRepository dashboardRepository;
     private final ModelMapper modelMapper;
     private final ChartService chartService;
     private final ProjectProcessor projectProcessor = new ProjectProcessor();
@@ -59,12 +58,8 @@ public class ProjectService {
 
     public GetProjectDTO findById(Long id){
         Project project =  projectRepository.findById(id).get();
-
-     //   projectProcessor.resolveProject(project);
-        if(!project.getDashboards().isEmpty()){
-            chartService.getChartsValues(project);
-        }
-        return new GetProjectDTO(project);
+        project.setCharts(chartService.getChartsValues(project));
+        return converter.convertOne(treatAndSave(project));
     }
 
     public Collection<GetProjectDTO> findAll() {
@@ -79,13 +74,19 @@ public class ProjectService {
         Project project = new Project();
         BeanUtils.copyProperties(projectDTO, project);
 
-        updateProjectChat(project);
+        Collection<Status> listaNova = new HashSet<>();
 
+        for (Status st: projectDTO.getStatusList()){
+            listaNova.add(new Status(st.getName(), st.getBackgroundColor(), st.getTextColor(), st.getEnabled()));
+        }
+        project.setStatusList(listaNova);
+
+        updateProjectChat(project);
         //Adiciona o projeto ao BD para que seja criado o seu Id
         projectRepository.save(project);
-
         //Referencia o projeto nas suas propriedades
         propertiesSetProject(project);
+
 
         return converter.convertOne(treatAndSave(project));
     }
@@ -100,10 +101,12 @@ public class ProjectService {
         return converter.convertOne(treatAndSave(project));
     }
 
+    @Transactional
     public void delete(Long id){
         Project project = projectRepository.findById(id).get();
         taskRepository.deleteAll(project.getTasks());
         statusRepository.deleteAll(project.getStatusList());
+        dashboardRepository.deleteDashboardsByProject_Id(project.getId());
 
         try {
             if(teamRepository.findTeamByProjectsContaining(project)!=null){
@@ -140,7 +143,7 @@ public class ProjectService {
     }
 
 
-    private Project treatAndSave(Project project){
+    public Project treatAndSave(Project project){
         project.updateLastTimeEdited();
         Project savedProject = projectRepository.save(project);
         projectProcessor.resolveProject(savedProject);

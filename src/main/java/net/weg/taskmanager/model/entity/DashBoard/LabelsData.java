@@ -7,42 +7,36 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
-@Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
+@Entity
 @Transactional
-public class Chart {
+public class LabelsData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String label;
 
-    private Integer chartIndex;
+    private Integer value;
 
-    @OneToMany(mappedBy = "chart", cascade = CascadeType.ALL)
-    private Collection<LabelsData> labels = new HashSet<>();
+    @ManyToOne
+    @JsonIgnore
+    private Chart chart;
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, label);
+        return Objects.hash(id, label, value, chart);
     }
 
     @Override
     public String toString() {
-        return "Chart{" +
-                "id=" + id + '\'' +
-                ", label='" + label + '\'' +
-                ", chartIndex=" + chartIndex +
+        return "LabelsData{" +
+                "label='" + label + '\'' +
+                ", value=" + value +
                 '}';
     }
 }
-
-
