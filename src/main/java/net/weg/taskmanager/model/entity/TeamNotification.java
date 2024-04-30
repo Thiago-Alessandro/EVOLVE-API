@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortProjectDTO;
+import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +21,7 @@ public class TeamNotification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany
+    @ManyToMany
     private Collection<User> notificatedUsers;
     @ManyToOne
     private User actionUser;

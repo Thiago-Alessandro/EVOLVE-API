@@ -21,7 +21,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public GetUserDTO findById(@PathVariable Long id){return userService.findById(id);}
+    public GetUserDTO findById(@PathVariable Long id){
+        return userService.findById(id);}
     @GetMapping
     public Collection<GetUserDTO> findAll(){return userService.findAll();}
     @DeleteMapping("/{id}")

@@ -10,6 +10,7 @@ public class GetUserConverter implements Converter<GetUserDTO, User> {
 
     @Override
     public GetUserDTO convertOne(User obj) {
+        System.out.println("convertendo user");
         return obj != null ? new GetUserDTO(obj) : null;
     }
 
