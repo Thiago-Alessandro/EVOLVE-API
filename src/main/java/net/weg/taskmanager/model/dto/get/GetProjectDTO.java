@@ -27,10 +27,10 @@ public class GetProjectDTO {
     private LocalDateTime lastTimeEdited;
 
     //vai continuar msm?
-    private Collection<User> administrators;
+//    private Collection<User> administrators;
     private Collection<Property> properties;
     private Collection<Status> statusList;
-    private Collection<User> members;
+    private Collection<UserTeam> members;
     private Team team;
 
     private ProjectChat chat;

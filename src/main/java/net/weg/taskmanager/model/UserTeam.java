@@ -42,4 +42,5 @@ public class UserTeam {
         this.team = team;
         this.role = role;
     }
+
 }

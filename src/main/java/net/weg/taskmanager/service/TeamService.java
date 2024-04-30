@@ -51,7 +51,7 @@ public class TeamService {
 
         setCreator(teamDTO.getCreator(), createdTeam);
         setDefaultRole(createdTeam);
-        updateTeamChat(createdTeam);
+//        updateTeamChat(createdTeam);
         setPossibleRoles(createdTeam);
         Team teamSaved = teamRepository.save(createdTeam);
         return TeamProcessor.getInstance().resolveTeam(teamSaved);
@@ -62,7 +62,7 @@ public class TeamService {
         Role teamAdm = roleService.getRoleByName("TEAM_ADM");
         Role teamColaborator = roleService.getRoleByName("TEAM_COLABORATOR");
         Role teamViewer = roleService.getRoleByName("TEAM_VIEWER");
-        team.setRoles(List.of(teamCreator, teamAdm, teamColaborator, teamViewer));
+        team.setRoles(new ArrayList<>(List.of(teamCreator, teamAdm, teamColaborator, teamViewer)));
     }
 
     private void setCreator(User creator, Team team){
@@ -163,7 +163,10 @@ public class TeamService {
 
 
     private void updateTeamChat(Team team) {
-        team.getChat().setUsers(team.getParticipants().stream().map(UserTeam::getUser).toList());
+        if(team.getParticipants() != null){
+            ArrayList<User> users = new ArrayList<>(team.getParticipants().stream().map(UserTeam::getUser).toList());
+            team.getChat().setUsers(users);
+        }
     }
 
     private void syncUserTeamTable(Team team) throws InvalidAttributeValueException {
