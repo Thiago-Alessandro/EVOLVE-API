@@ -15,9 +15,9 @@ public interface UserDetailsEntityRepository extends JpaRepository<UserDetailsEn
 
     Optional<UserDetailsEntity> findByUsername(String name);
 
-    Optional<UserDetailsEntity> findByUser_IdAndUser_Teams_Id(Long userId,Long teamId);
-
-    boolean existsByUser_Id_AndUser_Teams_Id(Long userId, Long teamId);
+//    Optional<UserDetailsEntity> findByUser_IdAndUser_Teams_Id(Long userId,Long teamId);
+//
+//    boolean existsByUser_Id_AndUser_Teams_Id(Long userId, Long teamId);
     boolean existsByUser_IdAndUser_Email(Long userId, String email);
     boolean existsByUser_Id(Long userId);
 }

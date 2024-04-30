@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.Team;
-import net.weg.taskmanager.model.TeamChat;
 import net.weg.taskmanager.model.User;
-import net.weg.taskmanager.model.UserChat;
+import net.weg.taskmanager.model.UserTeam;
+import net.weg.taskmanager.model.UserTeamId;
+import net.weg.taskmanager.model.dto.post.PostTeamDTO;
 import net.weg.taskmanager.model.dto.post.PostUserDTO;
 import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.repository.UserRepository;
@@ -16,7 +17,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -92,16 +92,16 @@ public class UserService {
     public User findByEmail(String email){
        return UserProcessor.getInstance().resolveUser(userRepository.findByEmail(email));
     }
-
-    private User setDefaultTeam(User user){
-        if (user.getTeams()==null){
-            user.setTeams(new ArrayList<>());
-        }
-
-        Team defaultTeam = new Team(user);
-
-        user.getTeams().add(teamRepository.save(defaultTeam));
-        return user;
+    private final TeamService teamService;
+    private final UserTeamService userTeamService;
+    private void setDefaultTeam(User user){
+        Team team = teamService.create(new PostTeamDTO(user));
+        team.setName(user.getName() + "'s Team");
+        team.setPersonalWorkspace(true);
+        team.setImage(user.getImage());
+        Team savedTeam = teamService.save(team);
+        UserTeam userTeam = userTeamService.findById(new UserTeamId(savedTeam.getId(), user.getId()));
+        user.setTeamRoles(List.of(userTeam));
     }
 
 }

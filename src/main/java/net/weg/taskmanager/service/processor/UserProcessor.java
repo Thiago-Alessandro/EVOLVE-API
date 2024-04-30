@@ -22,9 +22,9 @@ public class UserProcessor {
 
         resolvingUser = user;
 
-        resolveUserTeams();
+//        resolveUserTeams();
+//        resolveUserManagedTeams();
 
-        resolveUserManagedTeams();
         resolveUserCreatedTasks();
         resolveUserChats();
 //        FileProcessor.addBase64Prefix(user.getImage().getData().);
@@ -52,29 +52,29 @@ public class UserProcessor {
         }
     }
 
-    private void resolveUserTeams(){
-        if(resolvingUser.getTeams() != null){
-            if( resolvingCascade.contains(Team.class.getSimpleName())){
-                resolvingUser.setTeams(null);
-                return;
-            }
-
-            resolvingUser.getTeams()
-                    .forEach(team -> TeamProcessor.getInstance().resolveTeam(team, resolvingCascade));
-
-        }
-    }
-
-    private void resolveUserManagedTeams(){
-        if(resolvingUser.getManagedTeams() != null){
-            if( resolvingCascade.contains(Team.class.getSimpleName())){
-                resolvingUser.setManagedTeams(null);
-                return;
-            }
-            resolvingUser.getManagedTeams().stream()
-                    .forEach(team -> TeamProcessor.getInstance().resolveTeam(team, resolvingCascade));
-        }
-    }
+//    private void resolveUserTeams(){
+//        if(resolvingUser.getTeams() != null){
+//            if( resolvingCascade.contains(Team.class.getSimpleName())){
+//                resolvingUser.setTeams(null);
+//                return;
+//            }
+//
+//            resolvingUser.getTeams()
+//                    .forEach(team -> TeamProcessor.getInstance().resolveTeam(team, resolvingCascade));
+//
+//        }
+//    }
+//
+//    private void resolveUserManagedTeams(){
+//        if(resolvingUser.getManagedTeams() != null){
+//            if( resolvingCascade.contains(Team.class.getSimpleName())){
+//                resolvingUser.setManagedTeams(null);
+//                return;
+//            }
+//            resolvingUser.getManagedTeams().stream()
+//                    .forEach(team -> TeamProcessor.getInstance().resolveTeam(team, resolvingCascade));
+//        }
+//    }
 
     private void resolveUserCreatedTasks(){
         if(resolvingUser.getCreatedTasks() != null){

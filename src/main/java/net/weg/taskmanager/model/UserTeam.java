@@ -19,11 +19,6 @@ public class UserTeam {
     private Long teamId;
 
     @ManyToOne
-    private PropertiesPermission permissionOfProperties;
-    @ManyToOne
-    private CardsPermission permissionOfCards;
-
-    @ManyToOne
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     private User user;
     @ManyToOne
@@ -32,6 +27,7 @@ public class UserTeam {
 
     @ManyToOne
     private Role role;
+    private boolean isManager;
 
     public UserTeam(Long userId, Long teamId, Role role) {
         this.userId = userId;

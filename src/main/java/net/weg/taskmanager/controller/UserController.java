@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.dto.post.PostUserDTO;
 import net.weg.taskmanager.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +28,13 @@ public class UserController {
     public void delete(@PathVariable Long userId){
         userService.delete(userId);}
     @PostMapping
-    public User create(@RequestBody PostUserDTO user){return userService.create(user);}
+    public ResponseEntity<User> create(@RequestBody PostUserDTO user){
+        try {
+            return ResponseEntity.ok(userService.create(user));
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
     
     @PutMapping
     public User update(@RequestBody User user){
