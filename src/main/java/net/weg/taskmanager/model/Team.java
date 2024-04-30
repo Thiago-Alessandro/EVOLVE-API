@@ -19,7 +19,7 @@ public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String name;
 //    private String descricao;
 
