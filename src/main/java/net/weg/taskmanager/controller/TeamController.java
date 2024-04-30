@@ -39,4 +39,9 @@ public class TeamController {
         return service.patchTeamName(teamId, name);
     }
 
+    @PatchMapping("/{teamId}/{notificationId}")
+    public GetTeamDTO patchReadedNotification(@PathVariable Long teamId, @PathVariable Long notificationId) {
+        return service.patchReadedNotification(teamId,notificationId);
+    }
+
 }

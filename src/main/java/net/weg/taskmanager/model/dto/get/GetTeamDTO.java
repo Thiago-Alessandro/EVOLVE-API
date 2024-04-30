@@ -28,6 +28,7 @@ public class GetTeamDTO{
     private Collection<GetProjectDTO> projects;
     private GetTeamChatDTO chat;
     private Boolean personalWorkspace;
+    private Collection<GetTeamNotificationDTO> notifications;
 
     public GetTeamDTO(Team team){
         Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
@@ -41,6 +42,7 @@ public class GetTeamDTO{
         this.image = fileDTOConverter.convertOne(team.getImage());
         this.chat = teamChatDTOConverter.convertOne(team.getChat());
         this.projects = projectDTOConverter.convertAll(team.getProjects());
+        this.notifications = team.getNotifications() != null ? team.getNotifications().stream().map(GetTeamNotificationDTO::new).toList() : null;
     }
 
 }
