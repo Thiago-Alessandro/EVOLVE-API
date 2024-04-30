@@ -36,10 +36,10 @@ public class User {
     private Collection<UserChat> chats;
     @OneToMany(mappedBy = "creator")
     private Collection<Task> createdTasks;
-    @OneToMany(mappedBy = "administrator")
-    private Collection<Team> managedTeams;
-    @ManyToMany(mappedBy = "participants")
-    private Collection<Team> teams;
+//    @OneToMany(mappedBy = "administrator")
+//    private Collection<Team> managedTeams;
+//    @ManyToMany(mappedBy = "participants")
+//    private Collection<Team> teams;
     @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     private UserDetailsEntity userDetailsEntity;

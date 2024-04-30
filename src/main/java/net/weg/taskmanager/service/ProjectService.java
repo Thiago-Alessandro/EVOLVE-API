@@ -67,7 +67,7 @@ public class ProjectService {
 
         setCreator(projectDTO.getCreator(), projectSaved);
         createProjectChat(projectSaved);
-        setDefaultProfileAccess(projectSaved);
+        setDefaultRole(projectSaved);
 
         return transformToGetProjectDTO(treatAndSave(projectSaved));
     }
@@ -206,7 +206,7 @@ public class ProjectService {
 
 
 
-    private void setDefaultProfileAccess(Project project){
+    private void setDefaultRole(Project project){
         Role role = roleService.getRoleByName("PROJECT_COLABORATOR");
         project.setDefaultRole(role);
     }
@@ -230,11 +230,6 @@ public class ProjectService {
 
         deleteUserProjectIfUserIsNotAssociate(project);
         return userProjectService.findAllWithProjectId(project.getId());
-//        if (project.getMembers() != null) {
-//            project.getMembers().stream()
-//                    .filter(userProject -> !doesUserProjectTableExists(userProject.getUser(), project))
-//                    .forEach(userProject -> createDefaultUserProject(userProject.getUser(), project));
-//        }
     }
 
 

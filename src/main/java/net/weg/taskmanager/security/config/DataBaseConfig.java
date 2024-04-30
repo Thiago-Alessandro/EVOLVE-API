@@ -36,7 +36,6 @@ public class DataBaseConfig {
                 new Role("TEAM_COLABORATOR", List.of(Permission.CREATE_PROJECT, Permission.TEAM_VIEW)),
                 new Role("TEAM_VIEWER", List.of(Permission.TEAM_VIEW))
         ));
-
     }
 
     private void createProjectProfileAccess() {

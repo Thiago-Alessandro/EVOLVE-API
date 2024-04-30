@@ -71,7 +71,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/project/{teamId}").access(projectAuthorizationManager)
                 .requestMatchers(HttpMethod.GET, "/project/{projectId}").access(projectAuthorizationManager)
                 .requestMatchers(HttpMethod.DELETE, "/project/{projectId}").access(projectAuthorizationManager)
-                .requestMatchers(HttpMethod.PATCH, "/project/{projectId}/name").access(projectAuthorizationManager)
+                .requestMatchers(HttpMethod.PATCH, "/project/{projectId}/members").access(projectAuthorizationManager)
+//                .requestMatchers(HttpMethod.PATCH, "/project/{projectId}/tasks").access(projectAuthorizationManager)
+//                cpa task cria uma por vez
+                .requestMatchers(HttpMethod.PATCH, "/project/{projectId}/**").access(projectAuthorizationManager)
 
 //                .requestMatchers(HttpMethod.PATCH, "/project/{projectId}").access(permissionProject)
 //

@@ -118,7 +118,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/{projectId}/statusList")
-    public ResponseEntity<GetProjectDTO> patchStatusList(@PathVariable Long projectId, @RequestParam Collection<Status> statusList) throws InvalidAttributeValueException {
+    public ResponseEntity<GetProjectDTO> patchStatusList(@PathVariable Long projectId, @RequestParam Collection<Status> statusList)  {
         try {
             return ResponseEntity.ok(projectService.patchStatusList(projectId, statusList));
         } catch (Exception e){
@@ -127,7 +127,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/{projectId}/statusList/remove/{statusId}")
-    public ResponseEntity<GetProjectDTO> patchStatusListRemove(@PathVariable Long projectId, @PathVariable Long statusId) throws InvalidAttributeValueException {
+    public ResponseEntity<GetProjectDTO> patchStatusListRemove(@PathVariable Long projectId, @PathVariable Long statusId) {
         try{
             return ResponseEntity.ok(projectService.patchStatusListRemove(projectId, statusId));
         } catch (Exception e){

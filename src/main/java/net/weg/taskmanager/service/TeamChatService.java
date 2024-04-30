@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.TeamChat;
 import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.UserChat;
+import net.weg.taskmanager.model.UserTeam;
 import net.weg.taskmanager.repository.TeamChatRepository;
 import net.weg.taskmanager.repository.UserChatRepository;
 import net.weg.taskmanager.repository.UserRepository;
@@ -18,7 +19,7 @@ import java.util.List;
 public class TeamChatService {
 
     private final TeamChatRepository teamChatRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     public TeamChat findById(Long id){
         TeamChat teamChat = teamChatRepository.findById(id).get();
@@ -33,13 +34,14 @@ public class TeamChatService {
         return teamChats;
     }
 
-    public Collection<TeamChat> findTeamChatsByUserId(Long id){
-        User user = userRepository.findById(id).get();
+    public Collection<TeamChat> findTeamChatsByUserId(Long userId){
+        User user = userService.findUserById(userId);
 
         Collection<TeamChat> userTeamChats =
-                user.getTeams().stream()
-                .map(team -> teamChatRepository.findTeamChatByTeam_Id(team.getId()))
-                .toList();
+                user.getTeamRoles().stream()
+                    .map(UserTeam::getUser)
+                    .map(team -> teamChatRepository.findTeamChatByTeam_Id(team.getId()))
+                    .toList();
 
         userTeamChats.
                 forEach(teamChat -> ChatProcessor.getInstance().resolveChat(teamChat));
