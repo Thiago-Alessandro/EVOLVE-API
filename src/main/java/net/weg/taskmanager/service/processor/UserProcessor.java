@@ -63,7 +63,6 @@ public class UserProcessor {
         }
     }
 
-<<<<<<< HEAD
 //    private void resolveUserTeams(){
 //        if(resolvingUser.getTeams() != null){
 //            if( resolvingCascade.contains(Team.class.getSimpleName())){
@@ -87,31 +86,6 @@ public class UserProcessor {
 //                    .forEach(team -> TeamProcessor.getInstance().resolveTeam(team, resolvingCascade));
 //        }
 //    }
-=======
-    private void resolveUserTeams(){
-        if(resolvingUser.getTeams() != null){
-            if( resolvingCascade.contains(Team.class.getSimpleName())){
-                resolvingUser.setTeams(null);
-                return;
-            }
-
-            resolvingUser.getTeams()
-                    .forEach(team -> TeamProcessor.getInstance().resolveTeam(team, resolvingCascade));
-
-        }
-    }
-
-    private void resolveUserManagedTeams(){
-        if(resolvingUser.getManagedTeams() != null){
-            if( resolvingCascade.contains(Team.class.getSimpleName())){
-                resolvingUser.setManagedTeams(null);
-                return;
-            }
-            resolvingUser.getManagedTeams()
-                    .forEach(team -> TeamProcessor.getInstance().resolveTeam(team, resolvingCascade));
-        }
-    }
->>>>>>> feature/security-updated
 
     private void resolveUserCreatedTasks(){
         if(resolvingUser.getCreatedTasks() != null){

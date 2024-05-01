@@ -37,12 +37,10 @@ public class TaskService {
     private final PropertyRepository propertyRepository;
     private final UserTaskRepository userTaskRepository;
     private final UserRepository userRepository;
-    //    private final ModelMapper modelMapper;
     private final PropertyValueRepository propertyValueRepository;
     private final OptionRepository optionRepository;
     private final CommentRepository commentRepository;
     private final Converter<GetTaskDTO, Task> converter = new GetTaskConverter();
-    private final HistoricRepository historicRepository;
     private final HistoricService historicService;
     private final SubTaskRepository subTaskRepository;
     private final ProjectRepository projectRepository;

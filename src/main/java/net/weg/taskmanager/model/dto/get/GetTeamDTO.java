@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import net.weg.taskmanager.model.dto.UserTeamDTO;
 import org.springframework.beans.BeanUtils;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
@@ -11,6 +12,7 @@ import net.weg.taskmanager.model.dto.converter.get.GetProjectConverter;
 import net.weg.taskmanager.model.dto.converter.get.GetTeamChatConverter;
 import net.weg.taskmanager.model.entity.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
@@ -24,7 +26,7 @@ public class GetTeamDTO{
     private String imageColor;
 //    private ShortUserDTO administrator;
     //cpa transformar em DTO hein
-    private Collection<UserTeam> participants;
+    private Collection<UserTeamDTO> participants;
     private Collection<GetProjectDTO> projects;
     private GetTeamChatDTO chat;
     private Boolean personalWorkspace;
@@ -36,7 +38,7 @@ public class GetTeamDTO{
         Converter<GetProjectDTO, Project> projectDTOConverter = new GetProjectConverter();
 
         BeanUtils.copyProperties(team, this);
-        this.participants = team.getParticipants();
+        this.participants = team.getParticipants() != null ? team.getParticipants().stream().map(UserTeamDTO::new).toList() : new ArrayList<>();
 //        this.administrator = shortUserConverter.convertOne(team.getAdministrator());
         this.image = fileDTOConverter.convertOne(team.getImage());
         this.chat = teamChatDTOConverter.convertOne(team.getChat());

@@ -25,8 +25,8 @@ public class TeamController {
     @GetMapping("/{id}")
     public GetTeamDTO findById(@PathVariable Long id){return service.findById(id);}
 
-    @GetMapping
-    public Collection<GetTeamDTO> findAll(){return service.findAll();}
+//    @GetMapping
+//    public Collection<GetTeamDTO> findAll(){return service.findAll();}
 
     @DeleteMapping("/{teamId}")
     public void delete(@PathVariable Long teamId){service.delete(teamId);}
@@ -35,7 +35,7 @@ public class TeamController {
     public GetTeamDTO create(@RequestBody PostTeamDTO team){return service.create(team);}
 
     @GetMapping("/user/{userId}")
-    public Collection<Team> findTeamsByUserId(@PathVariable Long userId){
+    public Collection<GetTeamDTO> findTeamsByUserId(@PathVariable Long userId){
         return service.findTeamsByUserId(userId);
     }
 

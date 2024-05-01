@@ -1,8 +1,7 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Status;
-import net.weg.taskmanager.model.property.Option;
+import net.weg.taskmanager.model.entity.Status;
 import net.weg.taskmanager.repository.StatusRepository;
 import org.springframework.stereotype.Service;
 

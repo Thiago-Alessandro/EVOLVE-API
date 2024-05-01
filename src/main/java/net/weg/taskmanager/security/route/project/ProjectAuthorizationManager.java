@@ -3,7 +3,7 @@ package net.weg.taskmanager.security.route.project;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.User;
+import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import net.weg.taskmanager.security.route.authorized.ProjectPermissionManager;
@@ -33,6 +33,7 @@ public class ProjectAuthorizationManager implements AuthorizationManager<Request
         String uri = getUriFromAuthRequest(reqContext);
         String method = reqContext.getRequest().getMethod();
         Map<String, String> variables = reqContext.getVariables();
+        System.out.println("opa");
         return isAuthorized(user, method, variables, uri);
     }
 

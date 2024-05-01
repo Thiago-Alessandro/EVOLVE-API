@@ -2,7 +2,7 @@ package net.weg.taskmanager.security.config;
 
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.User;
+import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.security.model.entity.Role;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
@@ -30,6 +30,7 @@ public class DataBaseConfig {
     }
 
     private void createTeamProfileAccess() {
+        if(roleRepository.findByName("TEAM_CREATOR")!=null) return;
         roleRepository.saveAll(List.of(
                 new Role("TEAM_CREATOR", List.of(Permission.EDIT_TEAM_INFO, Permission.MANAGE_PARTICIPANTS, Permission.CREATE_PROJECT, Permission.TEAM_CREATOR, Permission.TEAM_VIEW)),
                 new Role("TEAM_ADM", List.of(Permission.EDIT_TEAM_INFO, Permission.MANAGE_PARTICIPANTS, Permission.CREATE_PROJECT, Permission.TEAM_VIEW)),
@@ -39,6 +40,7 @@ public class DataBaseConfig {
     }
 
     private void createProjectProfileAccess() {
+        if(roleRepository.findByName("PROJECT_CREATOR")!=null) return;
         roleRepository.saveAll(List.of(
                 new Role("PROJECT_CREATOR", List.of(Permission.EDIT_PROJECT_INFO, Permission.MANAGE_MEMBERS, Permission.CREATE_TASK, Permission.PROJECT_CREATOR, Permission.PROJECT_VIEW)),
                 new Role("PROJECT_ADM", List.of(Permission.EDIT_PROJECT_INFO, Permission.MANAGE_MEMBERS, Permission.CREATE_TASK, Permission.PROJECT_VIEW)),

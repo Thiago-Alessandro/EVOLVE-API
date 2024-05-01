@@ -71,4 +71,5 @@ public class BeansConfig {
 //    public void configureGlobal(AuthenticationManagerBuilder auth, AutenticacaoService autenticacaoService) throws Exception {
 //        auth.userDetailsService(autenticacaoService).passwordEncoder(NoOpPasswordEncoder.getInstance());
 //    }
+
 }

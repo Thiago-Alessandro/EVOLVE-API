@@ -83,8 +83,10 @@ public class ProjectService {
         createProjectChat(projectSaved);
         setDefaultRole(projectSaved);
 
-//        (treatAndSave(projectSaved));
-        return converter.convertOne(project);
+//        //Referencia o projeto nas suas propriedades
+//        propertiesSetProject(project);
+
+        return converter.convertOne(treatAndSave(projectSaved));
     }
 
     private void setCreator(User user, Project project){
@@ -92,14 +94,6 @@ public class ProjectService {
         UserProject userProject = new UserProject(user.getId(), project.getId(), role);
         userProject.setManager(true);
         userProjectService.create(userProject);
-
-
-        //Adiciona o projeto ao BD para que seja criado o seu Id
-        projectRepository.save(project);
-
-        //Referencia o projeto nas suas propriedades
-        propertiesSetProject(project);
-
     }
 
 //    public GetProjectDTO update(PutProjectDTO projectDTO){
@@ -318,9 +312,7 @@ public class ProjectService {
 
     private Project treatAndSave(Project project) {
         project.updateLastTimeEdited();
-        Project savedProject = projectRepository.save(project);
-        projectProcessor.resolveProject(savedProject);
-        return savedProject;
+        return projectRepository.save(project);
     }
 
 //    private GetProjectDTO transformToGetProjectDTO(Project project) {

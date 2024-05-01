@@ -9,6 +9,7 @@ import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.property.Property;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Data

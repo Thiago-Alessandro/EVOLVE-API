@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.entity.Project;
+import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.security.model.entity.Role;
 
 @Entity

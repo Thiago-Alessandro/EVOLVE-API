@@ -1,14 +1,12 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.UserProject;
 import net.weg.taskmanager.model.UserProjectId;
+import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.repository.UserProjectRepository;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;

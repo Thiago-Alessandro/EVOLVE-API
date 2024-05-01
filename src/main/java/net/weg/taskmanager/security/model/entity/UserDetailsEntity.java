@@ -2,7 +2,7 @@ package net.weg.taskmanager.security.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import net.weg.taskmanager.model.User;
+import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.security.model.enums.Permission;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.userdetails.UserDetails;

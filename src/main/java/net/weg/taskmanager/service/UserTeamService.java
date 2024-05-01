@@ -34,6 +34,12 @@ public class UserTeamService {
         repository.delete(userTeam);
     }
 
+    public Collection<UserTeam> findAllWithUserId(Long userId){
+        Optional<Collection<UserTeam>> optionalUserTeams = repository.findUserTeamsByUser_Id(userId);
+        if(optionalUserTeams.isEmpty()) throw new NoSuchElementException();
+        return optionalUserTeams.get();
+    }
+
     public UserTeam findById(UserTeamId userTeamId){
         Optional<UserTeam> optionalUserTeam = repository.findById(userTeamId);
         if(optionalUserTeam.isEmpty()) throw new NoSuchElementException();

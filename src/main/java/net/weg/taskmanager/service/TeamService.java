@@ -31,7 +31,6 @@ public class TeamService {
 
     private final UserTeamService userTeamService;
     private final RoleService roleService;
-    private final UserService userService;
 
     private final Converter<GetTeamDTO, Team> converter = new GetTeamConverter();
 
@@ -95,11 +94,13 @@ public class TeamService {
         teamRepository.deleteById(id);
     }
 
-    public Collection<Team> findTeamsByUserId(Long userId){
-        User user = userService.findUserById(userId);
-        Collection<Team> teams = teamRepository.findTeamsByParticipantsContaining(user);
-        teams.forEach(team -> TeamProcessor.getInstance().resolveTeam(team));
-        return teams;
+    public Collection<GetTeamDTO> findTeamsByUserId(Long userId){
+        Collection<Team> teams = findTeamsByParticipants_User_Id(userId);
+        return converter.convertAll(teams);
+    }
+
+    private Collection<Team> findTeamsByParticipants_User_Id(Long userId){
+        return userTeamService.findAllWithUserId(userId).stream().map(UserTeam::getTeam).toList();
     }
 
 
