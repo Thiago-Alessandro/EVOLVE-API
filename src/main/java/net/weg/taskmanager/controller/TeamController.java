@@ -44,4 +44,9 @@ public class TeamController {
         return service.patchReadedNotification(teamId,notificationId);
     }
 
+    @DeleteMapping("/clean/{loggedUserId}")
+    public void cleanAllUserNotifications(@PathVariable Long loggedUserId) {
+        service.cleanAllUserNotifications(loggedUserId);
+    }
+
 }

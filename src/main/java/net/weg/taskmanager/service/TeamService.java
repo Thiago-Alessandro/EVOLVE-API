@@ -91,4 +91,14 @@ public class TeamService {
         return new GetTeamDTO(teamSaved);
     }
 
+    public void cleanAllUserNotifications(Long loggedUserId) {
+        User loggedUser = this.userRepository.findById(loggedUserId).get();
+        loggedUser.getTeams().forEach(team -> {
+            team.getNotifications().forEach(notification -> {
+                notification.getNotificatedUsers().remove(loggedUser);
+            });
+            this.teamRepository.save(team);
+        });
+    }
+
 }
