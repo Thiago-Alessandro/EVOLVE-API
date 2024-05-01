@@ -125,7 +125,7 @@ public class HistoricService {
         return taskForHistoric;
     }
 
-    public Task updateTaskFinalDateHistoric(Long taskId, Long userId, LocalDate newFinalDate) {
+    public Task updateTaskFinalDateHistoric(Long taskId, Long userId, LocalDateTime newFinalDate) {
         User userForHistoric = userRepository.findById(userId).get();
         Task taskForHistoric = taskRepository.findById(taskId).get();
 

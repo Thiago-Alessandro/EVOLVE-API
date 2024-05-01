@@ -1,9 +1,12 @@
 package net.weg.taskmanager.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.UserProject;
+import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -36,10 +39,23 @@ public class User {
     private Collection<UserChat> chats;
     @OneToMany(mappedBy = "creator")
     private Collection<Task> createdTasks;
-    @OneToMany(mappedBy = "administrator")
-    private Collection<Team> managedTeams;
-    @ManyToMany(mappedBy = "participants")
-    private Collection<Team> teams;
+
+//    @OneToMany(mappedBy = "administrator")
+//    private Collection<Team> managedTeams;
+//    @ManyToMany(mappedBy = "participants")
+//    private Collection<Team> teams;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    private UserDetailsEntity userDetailsEntity;
+
+    @OneToMany(mappedBy = "user")
+//    @JoinColumn(name = "user")
+    private Collection<UserProject> projectRoles;
+    @OneToMany(mappedBy = "user")
+//    @JsonIgnore
+    private Collection<UserTeam> teamRoles;
+
     private String theme;
     private String primaryColor;
     private String secondaryColor;

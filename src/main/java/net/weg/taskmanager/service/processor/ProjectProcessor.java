@@ -25,9 +25,10 @@ public class ProjectProcessor {
         resolvingProject = project;
 
         resolveProjectTasks();
-        resolveProjectCreator();
+//        resolveProjectCreator();
         resolveProjectMembers();
-        resolveProjectAdministrators();
+
+//        resolveProjectAdministrators();
         resolveProjectTeam();
         reolveProjectChat();
         resolveProjectProperties();
@@ -52,37 +53,41 @@ public class ProjectProcessor {
         }
     }
 
-    private void resolveProjectCreator(){
-        if(resolvingProject.getCreator()!=null){
-            if(resolvingCascade.contains(User.class.getSimpleName())){
-                resolvingProject.setCreator(null);
-                return;
-            }
-            UserProcessor.getInstance().resolveUser(resolvingProject.getCreator(), resolvingCascade);
-        }
-    }
+//    private void resolveProjectCreator(){
+//        if(resolvingProject.getCreator()!=null){
+//            if(resolvingCascade.contains(User.class.getSimpleName())){
+//                resolvingProject.setCreator(null);
+//                return;
+//            }
+//            UserProcessor.getInstance().resolveUser(resolvingProject.getCreator(), resolvingCascade);
+//        }
+//    }
 
     private void resolveProjectMembers(){
         if(resolvingProject.getMembers()!=null){
             if(resolvingCascade.contains(User.class.getSimpleName())){
-                resolvingProject.setMembers(null);
+                resolvingProject.setMembers(new ArrayList<>());
                 return;
             }
-            resolvingProject.getMembers().stream()
-                    .forEach(user -> UserProcessor.getInstance().resolveUser(user, resolvingCascade));
+            resolvingProject.getMembers()
+                    .forEach(userProject -> {
+                        if(userProject.getUser()!=null){
+                            UserProcessor.getInstance().resolveUser(userProject.getUser(), resolvingCascade);
+                        }
+                    });
         }
     }
 
-    private void resolveProjectAdministrators(){
-        if(resolvingProject.getAdministrators()!=null){
-            if(resolvingCascade.contains(User.class.getSimpleName())){
-                resolvingProject.setAdministrators(null);
-                return;
-            }
-            resolvingProject.getAdministrators().stream()
-                    .forEach(user -> UserProcessor.getInstance().resolveUser(user, resolvingCascade));
-        }
-    }
+//    private void resolveProjectAdministrators(){
+//        if(resolvingProject.getAdministrators()!=null){
+//            if(resolvingCascade.contains(User.class.getSimpleName())){
+//                resolvingProject.setAdministrators(null);
+//                return;
+//            }
+//            resolvingProject.getAdministrators().stream()
+//                    .forEach(user -> UserProcessor.getInstance().resolveUser(user, resolvingCascade));
+//        }
+//    }
 
     private void resolveProjectProperties(){
         if(resolvingProject.getProperties()!=null){

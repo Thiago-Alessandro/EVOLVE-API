@@ -1,6 +1,5 @@
 package net.weg.taskmanager.controller;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.AllArgsConstructor;
 
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
@@ -21,7 +20,7 @@ import net.weg.taskmanager.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,17 +32,33 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/{projectId}/{taskId}")
+    public GetTaskDTO findById(@PathVariable Long projectId, @PathVariable Long taskId) {
+        return taskService.findById(taskId);
+    }
 
-    public GetTaskDTO findById(@PathVariable Long id){return taskService.findById(id);}
+//    @GetMapping
+//    public Collection<GetTaskDTO> findAll(){return taskService.findAll();}
 
-    @GetMapping
-    public Collection<GetTaskDTO> findAll(){return taskService.findAll();}
+    @DeleteMapping("/{projectId}/{taskId}")
+    public void delete(@PathVariable Long projectId, @PathVariable Long taskId) {
+        taskService.delete(taskId);
+    }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-        taskService.delete(id);}
+//    @PostMapping("/{projectId}")
+//    public GetTaskDTO create(@PathVariable Long projectId, @RequestBody PostTaskDTO postTaskDTO) {
+//        return taskService.create(postTaskDTO);
+//    }
 
+//    @PutMapping("/{projectId}")
+//    public GetTaskDTO update(@PathVariable Long projectId, @RequestBody PutTaskDTO putTaskDTO) {
+//        return taskService.update(putTaskDTO);
+//    }
+
+    @GetMapping("/{projectId}/status/{statusId}")
+    public Collection<GetTaskDTO> getTasksByStatus(@PathVariable Long statusId) {
+        return taskService.getTasksByStatus(statusId);
+    }
 
     @PostMapping
     public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
@@ -51,16 +66,18 @@ public class TaskController {
 
     @PutMapping("/{userId}")
     public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO,@PathVariable Long userId){
-//        GetTaskDTO getTaskDTO = taskService.update(putTaskDTO);
         return taskService.update(putTaskDTO,userId);
     }
 
-    @GetMapping("/status/{id}")
-    public Collection<GetTaskDTO> getTasksByStatus(@PathVariable Long id){return taskService.getTasksByStatus(id);}
-
     @PatchMapping("/userTask")
-    public UserTask setWorkedTime(@RequestBody UserTask userTask){
+    public UserTask setWorkedTime(@RequestBody UserTask userTask) {
         return taskService.setWorkedTime(userTask);
+    }
+
+
+    @PatchMapping("/{projectId}/property/{taskId}")
+    public GetTaskDTO patchProperty(@PathVariable Long projectId, @RequestBody Property property, @PathVariable Long taskId) {
+        return taskService.patchProperty(property, taskId);
     }
 
     @PatchMapping("/property/{taskId}/{userId}")
@@ -74,14 +91,19 @@ public class TaskController {
     }
 
     @PutMapping("/update/finalDate/{taskId}/{userId}/calendar/{newFinalDate}")
-    public GetTaskDTO updateTaskFinalDate(@PathVariable Long taskId, @PathVariable Long userId, @PathVariable LocalDate newFinalDate) {
+    public GetTaskDTO updateTaskFinalDate(@PathVariable Long taskId, @PathVariable Long userId, @PathVariable LocalDateTime newFinalDate) {
         return taskService.updateTaskFinalDate(taskId,userId,newFinalDate);
     }
 
-    @GetMapping("/userTask/{userId}/{taskId}")
-    public UserTask getUserTask(@PathVariable Long userId, @PathVariable Long taskId){
+    @GetMapping("/{projectId}/userTask/{userId}/{taskId}")
+    public UserTask getUserTask(@PathVariable Long projectId, @PathVariable Long userId, @PathVariable Long taskId) {
         return taskService.getUserTask(userId, taskId);
     }
+
+//    @PutMapping("/{projectId}/putProperty")
+//    public PropertyValue putPropertyValue(@RequestBody PropertyValue propertyValue){
+//            return taskService.putPropertyValue(propertyValue);
+//    }
 
     @PutMapping("/property/put/{propertyId}/{userId}/{taskId}")
     public Property putPropertyValue(@PathVariable Long propertyId,
@@ -118,15 +140,16 @@ public class TaskController {
         return taskService.deleteSubtask(subtaskId, taskId, userId);
     }
 
+
     @GetMapping("/property/get/getall")
     public Collection<Property> getAllProperties() {
         return taskService.getAllProperties();
     }
 
-    @GetMapping("/priorities")
-    public Collection<PriorityRecord> getAllPriorities() {
-        List<Priority> listTest =  List.of(Priority.values());
-       return listTest.stream().map(priority -> new PriorityRecord(priority.name(), priority.backgroundColor)).collect(Collectors.toList());
+    @GetMapping("/{projectId}/priorities")
+    public Collection<PriorityRecord> getAllPriorities(@PathVariable Long projectId) {
+        List<Priority> listTest = List.of(Priority.values());
+        return listTest.stream().map(priority -> new PriorityRecord(priority.name(), priority.backgroundColor)).collect(Collectors.toList());
     }
 
     @GetMapping("/user/{userId}")

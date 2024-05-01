@@ -32,7 +32,7 @@ public class TeamProcessor {
 
         resolveTeamChat();
         resolveTeamParticipants();
-        resolveTeamAdministrator();
+//        resolveTeamAdministrator();
         resolveTeamProjects();
 
         resolvingCascade.remove(teamClassName);
@@ -72,19 +72,19 @@ public class TeamProcessor {
                 return;
             }
             resolvingTeam.getParticipants()
-                    .forEach(user -> UserProcessor.getInstance().resolveUser(user, resolvingCascade));
+                    .forEach(user -> UserProcessor.getInstance().resolveUser(user.getUser(), resolvingCascade));
         }
     }
 
-    private void resolveTeamAdministrator(){
-        if(resolvingTeam.getAdministrator() != null){
-            if(resolvingCascade.contains(User.class.getSimpleName())){
-                resolvingTeam.setAdministrator(null);
-                return;
-            }
-            UserProcessor.getInstance().resolveUser(resolvingTeam.getAdministrator(), resolvingCascade);
-        }
-    }
+//    private void resolveTeamAdministrator(){
+//        if(resolvingTeam.getAdministrator() != null){
+//            if(resolvingCascade.contains(User.class.getSimpleName())){
+//                resolvingTeam.setAdministrator(null);
+//                return;
+//            }
+//            UserProcessor.getInstance().resolveUser(resolvingTeam.getAdministrator(), resolvingCascade);
+//        }
+//    }
 
     private void resolveTeamProjects(){
         if(resolvingTeam.getProjects()!=null){

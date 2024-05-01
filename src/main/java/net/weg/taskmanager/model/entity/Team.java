@@ -3,6 +3,10 @@ package net.weg.taskmanager.model.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import net.weg.taskmanager.model.dto.post.PostTeamDTO;
+import net.weg.taskmanager.security.model.entity.Role;
+import net.weg.taskmanager.utils.ColorUtils;
+import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +19,7 @@ public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String name;
 //    private String descricao;
 
@@ -23,12 +27,12 @@ public class Team {
     private File image;
     private String imageColor;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private User administrator;
-    @ManyToMany()
-    @JoinColumn(nullable = false)
-    private Collection<User> participants;
+//    @ManyToOne
+//    @JoinColumn(nullable = false)
+//    private User administrator;
+//    @JoinColumn(nullable = false)
+    @OneToMany(mappedBy = "team")
+    private Collection<UserTeam> participants;
 
     @OneToMany(mappedBy = "team")
     private Collection<Project> projects;
@@ -38,20 +42,21 @@ public class Team {
     @Column(nullable = false)
     private Boolean personalWorkspace = false;
 
-    public Team(User user){
-        this.name = user.getName() + " Workspace";
-        this.personalWorkspace = true;
-        this.administrator = user;
-        this.imageColor = user.getImageColor();
-        this.image = user.getImage();
-        Collection<User> participants = new ArrayList<>();
-        participants.add(user);
-        this.participants = participants;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<Role> roles;
+
+    @ManyToOne
+    private Role defaultRole;
+
+
+    public Team() {
         this.chat = new TeamChat();
-        this.chat.setUsers(this.participants);
+        this.chat.setTeam(this);
     }
 
-    public Team(){
+    public Team(PostTeamDTO teamDTO){
+        BeanUtils.copyProperties(teamDTO, this);
+        this.imageColor = ColorUtils.generateHexColor();
         this.chat = new TeamChat();
         this.chat.setTeam(this);
     }

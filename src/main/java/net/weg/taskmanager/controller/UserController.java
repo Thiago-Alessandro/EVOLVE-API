@@ -7,6 +7,8 @@ import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.post.PostUserDTO;
 import net.weg.taskmanager.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,36 +19,46 @@ import java.util.Collection;
 @RequestMapping("/user")
 public class UserController {
 
-    private final ObjectMapper objectMapper;
     private final UserService userService;
 
-    @GetMapping("/{id}")
-    public GetUserDTO findById(@PathVariable Long id){return userService.findById(id);}
+    @DeleteMapping("/{userId}")
+    public void delete(@PathVariable Long userId){
+        userService.delete(userId);
+    }
+
+    @GetMapping("/{userId}")
+    public GetUserDTO findById(@PathVariable Long userId){return userService.findById(userId);}
     @GetMapping
     public Collection<GetUserDTO> findAll(){return userService.findAll();}
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-        userService.delete(id);}
-    @PostMapping
-    public GetUserDTO create(@RequestBody PostUserDTO user){return userService.create(user);}
-    
-    @PutMapping
-    public GetUserDTO update(@RequestBody User user){
-        return userService.update(user);
-    }
-    
-    @PutMapping("/full")
-    public GetUserDTO update(
-                  @RequestParam String jsonUser,
-                          @RequestParam MultipartFile profilePhoto){
 
-        return userService.update(jsonUser, profilePhoto);
+    @PostMapping
+    public ResponseEntity<GetUserDTO> create(@RequestBody PostUserDTO user){
+        try {
+            return ResponseEntity.ok(userService.create(user));
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
+
+//    @PutMapping
+//    public GetUserDTO update(@RequestBody User user){
+//        return userService.update(user);
+//    }
+
     
-    @PatchMapping("/{id}")
-    public GetUserDTO patchImage(@PathVariable Long id, @RequestParam MultipartFile image){
-        return userService.patchImage(id, image);
+//    @PutMapping("/full")
+//    public GetUserDTO update(
+//                  @RequestParam String jsonUser,
+//                          @RequestParam MultipartFile profilePhoto){
+//
+//        return userService.update(jsonUser, profilePhoto);
+//    }
+
+    @PatchMapping("/{userId}")
+    public GetUserDTO patchImage(@PathVariable Long userId, @RequestParam MultipartFile image) {
+        return userService.patchImage(userId, image);
     }
+
     @GetMapping("/login/{email}")
     public GetUserDTO loginByEmail(@PathVariable String email){return userService.findByEmail(email);}
 

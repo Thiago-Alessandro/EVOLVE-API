@@ -14,53 +14,47 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/userChat")
 @AllArgsConstructor
-public class UserChatController
-//        implements IController<UserChat>
-{
-
+public class UserChatController {
     private final UserChatService userChatService;
 
-//    @Override
-    @GetMapping("/{id}")
-    public ResponseEntity<GetUserChatDTO> findById(@PathVariable Long id) {
+    @GetMapping("/{userChatId}")
+    public ResponseEntity<GetUserChatDTO> findById(@PathVariable Long userChatId) {
         try {
-            return new ResponseEntity<>(userChatService.findById(id), HttpStatus.OK);
-        } catch (NoSuchElementException e){
+            return new ResponseEntity<>(userChatService.findById(userChatId), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-//    @Override
+
     @GetMapping()
     public ResponseEntity<Collection<GetUserChatDTO>> findAll() {
         return new ResponseEntity<>(userChatService.findAll(), HttpStatus.OK);
     }
 
-//    @Override
-    @DeleteMapping("/{id}")
-    public ResponseEntity<GetUserChatDTO> delete(@PathVariable Long id) {
+    @DeleteMapping("/{userChatId}")
+    public ResponseEntity<GetUserChatDTO> delete(@PathVariable Long userChatId) {
         try {
-            userChatService.delete(id);
+            userChatService.delete(userChatId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-//    @Override
     @PostMapping
     public ResponseEntity<GetUserChatDTO> create(@RequestBody UserChat obj) {
         return new ResponseEntity<>(userChatService.create(obj), HttpStatus.OK);
     }
 
-//    @Override
-    @PutMapping()
+    @PutMapping
     public ResponseEntity<GetUserChatDTO> update(@RequestBody UserChat obj) {
         return new ResponseEntity<>(userChatService.update(obj), HttpStatus.OK);
     }
 
-    @GetMapping("/user/{id}")
-    public ResponseEntity<Collection<GetUserChatDTO>> getUserChatsByUserID(@PathVariable Long id) {
-        return new ResponseEntity<>(userChatService.getChatsByUserId(id), HttpStatus.OK);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Collection<GetUserChatDTO>> getUserChatsByUserID(@PathVariable Long userId) {
+        return new ResponseEntity<>(userChatService.getChatsByUserId(userId), HttpStatus.OK);
+
     }
 }

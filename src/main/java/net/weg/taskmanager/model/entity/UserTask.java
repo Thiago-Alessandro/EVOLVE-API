@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @IdClass(UserTaskId.class)
+@Table(name = "user_task")
 public class UserTask {
 
     public UserTask(){
@@ -27,6 +28,8 @@ public class UserTask {
     @ManyToOne
     @JoinColumn(name = "taskId", insertable = false, updatable = false)
     private Task task;
+//    @OneToMany
+//    private Collection<Auth> authorizations;
 
     private Integer workedHours;
     private Integer workedMinutes;

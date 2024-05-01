@@ -25,7 +25,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -37,12 +37,10 @@ public class TaskService {
     private final PropertyRepository propertyRepository;
     private final UserTaskRepository userTaskRepository;
     private final UserRepository userRepository;
-    //    private final ModelMapper modelMapper;
     private final PropertyValueRepository propertyValueRepository;
     private final OptionRepository optionRepository;
     private final CommentRepository commentRepository;
     private final Converter<GetTaskDTO, Task> converter = new GetTaskConverter();
-    private final HistoricRepository historicRepository;
     private final HistoricService historicService;
     private final SubTaskRepository subTaskRepository;
     private final ProjectRepository projectRepository;
@@ -58,6 +56,12 @@ public class TaskService {
         }
 
         return changingUserTask;
+    }
+
+    public Task findTaskById(Long taskId) {
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        if (optionalTask.isEmpty()) throw new NoSuchElementException();
+        return optionalTask.get();
     }
 
     public Collection<Comment> getAllCommentsOfTask(Long taskId) {
@@ -135,6 +139,26 @@ public class TaskService {
         return userTaskRepository.findById(userTaskId).get();
     }
 
+
+    public GetTaskDTO patchProperty(Property property, Long taskId) {
+        Task task = findTaskById(taskId);
+        if (property.getId() == 0) {
+            property.setId(null);
+        }
+        property = this.propertyRepository.save(property);
+        task.getProperties().add(property);
+
+        GetTaskDTO getTaskDTO = new GetTaskDTO();
+        PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(), task.getPriority().backgroundColor);
+        BeanUtils.copyProperties(task, getTaskDTO);
+        getTaskDTO.setPriority(priorityRecord);
+
+        taskRepository.save(task);
+
+        return getTaskDTO;
+    }
+
+
     public Property updatePropertyCurrentOptions(Collection<Option> newCurrentOptions, Long propertyId, Long taskId, Long userId) {
         Property property = propertyRepository.findById(propertyId).get();
         newCurrentOptions.forEach(newCurrentOption -> {
@@ -150,9 +174,7 @@ public class TaskService {
                 }
             });
         }
-
         property.setCurrentOptions(newCurrentOptions);
-
         return propertyRepository.save(property);
     }
 
@@ -226,15 +248,44 @@ public class TaskService {
     }
 
     public GetTaskDTO findById(Long id) {
-        Task task = taskRepository.findById(id).get();
+        Task task = findTaskById(id);
+        GetTaskDTO getTaskDTO = new GetTaskDTO();
+        PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(), task.getPriority().backgroundColor);
+        BeanUtils.copyProperties(task, getTaskDTO);
+        getTaskDTO.setPriority(priorityRecord);
+        TaskProcessor.getInstance().resolveTask(task);
+        return getTaskDTO;
+    }
 
-        return resolveAndGetDTO(task);
+    public void deleteAll(Collection<Task> tasks){
+        tasks.forEach(task -> delete(task.getId()));
+//        Task task = taskRepository.findById(id).get();
+//        return resolveAndGetDTO(task);
     }
 
     public Collection<GetTaskDTO> findAll() {
         Collection<Task> tasks = taskRepository.findAll();
         return resolveAndGetDTOS(tasks);
     }
+
+//    public Collection<GetTaskDTO> findAll(Long projectId) {
+//        Collection<Task> tasks = taskRepository.findAllByProject_Id(projectId);
+//        Collection<GetTaskDTO> getTaskDTOS = new ArrayList<>();
+//
+//        for (Task task : tasks) {
+//            TaskProcessor.getInstance().resolveTask(task);
+//        }
+//
+//        for (Task taskFor : tasks) {
+//            GetTaskDTO getTaskDTO = new GetTaskDTO();
+//            PriorityRecord priorityRecord = new PriorityRecord(taskFor.getPriority().name(), taskFor.getPriority().backgroundColor);
+//            BeanUtils.copyProperties(taskFor, getTaskDTO);
+//            getTaskDTO.setPriority(priorityRecord);
+//            getTaskDTOS.add(getTaskDTO);
+//        }
+//
+//        return getTaskDTOS;
+//    }
 
     public void delete(Long id) {
         Collection<Property> properties = taskRepository.findById(id).get().getProperties();
@@ -250,6 +301,9 @@ public class TaskService {
         task.setPriority(prioritySaved);
 
         setStatusListIndex(task);
+
+        System.out.println(taskRepository.save(task).getProject().getName());
+
         taskRepository.save(task);
         Task task2 = taskRepository.findById(task.getId()).get();
         syncUserTaskTable(task2);
@@ -295,8 +349,11 @@ public class TaskService {
         Task updatedTask = taskRepository.save(task);
         syncUserTaskTable(updatedTask);
 
-
-        return resolveAndGetDTO(updatedTask);
+        TaskProcessor.getInstance().resolveTask(updatedTask);
+        GetTaskDTO getTaskDTO = new GetTaskDTO();
+        BeanUtils.copyProperties(updatedTask, getTaskDTO);
+        return getTaskDTO;
+//        return resolveAndGetDTO(updatedTask);
     }
 
     public GetTaskDTO patchFile(Long taskId, MultipartFile file, Long userId){
@@ -341,7 +398,6 @@ public class TaskService {
 
             return progress;
         }
-
         return 0;
     }
 
@@ -356,10 +412,15 @@ public class TaskService {
                     userTaskRepository.save(userTask);
                 }
             }
-
-            userTaskRepository.findAll().stream().filter(userTask -> Objects.equals(userTask.getTaskId(), task.getId())).filter(userTask -> !task.getAssociates().contains(userTask.getUser())).forEach(userTask -> userTaskRepository.delete(userTask));
+            deleteUserTaskIfUserIsNotAssociate(task);
         }
+    }
 
+    private void deleteUserTaskIfUserIsNotAssociate(Task task) {
+        userTaskRepository.findAll().stream()
+                .filter(userTask -> Objects.equals(userTask.getTaskId(), task.getId()))
+                .filter(userTask -> !task.getAssociates().contains(userTask.getUser()))
+                .forEach(userTask -> userTaskRepository.delete(userTask));
     }
 
     private void setStatusListIndex(Task task) {
@@ -424,7 +485,7 @@ public class TaskService {
         return transformToTaskDTO(task);
     }
 
-    public GetTaskDTO updateTaskFinalDate(Long taskId, Long userId, LocalDate newFinalDate) {
+    public GetTaskDTO updateTaskFinalDate(Long taskId, Long userId, LocalDateTime newFinalDate) {
         Task task = taskRepository.findById(taskId).get();
         task.setFinalDate(newFinalDate);
         taskRepository.save(task);

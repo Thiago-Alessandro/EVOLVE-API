@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.UserProject;
+import net.weg.taskmanager.model.UserProjectDTO;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
 import net.weg.taskmanager.model.dto.converter.get.GetProjectChatConverter;
 import net.weg.taskmanager.model.dto.converter.get.GetTaskConverter;
-import net.weg.taskmanager.model.dto.converter.shorts.ShortTaskConverter;
 import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
-import net.weg.taskmanager.model.dto.shortDTOs.ShortTaskDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 import net.weg.taskmanager.model.entity.*;
@@ -19,6 +19,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
@@ -33,17 +34,21 @@ public class GetProjectDTO {
     private Boolean favorited;
     private GetFileDTO image;
     private String imageColor;
-    private ShortUserDTO creator;
+//    private ShortUserDTO creator;
     private LocalDate finalDate;
     private LocalDate creationDate;
     private LocalDateTime lastTimeEdited;
 
-    //vai continuar msm?
-    private Collection<ShortUserDTO> administrators;
+//    private Collection<User> administrators;
     private Collection<Property> properties;
     private Collection<Status> statusList;
-    private Collection<ShortUserDTO> members;
+    //retirar e botar dtos dps
+    private Collection<UserProjectDTO> members;
     private ShortTeamDTO team;
+
+//    private Collection<ShortUserDTO> members;
+//    private ShortTeamDTO team;
+    //NAO APAGUE REVER COM BASE NA MODEL
 
     @JsonIgnore
     private GetProjectChatDTO chat;
@@ -58,9 +63,8 @@ public class GetProjectDTO {
         BeanUtils.copyProperties(project, this);
         this.image = fileDTOConverter.convertOne(project.getImage());
         this.chat = projectChatDTOConverter.convertOne(project.getChat());
-        this.administrators = shortUserConverter.convertAll(project.getAdministrators());
-        this.members = shortUserConverter.convertAll(project.getMembers());
-        this.creator = shortUserConverter.convertOne(project.getCreator());
+//        this.members = shortUserConverter.convertAll(project.getMembers());
+        this.members = project.getMembers() != null ? project.getMembers().stream().map(UserProjectDTO::new).toList() : new ArrayList<>();
         this.tasks = taskDTOCOnverter.convertAll(project.getTasks());
 
     }

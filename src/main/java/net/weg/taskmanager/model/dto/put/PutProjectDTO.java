@@ -9,6 +9,7 @@ import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.property.Property;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Data
@@ -22,7 +23,7 @@ public class PutProjectDTO {
     private Boolean favorited;
     private File image;
     private String imageColor;
-    private LocalDate finalDate;
+    private LocalDateTime finalDate;
     private Collection<Property> properties;
     private Collection<User> members;
     private Collection<Task> tasks;
