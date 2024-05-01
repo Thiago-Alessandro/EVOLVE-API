@@ -44,12 +44,17 @@ public class DashboardController {
     }
 
     @PatchMapping("/{idDashboard}")
-    public Dashboard setChartToDash(@RequestBody Chart chart, @PathVariable Long idDashboard){
+    public Chart setChartToDash(@RequestBody Chart chart, @PathVariable Long idDashboard){
        return dashboardService.setChartToDash(chart, idDashboard);
     }
 
     @PatchMapping("/{idDashboard}/updateChartList")
     public void updateDashboardCharts(@RequestBody Collection<Chart> charts, @PathVariable Long idDashboard){
         dashboardService.updateDashboardCharts(charts, idDashboard);
+    }
+
+    @DeleteMapping(("/{idDashboard}/delete-chart/{idChart}"))
+    public void deleteChart(@PathVariable Long idChart, @PathVariable Long idDashboard){
+        chartService.delete(idChart, idDashboard);
     }
 }

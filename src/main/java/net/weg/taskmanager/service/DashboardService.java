@@ -43,7 +43,19 @@ public class DashboardService {
 
     public Collection<Dashboard> getAll(Long idProject) {
         try {
-            return dashboardRepository.findAllByProject_Id(idProject);
+            Collection<Dashboard> dashboards = dashboardRepository.findAllByProject_Id(idProject);
+            Project project = projectRepository.findById(idProject).get();
+            for(Dashboard dashboard : dashboards){
+                Collection<Chart> charts = new HashSet<>();
+                for(Chart chart : dashboard.getCharts()){
+                    chart.setLabels(chartService.updateLabelsValue(project, chart));
+                    chartRepository.save(chart);
+                    charts.add(chart);
+                }
+                dashboard.setCharts(charts);
+                dashboardRepository.save(dashboard);
+            }
+            return dashboards;
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -55,11 +67,12 @@ public class DashboardService {
         dashboardRepository.delete(dashboard);
     }
 
-    public Dashboard setChartToDash(Chart chart, Long idDash) {
+    public Chart setChartToDash(Chart chart, Long idDash) {
         Dashboard dashboard = dashboardRepository.findById(idDash).get();
-        dashboard.getCharts().add(chartService.createChart(chart, dashboard.getProject(), dashboard.getCharts().size()));
+        Chart chart1 = chartService.createChart(chart, dashboard.getProject(), dashboard.getCharts().size());
+        dashboard.getCharts().add(chart1);
         dashboardRepository.save(dashboard);
-        return dashboard;
+        return chart1;
     }
 
     public void updateDashboardCharts(Collection<Chart> charts, Long idDashboard){

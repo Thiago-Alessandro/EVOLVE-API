@@ -24,6 +24,7 @@ public class ChartService {
 
     private ChartRepository chartRepository;
     private LabelsDataRepository labelsDataRepository;
+    private DashboardRepository dashboardRepository;
     private ModelMapper modelMapper;
 
     public Collection<Chart> getChartsValues(Project project){
@@ -41,7 +42,7 @@ public class ChartService {
             for (Chart chart : project.getCharts()){
                 if(chart.getLabel().equals("Status das tarefas")){
                     labelsDataRepository.deleteAll(labelsDataRepository.findAll());
-                    chart.setLabels(updateStatusValue(project, chart));
+                    chart.setLabels(updateLabelsValue(project, chart));
                 }
                 chartRepository.save(chart);
                 charts.add(chart);
@@ -51,23 +52,31 @@ public class ChartService {
         return charts;
     }
 
-    private Collection<LabelsData> updateStatusValue(Project project, Chart chart) {
+    public Collection<LabelsData> updateLabelsValue(Project project, Chart chart) {
+        if(chart.getLabel().equals("Status das tarefas")){
+            return updateStatusValue(project, chart);
+        }
+
+        return null;
+    }
+
+    private Collection<LabelsData> updateStatusValue(Project project, Chart chart){
         Collection<LabelsData> labelsDatas = new HashSet<>();
 
-        for(Status status : project.getStatusList()){
-            LabelsData labelsData = new LabelsData();
-            int cont = 0;
-            labelsData.setLabel(status.getName());
-            for(Task task : project.getTasks()){
-                if(task.getCurrentStatus().equals(status)){
-                    cont++;
+            for(Status status : project.getStatusList()){
+                LabelsData labelsData = new LabelsData();
+                int cont = 0;
+                labelsData.setLabel(status.getName());
+                for(Task task : project.getTasks()){
+                    if(task.getCurrentStatus().equals(status)){
+                        cont++;
+                    }
                 }
+                labelsData.setValue(cont);
+                labelsData.setChart(chart);
+                labelsDataRepository.save(labelsData);
+                labelsDatas.add(labelsData);
             }
-            labelsData.setValue(cont);
-            labelsData.setChart(chart);
-            labelsDataRepository.save(labelsData);
-            labelsDatas.add(labelsData);
-        }
         return labelsDatas;
     }
 
@@ -75,10 +84,24 @@ public class ChartService {
         Chart chart1 = new Chart();
         chart1.setLabel(chart.getLabel());
         chart1.setChartIndex(chartIndex);
+        chart1.setType(chart.getType());
         chartRepository.save(chart1);
-        chart1.setLabels(updateStatusValue(project, chart1));
+        chart1.setLabels(updateLabelsValue(project, chart1));
         chartRepository.save(chart1);
-        System.out.println(chart1);
         return chart1;
+    }
+
+    public void delete(Long idChart, Long idDashboard){
+        labelsDataRepository.deleteAllByChart_Id(idChart);
+        Dashboard dashboard = dashboardRepository.findById(idDashboard).get();
+        Chart chart = chartRepository.findById(idChart).get();
+        dashboard.getCharts().remove(chart);
+        dashboard.setCharts(dashboard.getCharts());
+        dashboardRepository.save(dashboard);
+        try {
+            chartRepository.delete(chart);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

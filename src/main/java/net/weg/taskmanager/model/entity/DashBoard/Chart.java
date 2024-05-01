@@ -24,6 +24,8 @@ public class Chart {
 
     private String label;
 
+    private String type;
+
     private Integer chartIndex;
 
     @OneToMany(mappedBy = "chart", cascade = CascadeType.ALL)
