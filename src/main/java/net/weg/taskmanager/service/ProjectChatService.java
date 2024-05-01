@@ -1,11 +1,7 @@
 package net.weg.taskmanager.service;
 
-import jakarta.transaction.TransactionScoped;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Chat;
-import net.weg.taskmanager.model.ProjectChat;
-import net.weg.taskmanager.model.User;
+import net.weg.taskmanager.model.entity.UserTeam;
 import net.weg.taskmanager.repository.ProjectChatRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +9,16 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import net.weg.taskmanager.model.dto.get.GetProjectChatDTO;
+import net.weg.taskmanager.model.entity.ProjectChat;
+import net.weg.taskmanager.model.entity.User;
 
 @Service
 @AllArgsConstructor
 public class ProjectChatService {
 
     private final ProjectChatRepository repository;
+    private final UserService userService;
 
     public ProjectChat create(ProjectChat chat){
         return repository.save(chat);
@@ -36,8 +36,35 @@ public class ProjectChatService {
         return optionalProjectChat.get();
     }
 
-    public ProjectChat findProjectChatByProjectId(Long projectId){
+    public ProjectChat findProjectChatByProjectId(Long projectId) {
         return repository.findProjectChatByProject_Id(projectId);
+    }
+
+    public Collection<GetProjectChatDTO> findProjectChatsByUserId(Long userId){
+        User user = userService.findUserById(userId);
+
+        Collection<ProjectChat> userProjectChats =
+                user.getTeamRoles().stream()
+                        .map(UserTeam::getTeam)
+                        .flatMap(team -> team.getProjects().stream()
+                                        .map( project -> repository.findProjectChatByProject_Id(project.getId()))
+                                        .filter(projectChat -> projectChat.getUsers().contains(user)))
+                        .toList();
+
+        return resolveAndGetDTOS(userProjectChats);
+    }
+
+//    public Collection<GetProjectChatDTO> findAll(){
+//        Collection<ProjectChat> projects = projectChatRepository.findAll();
+//        return resolveAndGetDTOS(projects);
+//    }
+
+    private GetProjectChatDTO resolveAndGetDTO(ProjectChat projectChat){
+//        chatProcessor.resolveChat(projectChat);
+        return new GetProjectChatDTO(projectChat);
+    }
+    private Collection<GetProjectChatDTO> resolveAndGetDTOS(Collection<ProjectChat> projectChats){
+        return projectChats.stream().map(this::resolveAndGetDTO).toList();
     }
 
 }

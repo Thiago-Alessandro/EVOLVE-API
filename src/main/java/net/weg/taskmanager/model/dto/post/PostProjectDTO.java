@@ -3,7 +3,8 @@ package net.weg.taskmanager.model.dto.post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.*;
+import net.weg.taskmanager.model.entity.Team;
+import net.weg.taskmanager.model.entity.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,14 +23,4 @@ public class PostProjectDTO {
 //    private Collection<UserProject> members;
     private User creator;
     private Team team;
-
-//    //rever
-//    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-//    private Collection<TaskProjectProperty> properties;
-//    //rever
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Collection<Status> StatusList;
-
-
-
 }

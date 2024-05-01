@@ -1,13 +1,11 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Status;
-import net.weg.taskmanager.model.Task;
-import net.weg.taskmanager.model.User;
 import net.weg.taskmanager.model.UserProject;
+import net.weg.taskmanager.model.entity.Status;
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
-import net.weg.taskmanager.model.dto.put.PutProjectDTO;
+import net.weg.taskmanager.model.entity.Task;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.security.model.entity.Role;
 import net.weg.taskmanager.service.ProjectService;
@@ -16,15 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.management.InvalidAttributeValueException;
-import java.lang.module.ResolutionException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/project")
-//@CrossOrigin
 public class ProjectController {
 
     private final ProjectService projectService;
@@ -33,6 +28,7 @@ public class ProjectController {
     public GetProjectDTO findById(@PathVariable Long projectId) {
         return projectService.findById(projectId);
     }
+
 
 //    @GetMapping
 //    public Collection<GetProjectDTO> findAll() {
@@ -171,5 +167,10 @@ public class ProjectController {
         }
     }
 
+    //isso aqui é usado?
+//    @GetMapping("/user/{userId}")
+//    public Collection<GetProjectDTO> getProjectsByUserId(@PathVariable Long userId){
+//        return projectService.getProjectsByUserId(userId);
+//    }
 
 }

@@ -1,6 +1,6 @@
 package net.weg.taskmanager.utils;
 
-import net.weg.taskmanager.model.File;
+import net.weg.taskmanager.model.entity.File;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

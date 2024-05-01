@@ -2,8 +2,11 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.*;
-import net.weg.taskmanager.model.dto.get.GetProjectDTO;
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.get.GetProjectConverter;
 import net.weg.taskmanager.model.dto.get.GetTaskDTO;
+import net.weg.taskmanager.model.entity.*;
+import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.record.PriorityRecord;
@@ -20,10 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.management.InvalidAttributeValueException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.Collection;
 
 @Service
 @AllArgsConstructor
-//@RequiredArgsConstructor
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
@@ -32,33 +35,44 @@ public class ProjectService {
     private final StatusService statusService;
     private final PropertyService propertyService;
     private final RoleService roleService;
+    private ProjectChatService projectChatService;
     private final UserService userService;
-
-//    private final ModelMapper modelMapper;
-
-
     private final UserProjectService userProjectService;
+
+
     private final UserProjectRepository userProjectRepository;
+
+    private final Converter<GetProjectDTO, Project> converter = new GetProjectConverter();
+    
+//    public GetProjectDTO updateStatusList(Long id, Status status){
+//        Project project = projectRepository.findById(id).get();
+//        if(project.getStatusList()!=null){
+//            for(Status statusFor : project.getStatusList()){
+//                if(Objects.equals(status.getId(), statusFor.getId())){
+//                    BeanUtils.copyProperties(status, statusFor);
+//                    return converter.convertOne(treatAndSave(project));
+//                }
+//            }
+//            project.getStatusList().add(status);
+//        } else {
+//            project.setStatusList(new ArrayList<>());
+//            project.getStatusList().add(status);
+//        }
+//        return converter.convertOne(treatAndSave(project));
+//    }
+
+
 
 
     public GetProjectDTO findById(Long id) {
         Project project = findProjectById(id);
-        ProjectProcessor.getInstance().resolveProject(project);
-        return transformToGetProjectDTO(project);
+        return converter.convertOne(project);
     }
 
+
     public Collection<GetProjectDTO> findAll() {
-        Collection<Project> projects = projectRepository.findAll();
-        Collection<GetProjectDTO> getProjectDTOS = new HashSet<>();
-
-        projects
-                .forEach(project -> {
-                    ProjectProcessor.getInstance().resolveProject(project);
-                    GetProjectDTO getProjectDTO = transformToGetProjectDTO(project);
-                    getProjectDTOS.add(getProjectDTO);
-                });
-
-        return getProjectDTOS;
+        Collection<Project> projects =  projectRepository.findAll();
+        return converter.convertAll(projects);
     }
 
     public GetProjectDTO create(PostProjectDTO projectDTO) {
@@ -69,7 +83,8 @@ public class ProjectService {
         createProjectChat(projectSaved);
         setDefaultRole(projectSaved);
 
-        return transformToGetProjectDTO(treatAndSave(projectSaved));
+//        (treatAndSave(projectSaved));
+        return converter.convertOne(project);
     }
 
     private void setCreator(User user, Project project){
@@ -77,9 +92,25 @@ public class ProjectService {
         UserProject userProject = new UserProject(user.getId(), project.getId(), role);
         userProject.setManager(true);
         userProjectService.create(userProject);
+
+
+        //Adiciona o projeto ao BD para que seja criado o seu Id
+        projectRepository.save(project);
+
+        //Referencia o projeto nas suas propriedades
+        propertiesSetProject(project);
+
     }
 
-    private ProjectChatService projectChatService;
+//    public GetProjectDTO update(PutProjectDTO projectDTO){
+//
+//        Project project = projectRepository.findById(projectDTO.getId()).get();
+//        modelMapper.map(projectDTO, project);
+//
+//        updateProjectChat(project);
+//
+//        return converter.convertOne(treatAndSave(project));
+//    }
 
     private void createProjectChat(Project project){
         ProjectChat chat = new ProjectChat();
@@ -102,6 +133,7 @@ public class ProjectService {
         projectRepository.deleteById(id);
     }
 
+    private final UserRepository userRepository;
 
     public Project findProjectById(Long projectId){
         Optional<Project> optionalProject = projectRepository.findById(projectId);
@@ -113,41 +145,41 @@ public class ProjectService {
         if(name == null) throw new InvalidAttributeValueException("Name on project cannot be null");
         Project project = findProjectById(projectId);
         project.setName(name);
-        return transformToGetProjectDTO(treatAndSave(project));
+             return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchDescription(Long projectId, String description) throws InvalidAttributeValueException {
         if(description == null) throw new InvalidAttributeValueException("Description on project cannot be null");
         Project project = findProjectById(projectId);
         project.setDescription(description);
-        return transformToGetProjectDTO(treatAndSave(project));
+             return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchImage(Long projectId, MultipartFile image) throws InvalidAttributeValueException {
         if(image == null) throw new InvalidAttributeValueException("Image on project cannot be null");
         Project project = findProjectById(projectId);
         project.setImage(FileUtils.buildFileFromMultipartFile(image));
-        return transformToGetProjectDTO(treatAndSave(project));
+             return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchImageRemove(Long projectId){
         Project project = findProjectById(projectId);
         project.setImage(null);
-        return transformToGetProjectDTO(treatAndSave(project));
+             return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchImageColor(Long projectId, String imageColor) throws InvalidAttributeValueException {
         if(imageColor == null || !ColorUtils.isHexColorValid(imageColor)) throw new InvalidAttributeValueException("Not valid format for imageColor on Project. Expecting a hexCode");
         Project project = findProjectById(projectId);
         project.setImageColor((imageColor));
-        return transformToGetProjectDTO(treatAndSave(project));
+             return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchFinalDate(Long projectId, LocalDateTime finalDate) throws InvalidAttributeValueException {
         Project project = findProjectById(projectId);
         if(finalDate == null || finalDate.isBefore(project.getCreationDate())) throw new InvalidAttributeValueException("Image on project cannot be null");
         project.setFinalDate(finalDate);
-        return transformToGetProjectDTO(treatAndSave(project));
+             return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchProperties(Long projectId, Collection<Property> properties) throws InvalidAttributeValueException {
@@ -156,21 +188,21 @@ public class ProjectService {
         Project project = findProjectById(projectId);
         project.setProperties(properties);
         propertyService.createProjectPropertiesIfNotExists(project);
-        return transformToGetProjectDTO(treatAndSave(project));
+             return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchStatusList(Long projectId, Collection<Status> statusList) throws InvalidAttributeValueException {
         if(statusList == null) throw new InvalidAttributeValueException("StatusList on project cannot be null");
         Project project = findProjectById(projectId);
         project.setStatusList(statusList);
-        return transformToGetProjectDTO(treatAndSave(project));
+             return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchStatusListRemove(Long projectId, Long statusId) {
         Project project = findProjectById(projectId);
         Status status = statusService.findStatusById(statusId);
         if(!project.getStatusList().remove(status)) throw new NoSuchElementException("The project specified does not contains any status with id: " + statusId + " in statusList");
-        return transformToGetProjectDTO(treatAndSave(project));
+        return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchMembers(Long projectId, Collection<UserProject> members) throws InvalidAttributeValueException {
@@ -179,29 +211,37 @@ public class ProjectService {
         Collection<UserProject> filteredMembers = syncUserProjectTable(project, members);
         project.setMembers(filteredMembers);
         updateProjectChat(project);
-        return transformToGetProjectDTO(treatAndSave(project));
+        return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchTasks(Long projectId,Collection<Task> tasks) throws InvalidAttributeValueException {
         if(tasks == null) throw new InvalidAttributeValueException("Tasks on project cannot be null");
         Project project = findProjectById(projectId);
         project.setTasks(tasks);
-        return transformToGetProjectDTO(treatAndSave(project));
+             return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchTasksRemove(Long projectId, Long taskId) {
         Project project = findProjectById(projectId);
         Task task = taskService.findTaskById(taskId);
         if(!project.getTasks().remove(task)) throw new NoSuchElementException("The especified project does not have task of id: " + taskId + " in tasks");
-        return transformToGetProjectDTO(treatAndSave(project));
+             return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchDefaultRole(Long projectId, Role defaultRole) throws InvalidAttributeValueException {
-        if(defaultRole == null) throw new InvalidAttributeValueException("DefaultRole on project cannot be null");
+        if (defaultRole == null) throw new InvalidAttributeValueException("DefaultRole on project cannot be null");
         Project project = findProjectById(projectId);
         project.setDefaultRole(defaultRole);
-        return transformToGetProjectDTO(treatAndSave(project));
+             return converter.convertOne(treatAndSave(project));
     }
+
+//    public Collection<GetProjectDTO> getProjectsByUserId(Long id){
+//        User user = userRepository.findById(id).get();
+//        Collection<Project> projects = projectRepository.findProjectsByMembersContaining(user);
+//
+//        projects.forEach(projectProcessor::resolveProject);
+//        return converter.convertAll(projects);
+//    }
 
 
 
@@ -279,29 +319,29 @@ public class ProjectService {
     private Project treatAndSave(Project project) {
         project.updateLastTimeEdited();
         Project savedProject = projectRepository.save(project);
-        ProjectProcessor.getInstance().resolveProject(savedProject);
+        projectProcessor.resolveProject(savedProject);
         return savedProject;
     }
 
-    private GetProjectDTO transformToGetProjectDTO(Project project) {
-        GetProjectDTO getProjectDTO = new GetProjectDTO();
-        Collection<GetTaskDTO> getTaskDTOS = new HashSet<>();
-
-        BeanUtils.copyProperties(project, getProjectDTO);
-
-        if (project.getTasks() != null) {
-            project.getTasks().forEach((task -> {
-                GetTaskDTO getTaskDTO = new GetTaskDTO();
-                PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(), task.getPriority().backgroundColor);
-                BeanUtils.copyProperties(task, getTaskDTO);
-                getTaskDTO.setPriority(priorityRecord);
-                getTaskDTOS.add(getTaskDTO);
-            }));
-        }
-
-        getProjectDTO.setTasks(getTaskDTOS);
-        return getProjectDTO;
-    }
+//    private GetProjectDTO transformToGetProjectDTO(Project project) {
+//        GetProjectDTO getProjectDTO = new GetProjectDTO();
+//        Collection<GetTaskDTO> getTaskDTOS = new HashSet<>();
+//
+//        BeanUtils.copyProperties(project, getProjectDTO);
+//
+//        if (project.getTasks() != null) {
+//            project.getTasks().forEach((task -> {
+//                GetTaskDTO getTaskDTO = new GetTaskDTO();
+//                PriorityRecord priorityRecord = new PriorityRecord(task.getPriority().name(), task.getPriority().backgroundColor);
+//                BeanUtils.copyProperties(task, getTaskDTO);
+//                getTaskDTO.setPriority(priorityRecord);
+//                getTaskDTOS.add(getTaskDTO);
+//            }));
+//        }
+//
+//        getProjectDTO.setTasks(getTaskDTOS);
+//        return getProjectDTO;
+//    }
 
     //endregion
 

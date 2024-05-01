@@ -1,6 +1,6 @@
 package net.weg.taskmanager.service.processor;
 
-import net.weg.taskmanager.model.*;
+import net.weg.taskmanager.model.entity.*;
 
 import java.util.ArrayList;
 
@@ -43,7 +43,7 @@ public class MessageProcessor {
                 resolvingMessage.setChat(null);
                 return;
             }
-            ChatProcessor.getInstance().resolveChatGeneric(resolvingMessage.getChat(), resolvingCascade);
+            ChatProcessor.getInstance().resolveChat(resolvingMessage.getChat(), resolvingCascade);
         }
     }
     private  void resolveMessageSender(){

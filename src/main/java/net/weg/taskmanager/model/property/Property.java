@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.Project;
+import net.weg.taskmanager.model.entity.Project;
 import net.weg.taskmanager.model.property.values.PropertyValue;
 
 import java.util.Collection;
@@ -26,7 +26,7 @@ public class Property {
     @JsonIgnore
     private Project project;  // Possivelmente relacionada
 
-    @OneToMany(mappedBy = "property")
+    @OneToMany(mappedBy = "property",orphanRemoval = true)
     private Collection<PropertyValue> propertyValues; //
 
     @Enumerated(EnumType.STRING)
@@ -34,5 +34,8 @@ public class Property {
 
     @OneToMany
     private Collection<Option> options;
+
+    @OneToMany
+    private Collection<Option> currentOptions;
 
 }

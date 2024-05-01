@@ -1,6 +1,7 @@
 package net.weg.taskmanager.service.processor;
 
-import net.weg.taskmanager.model.*;
+import net.weg.taskmanager.model.abstracts.Chat;
+import net.weg.taskmanager.model.entity.*;
 
 import java.util.ArrayList;
 public class ChatProcessor {
@@ -30,16 +31,16 @@ public class ChatProcessor {
         resolveChatUsersGeneric();
     }
 
-    public Chat resolveChatGeneric(Chat resolvingChat, ArrayList<String> _resolvingCascade){
-        genericResolve(resolvingChat, _resolvingCascade);
-
-        resolveChatTeam();
-        resolveChatProject();
-
-        resolvingCascade.remove(chatClassName);
-
-        return chat;
-    }
+//    public Chat resolveChatGeneric(Chat resolvingChat, ArrayList<String> _resolvingCascade){
+//        genericResolve(resolvingChat, _resolvingCascade);
+//
+//        resolveChatTeam();
+//        resolveChatProject();
+//
+//        resolvingCascade.remove(chatClassName);
+//
+//        return chat;
+//    }
 
     public Chat resolveChat(Chat resolvingChat,  ArrayList<String> _resolvingCascade) {
 

@@ -1,11 +1,19 @@
 package net.weg.taskmanager.model.dto.get;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.*;
+import net.weg.taskmanager.model.UserProject;
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
+import net.weg.taskmanager.model.dto.converter.get.GetProjectChatConverter;
+import net.weg.taskmanager.model.dto.converter.get.GetTaskConverter;
+import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
+import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
+import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.property.Property;
+import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,21 +27,42 @@ public class GetProjectDTO {
     private Long id;
     private String name;
     private String description;
-    private File image;
+
+    private Boolean favorited;
+    private GetFileDTO image;
     private String imageColor;
-    private User creator;
+    private ShortUserDTO creator;
     private LocalDate finalDate;
     private LocalDate creationDate;
     private LocalDateTime lastTimeEdited;
 
-    //vai continuar msm?
 //    private Collection<User> administrators;
     private Collection<Property> properties;
     private Collection<Status> statusList;
-    private Collection<UserTeam> members;
+    private Collection<UserProject> members;
     private Team team;
 
-    private ProjectChat chat;
+//    private Collection<ShortUserDTO> members;
+//    private ShortTeamDTO team;
+    //NAO APAGUE REVER COM BASE NA MODEL
+
+    @JsonIgnore
+    private GetProjectChatDTO chat;
     private Collection<GetTaskDTO> tasks;
+
+    public GetProjectDTO(Project project){
+        Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
+        Converter<GetFileDTO, File> fileDTOConverter = new GetFileConverter();
+        Converter<GetProjectChatDTO, ProjectChat> projectChatDTOConverter = new GetProjectChatConverter();
+        Converter<GetTaskDTO, Task> taskDTOCOnverter = new GetTaskConverter();
+
+        BeanUtils.copyProperties(project, this);
+        this.image = fileDTOConverter.convertOne(project.getImage());
+        this.chat = projectChatDTOConverter.convertOne(project.getChat());
+//        this.members = shortUserConverter.convertAll(project.getMembers());
+        this.members = project.getMembers();
+        this.tasks = taskDTOCOnverter.convertAll(project.getTasks());
+
+    }
 
 }

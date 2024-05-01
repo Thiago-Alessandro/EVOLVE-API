@@ -1,10 +1,9 @@
 package net.weg.taskmanager.service.processor;
 
 import lombok.NoArgsConstructor;
-import net.weg.taskmanager.model.Task;
-import net.weg.taskmanager.model.User;
-import net.weg.taskmanager.model.UserTask;
-import net.weg.taskmanager.model.UserTaskId;
+import net.weg.taskmanager.model.entity.Task;
+import net.weg.taskmanager.model.entity.User;
+import net.weg.taskmanager.model.entity.UserTask;
 
 import java.util.ArrayList;
 

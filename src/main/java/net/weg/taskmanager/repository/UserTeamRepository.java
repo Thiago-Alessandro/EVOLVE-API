@@ -1,9 +1,8 @@
 package net.weg.taskmanager.repository;
 
-import net.weg.taskmanager.model.UserTeam;
-import net.weg.taskmanager.model.UserTeamId;
+import net.weg.taskmanager.model.entity.UserTeam;
+import net.weg.taskmanager.model.entity.UserTeamId;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.jmx.export.UnableToRegisterMBeanException;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;

@@ -1,7 +1,7 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.CardsPermission;
+import net.weg.taskmanager.model.entity.CardsPermission;
 import net.weg.taskmanager.service.CardsPermissionService;
 import org.springframework.web.bind.annotation.*;
 

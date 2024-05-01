@@ -1,12 +1,12 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.Project;
-import net.weg.taskmanager.model.Team;
-import net.weg.taskmanager.model.UserTeam;
+
 import net.weg.taskmanager.model.dto.get.GetTeamDTO;
 import net.weg.taskmanager.model.dto.post.PostTeamDTO;
+import net.weg.taskmanager.model.entity.UserTeam;
 import net.weg.taskmanager.security.model.entity.Role;
+import net.weg.taskmanager.model.entity.Team;
 import net.weg.taskmanager.service.TeamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,28 +20,36 @@ import java.util.Collection;
 @AllArgsConstructor
 public class TeamController {
 
-    private final TeamService teamService;
+    private final TeamService service;
 
-    @GetMapping("/{teamId}")
-    public Team findById(@PathVariable Long teamId){return teamService.findById(teamId);}
+    @GetMapping("/{id}")
+    public GetTeamDTO findById(@PathVariable Long id){return service.findById(id);}
+
     @GetMapping
-    public Collection<Team> findAll(){return teamService.findAll();}
+    public Collection<GetTeamDTO> findAll(){return service.findAll();}
+
     @DeleteMapping("/{teamId}")
-    public void delete(@PathVariable Long teamId){teamService.delete(teamId);}
+    public void delete(@PathVariable Long teamId){service.delete(teamId);}
+
     @PostMapping
-    public Team create(@RequestBody PostTeamDTO team){return teamService.create(team);}
+    public GetTeamDTO create(@RequestBody PostTeamDTO team){return service.create(team);}
+
+    @GetMapping("/user/{userId}")
+    public Collection<Team> findTeamsByUserId(@PathVariable Long userId){
+        return service.findTeamsByUserId(userId);
+    }
+
 
 //    @PutMapping
-//    public Team update(@RequestBody Team team){
-//        return teamService.update(team);
-//    }
+//    public GetTeamDTO update(@RequestBody Team team){
+//        return service.update(team);}
 
 
 
     @PatchMapping("/{teamId}/name")
     public ResponseEntity<GetTeamDTO> patchName(@PathVariable Long teamId, @RequestParam String name){
         try {
-            return ResponseEntity.ok(teamService.patchName(teamId, name));
+            return ResponseEntity.ok(service.patchName(teamId, name));
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
@@ -50,7 +58,7 @@ public class TeamController {
     @PatchMapping("/{teamId}/image")
     public ResponseEntity<GetTeamDTO> patchImage(@PathVariable Long teamId, @RequestParam MultipartFile image){
         try {
-            return ResponseEntity.ok(teamService.patchImage(teamId, image));
+            return ResponseEntity.ok(service.patchImage(teamId, image));
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
@@ -58,7 +66,7 @@ public class TeamController {
     @PatchMapping("/{teamId}/image/remove")
     public ResponseEntity<GetTeamDTO> patchImageRemove(@PathVariable Long teamId) {
         try {
-            return ResponseEntity.ok(teamService.patchImageRemove(teamId));
+            return ResponseEntity.ok(service.patchImageRemove(teamId));
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
@@ -66,7 +74,7 @@ public class TeamController {
     @PatchMapping("/{teamId}/imageColor")
     public ResponseEntity<GetTeamDTO> patchImageColor(@PathVariable Long teamId, @RequestParam String imageColor){
         try {
-            return ResponseEntity.ok(teamService.patchImageColor(teamId, imageColor));
+            return ResponseEntity.ok(service.patchImageColor(teamId, imageColor));
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
@@ -74,35 +82,37 @@ public class TeamController {
     @PatchMapping("/{teamId}/participants")
     public ResponseEntity<GetTeamDTO> patchParticipants(@PathVariable Long teamId, @RequestBody Collection<UserTeam> participants){
         try {
-            return ResponseEntity.ok(teamService.patchParticipants(teamId, participants));
+            return ResponseEntity.ok(service.patchParticipants(teamId, participants));
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
-//    @PatchMapping("/{teamId}/projects")
-//    public ResponseEntity<GetTeamDTO> patchProjects(@PathVariable Long teamId, @RequestBody Collection<Project> projects){
-//        try {
-//            return ResponseEntity.ok(teamService.patchProjects(teamId, projects));
-//        } catch (Exception e){
-//            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-//        }
-//    }//projeto?
 
     @PatchMapping("/{teamId}/roles")
     public ResponseEntity<GetTeamDTO> patchRoles(@PathVariable Long teamId, @RequestBody Collection<Role> roles){
         try {
-            return ResponseEntity.ok(teamService.patchRoles(teamId, roles));
+            return ResponseEntity.ok(service.patchRoles(teamId, roles));
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
     @PatchMapping("/{teamId}/deafaultRole")
-    public ResponseEntity<GetTeamDTO> patchDefaultRole(@PathVariable Long teamId, @RequestBody Role deafaultRole){
+    public ResponseEntity<GetTeamDTO> patchDefaultRole(@PathVariable Long teamId, @RequestBody Role deafaultRole) {
         try {
-            return ResponseEntity.ok(teamService.patchDefaultRole(teamId, deafaultRole));
-        } catch (Exception e){
+            return ResponseEntity.ok(service.patchDefaultRole(teamId, deafaultRole));
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
+
+
+//    @PatchMapping("/{teamId}/projects")
+//    public ResponseEntity<GetTeamDTO> patchProjects(@PathVariable Long teamId, @RequestBody Collection<Project> projects){
+//        try {
+//            return ResponseEntity.ok(service.patchProjects(teamId, projects));
+//        } catch (Exception e){
+//            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+//        }
+//    }//projeto?
 
 }

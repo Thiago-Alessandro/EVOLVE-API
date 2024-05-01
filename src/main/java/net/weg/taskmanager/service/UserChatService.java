@@ -1,18 +1,21 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.dto.get.GetUserChatDTO;
+import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.service.processor.ChatProcessor;
-import net.weg.taskmanager.model.UserChat;
+import net.weg.taskmanager.model.entity.UserChat;
 import net.weg.taskmanager.repository.UserChatRepository;
 import net.weg.taskmanager.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
 @AllArgsConstructor
-public class UserChatService implements IService<UserChat>{
+public class UserChatService
+//        implements IService<UserChat>
+{
 
     //para fins de teste
     private final UserRepository userRepository;
@@ -23,48 +26,49 @@ public class UserChatService implements IService<UserChat>{
 
 //    private static Long count = 1;
 
-    @Override
-    public UserChat findById(Long id) {
+//    @Override
+    public GetUserChatDTO findById(Long id) {
         UserChat chat = userChatRepository.findById(id).get();
-        ChatProcessor.getInstance().resolveChat(chat);
-        return chat;
+        return resolveAndTreat(chat);
     }
 
-    @Override
-    public Collection<UserChat> findAll() {
+//    @Override
+    public Collection<GetUserChatDTO> findAll() {
         Collection<UserChat> chats = userChatRepository.findAll();
-        for(UserChat chat :  chats){
-            ChatProcessor.getInstance().resolveChat(chat);
-        }
-        return chats;
+        return resolveAndTreat(chats);
     }
 
-    @Override
+//    @Override
     public void delete(Long id) {
         userChatRepository.deleteById(id);
     }
 
-    @Override
-    public UserChat create(UserChat obj) {
+//    @Override
+    public GetUserChatDTO create(UserChat obj) {
 //        validaChat(obj);
-        return userChatRepository.save(obj);
+        return resolveAndTreat(userChatRepository.save(obj));
     }
 
-    @Override
-    public UserChat update(UserChat obj) {
+//    @Override
+    public GetUserChatDTO update(UserChat obj) {
 //        validaChat(obj);
 
         UserChat updatedUserChat = userChatRepository.save(obj);
-        ChatProcessor.getInstance().resolveChat(updatedUserChat);
-        return updatedUserChat;
+       return resolveAndTreat(updatedUserChat);
     }
 
-    public Collection<UserChat> getChatsByUserId(Long id){
+    public Collection<GetUserChatDTO> getChatsByUserId(Long id){
         Collection<UserChat> chats = userChatRepository.findUserChatsByUsersContaining(userRepository.findById(id).get());
-        for(UserChat chat : chats){
-            ChatProcessor.getInstance().resolveChat(chat);
-        }
-        return chats;
+        return resolveAndTreat(chats);
+    }
+
+    private GetUserChatDTO resolveAndTreat(UserChat chat){
+        ChatProcessor.getInstance().resolveChat(chat);
+        return new GetUserChatDTO(chat);
+    }
+
+    private Collection<GetUserChatDTO> resolveAndTreat(Collection<UserChat> chats){
+        return chats.stream().map(this::resolveAndTreat).toList();
     }
 
 //    private void validaChat (Chat chat){

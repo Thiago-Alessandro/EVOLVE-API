@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import net.weg.taskmanager.model.property.Property;
 
 @Entity
@@ -16,10 +17,17 @@ public class PropertyValue {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @OneToOne(cascade = CascadeType.ALL)
+<<<<<<< HEAD
     private Value<?> value;
     @JsonIgnore
+=======
+    private Value value;
+>>>>>>> feature/security-updated
     @ManyToOne
+    @ToString.Exclude
+    @JsonIgnore
     private Property property;
+    private String propertyType;
 
 //    public PropertyValue() {
 //        if(property != null) {

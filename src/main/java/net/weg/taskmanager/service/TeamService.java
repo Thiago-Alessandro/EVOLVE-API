@@ -1,14 +1,17 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.*;
+
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.get.GetTeamConverter;
 import net.weg.taskmanager.model.dto.get.GetTeamDTO;
 import net.weg.taskmanager.model.dto.post.PostTeamDTO;
+import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.repository.TeamRepository;
-import net.weg.taskmanager.repository.UserTeamRepository;
 import net.weg.taskmanager.security.model.entity.Role;
-import net.weg.taskmanager.security.model.enums.Permission;
 import net.weg.taskmanager.security.service.RoleService;
+
+import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.service.processor.TeamProcessor;
 import net.weg.taskmanager.utils.ColorUtils;
 import net.weg.taskmanager.utils.FileUtils;
@@ -17,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.InvalidAttributeValueException;
 import java.util.*;
+import java.util.Collection;
+
 
 @Service
 @AllArgsConstructor
@@ -25,27 +30,28 @@ public class TeamService {
     private final TeamRepository teamRepository;
 
     private final UserTeamService userTeamService;
-
-    public Team findById(Long id) {
-        Team team = findTeamById(id);
-        return TeamProcessor.getInstance().resolveTeam(team);
-    }
-
-    public Collection<Team> findAll() {
-
-        Collection<Team> teams = teamRepository.findAll();
-        for (Team team : teams) {
-            TeamProcessor.getInstance().resolveTeam(team);
-        }
-        return teams;
-    }
-
-    public void delete(Long id) {
-        teamRepository.deleteById(id);
-    }
-
     private final RoleService roleService;
-    public Team create(PostTeamDTO teamDTO) {
+    private final UserService userService;
+
+    private final Converter<GetTeamDTO, Team> converter = new GetTeamConverter();
+
+    public GetTeamDTO findById(Long id){
+        Team team = findTeamById(id);
+        return converter.convertOne(team);
+    }
+
+    public Team findTeamById(Long teamId){
+        Optional<Team> optionalTeam = teamRepository.findById(teamId);
+        if(optionalTeam.isEmpty()) throw new NoSuchElementException();
+        return optionalTeam.get();
+    }
+
+//    public Collection<GetTeamDTO> findAll(){
+//        Collection<Team> teams = teamRepository.findAll();
+//        return converter.convertAll(teams);
+//    }
+
+    public Team createTeam(PostTeamDTO teamDTO) {
         Team team =  new Team(teamDTO);
         Team createdTeam = teamRepository.save(team);
 
@@ -53,9 +59,13 @@ public class TeamService {
         setDefaultRole(createdTeam);
 //        updateTeamChat(createdTeam);
         setPossibleRoles(createdTeam);
-        Team teamSaved = teamRepository.save(createdTeam);
-        return TeamProcessor.getInstance().resolveTeam(teamSaved);
+        return teamRepository.save(createdTeam);
     }
+
+    public GetTeamDTO create(PostTeamDTO teamDTO){
+        return converter.convertOne(createTeam(teamDTO));
+    }
+
 
     private void setPossibleRoles(Team team){
         Role teamCreator = roleService.getRoleByName("TEAM_CREATOR");
@@ -81,28 +91,28 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
-//    public Team update(Team team) {
-//        updateTeamChat(team);
-//        Team updatedTeam = teamRepository.save(team);
-//        return TeamProcessor.getInstance().resolveTeam(updatedTeam);
-//    }
-
-    public Team findTeamById(Long teamId){
-        Optional<Team> optionalTeam = teamRepository.findById(teamId);
-        if(optionalTeam.isEmpty()) throw new NoSuchElementException();
-        return optionalTeam.get();
+    public void delete(Long id){
+        teamRepository.deleteById(id);
     }
+
+    public Collection<Team> findTeamsByUserId(Long userId){
+        User user = userService.findUserById(userId);
+        Collection<Team> teams = teamRepository.findTeamsByParticipantsContaining(user);
+        teams.forEach(team -> TeamProcessor.getInstance().resolveTeam(team));
+        return teams;
+    }
+
 
     public GetTeamDTO patchName(Long teamId, String name) throws InvalidAttributeValueException {
         if (name == null) throw new InvalidAttributeValueException();
-        Team team = findById(teamId);
+        Team team = findTeamById(teamId);
         team.setName(name);
         return new GetTeamDTO(teamRepository.save(team));
     }
 
     public GetTeamDTO patchImage(Long teamId, MultipartFile image) throws InvalidAttributeValueException {
         if (image == null) throw new InvalidAttributeValueException();
-        Team team = findById(teamId);
+        Team team = findTeamById(teamId);
         File file = FileUtils.buildFileFromMultipartFile(image);
         team.setImage(file);
         return new GetTeamDTO(teamRepository.save(team));
@@ -110,26 +120,26 @@ public class TeamService {
 
     public GetTeamDTO patchImage(Long teamId, File image) throws InvalidAttributeValueException {
         if (image == null) throw new InvalidAttributeValueException();
-        Team team = findById(teamId);
+        Team team = findTeamById(teamId);
         team.setImage(image);
         return new GetTeamDTO(teamRepository.save(team));
     }
 
     public GetTeamDTO patchImageRemove(Long teamId) {
-        Team team = findById(teamId);
+        Team team = findTeamById(teamId);
         team.setImage(null);
         return new GetTeamDTO(teamRepository.save(team));
     }
 
     public GetTeamDTO patchImageColor(Long teamId, String imageColor) throws InvalidAttributeValueException {
         if (imageColor == null || !ColorUtils.isHexColorValid(imageColor)) throw new InvalidAttributeValueException();
-        Team team = findById(teamId);
+        Team team = findTeamById(teamId);
         team.setImageColor(imageColor);
         return new GetTeamDTO(teamRepository.save(team));
     }
 
     public GetTeamDTO patchParticipants(Long teamId, Collection<UserTeam> participants) throws InvalidAttributeValueException {
-        Team team = findById(teamId);
+        Team team = findTeamById(teamId);
         //team must have at least one manager (creator/owner)
         if(participants == null || hasManager(team)) throw new InvalidAttributeValueException();
         team.setParticipants(participants);
@@ -139,25 +149,20 @@ public class TeamService {
         return new GetTeamDTO(teamRepository.save(team));
     }
 
+
     public GetTeamDTO patchRoles(Long teamId, Collection<Role> roles) throws InvalidAttributeValueException {
         if (roles == null) throw new InvalidAttributeValueException();
-        Team team = findById(teamId);
+        Team team = findTeamById(teamId);
         team.setRoles(roles);
         return new GetTeamDTO(teamRepository.save(team));
     }
 
     public GetTeamDTO patchDefaultRole(Long teamId, Role DefaultRole) throws InvalidAttributeValueException {
         if (DefaultRole == null) throw new InvalidAttributeValueException();
-        Team team = findById(teamId);
+        Team team = findTeamById(teamId);
         team.setDefaultRole(DefaultRole);
         return new GetTeamDTO(teamRepository.save(team));
     }
-
-
-
-
-
-
 
 
 
@@ -195,4 +200,13 @@ public class TeamService {
                 .filter(userTeam -> !team.getParticipants().contains(userTeam.getUser()))
                 .forEach(userTeamService::delete);
     }
+
+//    private GetTeamDTO resolveAndGetDTO(Team team){
+//        Team resolvedTeam = teamProcessor.resolveTeam(team);
+//        return new GetTeamDTO(resolvedTeam);
+//    }
+//    private Collection<GetTeamDTO> resolveAndGetDTOs(Collection<Team> teams){
+//        return teams.stream().map(this::resolveAndGetDTO).toList();
+//    }
+
 }

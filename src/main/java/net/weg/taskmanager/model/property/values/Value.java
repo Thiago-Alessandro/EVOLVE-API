@@ -12,17 +12,20 @@ import net.weg.taskmanager.model.property.Option;
 import java.util.List;
 
 @Entity
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "propertyType", visible = true)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = DataValue.class, name = "DATA_VALUE"),
+        @JsonSubTypes.Type(value = DataValue.class, name = "DataValue"),
         @JsonSubTypes.Type(value = TextValue.class, name = "TextValue"),
-        @JsonSubTypes.Type(value = IntegerValue.class, name = "INTEGER_VALUE")
+        @JsonSubTypes.Type(value = IntegerValue.class, name = "IntegerValue"),
+        @JsonSubTypes.Type(value = AssociatesValue.class, name = "AssociatesValue"),
+        @JsonSubTypes.Type(value = DoubleValue.class, name = "DoubleValue")
 })
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Value <T>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String propertyType;
     public abstract T getValue();
 
     public Value() {

@@ -1,8 +1,8 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.UserTeam;
-import net.weg.taskmanager.model.UserTeamId;
+import net.weg.taskmanager.model.entity.UserTeam;
+import net.weg.taskmanager.model.entity.UserTeamId;
 import net.weg.taskmanager.repository.UserTeamRepository;
 import org.springframework.stereotype.Service;
 

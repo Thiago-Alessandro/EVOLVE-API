@@ -1,12 +1,6 @@
 package net.weg.taskmanager.model.property;
 
-import net.weg.taskmanager.model.property.values.Value;
-import net.weg.taskmanager.model.property.values.MultiSelectValue;
-import net.weg.taskmanager.model.property.values.UniSelectValue;
-import net.weg.taskmanager.model.property.values.IntegerValue;
-import net.weg.taskmanager.model.property.values.DoubleValue;
-import net.weg.taskmanager.model.property.values.DataValue;
-import net.weg.taskmanager.model.property.values.TextValue;
+import net.weg.taskmanager.model.property.values.*;
 
 public enum PropertyType {
 
@@ -15,7 +9,8 @@ public enum PropertyType {
     IntegerValue(new IntegerValue()),
     DoubleValue(new DoubleValue()),
     DataValue(new DataValue()),
-    TextValue(new TextValue());
+    TextValue(new TextValue()),
+    Associates(new AssociatesValue());
 
     private Value<?> value;
 
