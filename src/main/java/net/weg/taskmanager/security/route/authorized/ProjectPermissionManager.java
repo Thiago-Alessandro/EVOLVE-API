@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProjectPermissionManager {
 
-    public boolean isUserAuthorized(Long projectId, User user, Permission permission) {
-        return user.getProjectRoles()
-                .stream().filter(projectAcess -> projectAcess.getProjectId().equals(projectId))
-                .anyMatch(projectAcess -> projectAcess.getRole().getPermissions().contains(Permission.EDIT_PROJECT_INFO)
-                );
-    }
+//    public boolean isUserAuthorized(Long projectId, User user, Permission permission) {
+//        return user.getProjectRoles()
+//                .stream().filter(projectAcess -> projectAcess.getProjectId().equals(projectId))
+//                .anyMatch(projectAcess -> projectAcess.getRole().getPermissions().contains(Permission.EDIT_PROJECT_INFO)
+//                );
+//    }
 
 //    private boolean hasPermission(Long projectId, User user, Permission permission){
 //        return user.getProjectRoles()
@@ -46,5 +46,38 @@ public class ProjectPermissionManager {
                 .anyMatch(userProject -> userProject.getRole().getPermissions().contains(Permission.PROJECT_CREATOR));
     }
 
+    public boolean hasPatchPermission(Long projectId,User user, String uri){
+        return switch (uri){
+            case "/{projectId}/members", "/{projectId}/defaultRole" -> hasPatchMembersPermission(projectId, user);
+            case "/{projectId}/tasks", "/{projectId}/tasks/remove/{taskId}" ->  hasPatchTasksPermission(projectId, user);
+            default -> hasDefaultPatchPermission(projectId, user);
+        };
+    }
+
+    public boolean hasPatchTasksPermission(Long projectId, User user){
+        return user.getProjectRoles().stream()
+                .filter(userProject -> userProject.getProjectId().equals(projectId))
+                .anyMatch(userProject -> userProject.getRole().getPermissions().contains(Permission.PROJECT_CREATOR));
+        //quem for colaborador tyabme pode, falta fazer essa logica
+    }
+
+
+    public boolean hasPatchMembersPermission(Long projectId, User user){
+        return user.getProjectRoles().stream()
+                .filter(userProject -> userProject.getProjectId().equals(projectId))
+                .anyMatch(userProject -> userProject.getRole().getPermissions().contains(Permission.MANAGE_MEMBERS));
+    }
+
+//    public boolean hasPatchRolesPermission(Long projectId, User user){
+//        return user.getProjectRoles().stream()
+//                .filter(userProject -> userProject.getProjectId().equals(projectId))
+//                .anyMatch(userProject -> userProject.getRole().getPermissions().contains(Permission.PROJECT_CREATOR));
+//    } quem po9de3 editar os membros tambem pode editar suas permissoes!
+
+    public boolean hasDefaultPatchPermission(Long projectId,User user){
+        return user.getProjectRoles().stream()
+                .filter(userProject -> userProject.getProjectId().equals(projectId))
+                .anyMatch(userProject -> userProject.getRole().getPermissions().contains(Permission.EDIT_PROJECT_INFO));
+    }
 
 }

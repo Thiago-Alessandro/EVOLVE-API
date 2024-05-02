@@ -33,7 +33,6 @@ public class ProjectAuthorizationManager implements AuthorizationManager<Request
         String uri = getUriFromAuthRequest(reqContext);
         String method = reqContext.getRequest().getMethod();
         Map<String, String> variables = reqContext.getVariables();
-        System.out.println("opa");
         return isAuthorized(user, method, variables, uri);
     }
 
@@ -65,7 +64,7 @@ public class ProjectAuthorizationManager implements AuthorizationManager<Request
 
     private AuthorizationDecision hasPatchPermission(User user, Map<String, String> variables, String uri){
         Long projectId = Long.parseLong(variables.get("projectId"));
-        return new AuthorizationDecision(true);
+        return new AuthorizationDecision(permissionManager.hasPatchPermission(projectId, user, uri));
     }
 
 

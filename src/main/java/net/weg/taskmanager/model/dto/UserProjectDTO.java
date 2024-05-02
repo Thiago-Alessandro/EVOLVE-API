@@ -1,17 +1,13 @@
-package net.weg.taskmanager.model;
+package net.weg.taskmanager.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import net.weg.taskmanager.model.UserProject;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetUserConverter;
 import net.weg.taskmanager.model.dto.converter.shorts.ShortProjectConverter;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortProjectDTO;
-import net.weg.taskmanager.model.dto.shortDTOs.ShortTaskDTO;
 import net.weg.taskmanager.model.entity.Project;
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.security.model.entity.Role;

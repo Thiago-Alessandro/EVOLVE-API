@@ -1,15 +1,12 @@
-package net.weg.taskmanager.model;
+package net.weg.taskmanager.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import net.weg.taskmanager.model.UserProject;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetProjectConverter;
-import net.weg.taskmanager.model.dto.converter.get.GetUserConverter;
-import net.weg.taskmanager.model.dto.converter.shorts.ShortProjectConverter;
 import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
-import net.weg.taskmanager.model.dto.get.GetUserDTO;
-import net.weg.taskmanager.model.dto.shortDTOs.ShortProjectDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 import net.weg.taskmanager.model.entity.Project;
 import net.weg.taskmanager.model.entity.User;
