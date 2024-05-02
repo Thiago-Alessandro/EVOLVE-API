@@ -1,16 +1,11 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.model.dto.get.GetTaskDTO;
-import net.weg.taskmanager.model.dto.get.GetUserDTO;
-import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
 import net.weg.taskmanager.model.entity.Task;
 import net.weg.taskmanager.model.entity.Team;
 import net.weg.taskmanager.model.entity.TeamNotification;
 import net.weg.taskmanager.model.entity.User;
-import net.weg.taskmanager.model.property.Option;
 import net.weg.taskmanager.model.property.Property;
-import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.repository.TaskRepository;
 import net.weg.taskmanager.repository.TeamNotificationRepository;
 import net.weg.taskmanager.repository.TeamRepository;
@@ -20,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @AllArgsConstructor
@@ -30,9 +27,19 @@ public class TeamNotificationService {
     private final TaskRepository taskRepository;
 
     // Function to verify the users that will be notificated
-    public Collection<User> verifyNotificatedUsers(Long taskId) {
+    public Collection<User> verifyTaskNotificatedUsers(Long taskId) {
         Task taskUpdated = taskRepository.findById(taskId).get();
         return new ArrayList<>(taskUpdated.getAssociates());
+    }
+
+    public Collection<User> verifyChatNotificationsUser(Long actionUserId, Collection<User> usersChat) {
+        Collection<User> newUsersChat = new ArrayList<>();
+        usersChat.forEach(user -> {
+            if(user.getId() != actionUserId) {
+                newUsersChat.add(user);
+            }
+        });
+        return newUsersChat;
     }
 
     public void newCommentNotification(Long userId, Long taskId){
@@ -42,7 +49,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" adicionou um novo comentário na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -59,7 +66,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" deletou um comentário na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -76,7 +83,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" alterou o valor da propriedade "+property.getName()+" na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -94,7 +101,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" criou uma nova opção para a propriedade "+property.getName()+" na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -112,7 +119,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" deletou uma opção da propriedade "+property.getName()+" na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -130,7 +137,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" mudou a data final da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -148,7 +155,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" adicionou uma sub-tarefa a tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -166,7 +173,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" deletou uma sub-tarefa da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -184,7 +191,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" adicionou uma nova propriedade a tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -202,7 +209,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" associou uma nova pessoa a tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -220,7 +227,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" atualizou a opção atual da propriedade "+property.getName()+" na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -238,7 +245,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" deletou uma propriedade da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -256,7 +263,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" adicionou um arquivo a tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -274,7 +281,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" deletou um arquivo da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -292,7 +299,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" deletou uma opção atual da propriedade "+property.getName()+" na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -310,7 +317,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" mudou o status da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -328,7 +335,7 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId),
                 false,
                 userAction.getName()+" mudou o nível de prioridade da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now()
@@ -339,6 +346,9 @@ public class TeamNotificationService {
         this.teamRepository.save(teamOfNotification);
     }
 
+//    public void receiveMessage(Long actionUserId, Collection<User> chatUsers) {
+//
+//    }
 
 //
 //    public Team messagesUpdateNotification(Long userId, Long taskId, Long teamId) {
