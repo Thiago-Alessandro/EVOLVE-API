@@ -61,7 +61,6 @@ public class MessageService {
 
         Message newMessage = messageRepository.save(message);
         MessageProcessor.getInstance().resolveMessage(newMessage);
-        this.teamNotificationService.receiveMessage(newMessage.getSender().getId(),newMessage.getChat().getUsers());
         return new GetMessageDTO(newMessage);
     }
 

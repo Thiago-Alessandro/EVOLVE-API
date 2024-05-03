@@ -350,45 +350,6 @@ public class TeamNotificationService {
         this.teamRepository.save(teamOfNotification);
     }
 
-    public void receiveMessage(Long actionUserId, Collection<User> chatUsers) {
-        Collection<Team> teamsOfNotification = new ArrayList<>();
-        User userAction = userRepository.findById(actionUserId).get();
-//        userAction.getTeams().forEach(team -> {
-//            System.out.println("ENTROU NO FOR EACH");
-//            System.out.println(team);
-//            if (team.getParticipants() != null) {
-//                System.out.println("ENTROU NO IF 1");
-//                if (!team.getParticipants().isEmpty()) {
-//                    System.out.println("ENTROU NO IF 2");
-//                    teamsOfNotification.add(team);
-//                }
-//            }
-//        });
-
-        userAction.getChats().forEach(userChat -> {
-            userChat.getUsers().forEach(user -> {
-                if(user.getId() != actionUserId) {
-                    teamsOfNotification.addAll(user.getTeams());
-                }
-            });
-        });
-
-
-        TeamNotification teamNotification = new TeamNotification(
-                userAction,
-                this.verifyChatNotificationsUser(actionUserId,chatUsers),
-                false,
-                userAction.getName()+" mandou uma mensagem para você",
-                LocalDateTime.now()
-        );
-        System.out.println(teamsOfNotification);
-
-        this.teamNotificationRepository.save(teamNotification);
-        teamsOfNotification.forEach(team -> {
-            team.getNotifications().add(teamNotification);
-            this.teamRepository.save(team);
-        });
-    }
 
 //
 //    public Team messagesUpdateNotification(Long userId, Long taskId, Long teamId) {
