@@ -218,4 +218,15 @@ public class ProjectService {
     public Collection<Comment> getAllCommentsOfTask(Long projectId) {
         return commentRepository.findAllByProject_Id(projectId);
     }
+
+    public GetProjectDTO deleteStatus(Long projectId, Status status) {
+        Project project = projectRepository.findById(projectId).get();
+        try {
+            project.getStatusList().remove(status);
+            projectRepository.save(project);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return converter.convertOne(treatAndSave(project));
+    }
 }

@@ -38,12 +38,15 @@ public class ProjectController {
 
     @PutMapping
     public GetProjectDTO update(@RequestBody PutProjectDTO project){return projectService.update(project);}
-//    @GetMapping("/status")
-//    public Collection<Status> getStatus(){return projetoService.getAllStatus();}
 
     @PatchMapping("/{projectId}")
     public GetProjectDTO updateStatusList(@PathVariable Long projectId, @RequestBody Status status){
         return projectService.updateStatusList(projectId, status);
+    }
+
+    @PatchMapping("/{projectId}/deleteStatus")
+    public GetProjectDTO deleteStatus(@PathVariable Long projectId, @RequestBody Status status){
+        return projectService.deleteStatus(projectId, status);
     }
 
     @GetMapping("/user/{userId}")
