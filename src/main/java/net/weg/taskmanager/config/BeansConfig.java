@@ -11,6 +11,7 @@ public class BeansConfig {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         return modelMapper;
     }

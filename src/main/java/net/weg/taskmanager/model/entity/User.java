@@ -59,15 +59,17 @@ public class User {
 
 
     public void setImage(MultipartFile image) {
-        File file = new File();
-        try {
-            file.setData(image.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if(image!=null){
+            File file = new File();
+            try {
+                file.setData(image.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            file.setName(image.getOriginalFilename());
+            file.setType(image.getContentType());
+            this.image = file;
         }
-        file.setName(image.getOriginalFilename());
-        file.setType(image.getContentType());
-        this.image = file;
     }
 
     @Override
