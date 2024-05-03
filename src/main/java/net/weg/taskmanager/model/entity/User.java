@@ -22,8 +22,10 @@ public class User {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
+
     private String password;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
+
     private String email;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -38,6 +40,12 @@ public class User {
     private Collection<Team> managedTeams;
     @ManyToMany(mappedBy = "participants")
     private Collection<Team> teams;
+    private String theme;
+    private String primaryColor;
+    private String secondaryColor;
+    private String primaryDarkColor;
+    private String secondaryDarkColor;
+
 
 
     @Override
@@ -50,15 +58,17 @@ public class User {
 
 
     public void setImage(MultipartFile image) {
-        File file = new File();
-        try {
-            file.setData(image.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if(image!=null){
+            File file = new File();
+            try {
+                file.setData(image.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            file.setName(image.getOriginalFilename());
+            file.setType(image.getContentType());
+            this.image = file;
         }
-        file.setName(image.getOriginalFilename());
-        file.setType(image.getContentType());
-        this.image = file;
     }
 
     @Override

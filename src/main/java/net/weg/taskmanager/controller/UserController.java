@@ -50,4 +50,35 @@ public class UserController {
     @GetMapping("/login/{email}")
     public GetUserDTO loginByEmail(@PathVariable String email){return userService.findByEmail(email);}
 
+    @PatchMapping("/theme/{userId}/{theme}")
+    public GetUserDTO patchTheme(@PathVariable Long userId, @PathVariable String theme){
+        return userService.patchTheme(userId, theme);
+    }
+
+    @PatchMapping("/email/{userId}/{email}")
+    public GetUserDTO patchEmail(@PathVariable Long userId, @PathVariable String email){
+        return userService.patchEmail(userId, email);
+    }
+
+    @PatchMapping("/password/{userId}/{password}")
+    public GetUserDTO patchPassword(@PathVariable Long userId, @PathVariable String password){
+        return userService.patchPassword(userId, password);
+    }
+    @PatchMapping("/primaryColor/{userId}")
+    public GetUserDTO patchPrimaryColor(@PathVariable Long userId, @RequestParam String primaryColor){
+        return userService.patchPrimaryColor(userId, primaryColor);
+    }
+    @PatchMapping("/secondaryColor/{userId}")
+    public GetUserDTO patchSecondaryColor(@PathVariable Long userId, @RequestParam String secondaryColor){
+        return userService.patchSecondaryColor(userId, secondaryColor);
+    }
+    @PatchMapping("/primaryDarkColor/{userId}")
+    public GetUserDTO patchPrimaryDarkColor(@PathVariable Long userId, @RequestParam String primaryColor){
+        return userService.patchPrimaryDarkColor(userId, primaryColor);
+    }
+    @PatchMapping("/secondaryDarkColor/{userId}")
+    public GetUserDTO patchSecondaryDarkColor(@PathVariable Long userId, @RequestParam String secondaryColor){
+        return userService.patchSecondaryDarkColor(userId, secondaryColor);
+    }
+
 }

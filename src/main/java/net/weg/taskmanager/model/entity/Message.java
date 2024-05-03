@@ -23,12 +23,14 @@ public class Message {
     @Column(columnDefinition = "LONGBLOB")
     @OneToMany()
     private Collection<File> attachments;
+    @Column(length = 1000)
     private String content;
     @ManyToOne(optional = false)
     private User sender;
     @Column(nullable = false)
     private LocalDateTime date = LocalDateTime.now();
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private MessageStatus status;
 
     @ManyToOne(optional = false)
