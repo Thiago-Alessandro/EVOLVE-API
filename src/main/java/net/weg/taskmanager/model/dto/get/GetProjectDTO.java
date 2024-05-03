@@ -46,6 +46,7 @@ public class GetProjectDTO {
     private Collection<Status> statusList;
     private Collection<ShortUserDTO> members;
     private Collection<Chart> charts;
+    private Collection<GetCommentDTO> comments;
     private ShortTeamDTO team;
 
     @JsonIgnore
@@ -65,6 +66,7 @@ public class GetProjectDTO {
         this.members = shortUserConverter.convertAll(project.getMembers());
         this.creator = shortUserConverter.convertOne(project.getCreator());
         this.tasks = taskDTOCOnverter.convertAll(project.getTasks());
+        this.comments = project.getComments() != null ? project.getComments().stream().map(GetCommentDTO::new).toList() : null;
 
     }
 

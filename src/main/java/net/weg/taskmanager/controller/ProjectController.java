@@ -1,6 +1,8 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.dto.get.GetCommentDTO;
+import net.weg.taskmanager.model.entity.Comment;
 import net.weg.taskmanager.model.entity.Status;
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 @RestController
 @AllArgsConstructor
@@ -61,6 +64,28 @@ public class ProjectController {
     @PatchMapping("/{id}/setImage")
     public GetProjectDTO patchImage(@PathVariable Long id, @RequestParam MultipartFile image){
         return projectService.patchImage(id, image);
+    }
+
+    @PatchMapping("/comments/patch/{projectId}/{userId}")
+    public Comment patchNewComment(@PathVariable Long projectId,
+                                   @RequestBody Comment newComment, @PathVariable Long userId) {
+        return projectService.patchNewComment(projectId, newComment, userId);
+    }
+
+    @DeleteMapping("/comments/delete/{commentId}/{projectId}/{userId}")
+    public Collection<Comment> deleteComment(@PathVariable Long commentId,
+                                             @PathVariable Long projectId, @PathVariable Long userId) {
+        return projectService.deleteComment(commentId,projectId,userId);
+    }
+
+    @GetMapping("/comments/getAll/{projectId}")
+    public Collection<GetCommentDTO> getAllCommentsOfTask(@PathVariable Long projectId) {
+        Collection<Comment> comments = projectService.getAllCommentsOfTask(projectId);
+        Collection<GetCommentDTO> commentDTOS = new HashSet<>();
+        for(Comment comment : comments){
+            commentDTOS.add(new GetCommentDTO(comment));
+        }
+        return commentDTOS;
     }
 
 }

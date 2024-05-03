@@ -1,5 +1,6 @@
 package net.weg.taskmanager.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class Comment {
     @JsonIgnore
     private Task task;
     @ManyToOne
-    @JsonIgnore
+    @JsonBackReference
     private Project project;
     private String value;
     private String timeHour;

@@ -1,5 +1,6 @@
 package net.weg.taskmanager.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -55,6 +56,7 @@ public class Project {
     private Collection<User> administrators;
 
     @OneToMany(mappedBy = "project")
+    @JsonIgnore
     private Collection<Comment> comments;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)

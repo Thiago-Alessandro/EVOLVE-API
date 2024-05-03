@@ -2,13 +2,10 @@ package net.weg.taskmanager.service;
 import lombok.RequiredArgsConstructor;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetProjectConverter;
-import net.weg.taskmanager.model.entity.Team;
-import net.weg.taskmanager.model.entity.User;
+import net.weg.taskmanager.model.entity.*;
 
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
-import net.weg.taskmanager.model.entity.Project;
-import net.weg.taskmanager.model.entity.Status;
 import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.repository.*;
@@ -35,6 +32,8 @@ public class ProjectService {
     private final DashboardRepository dashboardRepository;
     private final ModelMapper modelMapper;
     private final ChartService chartService;
+    private final CommentRepository commentRepository;
+    private final HistoricService historicService;
     private final ProjectProcessor projectProcessor = new ProjectProcessor();
     private final Converter<GetProjectDTO, Project> converter = new GetProjectConverter();
     
@@ -190,5 +189,33 @@ public class ProjectService {
         Project project = projectRepository.findById(id).get();
         project.setImage(image);
         return new GetProjectDTO(treatAndSave(project));
+    }
+
+    public Comment patchNewComment(Long projectId, Comment newComment, Long userId) {
+        Project project = projectRepository.findById(projectId).get();
+        newComment.setProject(project);
+        Comment commentSaved = commentRepository.save(newComment);
+        project.getComments().add(commentSaved);
+//        project = historicService.patchNewCommentHistoric(projectId, userId).getProject();
+        projectRepository.save(project);
+        return commentSaved;
+    }
+
+    public Collection<Comment> deleteComment(Long commentId, Long projectId, Long userId) {
+
+        Project project = projectRepository.findById(projectId).get();
+        Comment comment = commentRepository.findById(commentId).get();
+
+        project.getComments().remove(comment);
+
+        projectRepository.save(project);
+        commentRepository.deleteById(commentId);
+//        project = historicService.deleteCommentHistoric(projectId, userId);
+
+        return project.getComments();
+    }
+
+    public Collection<Comment> getAllCommentsOfTask(Long projectId) {
+        return commentRepository.findAllByProject_Id(projectId);
     }
 }
