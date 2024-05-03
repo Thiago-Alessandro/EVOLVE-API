@@ -1,8 +1,9 @@
 package net.weg.taskmanager.security.config;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.security.route.project.ProjectAuthorizationManager;
+import net.weg.taskmanager.security.route.ProjectAuthorizationManager;
 import net.weg.taskmanager.security.filter.AuthFilter;
+import net.weg.taskmanager.security.route.TeamAuthorizationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -33,6 +34,7 @@ public class SecurityConfig {
 //    private final DeleteProjectPermissionRoute deleteProjectPermissionRoute;
 
     private final ProjectAuthorizationManager projectAuthorizationManager;
+    private final TeamAuthorizationManager teamAuthorizationManager;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -40,9 +42,8 @@ public class SecurityConfig {
 
         httpSecurity.authorizeHttpRequests(autorizeRequests -> autorizeRequests
 
-                //LOGIN
+                //AUTH
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                //LOGOUT
                 .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
 
                 //TASK
@@ -61,7 +62,7 @@ public class SecurityConfig {
 //                .requestMatchers(HttpMethod.DELETE, "task/{projectId}/{taskId}").access(deleteTaskPermissionRoute)
 //
                 //PROJECT
-                .requestMatchers(HttpMethod.POST, "/project/{teamId}").access(projectAuthorizationManager)
+                .requestMatchers(HttpMethod.POST, "/project/team/{teamId}").access(projectAuthorizationManager)
                 .requestMatchers(HttpMethod.GET, "/project/{projectId}").access(projectAuthorizationManager)
                 .requestMatchers(HttpMethod.DELETE, "/project/{projectId}").access(projectAuthorizationManager)
 
@@ -71,11 +72,12 @@ public class SecurityConfig {
 //                .requestMatchers(HttpMethod.PATCH, "/project/{projectId}/tasks").access(projectAuthorizationManager)
 //                cpa task cria uma por vez
 
-//                .requestMatchers(HttpMethod.PATCH, "/project/{projectId}").access(permissionProject)
-//
+
 //                //TEAM
-//                .requestMatchers(HttpMethod.GET, "/team/{teamId}").access(permissionTeam)
-//                .requestMatchers(HttpMethod.DELETE, "/team/{teamId}").access(permissionTeam)
+                .requestMatchers(HttpMethod.GET, "/team/{teamId}").access(teamAuthorizationManager)
+                .requestMatchers(HttpMethod.GET, "/team/user/{userId}").access(teamAuthorizationManager)
+                .requestMatchers(HttpMethod.PATCH, "/team/{teamId}/**").access(teamAuthorizationManager)
+                .requestMatchers(HttpMethod.DELETE, "/team/{teamId}").access(teamAuthorizationManager)
 //
 //                //USER
 //                .requestMatchers(HttpMethod.GET, "/user/login/{email}").access(permissionUser)

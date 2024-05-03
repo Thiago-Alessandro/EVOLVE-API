@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 @RestController
 @AllArgsConstructor
@@ -25,8 +26,12 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping("/{projectId}")
-    public GetProjectDTO findById(@PathVariable Long projectId) {
-        return projectService.findById(projectId);
+    public ResponseEntity<GetProjectDTO> findById(@PathVariable Long projectId) {
+        try{
+            return ResponseEntity.ok(projectService.findById(projectId));
+        } catch (NoSuchElementException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 
@@ -40,7 +45,7 @@ public class ProjectController {
         projectService.delete(projectId);
     }
 
-    @PostMapping("/{teamId}")
+    @PostMapping("team/{teamId}")
     public GetProjectDTO create(@RequestBody PostProjectDTO project) {
         return projectService.create(project);
     }

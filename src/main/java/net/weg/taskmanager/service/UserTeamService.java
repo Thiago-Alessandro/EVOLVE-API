@@ -26,6 +26,15 @@ public class UserTeamService {
         return repository.save(userTeam);
     }
 
+    public Collection<UserTeam> createAllIfNotExists(Collection<UserTeam> userTeams){
+        return userTeams.stream().map(this::createIfNotExists).toList();
+    }
+
+    public UserTeam createIfNotExists(UserTeam userTeam){
+        UserTeamId userTeamId = new UserTeamId(userTeam.getUserId(), userTeam.getTeamId());
+        return !repository.existsById(userTeamId) ? create(userTeam) : findById(userTeamId);
+    }
+
     public boolean existsById(UserTeamId id){
         return repository.existsById(id);
     }

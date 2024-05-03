@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.management.InvalidAttributeValueException;
 import java.util.Collection;
 
 @RestController
@@ -22,8 +23,8 @@ public class TeamController {
 
     private final TeamService service;
 
-    @GetMapping("/{id}")
-    public GetTeamDTO findById(@PathVariable Long id){return service.findById(id);}
+    @GetMapping("/{teamId}")
+    public GetTeamDTO findById(@PathVariable Long teamId){return service.findById(teamId);}
 
 //    @GetMapping
 //    public Collection<GetTeamDTO> findAll(){return service.findAll();}
@@ -80,12 +81,12 @@ public class TeamController {
         }
     }
     @PatchMapping("/{teamId}/participants")
-    public ResponseEntity<GetTeamDTO> patchParticipants(@PathVariable Long teamId, @RequestBody Collection<UserTeam> participants){
-        try {
+    public ResponseEntity<GetTeamDTO> patchParticipants(@PathVariable Long teamId, @RequestBody Collection<UserTeam> participants) throws InvalidAttributeValueException {
+//        try {
             return ResponseEntity.ok(service.patchParticipants(teamId, participants));
-        } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-        }
+//        } catch (Exception e){
+//            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+//        }
     }
 
     @PatchMapping("/{teamId}/roles")
@@ -96,7 +97,7 @@ public class TeamController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
-    @PatchMapping("/{teamId}/deafaultRole")
+    @PatchMapping("/{teamId}/defaultRole")
     public ResponseEntity<GetTeamDTO> patchDefaultRole(@PathVariable Long teamId, @RequestBody Role deafaultRole) {
         try {
             return ResponseEntity.ok(service.patchDefaultRole(teamId, deafaultRole));
@@ -113,6 +114,6 @@ public class TeamController {
 //        } catch (Exception e){
 //            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 //        }
-//    }//projeto?
+//    }//projeto? não aparentemente
 
 }

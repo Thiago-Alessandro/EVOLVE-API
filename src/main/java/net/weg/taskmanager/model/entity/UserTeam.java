@@ -18,10 +18,10 @@ public class UserTeam {
     @Id
     private Long teamId;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     private User user;
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "teamId", insertable = false, updatable = false)
     private Team team;
 

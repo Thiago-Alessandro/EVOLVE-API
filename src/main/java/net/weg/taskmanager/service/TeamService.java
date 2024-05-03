@@ -1,5 +1,6 @@
 package net.weg.taskmanager.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import net.weg.taskmanager.model.dto.converter.Converter;
@@ -119,12 +120,12 @@ public class TeamService {
         return new GetTeamDTO(teamRepository.save(team));
     }
 
-    public GetTeamDTO patchImage(Long teamId, File image) throws InvalidAttributeValueException {
-        if (image == null) throw new InvalidAttributeValueException();
-        Team team = findTeamById(teamId);
-        team.setImage(image);
-        return new GetTeamDTO(teamRepository.save(team));
-    }
+//    public GetTeamDTO patchImage(Long teamId, File image) throws InvalidAttributeValueException {
+//        if (image == null) throw new InvalidAttributeValueException();
+//        Team team = findTeamById(teamId);
+//        team.setImage(image);
+//        return new GetTeamDTO(teamRepository.save(team));
+//    }
 
     public GetTeamDTO patchImageRemove(Long teamId) {
         Team team = findTeamById(teamId);
@@ -138,15 +139,19 @@ public class TeamService {
         team.setImageColor(imageColor);
         return new GetTeamDTO(teamRepository.save(team));
     }
-
+private final UserService userService;
+    @Transactional
     public GetTeamDTO patchParticipants(Long teamId, Collection<UserTeam> participants) throws InvalidAttributeValueException {
         Team team = findTeamById(teamId);
+        if(participants == null ) throw new InvalidAttributeValueException();
+        Collection<UserTeam> createdParticipants = userTeamService.createAllIfNotExists(participants);
+//        createdParticipants.forEach(userTeam -> userTeam.setUser(userService.findUserById(userTeam.getUserId())));
+//        createdParticipants.forEach(userTeam -> System.out.println(userTeam.getUser().getId()));
         //team must have at least one manager (creator/owner)
-        if(participants == null || hasManager(team)) throw new InvalidAttributeValueException();
-        team.setParticipants(participants);
-
-        updateTeamChat(team);
+        team.setParticipants(new ArrayList<>(createdParticipants));
+        if(!hasManager(team)) throw new InvalidAttributeValueException();
         syncUserTeamTable(team);
+        updateTeamChat(team);
         return new GetTeamDTO(teamRepository.save(team));
     }
 
@@ -169,10 +174,10 @@ public class TeamService {
 
 
     private void updateTeamChat(Team team) {
-        if(team.getParticipants() != null){
-            ArrayList<User> users = new ArrayList<>(team.getParticipants().stream().map(UserTeam::getUser).toList());
-            team.getChat().setUsers(users);
-        }
+        if(team.getParticipants() == null) return;
+        ArrayList<User> users = new ArrayList<>(team.getParticipants().stream().map(UserTeam::getUser).toList());
+        team.getChat().setUsers(users);
+        System.out.println(team.getChat());
     }
 
     private void syncUserTeamTable(Team team) throws InvalidAttributeValueException {
@@ -187,7 +192,8 @@ public class TeamService {
     }
 
     private void createDefaultUserTeam(UserTeam userTeam) {
-        Role defaultRole = userTeam.getTeam().getDefaultRole();
+        Team team = findTeamById(userTeam.getTeamId());
+        Role defaultRole = team.getDefaultRole();
         userTeam.setRole(defaultRole);
         userTeamService.create(userTeam);
     }
@@ -198,7 +204,8 @@ public class TeamService {
     private void deleteUserTeamIfUserIsNotParticipant(Team team) {
         Collection<UserTeam> userTeams = userTeamService.findAllWithTeamId(team.getId());
         userTeams.stream()
-                .filter(userTeam -> !team.getParticipants().contains(userTeam.getUser()))
+                .filter(userTeam -> team.getParticipants().stream()
+                        .noneMatch(participant -> participant.getUserId().equals(userTeam.getUserId())))
                 .forEach(userTeamService::delete);
     }
 

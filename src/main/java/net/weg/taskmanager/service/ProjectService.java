@@ -35,40 +35,18 @@ public class ProjectService {
     private final StatusService statusService;
     private final PropertyService propertyService;
     private final RoleService roleService;
-    private ProjectChatService projectChatService;
-    private final UserService userService;
+    private final ProjectChatService projectChatService;
     private final UserProjectService userProjectService;
 
 
     private final UserProjectRepository userProjectRepository;
 
     private final Converter<GetProjectDTO, Project> converter = new GetProjectConverter();
-    
-//    public GetProjectDTO updateStatusList(Long id, Status status){
-//        Project project = projectRepository.findById(id).get();
-//        if(project.getStatusList()!=null){
-//            for(Status statusFor : project.getStatusList()){
-//                if(Objects.equals(status.getId(), statusFor.getId())){
-//                    BeanUtils.copyProperties(status, statusFor);
-//                    return converter.convertOne(treatAndSave(project));
-//                }
-//            }
-//            project.getStatusList().add(status);
-//        } else {
-//            project.setStatusList(new ArrayList<>());
-//            project.getStatusList().add(status);
-//        }
-//        return converter.convertOne(treatAndSave(project));
-//    }
-
-
-
 
     public GetProjectDTO findById(Long id) {
         Project project = findProjectById(id);
         return converter.convertOne(project);
     }
-
 
     public Collection<GetProjectDTO> findAll() {
         Collection<Project> projects =  projectRepository.findAll();
@@ -126,8 +104,6 @@ public class ProjectService {
         statusService.deleteAll(project.getStatusList());
         projectRepository.deleteById(id);
     }
-
-    private final UserRepository userRepository;
 
     public Project findProjectById(Long projectId){
         Optional<Project> optionalProject = projectRepository.findById(projectId);
@@ -219,7 +195,7 @@ public class ProjectService {
         Project project = findProjectById(projectId);
         Task task = taskService.findTaskById(taskId);
         if(!project.getTasks().remove(task)) throw new NoSuchElementException("The especified project does not have task of id: " + taskId + " in tasks");
-             return converter.convertOne(treatAndSave(project));
+        return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchDefaultRole(Long projectId, Role defaultRole) throws InvalidAttributeValueException {
