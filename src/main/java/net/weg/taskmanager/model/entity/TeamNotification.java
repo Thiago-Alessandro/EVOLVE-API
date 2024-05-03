@@ -28,12 +28,14 @@ public class TeamNotification {
     private boolean readed;
     private String value;
     private LocalDateTime dateTime;
+    private String type;
 
-    public TeamNotification(User userAction, Collection<User> users, boolean b, String s, LocalDateTime now) {
+    public TeamNotification(User userAction, Collection<User> users, boolean b, String s, LocalDateTime now, String type) {
         this.actionUser = userAction;
         this.notificatedUsers = users;
         this.readed = b;
         this.value = s;
         this.dateTime = now;
+        this.type = type;
     }
 }
