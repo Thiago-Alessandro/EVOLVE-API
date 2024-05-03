@@ -30,7 +30,7 @@ public class TeamController {
         return service.update(team);}
 
     @GetMapping("/user/{userId}")
-    public Collection<Team> findTeamsByUserId(@PathVariable Long userId){
+    public Collection<GetTeamDTO> findTeamsByUserId(@PathVariable Long userId){
         return service.findTeamsByUserId(userId);
     }
 

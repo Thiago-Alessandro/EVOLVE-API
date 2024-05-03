@@ -3,6 +3,7 @@ package net.weg.taskmanager.service;
 import lombok.AllArgsConstructor;
 
 
+import net.weg.taskmanager.model.dto.GetCommentDTO;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetTaskConverter;
 import net.weg.taskmanager.model.dto.converter.get.GetUserConverter;
@@ -12,7 +13,6 @@ import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
 import net.weg.taskmanager.model.property.Option;
 import net.weg.taskmanager.model.property.Property;
-import net.weg.taskmanager.model.property.PropertyType;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.service.processor.PropertyProcessor;
 import net.weg.taskmanager.service.processor.TaskProcessor;
@@ -24,10 +24,11 @@ import net.weg.taskmanager.repository.*;
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @AllArgsConstructor
@@ -77,13 +78,13 @@ public class TaskService {
         return commentSaved;
     }
 
-    public Collection<Comment> deleteComment(Long commentId, Long taskId, Long userId) {
-        Task task = taskRepository.findById(taskId).get();
+    public Collection<GetCommentDTO> deleteComment(Long commentId, Long taskId, Long userId) {
+
 
         commentRepository.deleteById(commentId);
-        task = historicService.deleteCommentHistoric(taskId, userId);
+        Task task = historicService.deleteCommentHistoric(taskId, userId);
 
-        return task.getComments();
+        return task.getComments() != null ? task.getComments().stream().map(GetCommentDTO::new).toList() : new ArrayList<>();
     }
 
 
@@ -299,6 +300,36 @@ public class TaskService {
         return resolveAndGetDTO(updatedTask);
     }
 
+    public GetTaskDTO patchFile(Long taskId, MultipartFile file, Long userId){
+        Task task = taskRepository.findById(taskId).get();
+        User user = userRepository.findById(userId).get();
+
+        task = historicService.patchFileHistoric(taskId,userId,file);
+
+        task.setFile(file);
+        Task updatedTask = taskRepository.save(task);
+
+        return converter.convertOne(updatedTask);
+    }
+
+    public void deleteFile(Long taskId, Long fileId, Long userId) {
+        AtomicReference<File> newFile = new AtomicReference<>(new File());
+        Task task = taskRepository.findById(taskId).get();
+
+            task.getFiles().forEach(file -> {
+                if (file.getId().equals(fileId)) {
+                    historicService.deleteFileHistoric(taskId,userId,file);
+                     newFile.set(file);
+                }
+            });
+
+        if(newFile.get() != null) {
+            task.getFiles().remove(newFile.get());
+        }
+
+        taskRepository.save(task);
+    }
+
     private double setProgress(Task task) {
         if(task.getSubtasks()!=null){
             Collection<Subtask> totalConcludedSubtasks = task.getSubtasks().stream().filter(Subtask::getConcluded).toList();
@@ -413,9 +444,10 @@ public class TaskService {
 
     public GetTaskDTO deleteSubtask(Long subtaskId, Long taskId, Long userId) {
         Subtask subtask = subTaskRepository.findById(subtaskId).get();
-        Task task = this.historicService.deleteSubtaskHistoric(subtaskId, userId, taskId);
+        Task task = this.historicService.deleteSubtaskHistoric(subtaskId,  taskId,userId);
         task.getSubtasks().remove(subtask);
-        subTaskRepository.delete(subtask);
+        System.out.println(task.getSubtasks());
+        task = taskRepository.save(task);
         return transformToTaskDTO(task);
     }
 }

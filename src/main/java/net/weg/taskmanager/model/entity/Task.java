@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import net.weg.taskmanager.model.enums.Priority;
 import net.weg.taskmanager.model.property.Property;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -63,6 +65,9 @@ public class Task {
     @Column(nullable = false)
     private Collection<User> associates;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private Collection<File> files;
+
     private Integer statusListIndex;
     private Double progress;
 
@@ -72,5 +77,17 @@ public class Task {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public void setFile(MultipartFile attachment) {
+        File file = new File();
+        try {
+            file.setData(attachment.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        file.setName(attachment.getOriginalFilename());
+        file.setType(attachment.getContentType());
+        this.files.add(file);
     }
 }

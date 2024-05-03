@@ -47,11 +47,11 @@ public class TeamService {
         return resolveAndGetDTO(updatedTeam);
     }
 
-    public Collection<Team> findTeamsByUserId(Long id){
+    public Collection<GetTeamDTO> findTeamsByUserId(Long id){
         User user = userRepository.findById(id).get();
         Collection<Team> teams = teamRepository.findTeamsByParticipantsContaining(user);
         teams.forEach(team -> TeamProcessor.getInstance().resolveTeam(team));
-        return teams;
+        return resolveAndGetDTOs(teams);
     }
 
     public GetTeamDTO patchTeamName(Long teamId, String name){

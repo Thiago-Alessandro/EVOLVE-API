@@ -3,6 +3,7 @@ package net.weg.taskmanager.controller;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.AllArgsConstructor;
 
+import net.weg.taskmanager.model.dto.GetCommentDTO;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.enums.Priority;
@@ -19,6 +20,7 @@ import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.service.TaskService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -145,8 +147,8 @@ public class TaskController {
     }
 
     @DeleteMapping("/comments/delete/{commentId}/{taskId}/{userId}")
-    public Collection<Comment> deleteComment(@PathVariable Long commentId,
-                              @PathVariable Long taskId, @PathVariable Long userId) {
+    public Collection<GetCommentDTO> deleteComment(@PathVariable Long commentId,
+                                                   @PathVariable Long taskId, @PathVariable Long userId) {
         return taskService.deleteComment(commentId,taskId,userId);
     }
 
@@ -189,5 +191,19 @@ public class TaskController {
     @DeleteMapping("/delete/{taskId}")
     public void deleteTask(@PathVariable Long taskId) {
         taskService.deleteTask(taskId);
+    }
+
+    @PatchMapping("/patch/task/file/{taskId}/{userId}")
+    public GetTaskDTO patchFile(@PathVariable Long taskId,
+                                @RequestParam MultipartFile file,
+                                @PathVariable Long userId){
+        return taskService.patchFile(taskId, file, userId);
+    }
+
+    @DeleteMapping("/delete/task/file/{taskId}/{fileId}/{userId}")
+    public void deleteFile(@PathVariable Long taskId,
+                           @PathVariable Long fileId,
+                           @PathVariable Long userId) {
+        taskService.deleteFile(taskId,fileId,userId);
     }
 }

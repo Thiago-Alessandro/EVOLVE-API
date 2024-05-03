@@ -97,7 +97,11 @@ public class UserService {
         user.setEmail(email);
         return converter.convertOne(userRepository.save(user));
     }
-
+    public GetUserDTO patchName(Long userId,String name){
+        User user = userRepository.findById(userId).get();
+        user.setName(name);
+        return converter.convertOne(userRepository.save(user));
+    }
     public GetUserDTO patchPassword(Long userId,String password){
         User user = userRepository.findById(userId).get();
         user.setPassword(password);
@@ -123,6 +127,12 @@ public class UserService {
         user.setSecondaryDarkColor(secondaryColor);
         return converter.convertOne(userRepository.save(user));
     }
+    public GetUserDTO patchFontSize(Long userId,Integer fontSize){
+        User user = userRepository.findById(userId).get();
+        user.setFontSize(fontSize);
+        return converter.convertOne(userRepository.save(user));
+    }
+
 
 
 

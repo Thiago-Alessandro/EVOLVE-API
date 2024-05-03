@@ -11,6 +11,7 @@ import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.repository.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -165,6 +166,8 @@ public class HistoricService {
     public Task deleteSubtaskHistoric(Long subtaskId, Long taskId, Long userId) {
         User userForHistoric = userRepository.findById(userId).get();
         Task taskForHistoric = taskRepository.findById(taskId).get();
+        System.out.println("Oi mano");
+        System.out.println(taskForHistoric.getSubtasks());
         Subtask subtask = subTaskRepository.findById(subtaskId).get();
 
         Historic historic = new Historic(
@@ -343,6 +346,32 @@ public class HistoricService {
 
         Historic historic =
                 new Historic(user,user.getName() + " removeu a propriedade "+property.getName(),LocalDateTime.now());
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        task.getHistoric().add(savedHistoric);
+
+        return taskRepository.save(task);
+    }
+
+    public Task patchFileHistoric(Long taskId, Long userId, MultipartFile file) {
+        User user = userRepository.findById(userId).get();
+        Task task = taskRepository.findById(taskId).get();
+
+        Historic historic =
+                new Historic(user,user.getName() + " adicionou um novo a anexo a tarefa chamado "+file.getOriginalFilename(),LocalDateTime.now());
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        task.getHistoric().add(savedHistoric);
+
+        return taskRepository.save(task);
+    }
+
+    public Task deleteFileHistoric(Long taskId, Long userId, File file) {
+        User user = userRepository.findById(userId).get();
+        Task task = taskRepository.findById(taskId).get();
+
+        Historic historic =
+                new Historic(user,user.getName() + " removou o anexo "+file.getName()+" da tarefa",LocalDateTime.now());
         Historic savedHistoric = this.historicRepository.save(historic);
 
         task.getHistoric().add(savedHistoric);
