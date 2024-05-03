@@ -34,6 +34,23 @@ public class ProjectController {
         }
     }
 
+    @GetMapping("/team/{teamId}")
+    public ResponseEntity<Collection<GetProjectDTO>> findByTeamId(@PathVariable Long teamId) {
+        try{
+            return ResponseEntity.ok(projectService.findByTeamId(teamId));
+        } catch (NoSuchElementException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Collection<GetProjectDTO>> findByUserId(@PathVariable Long userId) {
+        try{
+            return ResponseEntity.ok(projectService.findByUserId(userId));
+        } catch (NoSuchElementException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 //    @GetMapping
 //    public Collection<GetProjectDTO> findAll() {

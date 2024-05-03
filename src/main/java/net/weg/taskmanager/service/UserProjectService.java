@@ -25,6 +25,12 @@ public class UserProjectService {
         }
     }
 
+    public Collection<UserProject> findAllByUserId(Long userId){
+        Optional<Collection<UserProject>> optionalUserProjects = repository.findUserProjectsByUser_Id(userId);
+        if(optionalUserProjects.isEmpty()) throw new NoSuchElementException();
+        return optionalUserProjects.get();
+    }
+
     public Collection<UserProject> createAll(Collection<UserProject> userProjects){
         return userProjects != null ? userProjects.stream().map(this::create).toList() : null;
     }

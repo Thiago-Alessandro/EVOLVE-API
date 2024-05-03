@@ -48,6 +48,19 @@ public class ProjectService {
         return converter.convertOne(project);
     }
 
+    public Collection<GetProjectDTO> findByUserId(Long userId) {
+        Collection<UserProject> userProjects = userProjectService.findAllByUserId(userId);
+        Collection<Project> projects = new HashSet<>();
+        userProjects.forEach(userProject -> projects.add(findProjectById(userProject.getProjectId())));
+        return converter.convertAll(projects);
+    }
+
+    public Collection<GetProjectDTO> findByTeamId(Long teamId) {
+        Optional<Collection<Project>> optionalProjects = projectRepository.findByTeamId(teamId);
+        if(optionalProjects.isEmpty()) throw new NoSuchElementException();
+        return converter.convertAll(optionalProjects.get());
+    }
+
     public Collection<GetProjectDTO> findAll() {
         Collection<Project> projects =  projectRepository.findAll();
         return converter.convertAll(projects);

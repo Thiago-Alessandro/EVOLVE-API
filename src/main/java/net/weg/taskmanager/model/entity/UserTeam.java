@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.security.model.entity.Role;
 
+import javax.management.InvalidAttributeValueException;
+import java.util.NoSuchElementException;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -29,13 +32,13 @@ public class UserTeam {
     private Role role;
     private boolean isManager;
 
-    public UserTeam(Long userId, Long teamId, Role role) {
-        this.userId = userId;
-        this.teamId = teamId;
-        this.role = role;
-    }
+//    public UserTeam(Long userId, Long teamId, Role role) {
+//        this.userId = userId;
+//        this.teamId = teamId;
+//        this.role = role;
+//    }
 
-    public UserTeam(Long userId, Long teamId, User user, Team team, Role role) {
+    public UserTeam(Long userId, Long teamId, User user, Team team, Role role){
         this.userId = userId;
         this.teamId = teamId;
         this.user = user;

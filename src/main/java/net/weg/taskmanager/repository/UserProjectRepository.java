@@ -17,6 +17,7 @@ public interface UserProjectRepository extends JpaRepository<UserProject, UserPr
     //Hierarchy findByUserIdAndProjectIdAndHierarchy_AuthsContaining(Long userId, Long projectId, Auth auth);
 
     Optional<Collection<UserProject>> findUserProjectsByProject_Id(Long projectId);
+    Optional<Collection<UserProject>> findUserProjectsByUser_Id(Long userId);
     UserProject findByUserIdAndProjectId(Long userId, Long projectId);
     Optional<UserProject> findUserProjectByProject_IdAndIsManagerIsTrue(Long projectId);
 }

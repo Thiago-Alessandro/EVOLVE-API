@@ -77,7 +77,7 @@ public class TeamService {
 
     private void setCreator(User creator, Team team){
         Role role = roleService.getRoleByName("TEAM_CREATOR");
-        UserTeam userTeam = new UserTeam(creator.getId(), team.getId(), role);
+        UserTeam userTeam = new UserTeam(creator.getId(), team.getId(), creator, team, role);
         userTeam.setManager(true);
         userTeamService.create(userTeam);
     }
@@ -139,18 +139,17 @@ public class TeamService {
         team.setImageColor(imageColor);
         return new GetTeamDTO(teamRepository.save(team));
     }
-private final UserService userService;
+private final UserRepository userRepository;
     @Transactional
     public GetTeamDTO patchParticipants(Long teamId, Collection<UserTeam> participants) throws InvalidAttributeValueException {
         Team team = findTeamById(teamId);
         if(participants == null ) throw new InvalidAttributeValueException();
-        Collection<UserTeam> createdParticipants = userTeamService.createAllIfNotExists(participants);
-//        createdParticipants.forEach(userTeam -> userTeam.setUser(userService.findUserById(userTeam.getUserId())));
-//        createdParticipants.forEach(userTeam -> System.out.println(userTeam.getUser().getId()));
+        Collection<UserTeam> createdParticipants = userTeamService.setRoleAndCreateAllIfNotExists(participants, team.getDefaultRole());
+        deleteUserTeamIfUserIsNotParticipant(team);
+        createdParticipants.forEach(userTeam -> userTeam.setUser(userRepository.findById(userTeam.getUserId()).get()));
         //team must have at least one manager (creator/owner)
         team.setParticipants(new ArrayList<>(createdParticipants));
         if(!hasManager(team)) throw new InvalidAttributeValueException();
-        syncUserTeamTable(team);
         updateTeamChat(team);
         return new GetTeamDTO(teamRepository.save(team));
     }
@@ -180,23 +179,23 @@ private final UserService userService;
         System.out.println(team.getChat());
     }
 
-    private void syncUserTeamTable(Team team) throws InvalidAttributeValueException {
-        if (team.getParticipants() == null) throw new InvalidAttributeValueException();
-        team.getParticipants().stream()
-                .filter(this::doesUserTeamTableNotExists)
-                .forEach(this::createDefaultUserTeam);
-        deleteUserTeamIfUserIsNotParticipant(team);
-    }
+//    private void syncUserTeamTable(Team team) throws InvalidAttributeValueException {
+//        if (team.getParticipants() == null) throw new InvalidAttributeValueException();
+//        team.getParticipants().stream()
+//                .filter(this::doesUserTeamTableNotExists)
+//                .forEach(this::createDefaultUserTeam);
+//        deleteUserTeamIfUserIsNotParticipant(team);
+//    }
     private boolean hasManager(Team team){
         return !team.getParticipants().stream().map(UserTeam::isManager).toList().isEmpty();
     }
 
-    private void createDefaultUserTeam(UserTeam userTeam) {
-        Team team = findTeamById(userTeam.getTeamId());
-        Role defaultRole = team.getDefaultRole();
-        userTeam.setRole(defaultRole);
-        userTeamService.create(userTeam);
-    }
+//    private void createDefaultUserTeam(UserTeam userTeam) {
+//        Team team = findTeamById(userTeam.getTeamId());
+//        Role defaultRole = team.getDefaultRole();
+//        userTeam.setRole(defaultRole);
+//        userTeamService.create(userTeam);
+//    }
     private boolean doesUserTeamTableNotExists(UserTeam userTeam) {
         return !userTeamService.existsById(new UserTeamId(userTeam.getUserId(), userTeam.getTeamId()));
     }

@@ -3,6 +3,7 @@ package net.weg.taskmanager.security.route;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.entity.Team;
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import net.weg.taskmanager.security.route.authorized.ProjectPermissionManager;
@@ -49,7 +50,7 @@ public class ProjectAuthorizationManager implements AuthorizationManager<Request
     private AuthorizationDecision isAuthorized(User user, String method, Map<String, String> variables, String uri) {
         return switch (method){
             case "POST" -> hasPostPermission(user, variables);
-            case "GET" -> hasGetPermission(user, variables);
+            case "GET" -> hasGetPermission(user, variables, uri);
             case "DELETE" -> hasDeletePermission(user, variables);
             case "PATCH" -> hasPatchPermission(user, variables, uri);
             default -> throw new MethodNotAllowedException(method, getAllowedHttpMethods());
@@ -57,6 +58,23 @@ public class ProjectAuthorizationManager implements AuthorizationManager<Request
     }
 
     private AuthorizationDecision hasGetPermission(User user, Map<String, String> variables) {
+        if (variables.containsKey("projectId")) return hasGetProjectByIdPermission(user, variables);
+        if (variables.containsKey("teamId")) return hasGetProjectByTeamIdPermmission(user, variables);
+        if (variables.containsKey("userId")) return hasGetProjectByUserIdPermission(user, variables);
+//        Long projectId = Long.parseLong(variables.get("projectId"));
+//        projectService.findProjectById(projectId);
+//        boolean isAuthorized = permissionManager.hasGetPermission(projectId, user);
+        return new AuthorizationDecision(false);
+    }
+
+    //usuario pode ver todos
+
+    private AuthorizationDecision hasGetProjectByTeamIdPermmission(User user, Map<String, String> variables){
+        Long teamId = Long.parseLong(variables.get("teamId"));
+        projectService.fid
+    }
+
+    private AuthorizationDecision hasGetProjectByIdPermission(User user, Map<String, String> variables) {
         Long projectId = Long.parseLong(variables.get("projectId"));
         projectService.findProjectById(projectId);
         boolean isAuthorized = permissionManager.hasGetPermission(projectId, user);

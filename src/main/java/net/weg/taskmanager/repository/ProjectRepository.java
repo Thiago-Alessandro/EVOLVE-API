@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
@@ -20,5 +21,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     //taerrado o de cima
 //    boolean existsByIdAndMembersContaining(Long projectId, User user);
 
+    Optional<Collection<Project>> findByTeamId(Long teamId);
     Collection<Project> findProjectsByMembersContaining(UserProject userProject);
 }

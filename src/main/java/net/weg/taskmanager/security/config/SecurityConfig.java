@@ -62,8 +62,11 @@ public class SecurityConfig {
 //                .requestMatchers(HttpMethod.DELETE, "task/{projectId}/{taskId}").access(deleteTaskPermissionRoute)
 //
                 //PROJECT
-                .requestMatchers(HttpMethod.POST, "/project/team/{teamId}").access(projectAuthorizationManager)
                 .requestMatchers(HttpMethod.GET, "/project/{projectId}").access(projectAuthorizationManager)
+                .requestMatchers(HttpMethod.GET, "/project/team/{teamId}").access(projectAuthorizationManager)
+                .requestMatchers(HttpMethod.GET, "/project/user/{userId}").access(projectAuthorizationManager)
+
+                .requestMatchers(HttpMethod.POST, "/project/team/{teamId}").access(projectAuthorizationManager)
                 .requestMatchers(HttpMethod.DELETE, "/project/{projectId}").access(projectAuthorizationManager)
 
                 .requestMatchers(HttpMethod.PATCH, "/project/{projectId}/**").access(projectAuthorizationManager)

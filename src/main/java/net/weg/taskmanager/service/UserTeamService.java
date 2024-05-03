@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.entity.UserTeam;
 import net.weg.taskmanager.model.entity.UserTeamId;
 import net.weg.taskmanager.repository.UserTeamRepository;
+import net.weg.taskmanager.security.model.entity.Role;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -26,13 +27,18 @@ public class UserTeamService {
         return repository.save(userTeam);
     }
 
-    public Collection<UserTeam> createAllIfNotExists(Collection<UserTeam> userTeams){
-        return userTeams.stream().map(this::createIfNotExists).toList();
+    public Collection<UserTeam> setRoleAndCreateAllIfNotExists(Collection<UserTeam> userTeams, Role role){
+        return userTeams.stream().map(userTeam -> setRoleAndCreateIfNotExists(userTeam, role)).toList();
     }
 
-    public UserTeam createIfNotExists(UserTeam userTeam){
+    public UserTeam setRoleAndCreateIfNotExists(UserTeam userTeam, Role role){
         UserTeamId userTeamId = new UserTeamId(userTeam.getUserId(), userTeam.getTeamId());
-        return !repository.existsById(userTeamId) ? create(userTeam) : findById(userTeamId);
+        return !repository.existsById(userTeamId) ? setRoleAndCreate(userTeam, role) : findById(userTeamId);
+    }
+
+    public UserTeam setRoleAndCreate(UserTeam userTeam, Role role){
+        userTeam.setRole(role);
+        return create(userTeam);
     }
 
     public boolean existsById(UserTeamId id){
