@@ -3,6 +3,7 @@ package net.weg.taskmanager.service;
 import lombok.AllArgsConstructor;
 
 
+import net.weg.taskmanager.model.dto.GetCommentDTO;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetTaskConverter;
 import net.weg.taskmanager.model.dto.converter.get.GetUserConverter;
@@ -77,13 +78,13 @@ public class TaskService {
         return commentSaved;
     }
 
-    public Collection<Comment> deleteComment(Long commentId, Long taskId, Long userId) {
-        Task task = taskRepository.findById(taskId).get();
+    public Collection<GetCommentDTO> deleteComment(Long commentId, Long taskId, Long userId) {
+
 
         commentRepository.deleteById(commentId);
-        task = historicService.deleteCommentHistoric(taskId, userId);
+        Task task = historicService.deleteCommentHistoric(taskId, userId);
 
-        return task.getComments();
+        return task.getComments() != null ? task.getComments().stream().map(GetCommentDTO::new).toList() : new ArrayList<>();
     }
 
 
@@ -443,9 +444,10 @@ public class TaskService {
 
     public GetTaskDTO deleteSubtask(Long subtaskId, Long taskId, Long userId) {
         Subtask subtask = subTaskRepository.findById(subtaskId).get();
-        Task task = this.historicService.deleteSubtaskHistoric(subtaskId, userId, taskId);
+        Task task = this.historicService.deleteSubtaskHistoric(subtaskId,  taskId,userId);
         task.getSubtasks().remove(subtask);
-        subTaskRepository.delete(subtask);
+        System.out.println(task.getSubtasks());
+        task = taskRepository.save(task);
         return transformToTaskDTO(task);
     }
 }

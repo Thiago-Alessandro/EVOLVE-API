@@ -3,6 +3,7 @@ package net.weg.taskmanager.controller;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.AllArgsConstructor;
 
+import net.weg.taskmanager.model.dto.GetCommentDTO;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.enums.Priority;
@@ -146,8 +147,8 @@ public class TaskController {
     }
 
     @DeleteMapping("/comments/delete/{commentId}/{taskId}/{userId}")
-    public Collection<Comment> deleteComment(@PathVariable Long commentId,
-                              @PathVariable Long taskId, @PathVariable Long userId) {
+    public Collection<GetCommentDTO> deleteComment(@PathVariable Long commentId,
+                                                   @PathVariable Long taskId, @PathVariable Long userId) {
         return taskService.deleteComment(commentId,taskId,userId);
     }
 

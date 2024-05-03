@@ -59,6 +59,10 @@ public class UserController {
     public GetUserDTO patchEmail(@PathVariable Long userId, @PathVariable String email){
         return userService.patchEmail(userId, email);
     }
+    @PatchMapping("/name/{userId}/{name}")
+    public GetUserDTO patchName(@PathVariable Long userId, @PathVariable String name){
+        return userService.patchName(userId, name);
+    }
 
     @PatchMapping("/password/{userId}/{password}")
     public GetUserDTO patchPassword(@PathVariable Long userId, @PathVariable String password){
@@ -79,6 +83,10 @@ public class UserController {
     @PatchMapping("/secondaryDarkColor/{userId}")
     public GetUserDTO patchSecondaryDarkColor(@PathVariable Long userId, @RequestParam String secondaryColor){
         return userService.patchSecondaryDarkColor(userId, secondaryColor);
+    }
+    @PatchMapping("/fontSize/{userId}/{fontSize}")
+    public GetUserDTO patchFontSize(@PathVariable Long userId, @PathVariable Integer fontSize){
+        return userService.patchFontSize(userId, fontSize);
     }
 
 }
