@@ -37,6 +37,7 @@ public class TaskController {
         return taskService.findById(taskId);
     }
 
+
 //    @GetMapping
 //    public Collection<GetTaskDTO> findAll(){return taskService.findAll();}
 
@@ -67,7 +68,7 @@ public class TaskController {
     @PutMapping("/{userId}")
     public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO,@PathVariable Long userId){
         return taskService.update(putTaskDTO,userId);
-    }
+    } //isso aqui é para continuar existindo?
 
     @PatchMapping("/userTask")
     public UserTask setWorkedTime(@RequestBody UserTask userTask) {
@@ -110,8 +111,7 @@ public class TaskController {
                                      @RequestBody PropertyValue propertyValue,
                                      @PathVariable Long userId,
                                      @PathVariable Long taskId) {
-        Property propertyOfPropertyValue = taskService.putPropertyValue(propertyValue, propertyId, userId, taskId);
-        return propertyOfPropertyValue;
+        return taskService.putPropertyValue(propertyValue, propertyId, userId, taskId);
     }
 
     @PutMapping("/property/put/option/{userId}/{taskId}/{propertyId}")
@@ -144,13 +144,13 @@ public class TaskController {
     @GetMapping("/property/get/getall")
     public Collection<Property> getAllProperties() {
         return taskService.getAllProperties();
-    }
+    } //rever a segurança disso aqui (não pode existir?)
 
     @GetMapping("/{projectId}/priorities")
     public Collection<PriorityRecord> getAllPriorities(@PathVariable Long projectId) {
         List<Priority> listTest = List.of(Priority.values());
         return listTest.stream().map(priority -> new PriorityRecord(priority.name(), priority.backgroundColor)).collect(Collectors.toList());
-    }
+    } //rever a segurança disso aqui (não pode existir?)
 
     @GetMapping("/user/{userId}")
     public Collection<GetTaskDTO> getTasksByUserId(@PathVariable Long userId){
@@ -160,7 +160,7 @@ public class TaskController {
     @GetMapping("/comments/getAll/{taskId}")
     public Collection<Comment> getAllCommentsOfTask(@PathVariable Long taskId) {
         return taskService.getAllCommentsOfTask(taskId);
-    }
+    } //rever a sugurança p isso aqui
 
     @PatchMapping("/comments/patch/{taskId}/{userId}")
     public Comment patchNewComment(@PathVariable Long taskId,
@@ -200,7 +200,7 @@ public class TaskController {
     public GetTaskDTO updateTaskName(@PathVariable Long taskId,
                                      @PathVariable Long userId,
                                      @PathVariable String name) {
-        return taskService.updateTaskName(taskId,userId,name);
+        return taskService.updateTaskName(taskId,name);
     }
 
     @DeleteMapping("/property/delete/{taskId}/{userId}/{propertyId}")

@@ -1,4 +1,4 @@
-package net.weg.taskmanager.security.route.authorized;
+package net.weg.taskmanager.security.authorization;
 
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.security.model.enums.Permission;

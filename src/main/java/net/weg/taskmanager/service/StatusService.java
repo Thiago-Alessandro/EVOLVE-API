@@ -18,6 +18,7 @@ public class StatusService {
     public void deleteAll(Collection<Status> statusList){
         repository.deleteAll(statusList);
     }
+
     public Status findStatusById(Long statusId){
         Optional<Status> optionalStatus = repository.findById(statusId);
         if (optionalStatus.isEmpty()) throw new NoSuchElementException();

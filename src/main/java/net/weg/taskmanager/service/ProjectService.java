@@ -201,7 +201,7 @@ public class ProjectService {
         if(tasks == null) throw new InvalidAttributeValueException("Tasks on project cannot be null");
         Project project = findProjectById(projectId);
         project.setTasks(tasks);
-             return converter.convertOne(treatAndSave(project));
+        return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchTasksRemove(Long projectId, Long taskId) {

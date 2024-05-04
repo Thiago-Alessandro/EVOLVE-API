@@ -1,12 +1,11 @@
-package net.weg.taskmanager.security.route;
+package net.weg.taskmanager.security.authorization;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
-import net.weg.taskmanager.security.route.authorized.TeamPermissionManager;
+import net.weg.taskmanager.service.ProjectService;
 import net.weg.taskmanager.service.UserService;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authorization.AuthorizationDecision;
@@ -21,15 +20,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-@Component
 @AllArgsConstructor
-public class TeamAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext> {
+@Component
+public class ProjectAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext> {
+
 
     private final UserService userService;
-    private final TeamPermissionManager permissionManager;
+    private final ProjectPermissionManager permissionManager;
 
-    @Override
+    private final ProjectService projectService;
+
     @Transactional
+    @Override
     public AuthorizationDecision check(Supplier<Authentication> supplier, RequestAuthorizationContext reqContext) {
         User user = getUserFromAuthSupplier(supplier);
         String uri = getUriFromAuthRequest(reqContext);
@@ -38,39 +40,55 @@ public class TeamAuthorizationManager implements AuthorizationManager<RequestAut
         return isAuthorized(user, method, variables, uri);
     }
 
-    private AuthorizationDecision isAuthorized(User user, String method, Map<String, String> variables, String uri){
+    private AuthorizationDecision isAuthorized(User user, String method, Map<String, String> variables, String uri) {
         return switch (method){
-            case "GET" -> hasGetPermission(user, variables, uri);
+            case "POST" -> hasPostPermission(user, variables);
+            case "GET" -> hasGetPermission(user, variables);
             case "DELETE" -> hasDeletePermission(user, variables);
             case "PATCH" -> hasPatchPermission(user, variables, uri);
             default -> throw new MethodNotAllowedException(method, getAllowedHttpMethods());
         };
     }
-    private AuthorizationDecision hasGetPermission(User user, Map<String, String> variables, String uri){
-        if(uri.contains("/team/user/")) return hasGetTeamsByUserId(user, variables);
-        return hasGetTeamById(user, variables);
+
+    private AuthorizationDecision hasGetPermission(User user, Map<String, String> variables) {
+        if (variables.containsKey("projectId")) return hasGetProjectByIdPermission(user, variables);
+        if (variables.containsKey("teamId")) return hasGetProjectByTeamIdPermmission(user, variables);
+        if (variables.containsKey("userId")) return hasGetProjectByUserIdPermission(user, variables);
+        return new AuthorizationDecision(false);
     }
 
-    private AuthorizationDecision hasGetTeamById(User user, Map<String, String> variables){
-        Long teamId = Long.parseLong(variables.get("teamId"));
-        boolean isAuthorized = permissionManager.hasGetPermission(teamId, user);
-        return new AuthorizationDecision(isAuthorized);
-    }
-
-    private AuthorizationDecision hasGetTeamsByUserId(User user, Map<String, String> variables){
+    private AuthorizationDecision hasGetProjectByUserIdPermission(User user,Map<String, String> variables){
         Long userId = Long.parseLong(variables.get("userId"));
-        boolean isAuthorized = userId.equals(user.getId());
+        boolean isAuthorized = user.getId().equals(userId);
         return new AuthorizationDecision(isAuthorized);
+    }
+
+    private AuthorizationDecision hasGetProjectByTeamIdPermmission(User user, Map<String, String> variables){
+        Long teamId = Long.parseLong(variables.get("teamId"));
+        boolean isAuthorized = user.getTeamRoles().stream().anyMatch(userTeam -> userTeam.getTeamId().equals(teamId));
+        return new AuthorizationDecision(isAuthorized);
+    }
+
+    private AuthorizationDecision hasGetProjectByIdPermission(User user, Map<String, String> variables) {
+        Long projectId = Long.parseLong(variables.get("projectId"));
+        projectService.findProjectById(projectId);
+        boolean isAuthorized = permissionManager.hasGetPermission(projectId, user);
+        return new AuthorizationDecision(isAuthorized);
+    }
+
+    private AuthorizationDecision hasPostPermission(User user, Map<String, String> variables){
+        Long teamId = Long.parseLong(variables.get("teamId"));
+        return new AuthorizationDecision(permissionManager.hasPostPermission(teamId, user));
     }
 
     private AuthorizationDecision hasDeletePermission(User user, Map<String, String> variables){
-        Long teamId = Long.parseLong(variables.get("teamId"));
-        return new AuthorizationDecision(permissionManager.hasDeletePermission(teamId, user));
+        Long projectId = Long.parseLong(variables.get("projectId"));
+        return new AuthorizationDecision(permissionManager.hasDeletePermission(projectId, user));
     }
 
     private AuthorizationDecision hasPatchPermission(User user, Map<String, String> variables, String uri){
-        Long teamId = Long.parseLong(variables.get("teamId"));
-        return new AuthorizationDecision(permissionManager.hasPatchPermission(teamId, user, uri));
+        Long projectId = Long.parseLong(variables.get("projectId"));
+        return new AuthorizationDecision(permissionManager.hasPatchPermission(projectId, user, uri));
     }
 
     private String getUriFromAuthRequest(RequestAuthorizationContext reqContext){
@@ -86,7 +104,7 @@ public class TeamAuthorizationManager implements AuthorizationManager<RequestAut
     }
 
     private Collection<HttpMethod> getAllowedHttpMethods(){
-        return List.of(HttpMethod.GET, HttpMethod.PATCH, HttpMethod.DELETE);
+        return List.of(HttpMethod.POST, HttpMethod.GET, HttpMethod.PATCH, HttpMethod.DELETE);
     }
 
 }

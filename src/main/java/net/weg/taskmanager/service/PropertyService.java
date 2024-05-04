@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import javax.management.InvalidAttributeValueException;
 import java.util.Collection;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +24,12 @@ public class PropertyService {
         properties.stream()
                 .filter(this::doesPropertyNotExists)
                 .forEach(repository::save);
+    }
+
+    public Property findPropertyById(Long propertyId) {
+        Optional<Property> optionalProperty = repository.findById(propertyId);
+        if (optionalProperty.isEmpty()) throw new NoSuchElementException("Property not found");
+        return optionalProperty.get();
     }
 
     private boolean doesPropertyNotExists(Property property){

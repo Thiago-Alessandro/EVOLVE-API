@@ -52,6 +52,7 @@ public class ProjectController {
     }
 
 
+
 //    @GetMapping
 //    public Collection<GetProjectDTO> findAll() {
 //        return projectService.findAll();
@@ -188,11 +189,5 @@ public class ProjectController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
-
-    //isso aqui é usado?
-//    @GetMapping("/user/{userId}")
-//    public Collection<GetProjectDTO> getProjectsByUserId(@PathVariable Long userId){
-//        return projectService.getProjectsByUserId(userId);
-//    }
 
 }
