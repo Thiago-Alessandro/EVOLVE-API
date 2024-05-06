@@ -234,6 +234,25 @@ public class TeamNotificationService {
         this.teamRepository.save(teamOfNotification);
     }
 
+    public void removeAssociateNotification(Long userId, Long taskId, User removedAssociate) {
+        User userAction = userRepository.findById(userId).get();
+        Task taskUpdated = taskRepository.findById(taskId).get();
+        Team teamOfNotification = taskUpdated.getProject().getTeam();
+
+        TeamNotification teamNotification = new TeamNotification(
+                userAction,
+                this.verifyTaskNotificatedUsers(taskId),
+                false,
+                userAction.getName()+" desassociou "+removedAssociate.getName()+" da tarefa " + taskUpdated.getName(),
+                LocalDateTime.now(),
+                "task"
+        );
+
+        this.teamNotificationRepository.save(teamNotification);
+        teamOfNotification.getNotifications().add(teamNotification);
+        this.teamRepository.save(teamOfNotification);
+    }
+
     public void updatePropertyCurrentOptionNotification(Long taskId, Long userId,Property property) {
         User userAction = userRepository.findById(userId).get();
         Task taskUpdated = taskRepository.findById(taskId).get();

@@ -48,6 +48,7 @@ public class TaskController {
 
     @PostMapping
     public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
+        System.out.println("CHEGANDO NA CONTROLLER");
         return taskService.create(postTaskDTO);}
 
     @PutMapping("/{userId}")
@@ -74,9 +75,19 @@ public class TaskController {
         return taskService.patchAssociate(taskId,associates,userId);
     }
 
+    @DeleteMapping("property/associates/delete/{taskId}/{userId}/{removedAssociateId}")
+    public Collection<GetUserDTO> deleteAssociate(@PathVariable Long taskId, @PathVariable Long userId, @PathVariable Long removedAssociateId) {
+        return taskService.removeAssociate(taskId,removedAssociateId,userId);
+    }
+
     @PutMapping("/update/finalDate/{taskId}/{userId}/calendar/{newFinalDate}")
     public GetTaskDTO updateTaskFinalDate(@PathVariable Long taskId, @PathVariable Long userId, @PathVariable LocalDate newFinalDate) {
         return taskService.updateTaskFinalDate(taskId,userId,newFinalDate);
+    }
+
+    @PatchMapping("/update/{taskId}/scheludeDate/{userId}/calendar/{newDate}")
+    public GetTaskDTO updateTaskScheludeDate(@PathVariable Long taskId, @PathVariable Long userId, @PathVariable LocalDate newDate) {
+        return taskService.updateTaskScheludeDate(taskId,userId,newDate);
     }
 
     @GetMapping("/userTask/{userId}/{taskId}")

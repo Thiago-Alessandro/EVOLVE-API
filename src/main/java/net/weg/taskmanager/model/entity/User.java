@@ -58,7 +58,7 @@ public class User {
     }
 
 
-    public void setImage(MultipartFile image) {
+    public void setImageFromMultipartfile(MultipartFile image) {
         if(image!=null){
             File file = new File();
             try {
