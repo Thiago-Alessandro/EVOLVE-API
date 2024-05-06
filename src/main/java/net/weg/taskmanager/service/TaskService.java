@@ -36,7 +36,6 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final PropertyRepository propertyRepository;
     private final UserTaskRepository userTaskRepository;
-    private final UserRepository userRepository;
     private final PropertyValueRepository propertyValueRepository;
     private final OptionRepository optionRepository;
     private final CommentRepository commentRepository;
@@ -212,7 +211,7 @@ public class TaskService {
         task.setAssociates(newList);
         ArrayList<String> currentUsersAssociates = new ArrayList<>();
         associates.forEach(user -> {
-            currentUsersAssociates.add(userRepository.findById(user.getId()).get().getName());
+            currentUsersAssociates.add(userService.findUserById(userId).getName());
         });
 
         task = historicService.patchAssociateHistoric(taskId, userId, newList, currentUsersAssociates);
@@ -261,7 +260,7 @@ public class TaskService {
     }
 
     public void delete(Long id) {
-        Collection<Property> properties = taskRepository.findById(id).get().getProperties();
+        Collection<Property> properties = findTaskById(id).getProperties();
         propertyRepository.deleteAll(properties);
         taskRepository.deleteById(id);
     }
