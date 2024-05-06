@@ -23,6 +23,7 @@ public class GetTeamNotificationDTO {
     private boolean readed;
     private String value;
     private LocalDateTime dateTime;
+    private String type;
 
     public GetTeamNotificationDTO(TeamNotification teamNotification) {
         BeanUtils.copyProperties(teamNotification,this);
