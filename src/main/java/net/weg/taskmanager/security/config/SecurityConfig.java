@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
 
                 //TASK
-                .requestMatchers(HttpMethod.POST, "/task/{projectId}").access(taskAuthorizationManager)
+                .requestMatchers(HttpMethod.POST, "/task/project/{projectId}").access(taskAuthorizationManager)
                 //tem q fazer a logica p criar ainda (se o usuario tem permissao createTask no projeto ou ismanager)
                 .requestMatchers(HttpMethod.GET, "/task/project/{projectId}").access(taskAuthorizationManager)
                 .requestMatchers(HttpMethod.GET, "/task/user/{userId}").access(taskAuthorizationManager)

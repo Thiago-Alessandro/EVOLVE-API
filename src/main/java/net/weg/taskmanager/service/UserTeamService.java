@@ -5,6 +5,7 @@ import net.weg.taskmanager.model.entity.UserTeam;
 import net.weg.taskmanager.model.entity.UserTeamId;
 import net.weg.taskmanager.repository.UserTeamRepository;
 import net.weg.taskmanager.security.model.entity.Role;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class UserTeamService {
 
     private final UserTeamRepository repository;
+    private final ModelMapper mapper;
 
 
     public Collection<UserTeam> findAllWithTeamId(Long teamId){
@@ -27,13 +29,32 @@ public class UserTeamService {
         return repository.save(userTeam);
     }
 
+    public UserTeam save(UserTeam userTeam){
+        if(userTeam.getRole()!=null) {
+            return repository.save(userTeam);
+        }
+        return userTeam;
+    }
+
     public Collection<UserTeam> setRoleAndCreateAllIfNotExists(Collection<UserTeam> userTeams, Role role){
         return userTeams.stream().map(userTeam -> setRoleAndCreateIfNotExists(userTeam, role)).toList();
     }
 
+    public UserTeam findByUserIdAndTeamId(Long userId, Long teamId){
+        Optional<UserTeam> optionalUserTeam = repository.findByUserIdAndTeamId(userId, teamId);
+        if(optionalUserTeam.isEmpty()) throw new NoSuchElementException();
+        return optionalUserTeam.get();
+    }
+
     public UserTeam setRoleAndCreateIfNotExists(UserTeam userTeam, Role role){
-        UserTeamId userTeamId = new UserTeamId(userTeam.getUserId(), userTeam.getTeamId());
-        return !repository.existsById(userTeamId) ? setRoleAndCreate(userTeam, role) : findById(userTeamId);
+        try{
+            findByUserIdAndTeamId(userTeam.getUserId(), userTeam.getTeamId());
+            return save(userTeam);
+        } catch (Exception e){
+            return setRoleAndCreate(userTeam, role);
+        }
+//        return !repository.existsById(userTeamId) ?  :);
+//        UserTeamId userTeamId = new UserTeamId(userTeam.getUserId(), userTeam.getTeamId());
     }
 
     public UserTeam setRoleAndCreate(UserTeam userTeam, Role role){

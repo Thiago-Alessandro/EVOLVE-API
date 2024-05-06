@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.UserProject;
 import net.weg.taskmanager.model.entity.Task;
 import net.weg.taskmanager.model.entity.User;
+import net.weg.taskmanager.security.model.enums.Permission;
 import net.weg.taskmanager.service.TaskService;
 import org.springframework.stereotype.Component;
 
@@ -28,4 +29,10 @@ public class TaskPermissionManager {
 
     }
 
+    public boolean hasPostPermission(User user, Long projectId){
+        //somente quem tem permissao de crair projeeto no grupo pode criar projeto (permissao do grupo)
+        return user.getProjectRoles().stream()
+                .filter(userProject -> userProject.getProjectId().equals(projectId))
+                .anyMatch(userProject -> userProject.getRole().getPermissions().contains(Permission.CREATE_TASK));
+    }
 }

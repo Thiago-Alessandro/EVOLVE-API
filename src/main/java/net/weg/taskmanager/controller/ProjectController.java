@@ -63,7 +63,7 @@ public class ProjectController {
         projectService.delete(projectId);
     }
 
-    @PostMapping("team/{teamId}")
+    @PostMapping("/team/{teamId}")
     public GetProjectDTO create(@RequestBody PostProjectDTO project) {
         return projectService.create(project);
     }

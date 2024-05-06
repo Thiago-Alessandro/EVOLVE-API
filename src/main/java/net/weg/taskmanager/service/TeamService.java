@@ -148,7 +148,7 @@ private final UserRepository userRepository;
         deleteUserTeamIfUserIsNotParticipant(team);
         createdParticipants.forEach(userTeam -> userTeam.setUser(userRepository.findById(userTeam.getUserId()).get()));
         //team must have at least one manager (creator/owner)
-        team.setParticipants(new ArrayList<>(createdParticipants));
+        team.setParticipants(new ArrayList<>(createdParticipants.stream().map(userTeamService::save).toList()));
         if(!hasManager(team)) throw new InvalidAttributeValueException();
         updateTeamChat(team);
         return new GetTeamDTO(teamRepository.save(team));

@@ -52,7 +52,7 @@ public class ProjectAuthorizationManager implements AuthorizationManager<Request
 
     private AuthorizationDecision hasGetPermission(User user, Map<String, String> variables) {
         if (variables.containsKey("projectId")) return hasGetProjectByIdPermission(user, variables);
-        if (variables.containsKey("teamId")) return hasGetProjectByTeamIdPermmission(user, variables);
+        if (variables.containsKey("teamId")) return hasGetProjectByTeamIdPermission(user, variables);
         if (variables.containsKey("userId")) return hasGetProjectByUserIdPermission(user, variables);
         return new AuthorizationDecision(false);
     }
@@ -63,7 +63,7 @@ public class ProjectAuthorizationManager implements AuthorizationManager<Request
         return new AuthorizationDecision(isAuthorized);
     }
 
-    private AuthorizationDecision hasGetProjectByTeamIdPermmission(User user, Map<String, String> variables){
+    private AuthorizationDecision hasGetProjectByTeamIdPermission(User user, Map<String, String> variables){
         Long teamId = Long.parseLong(variables.get("teamId"));
         boolean isAuthorized = user.getTeamRoles().stream().anyMatch(userTeam -> userTeam.getTeamId().equals(teamId));
         return new AuthorizationDecision(isAuthorized);

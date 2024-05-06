@@ -61,7 +61,7 @@ public class TaskController {
         return taskService.getTasksByStatus(statusId);
     }
 
-    @PostMapping
+    @PostMapping("/project/{projectId}")
     public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
         return taskService.create(postTaskDTO);}
 
