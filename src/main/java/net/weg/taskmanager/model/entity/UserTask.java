@@ -28,8 +28,6 @@ public class UserTask {
     @ManyToOne
     @JoinColumn(name = "taskId", insertable = false, updatable = false)
     private Task task;
-//    @OneToMany
-//    private Collection<Auth> authorizations;
 
     private Integer workedHours;
     private Integer workedMinutes;

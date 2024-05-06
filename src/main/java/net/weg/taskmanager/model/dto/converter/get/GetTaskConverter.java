@@ -6,6 +6,7 @@ import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.entity.Project;
 import net.weg.taskmanager.model.entity.Task;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class GetTaskConverter implements Converter<GetTaskDTO, Task> {
@@ -17,6 +18,6 @@ public class GetTaskConverter implements Converter<GetTaskDTO, Task> {
 
     @Override
     public Collection<GetTaskDTO> convertAll(Collection<Task> objs) {
-        return objs != null ? objs.stream().map(this::convertOne).toList() : null;
+        return objs != null ? objs.stream().map(this::convertOne).toList() : new ArrayList<>();
     }
 }

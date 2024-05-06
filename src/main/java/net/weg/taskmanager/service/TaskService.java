@@ -40,14 +40,15 @@ public class TaskService {
     private final PropertyValueRepository propertyValueRepository;
     private final OptionRepository optionRepository;
     private final CommentRepository commentRepository;
-    private final Converter<GetTaskDTO, Task> converter = new GetTaskConverter();
-    private final HistoricService historicService;
     private final SubTaskRepository subTaskRepository;
     private final ProjectRepository projectRepository;
 
+    private final HistoricService historicService;
+    private final Converter<GetTaskDTO, Task> converter = new GetTaskConverter();
+
     public UserTask setWorkedTime(UserTask userTask) {
 
-        UserTask changingUserTask = userTaskRepository.findByUserIdAndTaskId(userTask.getUserId(), userTask.getTaskId());
+        UserTask changingUserTask = userTaskService.findByUserIdAndTaskId(userTask.getUserId(), userTask.getTaskId());
 
         if (changingUserTask != null) {
             changingUserTask.setWorkedHours(userTask.getWorkedHours());
@@ -116,9 +117,11 @@ public class TaskService {
         return savedOption;
     }
 
+    private final OptionService optionService;
+
     public Property deletePropertyOption(Long userId, Long taskId, Long propertyId, Long optionId) {
-        Property property = propertyRepository.findById(propertyId).get();
-        Option option = optionRepository.findById(Math.toIntExact(optionId)).get();
+        Property property = propertyService.findPropertyById(propertyId);
+        Option option = optionService.findOptionById(optionId);
         historicService.deletePropertyOptionHistoric(userId, taskId, propertyId, optionId);
         property.getOptions().remove(option);
         optionRepository.delete(option);
@@ -130,12 +133,10 @@ public class TaskService {
     }
 
     public UserTask getUserTask(Long userId, Long taskId) {
-        UserTaskId userTaskId = new UserTaskId();
-        userTaskId.setUserId(userId);
-        userTaskId.setTaskId(taskId);
-
-        return userTaskRepository.findById(userTaskId).get();
+        return userTaskService.findByUserIdAndTaskId(userId, taskId);
     }
+
+    private final UserTaskService userTaskService;
 
 
     public GetTaskDTO patchProperty(Property property, Long taskId) {
@@ -158,7 +159,7 @@ public class TaskService {
 
 
     public Property updatePropertyCurrentOptions(Collection<Option> newCurrentOptions, Long propertyId, Long taskId, Long userId) {
-        Property property = propertyRepository.findById(propertyId).get();
+        Property property = propertyService.findPropertyById(propertyId);
         newCurrentOptions.forEach(newCurrentOption -> {
             if (!property.getCurrentOptions().contains(newCurrentOption)) {
                 historicService.updatePropertyCurrentOptions(userId, taskId, newCurrentOption, property);
@@ -177,7 +178,7 @@ public class TaskService {
     }
 
     public GetTaskDTO patchProperty(Property property, Long taskId, Long userId) {
-        Task task = taskRepository.findById(taskId).get();
+        Task task = findTaskById(taskId);
         if (property.getOptions() != null) {
             optionRepository.saveAll(property.getOptions());
         }
@@ -186,7 +187,7 @@ public class TaskService {
 
         Task savedTask = historicService.patchProperty(property, userId, taskId);
 
-        return resolveAndGetDTO(savedTask);
+        return converter.convertOne(savedTask);
     }
     private final PropertyService propertyService;
 
@@ -202,7 +203,7 @@ public class TaskService {
 
     public Collection<GetUserDTO> patchAssociate(Long taskId, Collection<GetUserDTO> associates, Long userId) {
         Collection<User> newList = new ArrayList<>();
-        Task task = taskRepository.findById(taskId).get();
+        Task task = findTaskById(taskId);
         associates.forEach(associate -> {
             User user = new User();
             BeanUtils.copyProperties(associate, user);
@@ -221,20 +222,18 @@ public class TaskService {
 
     }
 
-    public GetTaskDTO updateCurrentStatus(Long taskId, Long userId, Status status) {
-        Task task = taskRepository.findById(taskId).get();
-        User user = userRepository.findById(userId).get();
+    public GetTaskDTO patchCurrentStatus(Long taskId, Long userId, Status status) {
+        Task task = findTaskById(taskId);
+        User user = userService.findUserById(userId);
 
         task.setCurrentStatus(status);
-
         task = historicService.updateCurrentStatusHistoric(user, task, status);
-
-        return new GetTaskDTO(task);
+        return converter.convertOne(task);
     }
 
     public GetTaskDTO updateCurrentPriority(Long taskId, Long userId, PriorityRecord priorityRecord) {
-        Task task = taskRepository.findById(taskId).get();
-        User user = userRepository.findById(userId).get();
+        Task task = findTaskById(taskId);
+        User user = userService.findUserById(userId);
         Priority priority = Priority.valueOf(priorityRecord.name());
 
         task.setPriority(priority);
@@ -261,30 +260,6 @@ public class TaskService {
 //        return resolveAndGetDTO(task);
     }
 
-    public Collection<GetTaskDTO> findAll() {
-        Collection<Task> tasks = taskRepository.findAll();
-        return resolveAndGetDTOS(tasks);
-    }
-
-//    public Collection<GetTaskDTO> findAll(Long projectId) {
-//        Collection<Task> tasks = taskRepository.findAllByProject_Id(projectId);
-//        Collection<GetTaskDTO> getTaskDTOS = new ArrayList<>();
-//
-//        for (Task task : tasks) {
-//            TaskProcessor.getInstance().resolveTask(task);
-//        }
-//
-//        for (Task taskFor : tasks) {
-//            GetTaskDTO getTaskDTO = new GetTaskDTO();
-//            PriorityRecord priorityRecord = new PriorityRecord(taskFor.getPriority().name(), taskFor.getPriority().backgroundColor);
-//            BeanUtils.copyProperties(taskFor, getTaskDTO);
-//            getTaskDTO.setPriority(priorityRecord);
-//            getTaskDTOS.add(getTaskDTO);
-//        }
-//
-//        return getTaskDTOS;
-//    }
-
     public void delete(Long id) {
         Collection<Property> properties = taskRepository.findById(id).get().getProperties();
         propertyRepository.deleteAll(properties);
@@ -300,19 +275,19 @@ public class TaskService {
 
         setStatusListIndex(task);
 
-        System.out.println(taskRepository.save(task).getProject().getName());
-
         taskRepository.save(task);
-        Task task2 = taskRepository.findById(task.getId()).get();
+        Task task2 = findTaskById(task.getId());
         syncUserTaskTable(task2);
 
 
-        return resolveAndGetDTO(task2);
+        return converter.convertOne(task2);
     }
 
+    private final ProjectService projectService;
+
     public void deleteTask(Long taskId) {
-        Task task = taskRepository.findById(taskId).get();
-        Project projectOfTask = projectRepository.findById(task.getProject().getId()).get();
+        Task task = findTaskById(taskId);
+        Project projectOfTask = projectService.findProjectById(task.getProject().getId());
 
         taskRepository.deleteById(taskId);
 
@@ -321,20 +296,9 @@ public class TaskService {
 
     }
 
-    private final TaskProcessor taskProcessor = new TaskProcessor();
-
-    private GetTaskDTO resolveAndGetDTO(Task task) {
-      //  taskProcessor.resolveTask(task);
-        return new GetTaskDTO(task);
-    }
-
-    private Collection<GetTaskDTO> resolveAndGetDTOS(Collection<Task> tasks) {
-        return tasks.stream().map(this::resolveAndGetDTO).toList();
-    }
-
     public GetTaskDTO update(PutTaskDTO putTaskDTO, Long userId) {
-        Task task = taskRepository.findById(putTaskDTO.getId()).get();
-        User userForHistoric = userRepository.findById(userId).get();
+        Task task = findTaskById(putTaskDTO.getId());
+        User userForHistoric = userService.findUserById(userId);
 
         task = historicService.generalUpdateHistoric(putTaskDTO, task, userForHistoric);
 
@@ -351,24 +315,18 @@ public class TaskService {
         GetTaskDTO getTaskDTO = new GetTaskDTO();
         BeanUtils.copyProperties(updatedTask, getTaskDTO);
         return getTaskDTO;
-//        return resolveAndGetDTO(updatedTask);
     }
 
     public GetTaskDTO patchFile(Long taskId, MultipartFile file, Long userId){
-        Task task = taskRepository.findById(taskId).get();
-        User user = userRepository.findById(userId).get();
-
-        task = historicService.patchFileHistoric(taskId,userId,file);
-
+        Task task = historicService.patchFileHistoric(taskId,userId,file);
         task.setFile(file);
         Task updatedTask = taskRepository.save(task);
-
         return converter.convertOne(updatedTask);
     }
 
     public void deleteFile(Long taskId, Long fileId, Long userId) {
         AtomicReference<File> newFile = new AtomicReference<>(new File());
-        Task task = taskRepository.findById(taskId).get();
+        Task task = findTaskById(taskId);
 
             task.getFiles().forEach(file -> {
                 if (file.getId().equals(fileId)) {
@@ -387,12 +345,12 @@ public class TaskService {
     private double setProgress(Task task) {
         if(task.getSubtasks()!=null){
             Collection<Subtask> totalConcludedSubtasks = task.getSubtasks().stream().filter(Subtask::getConcluded).toList();
-            double total = task.getSubtasks().size();
-            if (total == 0) {
+            double totalSubtasks = task.getSubtasks().size();
+            if (totalSubtasks == 0) {
                 return 0.0;
             }
             double totalConcluded = totalConcludedSubtasks.size();
-            double progress = (totalConcluded / total) * 100;
+            double progress = (totalConcluded / totalSubtasks) * 100;
 
             return progress;
         }
@@ -457,13 +415,11 @@ public class TaskService {
         return getTaskDTOS;
     }
 
-//    private GetTaskDTO transformToTaskDTO(Task task) {
-//        TaskProcessor.getInstance().resolveTask(task);
-//        return new GetTaskDTO(task);
-//    }
+    public Collection<GetTaskDTO> getTasksByProjectId(Long projectId){
+        Collection<Task> tasks = taskRepository.findAllByProject_Id(projectId);
+        return converter.convertAll(tasks);
+    }
 
-
-//    private final StatusRepository statusRepository;
     private final StatusService statusService;
 
     public Collection<GetTaskDTO> getTasksByStatus(Long id) {

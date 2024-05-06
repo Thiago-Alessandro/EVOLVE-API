@@ -32,17 +32,37 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @GetMapping("/{projectId}/{taskId}")
-    public GetTaskDTO findById(@PathVariable Long projectId, @PathVariable Long taskId) {
+    @GetMapping("/{taskId}")//security nao implementado. Esse metodo é usado?
+    public GetTaskDTO findById(@PathVariable Long taskId) {
         return taskService.findById(taskId);
     }
 
+    @GetMapping("/{projectId}/status/{statusId}")
+    public Collection<GetTaskDTO> getTasksByStatus(@PathVariable Long statusId) {
+        return taskService.getTasksByStatus(statusId);
+    }
 
-//    @GetMapping
-//    public Collection<GetTaskDTO> findAll(){return taskService.findAll();}
+    @GetMapping("/user/{userId}")
+    public Collection<GetTaskDTO> getTasksByUserId(@PathVariable Long userId){
+        return taskService.getTasksByUserId(userId);
+    }
 
-    @DeleteMapping("/{projectId}/{taskId}")
-    public void delete(@PathVariable Long projectId, @PathVariable Long taskId) {
+    @GetMapping("/project/{projectId}")
+    public Collection<GetTaskDTO> getTasksByProjectId(@PathVariable Long projectId){
+        return taskService.getTasksByProjectId(projectId);
+    }
+
+    @PostMapping("/project/{projectId}")
+    public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
+        return taskService.create(postTaskDTO);}
+
+    @PutMapping("/{userId}")
+    public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO,@PathVariable Long userId){
+        return taskService.update(putTaskDTO,userId);
+    } //isso aqui é para continuar existindo?
+
+    @DeleteMapping("/{taskId}")
+    public void delete(@PathVariable Long taskId) {
         taskService.delete(taskId);
     }
 
@@ -55,20 +75,6 @@ public class TaskController {
 //    public GetTaskDTO update(@PathVariable Long projectId, @RequestBody PutTaskDTO putTaskDTO) {
 //        return taskService.update(putTaskDTO);
 //    }
-
-    @GetMapping("/{projectId}/status/{statusId}")
-    public Collection<GetTaskDTO> getTasksByStatus(@PathVariable Long statusId) {
-        return taskService.getTasksByStatus(statusId);
-    }
-
-    @PostMapping("/project/{projectId}")
-    public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
-        return taskService.create(postTaskDTO);}
-
-    @PutMapping("/{userId}")
-    public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO,@PathVariable Long userId){
-        return taskService.update(putTaskDTO,userId);
-    } //isso aqui é para continuar existindo?
 
     @PatchMapping("/userTask")
     public UserTask setWorkedTime(@RequestBody UserTask userTask) {
@@ -96,7 +102,7 @@ public class TaskController {
         return taskService.updateTaskFinalDate(taskId,userId,newFinalDate);
     }
 
-    @GetMapping("/{projectId}/userTask/{userId}/{taskId}")
+    @GetMapping("/{taskId}/{projectId}/userTask/{userId}")
     public UserTask getUserTask(@PathVariable Long projectId, @PathVariable Long userId, @PathVariable Long taskId) {
         return taskService.getUserTask(userId, taskId);
     }
@@ -106,7 +112,7 @@ public class TaskController {
 //            return taskService.putPropertyValue(propertyValue);
 //    }
 
-    @PutMapping("/property/put/{propertyId}/{userId}/{taskId}")
+    @PutMapping("/{taskId}/property/put/{propertyId}/{userId}")
     public Property putPropertyValue(@PathVariable Long propertyId,
                                      @RequestBody PropertyValue propertyValue,
                                      @PathVariable Long userId,
@@ -114,7 +120,7 @@ public class TaskController {
         return taskService.putPropertyValue(propertyValue, propertyId, userId, taskId);
     }
 
-    @PutMapping("/property/put/option/{userId}/{taskId}/{propertyId}")
+    @PutMapping("/{taskId}/property/put/option/{userId}/{propertyId}")
     public Option putPropertyOption(@RequestBody Option newOption,
                                     @PathVariable Long userId,
                                     @PathVariable Long taskId,
@@ -122,7 +128,7 @@ public class TaskController {
         return taskService.putPropertyOption(newOption,userId, taskId, propertyId);
     }
 
-    @DeleteMapping("/property/delete/option/{userId}/{taskId}/{propertyId}/{optionId}")
+    @DeleteMapping("/{taskId}/property/delete/option/{userId}/{propertyId}/{optionId}")
     public Property deletePropertyOption(@PathVariable Long userId,
                                      @PathVariable Long taskId,
                                      @PathVariable Long propertyId,
@@ -130,12 +136,12 @@ public class TaskController {
         return taskService.deletePropertyOption(userId, taskId, propertyId, optionId);
     }
 
-    @PatchMapping("/subtask/{taskId}/{userId}")
+    @PatchMapping("/{taskId}/subtask/{userId}")
     public GetTaskDTO patchSubtask(@RequestBody Subtask subtask, @PathVariable Long taskId, @PathVariable Long userId) {
         return taskService.patchSubtask(subtask,taskId, userId);
     }
 
-    @DeleteMapping("/subtask/delete/{subtaskId}/{taskId}/{userId}")
+    @DeleteMapping("/{taskId}/subtask/delete/{subtaskId}/{userId}")
     public GetTaskDTO deleteSubtask(@PathVariable Long subtaskId, @PathVariable Long taskId, @PathVariable Long userId) {
         return taskService.deleteSubtask(subtaskId, taskId, userId);
     }
@@ -152,36 +158,31 @@ public class TaskController {
         return listTest.stream().map(priority -> new PriorityRecord(priority.name(), priority.backgroundColor)).collect(Collectors.toList());
     } //rever a segurança disso aqui (não pode existir?)
 
-    @GetMapping("/user/{userId}")
-    public Collection<GetTaskDTO> getTasksByUserId(@PathVariable Long userId){
-        return taskService.getTasksByUserId(userId);
-    }
-
-    @GetMapping("/comments/getAll/{taskId}")
+    @GetMapping("/{taskId}/comments/getAll")
     public Collection<Comment> getAllCommentsOfTask(@PathVariable Long taskId) {
         return taskService.getAllCommentsOfTask(taskId);
     } //rever a sugurança p isso aqui
 
-    @PatchMapping("/comments/patch/{taskId}/{userId}")
+    @PatchMapping("/{taskId}/comments/patch/user/{userId}")
     public Comment patchNewComment(@PathVariable Long taskId,
                                    @RequestBody Comment newComment, @PathVariable Long userId) {
         return taskService.patchNewComment(taskId, newComment, userId);
     }
 
-    @DeleteMapping("/comments/delete/{commentId}/{taskId}/{userId}")
+    @DeleteMapping("/{taskId}/comments/delete/{commentId}/user/{userId}")
     public Collection<Comment> deleteComment(@PathVariable Long commentId,
                               @PathVariable Long taskId, @PathVariable Long userId) {
         return taskService.deleteComment(commentId,taskId,userId);
     }
 
-    @PatchMapping("/update/{taskId}/currentStatus/{userId}")
+    @PatchMapping("/{taskId}/update/currentStatus/user/{userId}")
     public GetTaskDTO updateCurrentStatus(@PathVariable Long taskId,
                                     @PathVariable Long userId,
                                     @RequestBody Status newCurrentStatus) {
-        return taskService.updateCurrentStatus(taskId,userId,newCurrentStatus);
+        return taskService.patchCurrentStatus(taskId,userId,newCurrentStatus);
     }
 
-    @PatchMapping("update/{taskId}/currentOptions/{userId}/{propertyId}")
+    @PatchMapping("/{taskId}/update/currentOptions/user/{userId}/property/{propertyId}")
     public Property updatePropertyOptions(@PathVariable Long taskId,
                                           @PathVariable Long userId,
                                           @PathVariable Long propertyId,
@@ -189,40 +190,40 @@ public class TaskController {
         return taskService.updatePropertyCurrentOptions(newCurrentOptions, propertyId, taskId, userId);
     }
 
-    @PatchMapping("/update/{taskId}/{userId}/currentPriority")
+    @PatchMapping("/{taskId}/user/{userId}/update/currentPriority")
     public GetTaskDTO updateCurrentPriority(@PathVariable Long taskId,
                                             @PathVariable Long userId,
                                             @RequestBody PriorityRecord priorityRecord) {
         return taskService.updateCurrentPriority(taskId,userId,priorityRecord);
     }
 
-    @PatchMapping("/update/{taskId}/name/{userId}/{name}")
+    @PatchMapping("/update/{taskId}/user/{userId}/name{name}")
     public GetTaskDTO updateTaskName(@PathVariable Long taskId,
                                      @PathVariable Long userId,
                                      @PathVariable String name) {
         return taskService.updateTaskName(taskId,name);
     }
 
-    @DeleteMapping("/property/delete/{taskId}/{userId}/{propertyId}")
+    @DeleteMapping("/{taskId}/property/delete/user/{userId}/{propertyId}")
     public GetTaskDTO deleteProperty(@PathVariable Long taskId,
                                      @PathVariable Long userId,
                                      @PathVariable Long propertyId) {
         return taskService.deleteProperty(taskId,userId,propertyId);
     }
 
-    @DeleteMapping("/delete/{taskId}")
+    @DeleteMapping("/{taskId}/delete")
     public void deleteTask(@PathVariable Long taskId) {
         taskService.deleteTask(taskId);
     }
 
-    @PatchMapping("/patch/task/file/{taskId}/{userId}")
+    @PatchMapping("/{taskId}/patch/task/file/{userId}")
     public GetTaskDTO patchFile(@PathVariable Long taskId,
                                 @RequestParam MultipartFile file,
                                 @PathVariable Long userId){
         return taskService.patchFile(taskId, file, userId);
     }
 
-    @DeleteMapping("/delete/task/file/{taskId}/{fileId}/{userId}")
+    @DeleteMapping("/{taskId}/delete/file/{fileId}/{userId}")
     public void deleteFile(@PathVariable Long taskId,
                            @PathVariable Long fileId,
                            @PathVariable Long userId) {
