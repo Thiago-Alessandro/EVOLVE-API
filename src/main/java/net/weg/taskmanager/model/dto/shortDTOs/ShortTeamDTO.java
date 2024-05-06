@@ -7,11 +7,14 @@ import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
 import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
 import net.weg.taskmanager.model.dto.get.GetFileDTO;
+import net.weg.taskmanager.model.dto.get.GetTeamNotificationDTO;
 import net.weg.taskmanager.model.entity.File;
 import net.weg.taskmanager.model.entity.Team;
+import net.weg.taskmanager.model.entity.TeamNotification;
 import net.weg.taskmanager.model.entity.User;
 import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
@@ -25,6 +28,7 @@ public class ShortTeamDTO {
     private String imageColor;
     private ShortUserDTO administrator;
     private Collection<ShortUserDTO> participants;
+    private Collection<GetTeamNotificationDTO> notifications;
 
     public ShortTeamDTO(Team team){
         Converter<ShortUserDTO, User> userConverter = new ShortUserConverter();
@@ -34,7 +38,9 @@ public class ShortTeamDTO {
         this.administrator = userConverter.convertOne(team.getAdministrator());
         this.participants = userConverter.convertAll(team.getParticipants());
         this.image = fileConverter.convertOne(team.getImage());
-
+        this.notifications = team.getNotifications() != null ?
+                team.getNotifications().stream().map(GetTeamNotificationDTO::new).toList()
+                : new ArrayList<>();
     }
 
 }

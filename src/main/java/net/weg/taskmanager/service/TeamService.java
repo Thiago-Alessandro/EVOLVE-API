@@ -1,10 +1,12 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.entity.TeamNotification;
 import net.weg.taskmanager.model.entity.User;
 
 import net.weg.taskmanager.model.entity.Team;
 import net.weg.taskmanager.model.dto.get.GetTeamDTO;
+import net.weg.taskmanager.repository.TeamNotificationRepository;
 import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.service.processor.TeamProcessor;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -19,6 +22,7 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final TeamNotificationRepository teamNotificationRepository;
     private final TeamProcessor teamProcessor = TeamProcessor.getInstance();
 
     public GetTeamDTO findById(Long id){
@@ -71,6 +75,30 @@ public class TeamService {
     }
     private Collection<GetTeamDTO> resolveAndGetDTOs(Collection<Team> teams){
         return teams.stream().map(this::resolveAndGetDTO).toList();
+    }
+
+    public GetTeamDTO patchReadedNotification(Long teamId, Long notificationId) {
+        Team team = this.teamRepository.findById(teamId).get();
+
+        team.getNotifications().forEach(notificationFor -> {
+            if(Objects.equals(notificationFor.getId(), notificationId)) {
+                notificationFor.setReaded(true);
+                this.teamNotificationRepository.save(notificationFor);
+            }
+        });
+        Team teamSaved = this.teamRepository.save(team);
+
+        return new GetTeamDTO(teamSaved);
+    }
+
+    public void cleanAllUserNotifications(Long loggedUserId) {
+        User loggedUser = this.userRepository.findById(loggedUserId).get();
+        loggedUser.getTeams().forEach(team -> {
+            team.getNotifications().forEach(notification -> {
+                notification.getNotificatedUsers().remove(loggedUser);
+            });
+            this.teamRepository.save(team);
+        });
     }
 
 }

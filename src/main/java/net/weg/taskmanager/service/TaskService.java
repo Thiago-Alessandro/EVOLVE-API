@@ -208,9 +208,7 @@ public class TaskService {
 
         task.setCurrentStatus(status);
 
-        task = historicService.updateCurrentStatusHistoric(user, task, status);
-
-        return new GetTaskDTO(task);
+        return historicService.updateCurrentStatusHistoric(user, task, status);
     }
 
     public GetTaskDTO updateCurrentPriority(Long taskId, Long userId, PriorityRecord priorityRecord) {
@@ -221,7 +219,6 @@ public class TaskService {
         task.setPriority(priority);
 
         task = historicService.updateCurrentPriorityHistoric(task, user, priority);
-        System.out.println(task.getPriority());
 
         return new GetTaskDTO(task);
     }
@@ -284,8 +281,6 @@ public class TaskService {
     public GetTaskDTO update(PutTaskDTO putTaskDTO, Long userId) {
         Task task = taskRepository.findById(putTaskDTO.getId()).get();
         User userForHistoric = userRepository.findById(userId).get();
-
-        task = historicService.generalUpdateHistoric(putTaskDTO, task, userForHistoric);
 
         BeanUtils.copyProperties(putTaskDTO, task);
 
