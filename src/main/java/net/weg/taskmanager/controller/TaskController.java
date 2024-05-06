@@ -197,7 +197,7 @@ public class TaskController {
         return taskService.updateCurrentPriority(taskId,userId,priorityRecord);
     }
 
-    @PatchMapping("/update/{taskId}/user/{userId}/name{name}")
+    @PatchMapping("/{taskId}/update/user/{userId}/name{name}")
     public GetTaskDTO updateTaskName(@PathVariable Long taskId,
                                      @PathVariable Long userId,
                                      @PathVariable String name) {
