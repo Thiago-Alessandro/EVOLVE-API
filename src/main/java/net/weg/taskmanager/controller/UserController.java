@@ -32,12 +32,12 @@ public class UserController {
     public Collection<GetUserDTO> findAll(){return userService.findAll();}
 
     @PostMapping
-    public ResponseEntity<GetUserDTO> create(@RequestBody PostUserDTO user){
-        try {
-            return ResponseEntity.ok(userService.create(user));
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+    public GetUserDTO create(@RequestBody PostUserDTO user){
+//        try {
+            return (userService.create(user));
+//        }catch (Exception e){
+//            return new ResponseEntity<>(HttpStatus.CONFLICT);
+//        }
     }
 
 //    @PutMapping

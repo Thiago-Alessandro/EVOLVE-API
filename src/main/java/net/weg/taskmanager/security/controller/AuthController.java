@@ -14,7 +14,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,20 +30,23 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final Cookieutil cookieutil = new Cookieutil();
     private final JwtUtil jwtUtil = new JwtUtil();
+    private final SecurityContextRepository repository;
 
     @PostMapping("/login")
     public ResponseEntity<String> authenticate(@RequestBody UserLogin user, HttpServletRequest request, HttpServletResponse response) {
         System.out.println(user);
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+            System.out.println(authenticationToken);
+
             System.out.println("1");
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             System.out.println("2");
 
-//            SecurityContext context = SecurityContextHolder.createEmptyContext();
-//            context.setAuthentication(authentication);
-//            securityContextRepository.saveContext(context, request, response);
-//            SecurityContextHolder.setContext(context);
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authentication);
+            repository.saveContext(context, request, response);
+            SecurityContextHolder.setContext(context);
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             System.out.println("3");
@@ -49,8 +55,9 @@ public class AuthController {
             response.addCookie(cookie);
             return ResponseEntity.ok("Autentificação bem-sucedida");
         } catch (AuthenticationException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getMessage() + "e.getMessage()");
             System.out.println("cai no catch");
+            e.printStackTrace();
             throw e;
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Falha na autenticação");
         }

@@ -15,8 +15,12 @@ import net.weg.taskmanager.model.entity.UserTeam;
 import net.weg.taskmanager.model.entity.UserTeamId;
 import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.repository.UserRepository;
+import net.weg.taskmanager.security.model.entity.Role;
+import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
+import net.weg.taskmanager.security.service.RoleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,10 +60,27 @@ public class UserService {
         userRepository.deleteById(id);}
 
     public GetUserDTO create(PostUserDTO userDTO){
+        System.out.println("vou criar");
         User user = new User();
         BeanUtils.copyProperties(userDTO, user);
+        System.out.println("estou criando");
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        user.setUserDetailsEntity(UserDetailsEntity
+                .builder()
+                .user(user)
+                .enabled(true)
+//                    .authorities(List.of(Permission.GET, Permission.POST, Permission.DELETE, Permission.PUT, Permission.PATCH))
+                .accountNonExpired(true)
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .build());
+
         User createdUser = userRepository.save(user);
+        System.out.println("criei1");
         setDefaultTeam(createdUser);
+        System.out.println("criei2");
         return converter.convertOne(createdUser);
     }
 
@@ -96,15 +117,18 @@ public class UserService {
         }
         return null;
     }
-
+    private final RoleService roleService;
     private void setDefaultTeam(User user) {
         Team team = teamService.createTeam(new PostTeamDTO(user));
         team.setName(user.getName() + "'s Team");
         team.setPersonalWorkspace(true);
         team.setImage(user.getImage());
         Team savedTeam = teamService.save(team);
-        UserTeam userTeam = userTeamService.findById(new UserTeamId(savedTeam.getId(), user.getId()));
-        user.setTeamRoles(List.of(userTeam));
+//        UserTeam userTeam = userTeamService.findById(new UserTeamId(savedTeam.getId(), user.getId()));
+        Role role = roleService.getRoleByName("TEAM_CREATOR");
+        UserTeam userTeam = new UserTeam(user.getId(), team.getId(), user, team, role, true);
+        UserTeam createdUserTeam = userTeamService.create(userTeam);
+        user.setTeamRoles(List.of(createdUserTeam));
     }
 
 

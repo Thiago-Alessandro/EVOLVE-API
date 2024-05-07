@@ -16,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @AllArgsConstructor
@@ -28,15 +29,21 @@ public class SecurityConfig {
     private final TeamAuthorizationManager teamAuthorizationManager;
     private final TaskAuthorizationManager taskAuthorizationManager;
 
+    private final CorsConfigurationSource corsConfig;
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
+
+        httpSecurity.cors(cors -> cors.configurationSource(corsConfig));
 
         httpSecurity.authorizeHttpRequests(autorizeRequests -> autorizeRequests
 
                 //AUTH
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
+                .requestMatchers(HttpMethod.POST, "/user").permitAll()
 
                 //TASK
                 .requestMatchers(HttpMethod.POST, "/task/project/{projectId}").access(taskAuthorizationManager)

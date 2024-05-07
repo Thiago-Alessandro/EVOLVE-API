@@ -43,31 +43,37 @@ public class AuthFilter extends OncePerRequestFilter {
                 response.setStatus(401);
                 return;
             }
-
             String token = cookie.getValue();
             String username = jwtUtil.getUsername(token);
+            System.out.println("AUTHFILTER Vou procurar o usuario");
             UserDetails user = userDetailService.loadUserByUsername(username);
+            System.out.println("AuthFilter achei o usuario");
             Authentication authentication = new UsernamePasswordAuthenticationToken(user
                     , user.getPassword()
-                    , user.getAuthorities()
+//                    , user.getAuthorities()
             );
+            System.out.println("AuthFilter 1");
             //cria contexto novo (vazio) (ja passou pela autenticação pq se nao a autenticacao lanca uma excecao)
             //sem o contexto de autenticacao a autenticacao não fica salva, exigiria autenticacao em toda requisição
             //O contexto mantem o usuario ativo, poderia ser substituido por guardar as informacoes dos usuario logados em algum banco de dados
             SecurityContext context = SecurityContextHolder.createEmptyContext();
 
+            System.out.println("AuthFilter 2");
             //seta como objeto de autenticao o objeto retornado pela autenticacao ja autenticado (que foi setado isAthenticated como true)
             context.setAuthentication(authentication);
+            System.out.println("AuthFilter 3");
             securityContextRepository.saveContext(context, request, response);
 
+            System.out.println("AuthFilter 4");
             //renovacao do JWT e Cokkie
             Cookie cookieRenovado  = coookieUtil.createCookie(user);
             response.addCookie(cookieRenovado);
+            System.out.println("to saindo do authfilter hein");
         }
         filterChain.doFilter(request, response);
     }
 
     private boolean publicRoute(HttpServletRequest request) {
-        return (request.getRequestURI().equals("/auth/login") && request.getMethod().equals("POST"));
+        return (request.getRequestURI().equals("/auth/login") || request.getRequestURI().equals("/user") && request.getMethod().equals("POST"));
     }
 }

@@ -282,11 +282,11 @@ public class TaskService {
         return converter.convertOne(task2);
     }
 
-    private final ProjectService projectService;
+//    private final ProjectService projectService;
 
     public void deleteTask(Long taskId) {
         Task task = findTaskById(taskId);
-        Project projectOfTask = projectService.findProjectById(task.getProject().getId());
+        Project projectOfTask = projectRepository.findById(task.getProject().getId()).get();
 
         taskRepository.deleteById(taskId);
 

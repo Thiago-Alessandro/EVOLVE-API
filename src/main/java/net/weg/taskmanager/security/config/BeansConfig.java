@@ -34,7 +34,7 @@ public class BeansConfig {
     @Bean
     public CorsConfigurationSource corsConfig() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.setAllowedOrigins(List.of("http://localhost:8087"));
+        corsConfig.setAllowedOrigins(List.of("http://localhost:4200","http://localhost:8087" ));
         corsConfig.setAllowedMethods(List.of("POST","PUT","DELETE","GET","PATCH"));
         corsConfig.setAllowCredentials(true);
         corsConfig.setAllowedHeaders(List.of("*"));
