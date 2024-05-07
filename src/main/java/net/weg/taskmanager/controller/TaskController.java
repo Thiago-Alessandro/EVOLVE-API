@@ -37,7 +37,7 @@ public class TaskController {
         return taskService.findById(taskId);
     }
 
-    @GetMapping("/{projectId}/status/{statusId}")
+    @GetMapping("/{projectId}/status/{statusId}") //onde é usado? metodo semm cobertura do security
     public Collection<GetTaskDTO> getTasksByStatus(@PathVariable Long statusId) {
         return taskService.getTasksByStatus(statusId);
     }
@@ -97,7 +97,7 @@ public class TaskController {
         return taskService.patchAssociate(taskId,associates,userId);
     }
 
-    @PutMapping("/update/finalDate/{taskId}/{userId}/calendar/{newFinalDate}")
+    @PatchMapping("/update/finalDate/{taskId}/{userId}/calendar/{newFinalDate}")
     public GetTaskDTO updateTaskFinalDate(@PathVariable Long taskId, @PathVariable Long userId, @PathVariable LocalDateTime newFinalDate) {
         return taskService.updateTaskFinalDate(taskId,userId,newFinalDate);
     }
@@ -112,7 +112,7 @@ public class TaskController {
 //            return taskService.putPropertyValue(propertyValue);
 //    }
 
-    @PutMapping("/{taskId}/property/put/{propertyId}/{userId}")
+    @PatchMapping("/{taskId}/property/put/{propertyId}/{userId}")
     public Property putPropertyValue(@PathVariable Long propertyId,
                                      @RequestBody PropertyValue propertyValue,
                                      @PathVariable Long userId,
@@ -120,7 +120,7 @@ public class TaskController {
         return taskService.putPropertyValue(propertyValue, propertyId, userId, taskId);
     }
 
-    @PutMapping("/{taskId}/property/put/option/{userId}/{propertyId}")
+    @PatchMapping("/{taskId}/property/put/option/{userId}/{propertyId}")
     public Option putPropertyOption(@RequestBody Option newOption,
                                     @PathVariable Long userId,
                                     @PathVariable Long taskId,
