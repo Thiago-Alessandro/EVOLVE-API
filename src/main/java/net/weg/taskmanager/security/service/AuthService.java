@@ -23,7 +23,7 @@ public class AuthService implements UserDetailsService {
         Optional<UserDetailsEntity> userOptional = repository.findByUsername(username);
         if (userOptional.isEmpty()) throw new UsernameNotFoundException("Invalidated caches");
         System.out.println("Eu achei o usuario sim loadUserByUser4name");
-        System.out.println(userOptional.get());
+//        System.out.println(userOptional.get());
         return userOptional.get();
     }
 
