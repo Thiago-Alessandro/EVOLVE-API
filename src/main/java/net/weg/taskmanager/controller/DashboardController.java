@@ -57,4 +57,9 @@ public class DashboardController {
     public void deleteChart(@PathVariable Long idChart, @PathVariable Long idDashboard){
         chartService.delete(idChart, idDashboard);
     }
+
+    @PutMapping("/{idDashboard}/updateName")
+    public Dashboard updateName(@PathVariable Long idDashboard, @RequestBody Dashboard dashboard){
+        return dashboardService.updateName(idDashboard, dashboard);
+    }
 }
