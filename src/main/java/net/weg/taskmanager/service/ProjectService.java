@@ -34,11 +34,12 @@ public class ProjectService {
     private final ChartService chartService;
     private final CommentRepository commentRepository;
     private final HistoricService historicService;
+    private final TeamNotificationService teamNotificationService;
     private final ProjectProcessor projectProcessor = new ProjectProcessor();
     private final Converter<GetProjectDTO, Project> converter = new GetProjectConverter();
     
-    public GetProjectDTO updateStatusList(Long id, Status status){
-        Project project = projectRepository.findById(id).get();
+    public GetProjectDTO updateStatusList(Long projectId,Long userActionId, Status status){
+        Project project = projectRepository.findById(projectId).get();
         if(project.getStatusList()!=null){
             for(Status statusFor : project.getStatusList()){
                 if(Objects.equals(status.getId(), statusFor.getId())){
@@ -197,6 +198,7 @@ public class ProjectService {
         Comment commentSaved = commentRepository.save(newComment);
         project.getComments().add(commentSaved);
 //        project = historicService.patchNewCommentHistoric(projectId, userId).getProject();
+        teamNotificationService.patchNewCommentProjectNotification(projectId,userId);
         projectRepository.save(project);
         return commentSaved;
     }

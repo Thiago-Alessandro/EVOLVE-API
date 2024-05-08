@@ -25,6 +25,7 @@ public class TeamNotificationService {
     private final TeamRepository teamRepository;
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
+    private final DashboardRepository dashboardRepository;
 
     // Function to verify the task users that will be notificated
     public Collection<User> verifyTaskNotificatedUsers(Long taskId) {
@@ -36,7 +37,7 @@ public class TeamNotificationService {
 
     public Collection<User> verifyProjectNotificatedUsers(Long projectId) {
         Project project = projectRepository.findById(projectId).get();
-        return new ArrayList<>(project.getTeam().getParticipants());
+        return new ArrayList<>(project.getMembers());
     }
 
     // Task notifications
@@ -402,12 +403,67 @@ public class TeamNotificationService {
                 userAction,
                 this.verifyProjectNotificatedUsers(projectId),
                 false,
-                userAction.getName()+" criou uma nova dashboard chamda "+newDashboard.getName()+" no projeto " + project.getName(),
+                userAction.getName()+" criou uma nova dashboard chamada "+newDashboard.getName()+" no projeto " + project.getName(),
                 LocalDateTime.now(),
                 "project"
         );
         this.teamNotificationRepository.save(teamNotification);
 
+        teamOfNotification.getNotifications().add(teamNotification);
+        this.teamRepository.save(teamOfNotification);
+    }
+
+    public void deleteDashboardNotification(Long dashboardId, Long userActionId) {
+        User userAction = this.userRepository.findById(userActionId).get();
+        Dashboard dashboardDeleted = this.dashboardRepository.findById(dashboardId).get();
+        Team teamOfNotification = dashboardDeleted.getProject().getTeam();
+
+        TeamNotification teamNotification = new TeamNotification(
+                userAction,
+                this.verifyProjectNotificatedUsers(dashboardDeleted.getProject().getId()),
+                false,
+                userAction.getName()+" deletou a dashboard chamada "+dashboardDeleted.getName()+" no projeto " + dashboardDeleted.getProject().getName(),
+                LocalDateTime.now(),
+                "project"
+        );
+        this.teamNotificationRepository.save(teamNotification);
+
+        teamOfNotification.getNotifications().add(teamNotification);
+        this.teamRepository.save(teamOfNotification);
+    }
+
+    public void patchNewCommentProjectNotification(Long projectId, Long userActionId) {
+        User userAction = userRepository.findById(userActionId).get();
+        Project project = projectRepository.findById(projectId).get();
+        Team teamOfNotification = project.getTeam();
+
+        TeamNotification teamNotification = new TeamNotification(
+                userAction,
+                this.verifyProjectNotificatedUsers(projectId),
+                false,
+                userAction.getName()+" adicionou um novo comentário no projeto " + project.getName(),
+                LocalDateTime.now(),
+                "project"
+        );
+        this.teamNotificationRepository.save(teamNotification);
+        teamOfNotification.getNotifications().add(teamNotification);
+        this.teamRepository.save(teamOfNotification);
+    }
+
+    public void updateProjectStatusList(Long projectId, Long userActionId, Status newStatus) {
+        User userAction = userRepository.findById(userActionId).get();
+        Project project = projectRepository.findById(projectId).get();
+        Team teamOfNotification = project.getTeam();
+
+        TeamNotification teamNotification = new TeamNotification(
+                userAction,
+                this.verifyProjectNotificatedUsers(projectId),
+                false,
+                userAction.getName()+" adicionou um novo status chamado "+newStatus.getName()+" no projeto " + project.getName(),
+                LocalDateTime.now(),
+                "project"
+        );
+        this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
