@@ -202,6 +202,19 @@ public class TaskService {
 
     }
 
+    public Collection<GetUserDTO> removeAssociate(Long taskId, Long removedAssociateId, Long userId) {
+        User removedAssociate = userRepository.findById(removedAssociateId).get();
+        Task task = taskRepository.findById(taskId).get();
+
+        task.getAssociates().remove(removedAssociate);
+
+        task = historicService.removeAssociateHistoric(taskId, userId, removedAssociate);
+
+        Converter<GetUserDTO, User> userConverter = new GetUserConverter();
+        return userConverter.convertAll(taskRepository.save(task).getAssociates());
+
+    }
+
     public GetTaskDTO updateCurrentStatus(Long taskId, Long userId, Status status) {
         Task task = this.taskRepository.findById(taskId).get();
         User user = this.userRepository.findById(userId).get();
@@ -243,13 +256,15 @@ public class TaskService {
     public GetTaskDTO create(PostTaskDTO postTaskDTO) {
         Task task = new Task();
         BeanUtils.copyProperties(postTaskDTO, task);
-        Priority prioritySaved = Priority.valueOf(postTaskDTO.getPriority().name());
-        prioritySaved.backgroundColor = postTaskDTO.getPriority().backgroundColor();
-        task.setPriority(prioritySaved);
-
+        Project projectTask = projectRepository.findById(postTaskDTO.getProject().getId()).get();
+        User user = new User();
+        user.setId(postTaskDTO.getCreator().getId());
+        task.setCreator(user);
+        task.setProject(projectTask);
         setStatusListIndex(task);
         taskRepository.save(task);
         Task task2 = taskRepository.findById(task.getId()).get();
+
         syncUserTaskTable(task2);
 
 
@@ -362,7 +377,7 @@ public class TaskService {
         Integer defaultIndex = -1;
         Integer firstIndex = 0;
         if (task.getCurrentStatus() != null && task.getStatusListIndex() != null) {
-            if (task.getStatusListIndex() == defaultIndex) {
+            if (task.getStatusListIndex().equals(defaultIndex)) {
                 Collection<GetTaskDTO> listaTasks = getTasksByStatus(task.getCurrentStatus().getId());
                 if (listaTasks != null) {
                     task.setStatusListIndex(listaTasks.size());
@@ -425,6 +440,14 @@ public class TaskService {
         task.setFinalDate(newFinalDate);
         taskRepository.save(task);
         task = historicService.updateTaskFinalDateHistoric(taskId, userId, newFinalDate);
+        return transformToTaskDTO(task);
+    }
+
+    public GetTaskDTO updateTaskScheludeDate(Long taskId, Long userId, LocalDate newFinalDate) {
+        Task task = taskRepository.findById(taskId).get();
+        task.setScheduledDate(newFinalDate);
+        taskRepository.save(task);
+        task = historicService.updateTaskScheduledDateHistoric(taskId, userId, newFinalDate);
         return transformToTaskDTO(task);
     }
 

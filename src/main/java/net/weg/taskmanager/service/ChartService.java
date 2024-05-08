@@ -31,9 +31,7 @@ public class ChartService {
         if (project.getCharts().isEmpty()) {
             Chart chart = new Chart();
             chart.setLabel("Status das tarefas");
-            Chart chart1 = new Chart();
-            chart1.setLabel("Status das tarefa");
-            project.setCharts(List.of(chart, chart1));
+            project.setCharts(List.of(chart));
         }
 
         Collection<Chart> charts = new HashSet<>();

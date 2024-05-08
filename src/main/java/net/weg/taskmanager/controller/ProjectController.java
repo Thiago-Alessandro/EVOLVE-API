@@ -3,12 +3,14 @@ package net.weg.taskmanager.controller;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.get.GetCommentDTO;
 import net.weg.taskmanager.model.entity.Comment;
+import net.weg.taskmanager.model.entity.Project;
 import net.weg.taskmanager.model.entity.Status;
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.service.ProjectService;
+import net.weg.taskmanager.service.TeamNotificationService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +24,7 @@ import java.util.HashSet;
 public class ProjectController {
 
     private final ProjectService projectService;
-
+    private final TeamNotificationService teamNotificationService;
     @GetMapping("/{id}")
     public GetProjectDTO findById(@PathVariable Long id){return projectService.findById(id);}
     
@@ -39,9 +41,11 @@ public class ProjectController {
     @PutMapping
     public GetProjectDTO update(@RequestBody PutProjectDTO project){return projectService.update(project);}
 
-    @PatchMapping("/{projectId}")
-    public GetProjectDTO updateStatusList(@PathVariable Long projectId, @RequestBody Status status){
-        return projectService.updateStatusList(projectId, status);
+    @PatchMapping("/{projectId}/{actionUserId}")
+    public GetProjectDTO updateStatusList(@PathVariable Long projectId,@PathVariable Long actionUserId, @RequestBody Status status){
+        GetProjectDTO project = projectService.updateStatusList(projectId,actionUserId, status);
+//        teamNotificationService.updateProjectStatusList(projectId,actionUserId,status);
+        return project;
     }
 
     @PatchMapping("/{projectId}/deleteStatus")

@@ -2,6 +2,7 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.get.GetTaskDTO;
+import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.enums.Priority;
@@ -142,6 +143,27 @@ public class HistoricService {
         Historic historic = new Historic(
                 userForHistoric,
                 userForHistoric.getName() + " mudou a data final da tarefa para "+newFinalDate.toString(),
+                LocalDateTime.now()
+        );
+
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        taskForHistoric.getHistoric().add(savedHistoric);
+
+        teamNotificationService.updateFinalDateTaskNotification(userId,taskId);
+
+        taskRepository.save(taskForHistoric);
+
+        return taskForHistoric;
+    }
+
+    public Task updateTaskScheduledDateHistoric(Long taskId, Long userId, LocalDate newFinalDate) {
+        User userForHistoric = userRepository.findById(userId).get();
+        Task taskForHistoric = taskRepository.findById(taskId).get();
+
+        Historic historic = new Historic(
+                userForHistoric,
+                userForHistoric.getName() + " mudou a data de agendamento da tarefa para "+newFinalDate.toString(),
                 LocalDateTime.now()
         );
 
@@ -298,6 +320,27 @@ public class HistoricService {
 
         taskForHistoric.getHistoric().add(savedHistoric);
         teamNotificationService.patchAssociateNotification(userId,taskId);
+
+        return taskRepository.save(taskForHistoric);
+    }
+
+
+
+    public Task removeAssociateHistoric(Long taskId,Long userId, User removedAssociate) {
+        User userForHistoric = userRepository.findById(userId).get();
+        Task taskForHistoric = taskRepository.findById(taskId).get();
+
+        String description =  userForHistoric.getName() + " desassociou " + removedAssociate.getName() + " da tarefa";
+
+        Historic historic = new Historic(
+                userForHistoric,
+                description,
+                LocalDateTime.now()
+        );
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        taskForHistoric.getHistoric().add(savedHistoric);
+        teamNotificationService.removeAssociateNotification(userId,taskId,removedAssociate);
 
         return taskRepository.save(taskForHistoric);
     }
