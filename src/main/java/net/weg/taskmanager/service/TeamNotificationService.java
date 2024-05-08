@@ -4,17 +4,12 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
-import net.weg.taskmanager.model.entity.Task;
-import net.weg.taskmanager.model.entity.Team;
-import net.weg.taskmanager.model.entity.TeamNotification;
-import net.weg.taskmanager.model.entity.User;
+import net.weg.taskmanager.model.entity.*;
+import net.weg.taskmanager.model.entity.DashBoard.Dashboard;
 import net.weg.taskmanager.model.property.Option;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.property.values.PropertyValue;
-import net.weg.taskmanager.repository.TaskRepository;
-import net.weg.taskmanager.repository.TeamNotificationRepository;
-import net.weg.taskmanager.repository.TeamRepository;
-import net.weg.taskmanager.repository.UserRepository;
+import net.weg.taskmanager.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,12 +24,22 @@ public class TeamNotificationService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
     private final TaskRepository taskRepository;
+    private final ProjectRepository projectRepository;
 
-    // Function to verify the users that will be notificated
+    // Function to verify the task users that will be notificated
     public Collection<User> verifyTaskNotificatedUsers(Long taskId) {
         Task taskUpdated = taskRepository.findById(taskId).get();
         return new ArrayList<>(taskUpdated.getAssociates());
     }
+
+    // Function to verify the project users that will be notificated
+
+    public Collection<User> verifyProjectNotificatedUsers(Long projectId) {
+        Project project = projectRepository.findById(projectId).get();
+        return new ArrayList<>(project.getTeam().getParticipants());
+    }
+
+    // Task notifications
 
     public Collection<User> verifyChatNotificationsUser(Long actionUserId, Collection<User> usersChat) {
         Collection<User> newUsersChat = new ArrayList<>();
@@ -379,6 +384,27 @@ public class TeamNotificationService {
                 userAction.getName()+" mudou o nível de prioridade da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
                 "task"
+        );
+        this.teamNotificationRepository.save(teamNotification);
+
+        teamOfNotification.getNotifications().add(teamNotification);
+        this.teamRepository.save(teamOfNotification);
+    }
+
+    // Project notifications
+
+    public void createDashboardNotification(Long projectId, Long userActionId, Dashboard newDashboard) {
+        Project project = this.projectRepository.findById(projectId).get();
+        User userAction = this.userRepository.findById(userActionId).get();
+        Team teamOfNotification = project.getTeam();
+
+        TeamNotification teamNotification = new TeamNotification(
+                userAction,
+                this.verifyProjectNotificatedUsers(projectId),
+                false,
+                userAction.getName()+" criou uma nova dashboard chamda "+newDashboard.getName()+" no projeto " + project.getName(),
+                LocalDateTime.now(),
+                "project"
         );
         this.teamNotificationRepository.save(teamNotification);
 

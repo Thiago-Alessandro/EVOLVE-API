@@ -6,6 +6,7 @@ import net.weg.taskmanager.model.entity.DashBoard.Dashboard;
 import net.weg.taskmanager.repository.ProjectRepository;
 import net.weg.taskmanager.service.ChartService;
 import net.weg.taskmanager.service.DashboardService;
+import net.weg.taskmanager.service.TeamNotificationService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -18,9 +19,11 @@ public class DashboardController {
     private DashboardService dashboardService;
     private ChartService chartService;
     private ProjectRepository projectRepository;
+    private TeamNotificationService teamNotificationService;
 
-    @PostMapping
-    public Dashboard create(@RequestBody Dashboard dashboard, @PathVariable Long idProject){
+    @PostMapping("/{userActionId}")
+    public Dashboard create(@RequestBody Dashboard dashboard, @PathVariable Long idProject, @PathVariable Long userActionId){
+        teamNotificationService.createDashboardNotification(idProject, userActionId, dashboard);
         return dashboardService.create(dashboard, idProject);
     }
 
