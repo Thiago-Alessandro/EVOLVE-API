@@ -44,7 +44,7 @@ public class ProjectController {
     @PatchMapping("/{projectId}/{actionUserId}")
     public GetProjectDTO updateStatusList(@PathVariable Long projectId,@PathVariable Long actionUserId, @RequestBody Status status){
         GetProjectDTO project = projectService.updateStatusList(projectId,actionUserId, status);
-        teamNotificationService.updateProjectStatusList(projectId,actionUserId,status);
+//        teamNotificationService.updateProjectStatusList(projectId,actionUserId,status);
         return project;
     }
 

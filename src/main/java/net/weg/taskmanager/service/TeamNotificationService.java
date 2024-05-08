@@ -451,6 +451,8 @@ public class TeamNotificationService {
     }
 
     public void updateProjectStatusList(Long projectId, Long userActionId, Status newStatus) {
+        System.out.println("PROJECTID SOUT");
+        System.out.println(projectId);
         User userAction = userRepository.findById(userActionId).get();
         Project project = projectRepository.findById(projectId).get();
         Team teamOfNotification = project.getTeam();
@@ -463,9 +465,13 @@ public class TeamNotificationService {
                 LocalDateTime.now(),
                 "project"
         );
+        System.out.println("SOUT1");
         this.teamNotificationRepository.save(teamNotification);
+        System.out.println("SOUT2");
         teamOfNotification.getNotifications().add(teamNotification);
+        System.out.println("SOUT3");
         this.teamRepository.save(teamOfNotification);
+        System.out.println("SOUT4");
     }
 
 
