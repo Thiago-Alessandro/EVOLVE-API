@@ -82,22 +82,22 @@ public class TaskController {
     }
 
 
-    @PatchMapping("/{projectId}/property/{taskId}")
+    @PatchMapping("/{taskId}/{projectId}/property")
     public GetTaskDTO patchProperty(@PathVariable Long projectId, @RequestBody Property property, @PathVariable Long taskId) {
         return taskService.patchProperty(property, taskId);
-    }
+    } //é usado?
 
-    @PatchMapping("/property/{taskId}/{userId}")
+    @PatchMapping("/{taskId}/property/{userId}")
     public GetTaskDTO patchProperty(@RequestBody Property property, @PathVariable Long taskId, @PathVariable Long userId) {
         return taskService.patchProperty(property,taskId, userId);
     }
 
-    @PatchMapping("property/associates/{taskId}/{userId}")
+    @PatchMapping("/{taskId}/property/associates/{userId}")
     public Collection<GetUserDTO> patchAssociate(@PathVariable Long taskId, @RequestBody Collection<GetUserDTO> associates, @PathVariable Long userId) {
         return taskService.patchAssociate(taskId,associates,userId);
     }
 
-    @PatchMapping("/update/finalDate/{taskId}/{userId}/calendar/{newFinalDate}")
+    @PatchMapping("/{taskId}/update/finalDate/{userId}/calendar/{newFinalDate}")
     public GetTaskDTO updateTaskFinalDate(@PathVariable Long taskId, @PathVariable Long userId, @PathVariable LocalDateTime newFinalDate) {
         return taskService.updateTaskFinalDate(taskId,userId,newFinalDate);
     }
@@ -195,7 +195,7 @@ public class TaskController {
                                             @PathVariable Long userId,
                                             @RequestBody PriorityRecord priorityRecord) {
         return taskService.updateCurrentPriority(taskId,userId,priorityRecord);
-    }
+    } //é usado?
 
     @PatchMapping("/{taskId}/update/user/{userId}/name{name}")
     public GetTaskDTO updateTaskName(@PathVariable Long taskId,
