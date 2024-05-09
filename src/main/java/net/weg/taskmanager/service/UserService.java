@@ -52,6 +52,7 @@ public class UserService {
 
     public GetUserDTO patchImage(Long id, MultipartFile image){
         User user = userRepository.findById(id).get();
+
         user.setImageFromMultipartfile(image);
         User updatedUser = userRepository.save(user);
         return converter.convertOne(updatedUser);
@@ -69,7 +70,8 @@ public class UserService {
 
         try {
             User user = objectMapper.readValue(jsonUser, User.class);
-            user.setImageFromMultipartfile(image);
+            user.setImageFromMultipartFile(image);
+
             User updatedUser = userRepository.save(user);
             return converter.convertOne(updatedUser);
         } catch (JsonProcessingException e) {

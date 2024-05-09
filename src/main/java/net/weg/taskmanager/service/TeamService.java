@@ -10,9 +10,16 @@ import net.weg.taskmanager.repository.TeamNotificationRepository;
 import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.service.processor.TeamProcessor;
+import net.weg.taskmanager.utils.ColorUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.management.InvalidAttributeValueException;
 import java.util.Collection;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -26,29 +33,45 @@ public class TeamService {
     private final TeamProcessor teamProcessor = TeamProcessor.getInstance();
 
     public GetTeamDTO findById(Long id){
-        Team team = teamRepository.findById(id).get();
-//        teamDTO.image()
-        return resolveAndGetDTO(team);
+        Team team = findTeamById(id);
+        return new GetTeamDTO(team);
+    }
+
+    public Team findTeamById(Long id){
+        Optional<Team> optionalTeam = teamRepository.findById(id);
+        if(optionalTeam.isPresent()){
+            return optionalTeam.get();
+        }
+        throw new NoSuchElementException("Could not find team with id: " + id);
     }
 
     public Collection<GetTeamDTO> findAll(){
         Collection<Team> teams = teamRepository.findAll();
-        return resolveAndGetDTOs(teams);
+        return teams.stream().map(GetTeamDTO::new).toList();
     }
 
     public void delete(Long id){
         teamRepository.deleteById(id);
     }
 
-    public GetTeamDTO create(Team team){
+    public GetTeamDTO create(Long adminId){
+        User admin = userRepository.findById(adminId).get();
+        Team team = newTeam(admin);
         updateTeamChat(team);
-        Team createdTeam = teamRepository.save(team);
-        return resolveAndGetDTO(createdTeam);}
+        return saveAndGetDTO(team);}
+
+    private Team newTeam(User admin){
+        Team team = new Team();
+        team.setAdministrator(admin);
+        team.setParticipants(List.of(team.getAdministrator()));
+        team.setName("Nova Equipe");
+        team.setImageColor( ColorUtils.generateHexColor());
+        return team;
+    }
 
     public GetTeamDTO update(Team team){
         updateTeamChat(team);
-        Team updatedTeam = teamRepository.save(team);
-        return resolveAndGetDTO(updatedTeam);
+        return saveAndGetDTO(team);
     }
 
     public Collection<GetTeamDTO> findTeamsByUserId(Long id){
@@ -58,23 +81,52 @@ public class TeamService {
         return resolveAndGetDTOs(teams);
     }
 
-    public GetTeamDTO patchTeamName(Long teamId, String name){
-        Team team = teamRepository.findById(teamId).get();
-        team.setName(name);
-        Team savedTeam = teamRepository.save(team);
-        return new GetTeamDTO(savedTeam);
+
+
+    public GetTeamDTO patchTeamName(Long teamId, String name) throws InvalidAttributeValueException {
+        if(name!=null){
+            Team team = findTeamById(teamId);
+            team.setName(name);
+            return saveAndGetDTO(team);
+        }
+        throw new InvalidAttributeValueException("Name on Team can not be null");
     }
+
+    public GetTeamDTO patchParticipants(Long teamId, Collection<User> participants) throws InvalidAttributeValueException {
+        if(participants!=null){
+            Team team = findTeamById(teamId);
+            team.setParticipants(participants);
+            return saveAndGetDTO(team);
+        }
+        throw new InvalidAttributeValueException("Participants in Team can not be null");
+    }
+
+    public GetTeamDTO patchImageColor(Long teamId,String imageColor) throws InvalidAttributeValueException {
+        if(imageColor!=null){
+            Team team = findTeamById(teamId);
+            team.setImageColor(imageColor);
+            return saveAndGetDTO(team);
+        }
+        throw new InvalidAttributeValueException("ImageColor in Team can not be null");
+    }
+
+    public GetTeamDTO patchImage(Long teamId, MultipartFile image) throws InvalidAttributeValueException {
+        if(image != null){
+            Team team = findTeamById(teamId);
+            team.setImage(image);
+            return saveAndGetDTO(team);
+        }
+        throw new InvalidAttributeValueException("Image on Team can not be null");
+    }
+
 
     private void updateTeamChat(Team team){
         team.getChat().setUsers(team.getParticipants());
     }
 
-    private GetTeamDTO resolveAndGetDTO(Team team){
-        Team resolvedTeam = teamProcessor.resolveTeam(team);
-        return new GetTeamDTO(resolvedTeam);
-    }
-    private Collection<GetTeamDTO> resolveAndGetDTOs(Collection<Team> teams){
-        return teams.stream().map(this::resolveAndGetDTO).toList();
+    private GetTeamDTO saveAndGetDTO(Team team){
+        Team savedTeam = teamRepository.save(team);
+        return new GetTeamDTO(savedTeam);
     }
 
     public GetTeamDTO patchReadedNotification(Long teamId, Long notificationId) {
