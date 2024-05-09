@@ -1,6 +1,8 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.get.GetTeamConverter;
 import net.weg.taskmanager.model.entity.TeamNotification;
 import net.weg.taskmanager.model.entity.User;
 
@@ -30,7 +32,6 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
     private final TeamNotificationRepository teamNotificationRepository;
-    private final TeamProcessor teamProcessor = TeamProcessor.getInstance();
 
     public GetTeamDTO findById(Long id){
         Team team = findTeamById(id);
@@ -74,11 +75,12 @@ public class TeamService {
         return saveAndGetDTO(team);
     }
 
+    private final Converter<GetTeamDTO, Team> converter = new GetTeamConverter();
+
     public Collection<GetTeamDTO> findTeamsByUserId(Long id){
         User user = userRepository.findById(id).get();
         Collection<Team> teams = teamRepository.findTeamsByParticipantsContaining(user);
-        teams.forEach(team -> TeamProcessor.getInstance().resolveTeam(team));
-        return resolveAndGetDTOs(teams);
+        return converter.convertAll(teams);
     }
 
 

@@ -57,7 +57,7 @@ public class TeamController {
     @PatchMapping("/{teamId}/image")
     public GetTeamDTO patchImage(@PathVariable Long teamId, @RequestParam MultipartFile image) throws InvalidAttributeValueException {
         return service.patchImage(teamId, image);
-
+    }
     @PatchMapping("/{teamId}/{notificationId}")
     public GetTeamDTO patchReadedNotification(@PathVariable Long teamId, @PathVariable Long notificationId) {
         return service.patchReadedNotification(teamId,notificationId);
