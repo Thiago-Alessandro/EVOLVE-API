@@ -1,5 +1,6 @@
 package net.weg.taskmanager.controller;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.UserProject;
 import net.weg.taskmanager.model.entity.Status;
@@ -137,7 +138,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/{projectId}/statusList")
-    public ResponseEntity<GetProjectDTO> patchStatusList(@PathVariable Long projectId, @RequestParam Collection<Status> statusList)  {
+    public ResponseEntity<GetProjectDTO> patchStatusList(@PathVariable Long projectId, @RequestBody Collection<Status> statusList)  {
         try {
             return ResponseEntity.ok(projectService.patchStatusList(projectId, statusList));
         } catch (Exception e){
@@ -155,7 +156,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/{projectId}/members")
-    public ResponseEntity<GetProjectDTO> patchMembers(@PathVariable Long projectId, @RequestParam Collection<UserProject> members){
+    public ResponseEntity<GetProjectDTO> patchMembers(@PathVariable Long projectId, @RequestBody Collection<UserProject> members){
         try {
             return ResponseEntity.ok(projectService.patchMembers(projectId, members));
         } catch (Exception e){
@@ -164,7 +165,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/{projectId}/tasks")
-    public ResponseEntity<GetProjectDTO> patchTasks(@PathVariable Long projectId, @RequestParam Collection<Task> tasks){
+    public ResponseEntity<GetProjectDTO> patchTasks(@PathVariable Long projectId, @RequestBody Collection<Task> tasks){
         try {
             return ResponseEntity.ok(projectService.patchTasks(projectId, tasks));
         } catch (Exception e){
@@ -182,7 +183,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/{projectId}/defaultRole")
-    public ResponseEntity<GetProjectDTO> patchDefaultRole(@PathVariable Long projectId, @RequestParam Role defaultRole){
+    public ResponseEntity<GetProjectDTO> patchDefaultRole(@PathVariable Long projectId, @RequestBody Role defaultRole){
         try {
             return ResponseEntity.ok(projectService.patchDefaultRole(projectId, defaultRole));
         } catch (Exception e){

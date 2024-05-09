@@ -48,10 +48,7 @@ public class AuthFilter extends OncePerRequestFilter {
             System.out.println("AUTHFILTER Vou procurar o usuario");
             UserDetails user = userDetailService.loadUserByUsername(username);
             System.out.println("AuthFilter achei o usuario");
-            Authentication authentication = new UsernamePasswordAuthenticationToken(user
-                    , user.getPassword()
-//                    , user.getAuthorities()
-            );
+            Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
             System.out.println("AuthFilter 1");
             //cria contexto novo (vazio) (ja passou pela autenticação pq se nao a autenticacao lanca uma excecao)
             //sem o contexto de autenticacao a autenticacao não fica salva, exigiria autenticacao em toda requisição
@@ -66,7 +63,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
             System.out.println("AuthFilter 4");
             //renovacao do JWT e Cokkie
-            Cookie cookieRenovado  = coookieUtil.createCookie(user);
+            Cookie cookieRenovado = coookieUtil.createCookie(user);
             response.addCookie(cookieRenovado);
             System.out.println("to saindo do authfilter hein");
         }

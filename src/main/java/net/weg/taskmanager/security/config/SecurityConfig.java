@@ -51,8 +51,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/task/project/{projectId}").access(taskAuthorizationManager)
                 .requestMatchers(HttpMethod.GET, "/task/user/{userId}").access(taskAuthorizationManager)
 //                .requestMatchers(HttpMethod.GET, "/task/{projectId}/status/{statusId}").access(getTaskByStatusPermissionRoute)
-                .requestMatchers(HttpMethod.PATCH, "task/{taskId}/**").access(taskAuthorizationManager)
-                .requestMatchers(HttpMethod.DELETE, "task/{taskId}/**").access(taskAuthorizationManager)
+                .requestMatchers(HttpMethod.PATCH, "/task/{taskId}/**").access(taskAuthorizationManager)
+                .requestMatchers(HttpMethod.DELETE, "/task/{taskId}/**").access(taskAuthorizationManager)
 
 
 //                .requestMatchers(HttpMethod.GET, "/task/userTask/{userId}/{taskId}").access(permissionTask)

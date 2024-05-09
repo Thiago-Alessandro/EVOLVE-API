@@ -36,7 +36,7 @@ public class AuthController {
     public ResponseEntity<String> authenticate(@RequestBody UserLogin user, HttpServletRequest request, HttpServletResponse response) {
         System.out.println(user);
         try {
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
             System.out.println(authenticationToken);
 
             System.out.println("1");
@@ -64,9 +64,9 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public /*ResponseEntity<String>*/ void logout(HttpServletRequest request, HttpServletResponse response) {
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Cookie cookie = cookieutil.getCookie(request, "JWT");
+            Cookie cookie = cookieutil.getCookie(request, "EV");
             cookie.setMaxAge(0);
             response.addCookie(cookie);
 //            return ResponseEntity.ok("Logout bem-sucedido");
