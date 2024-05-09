@@ -4,7 +4,9 @@ import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.get.GetFileDTO;
 import net.weg.taskmanager.model.entity.File;
 import org.springframework.beans.BeanUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Base64;
 import java.util.Collection;
 
@@ -24,6 +26,18 @@ public class GetFileConverter implements Converter<GetFileDTO, File> {
         BeanUtils.copyProperties(file, getFileDTO);
         getFileDTO.setData(formatFileDataBytesToBase64String(file));
         return getFileDTO;
+    }
+
+    public static File buildFileFromMultipartFile(MultipartFile multipartFile){
+        File file = new File();
+        try {
+            file.setData(multipartFile.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        file.setName(multipartFile.getOriginalFilename());
+        file.setType(multipartFile.getContentType());
+        return file;
     }
 
     private static String formatFileDataBytesToBase64String(File file){

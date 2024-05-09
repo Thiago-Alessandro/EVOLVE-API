@@ -3,9 +3,14 @@ package net.weg.taskmanager.model.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Setter;
+import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
+import net.weg.taskmanager.utils.ColorUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,12 +24,13 @@ public class Team {
     private String name;
 //    private String descricao;
 
+    @Setter
     @OneToOne(cascade = CascadeType.ALL)
     private File image;
     private String imageColor;
 
-    @ManyToOne
-//    @JoinColumn(nullable = false)
+    @ManyToOne(optional = false)
+
     private User administrator;
     @ManyToMany()
     @JoinColumn(nullable = false)
@@ -47,16 +53,23 @@ public class Team {
         this.administrator = user;
         this.imageColor = user.getImageColor();
         this.image = user.getImage();
-        Collection<User> participants = new ArrayList<>();
-        participants.add(user);
-        this.participants = participants;
-        this.chat = new TeamChat();
+        this.participants = List.of(user);
+        setCreatedChatBasic();
         this.chat.setUsers(this.participants);
     }
 
     public Team(){
+        setCreatedChatBasic();
+    }
+
+    public void setCreatedChatBasic(){
         this.chat = new TeamChat();
         this.chat.setTeam(this);
     }
+
+    public void setImage(MultipartFile image) {
+        this.image = GetFileConverter.buildFileFromMultipartFile(image);
+    }
+
 
 }

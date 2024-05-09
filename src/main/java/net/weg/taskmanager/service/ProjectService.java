@@ -75,10 +75,12 @@ public class ProjectService {
         BeanUtils.copyProperties(projectDTO, project);
 
         Collection<Status> listaNova = new HashSet<>();
-
-        for (Status st: projectDTO.getStatusList()){
-            listaNova.add(new Status(st.getName(), st.getBackgroundColor(), st.getTextColor(), st.getEnabled()));
+        if(projectDTO.getStatusList()!=null){
+            for (Status st: projectDTO.getStatusList()){
+                listaNova.add(new Status(st.getName(), st.getBackgroundColor(), st.getTextColor(), st.getEnabled()));
+            }
         }
+
         project.setStatusList(listaNova);
 
         updateProjectChat(project);
