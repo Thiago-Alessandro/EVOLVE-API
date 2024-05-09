@@ -47,6 +47,7 @@ public class User {
     private String secondaryColor;
     private String primaryDarkColor;
     private String secondaryDarkColor;
+    private Integer fontSize;
 
 
 
@@ -61,6 +62,7 @@ public class User {
 
     public void setImageFromMultipartFile(MultipartFile image) {
         this.image = GetFileConverter.buildFileFromMultipartFile(image);
+
     }
 
     @Override

@@ -30,6 +30,7 @@ public class Team {
     private String imageColor;
 
     @ManyToOne(optional = false)
+
     private User administrator;
     @ManyToMany()
     @JoinColumn(nullable = false)
@@ -39,6 +40,9 @@ public class Team {
     private Collection<Project> projects;
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     private TeamChat chat;
+
+    @OneToMany
+    private Collection<TeamNotification> notifications;
 
     @Column(nullable = false)
     private Boolean personalWorkspace = false;

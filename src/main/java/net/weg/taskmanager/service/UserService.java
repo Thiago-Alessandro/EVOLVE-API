@@ -52,7 +52,8 @@ public class UserService {
 
     public GetUserDTO patchImage(Long id, MultipartFile image){
         User user = userRepository.findById(id).get();
-        user.setImageFromMultipartFile(image);
+
+        user.setImageFromMultipartfile(image);
         User updatedUser = userRepository.save(user);
         return converter.convertOne(updatedUser);
     }
@@ -70,6 +71,7 @@ public class UserService {
         try {
             User user = objectMapper.readValue(jsonUser, User.class);
             user.setImageFromMultipartFile(image);
+
             User updatedUser = userRepository.save(user);
             return converter.convertOne(updatedUser);
         } catch (JsonProcessingException e) {
@@ -97,7 +99,11 @@ public class UserService {
         user.setEmail(email);
         return converter.convertOne(userRepository.save(user));
     }
-
+    public GetUserDTO patchName(Long userId,String name){
+        User user = userRepository.findById(userId).get();
+        user.setName(name);
+        return converter.convertOne(userRepository.save(user));
+    }
     public GetUserDTO patchPassword(Long userId,String password){
         User user = userRepository.findById(userId).get();
         user.setPassword(password);
@@ -123,6 +129,12 @@ public class UserService {
         user.setSecondaryDarkColor(secondaryColor);
         return converter.convertOne(userRepository.save(user));
     }
+    public GetUserDTO patchFontSize(Long userId,Integer fontSize){
+        User user = userRepository.findById(userId).get();
+        user.setFontSize(fontSize);
+        return converter.convertOne(userRepository.save(user));
+    }
+
 
 
 

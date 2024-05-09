@@ -31,6 +31,7 @@ public class GetTaskDTO {
 
     private LocalDate finalDate;
     private LocalDate creationDate;
+//    @JsonIgnore
     private Collection<GetCommentDTO> comments;
     private LocalDate scheduledDate;
     private LocalDateTime lastTimeEdited;
@@ -39,20 +40,23 @@ public class GetTaskDTO {
     private Status currentStatus;
 
     private PriorityRecord priority ;
+//    @JsonIgnore
+    private Collection<Historic> historic;
 
-
+//    @JsonIgnore
     private ShortUserDTO creator;
-
+//    @JsonIgnore
     private ShortProjectDTO project;
-
+//    @JsonIgnore
     private Collection<Property> properties;
-
+//    @JsonIgnore
     private Collection<Subtask> subtasks;
-
+//    @JsonIgnore
     private Collection<ShortUserDTO> associates;
 
     private Integer statusListIndex;
     private Double progress;
+    private Collection<File> files;
 
     public GetTaskDTO(Task task){
         Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();

@@ -33,7 +33,7 @@ public class TeamController {
     }
 
     @GetMapping("/user/{userId}")
-    public Collection<Team> findTeamsByUserId(@PathVariable Long userId){
+    public Collection<GetTeamDTO> findTeamsByUserId(@PathVariable Long userId){
         return service.findTeamsByUserId(userId);
     }
 
@@ -42,6 +42,7 @@ public class TeamController {
     public GetTeamDTO patchTeamName(@PathVariable Long teamId, @RequestParam String name) throws InvalidAttributeValueException {
         return service.patchTeamName(teamId, name);
     }
+
 
     @PatchMapping("/{teamId}/participants")
     public GetTeamDTO patchParticipants(@PathVariable Long teamId, @RequestParam Collection<User> participants) throws InvalidAttributeValueException {
@@ -56,6 +57,16 @@ public class TeamController {
     @PatchMapping("/{teamId}/image")
     public GetTeamDTO patchImage(@PathVariable Long teamId, @RequestParam MultipartFile image) throws InvalidAttributeValueException {
         return service.patchImage(teamId, image);
+
+    @PatchMapping("/{teamId}/{notificationId}")
+    public GetTeamDTO patchReadedNotification(@PathVariable Long teamId, @PathVariable Long notificationId) {
+        return service.patchReadedNotification(teamId,notificationId);
+    }
+
+    @DeleteMapping("/clean/{loggedUserId}")
+    public void cleanAllUserNotifications(@PathVariable Long loggedUserId) {
+        service.cleanAllUserNotifications(loggedUserId);
+
     }
 
 }

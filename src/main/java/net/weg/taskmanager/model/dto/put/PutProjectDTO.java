@@ -7,6 +7,7 @@ import net.weg.taskmanager.model.entity.File;
 import net.weg.taskmanager.model.entity.Task;
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.property.Property;
+import net.weg.taskmanager.model.record.PriorityRecord;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -25,7 +26,6 @@ public class PutProjectDTO {
     private LocalDate finalDate;
     private Collection<Property> properties;
     private Collection<User> members;
-    private Collection<Task> tasks;
     //vai continuar msm?
     private Collection<User> administrators;
 

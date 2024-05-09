@@ -5,6 +5,7 @@ import net.weg.taskmanager.model.dto.get.GetMessageDTO;
 import net.weg.taskmanager.model.entity.Message;
 import net.weg.taskmanager.model.entity.MessageDTO;
 import net.weg.taskmanager.model.enums.MessageStatus;
+import net.weg.taskmanager.repository.TeamNotificationRepository;
 import net.weg.taskmanager.service.processor.MessageProcessor;
 import net.weg.taskmanager.repository.ChatRepository;
 import net.weg.taskmanager.repository.MessageRepository;
@@ -20,6 +21,7 @@ public class MessageService {
 
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
+    private final TeamNotificationService  teamNotificationService;
 
 //    private MessageProcessor messageProcessor = new MessageProcessor();
 

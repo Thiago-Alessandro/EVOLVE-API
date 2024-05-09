@@ -21,7 +21,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public GetUserDTO findById(@PathVariable Long id){return userService.findById(id);}
+    public GetUserDTO findById(@PathVariable Long id){
+        return userService.findById(id);}
     @GetMapping
     public Collection<GetUserDTO> findAll(){return userService.findAll();}
     @DeleteMapping("/{id}")
@@ -59,6 +60,10 @@ public class UserController {
     public GetUserDTO patchEmail(@PathVariable Long userId, @PathVariable String email){
         return userService.patchEmail(userId, email);
     }
+    @PatchMapping("/name/{userId}/{name}")
+    public GetUserDTO patchName(@PathVariable Long userId, @PathVariable String name){
+        return userService.patchName(userId, name);
+    }
 
     @PatchMapping("/password/{userId}/{password}")
     public GetUserDTO patchPassword(@PathVariable Long userId, @PathVariable String password){
@@ -79,6 +84,10 @@ public class UserController {
     @PatchMapping("/secondaryDarkColor/{userId}")
     public GetUserDTO patchSecondaryDarkColor(@PathVariable Long userId, @RequestParam String secondaryColor){
         return userService.patchSecondaryDarkColor(userId, secondaryColor);
+    }
+    @PatchMapping("/fontSize/{userId}/{fontSize}")
+    public GetUserDTO patchFontSize(@PathVariable Long userId, @PathVariable Integer fontSize){
+        return userService.patchFontSize(userId, fontSize);
     }
 
 }

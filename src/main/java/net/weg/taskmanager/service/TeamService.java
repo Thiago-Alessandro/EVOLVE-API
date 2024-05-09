@@ -1,10 +1,12 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.entity.TeamNotification;
 import net.weg.taskmanager.model.entity.User;
 
 import net.weg.taskmanager.model.entity.Team;
 import net.weg.taskmanager.model.dto.get.GetTeamDTO;
+import net.weg.taskmanager.repository.TeamNotificationRepository;
 import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.service.processor.TeamProcessor;
@@ -18,12 +20,16 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import java.util.HashSet;
+import java.util.Objects;
+
 @Service
 @AllArgsConstructor
 public class TeamService {
 
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final TeamNotificationRepository teamNotificationRepository;
     private final TeamProcessor teamProcessor = TeamProcessor.getInstance();
 
     public GetTeamDTO findById(Long id){
@@ -68,11 +74,11 @@ public class TeamService {
         return saveAndGetDTO(team);
     }
 
-    public Collection<Team> findTeamsByUserId(Long id){
+    public Collection<GetTeamDTO> findTeamsByUserId(Long id){
         User user = userRepository.findById(id).get();
         Collection<Team> teams = teamRepository.findTeamsByParticipantsContaining(user);
         teams.forEach(team -> TeamProcessor.getInstance().resolveTeam(team));
-        return teams;
+        return resolveAndGetDTOs(teams);
     }
 
 
@@ -121,6 +127,30 @@ public class TeamService {
     private GetTeamDTO saveAndGetDTO(Team team){
         Team savedTeam = teamRepository.save(team);
         return new GetTeamDTO(savedTeam);
+    }
+
+    public GetTeamDTO patchReadedNotification(Long teamId, Long notificationId) {
+        Team team = this.teamRepository.findById(teamId).get();
+
+        team.getNotifications().forEach(notificationFor -> {
+            if(Objects.equals(notificationFor.getId(), notificationId)) {
+                notificationFor.setReaded(true);
+                this.teamNotificationRepository.save(notificationFor);
+            }
+        });
+        Team teamSaved = this.teamRepository.save(team);
+
+        return new GetTeamDTO(teamSaved);
+    }
+
+    public void cleanAllUserNotifications(Long loggedUserId) {
+        User loggedUser = this.userRepository.findById(loggedUserId).get();
+        loggedUser.getTeams().forEach(team -> {
+            team.getNotifications().forEach(notification -> {
+                notification.getNotificatedUsers().remove(loggedUser);
+            });
+            this.teamRepository.save(team);
+        });
     }
 
 }
