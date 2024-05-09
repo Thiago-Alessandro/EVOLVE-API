@@ -25,7 +25,7 @@ public class UserTaskProcessor {
         resolvingCascade.add(userTaskClassName);
 
         resolveUserTaskUser();
-        resolveUserTaskTask();
+//        resolveUserTaskTask();
 
         resolvingCascade.remove(userTaskClassName);
 
@@ -44,12 +44,12 @@ public class UserTaskProcessor {
         UserProcessor.getInstance().resolveUser(resolvingUserTask.getUser(), resolvingCascade);
     }
 
-    private void resolveUserTaskTask(){
-        if(resolvingCascade.contains(Task.class.getSimpleName())){
-            resolvingUserTask.setTask(null);
-            return;
-        }
-        TaskProcessor.getInstance().resolveTask(resolvingUserTask.getTask(), resolvingCascade);
-    }
+//    private void resolveUserTaskTask(){
+//        if(resolvingCascade.contains(Task.class.getSimpleName())){
+//            resolvingUserTask.setTask(null);
+//            return;
+//        }
+//        TaskProcessor.getInstance().resolveTask(resolvingUserTask.getTask(), resolvingCascade);
+//    }
 
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 
 import net.weg.taskmanager.model.dto.GetCommentDTO;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
+import net.weg.taskmanager.model.dto.get.GetUserTaskDTO;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.enums.Priority;
 
@@ -19,6 +20,7 @@ import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.service.TaskService;
+import net.weg.taskmanager.service.UserTaskService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 public class TaskController {
 
     private final TaskService taskService;
+    private final UserTaskService userTaskService;
 
     @GetMapping("/{id}")
 
@@ -216,5 +219,16 @@ public class TaskController {
                            @PathVariable Long fileId,
                            @PathVariable Long userId) {
         taskService.deleteFile(taskId,fileId,userId);
+    }
+
+    @GetMapping("/get/{userId}/{taskId}")
+    public GetUserTaskDTO getUserWorkedTime(@PathVariable Long userId,
+                                            @PathVariable Long taskId) {
+        return userTaskService.getUserWorkedTime(userId,taskId);
+    }
+
+    @PutMapping("/put/workedTime")
+    public void updateUserWorkedTime(@RequestBody UserTask userTaskUpdated) {
+        userTaskService.updateWorkedTime(userTaskUpdated);
     }
 }
