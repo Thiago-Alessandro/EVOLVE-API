@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.UserProject;
+import net.weg.taskmanager.model.dto.UserProjectDTO;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
 import net.weg.taskmanager.model.dto.converter.shorts.ShortTeamConverter;
@@ -14,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
@@ -36,7 +38,7 @@ public class ShortProjectDTO {
 //    private Collection<GetUserDTO> administrators;
 //    private Collection<Property> properties;
     private Collection<Status> statusList;
-    private Collection<UserProject> members;
+//    private Collection<UserProjectDTO> members;
     private ShortTeamDTO team;
 
 //    private ShortProjectChatDTO chat;
@@ -49,7 +51,7 @@ public class ShortProjectDTO {
         BeanUtils.copyProperties(project, this);
         this.image = fileConverter.convertOne(project.getImage());
 //        this.members = userConverter.convertAll(project.getMembers());
-        this.members = project.getMembers();
+//        this.members = project.getMembers() !=null ? project.getMembers().stream().map(UserProjectDTO::new).toList() : new ArrayList<>();
         this.team = teamConverter.convertOne(project.getTeam());
 //        this.creator = userConverter.convertOne(project.getCreator());
     }

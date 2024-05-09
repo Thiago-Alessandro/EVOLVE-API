@@ -2,8 +2,11 @@ package net.weg.taskmanager.security.util;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.util.WebUtils;
+
+import java.util.Arrays;
 
 public class Cookieutil {
 
@@ -28,6 +31,8 @@ public class Cookieutil {
 
     public Cookie getCookie(HttpServletRequest request, String name) throws Exception {
         Cookie cookie = WebUtils.getCookie(request, name);
+//        System.out.println(cookie.getName() + " Sou u cuqui");
+
         if (cookie != null) {
             return cookie;
         }

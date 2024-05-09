@@ -33,14 +33,22 @@ public class AuthFilter extends OncePerRequestFilter {
     //executara em cada requisicao da API
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        System.out.println("request");
+        System.out.println(request.getRequestURI());
+        System.out.println(!publicRoute(request));
         if (!publicRoute(request)) {
+
 
             Cookie cookie;
 
             try {
                 cookie = coookieUtil.getCookie(request, "EV");
+                System.out.println("Ó meu nome in baixo di mim");
+                System.out.println(cookie.getName() + "to na aufi");
             } catch (Exception e) {
-                response.setStatus(401);
+                System.out.println("Mano não achei o cookie :(");
+                System.out.println(e);
+                response.setStatus(405);
                 return;
             }
             String token = cookie.getValue();
@@ -48,7 +56,14 @@ public class AuthFilter extends OncePerRequestFilter {
             System.out.println("AUTHFILTER Vou procurar o usuario");
             UserDetails user = userDetailService.loadUserByUsername(username);
             System.out.println("AuthFilter achei o usuario");
+<<<<<<< HEAD
             Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+=======
+            Authentication authentication = new UsernamePasswordAuthenticationToken(user
+                    , user.getPassword(),
+                    user.getAuthorities()
+            );
+>>>>>>> 13d6e3ce7bcca960be3f5a9fa3671f674d4c9b5d
             System.out.println("AuthFilter 1");
             //cria contexto novo (vazio) (ja passou pela autenticação pq se nao a autenticacao lanca uma excecao)
             //sem o contexto de autenticacao a autenticacao não fica salva, exigiria autenticacao em toda requisição
@@ -71,6 +86,6 @@ public class AuthFilter extends OncePerRequestFilter {
     }
 
     private boolean publicRoute(HttpServletRequest request) {
-        return (request.getRequestURI().equals("/auth/login") || request.getRequestURI().equals("/user") && request.getMethod().equals("POST"));
+        return ((request.getRequestURI().equals("/auth/login") || request.getRequestURI().equals("/user")) && request.getMethod().equals("POST"));
     }
 }
