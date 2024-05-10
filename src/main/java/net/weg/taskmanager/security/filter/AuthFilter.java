@@ -56,14 +56,9 @@ public class AuthFilter extends OncePerRequestFilter {
             System.out.println("AUTHFILTER Vou procurar o usuario");
             UserDetails user = userDetailService.loadUserByUsername(username);
             System.out.println("AuthFilter achei o usuario");
-<<<<<<< HEAD
+
             Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
-=======
-            Authentication authentication = new UsernamePasswordAuthenticationToken(user
-                    , user.getPassword(),
-                    user.getAuthorities()
-            );
->>>>>>> 13d6e3ce7bcca960be3f5a9fa3671f674d4c9b5d
+
             System.out.println("AuthFilter 1");
             //cria contexto novo (vazio) (ja passou pela autenticação pq se nao a autenticacao lanca uma excecao)
             //sem o contexto de autenticacao a autenticacao não fica salva, exigiria autenticacao em toda requisição

@@ -82,10 +82,6 @@ public class AuthController {
     @PostMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         try {
-<<<<<<< HEAD
-=======
-
->>>>>>> 13d6e3ce7bcca960be3f5a9fa3671f674d4c9b5d
             Cookie cookie = cookieutil.getCookie(request, "EV");
             cookie.setMaxAge(0);
             response.addCookie(cookie);
