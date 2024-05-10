@@ -26,9 +26,9 @@ public class ProjectChatController {
 //        return projectChatService.findAll();
 //    }
 
-    @GetMapping("/user/{userID}")
-    public Collection<GetProjectChatDTO> findProjectChatsByUserId(@PathVariable Long userID){
-        return projectChatService.findProjectChatsByUserId(userID);
+    @GetMapping("/user/{userId}")
+    public Collection<GetProjectChatDTO> findProjectChatsByUserId(@PathVariable Long userId){
+        return projectChatService.findProjectChatsByUserId(userId);
     }
 
 }

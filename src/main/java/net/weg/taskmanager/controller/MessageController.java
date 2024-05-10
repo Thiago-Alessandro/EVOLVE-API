@@ -17,24 +17,19 @@ import java.util.Collection;
 public class MessageController{
     private final MessageService messageService;
 
-//    @Override
+//    public ResponseEntity<MessageDTO> findById(Long id) {
+//        return null;
+//    }
 
-    public ResponseEntity<MessageDTO> findById(Long id) {
-        return null;
-    }
-
-//    @Override
     @GetMapping
     public ResponseEntity<Collection<GetMessageDTO>> findAll() {
         return ResponseEntity.ok(messageService.findAll());
     }
 
-//    @Override
-    public ResponseEntity<MessageDTO> delete(Long id) {
-        return null;
-    }
+//    public ResponseEntity<MessageDTO> delete(Long id) {
+//        return null;
+//    }
 
-//    @Override
     @PostMapping
     public ResponseEntity<GetMessageDTO> create(@RequestBody MessageDTO obj) {
         return ResponseEntity.ok(messageService.create(obj));

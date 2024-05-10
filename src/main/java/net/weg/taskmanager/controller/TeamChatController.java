@@ -17,15 +17,15 @@ public class TeamChatController {
 
     private final TeamChatService teamChatService;
 
-    @GetMapping("/{teamChatId}")
-    public GetTeamChatDTO findById(@PathVariable Long teamChatId){
-        return teamChatService.findById(teamChatId);
+    @GetMapping("/{teamChatId}/user/{userId}")
+    public GetTeamChatDTO findById(@PathVariable Long teamChatId, @PathVariable Long userId){
+        return teamChatService.findById(teamChatId, userId);
     }
 
-    @GetMapping
-    public Collection<GetTeamChatDTO> findAll(){
-        return teamChatService.finAll();
-    }
+//    @GetMapping
+//    public Collection<GetTeamChatDTO> findAll(){
+//        return teamChatService.finAll();
+//    }
 
     @GetMapping("/user/{userId}")
     public Collection<GetTeamChatDTO> findTeamChatsByUserId(@PathVariable Long userId){

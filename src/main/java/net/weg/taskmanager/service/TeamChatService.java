@@ -24,8 +24,9 @@ public class TeamChatService {
 
     private final Converter<GetTeamChatDTO, TeamChat> converter = new GetTeamChatConverter();
 
-    public GetTeamChatDTO findById(Long id){
+    public GetTeamChatDTO findById(Long id, Long userId){
         TeamChat teamChat = findTeamChatById(id);
+        if(teamChat.getTeam().getParticipants().stream().noneMatch(userTeam -> userTeam.getUserId().equals(userId))) throw new NoSuchElementException("Usuario não pertence à equipe");
         return converter.convertOne(teamChat);
     }
 
@@ -35,10 +36,10 @@ public class TeamChatService {
         return teamChat.get();
     }
 
-    public Collection<GetTeamChatDTO> finAll(){
-        Collection<TeamChat> teamChats = teamChatRepository.findAll();
-        return converter.convertAll(teamChats);
-    }
+//    public Collection<GetTeamChatDTO> finAll(){
+//        Collection<TeamChat> teamChats = teamChatRepository.findAll();
+//        return converter.convertAll(teamChats);
+//    }
 
     public Collection<GetTeamChatDTO> findTeamChatsByUserId(Long userId) {
         User user = userService.findUserById(userId);

@@ -15,9 +15,10 @@ import java.util.NoSuchElementException;
 @RequestMapping("/userChat")
 @AllArgsConstructor
 public class UserChatController {
+
     private final UserChatService userChatService;
 
-    @GetMapping("/{userChatId}")
+    @GetMapping("/{userChatId}/user/{userId}")
     public ResponseEntity<GetUserChatDTO> findById(@PathVariable Long userChatId) {
         try {
             return new ResponseEntity<>(userChatService.findById(userChatId), HttpStatus.OK);
@@ -27,12 +28,12 @@ public class UserChatController {
     }
 
 
-    @GetMapping()
-    public ResponseEntity<Collection<GetUserChatDTO>> findAll() {
-        return new ResponseEntity<>(userChatService.findAll(), HttpStatus.OK);
-    }
+//    @GetMapping()
+//    public ResponseEntity<Collection<GetUserChatDTO>> findAll() {
+//        return new ResponseEntity<>(userChatService.findAll(), HttpStatus.OK);
+//    }
 
-    @DeleteMapping("/{userChatId}")
+    @DeleteMapping("/{userChatId}/user/{userId}")
     public ResponseEntity<GetUserChatDTO> delete(@PathVariable Long userChatId) {
         try {
             userChatService.delete(userChatId);
@@ -45,15 +46,15 @@ public class UserChatController {
     @PostMapping
     public ResponseEntity<GetUserChatDTO> create(@RequestBody UserChat obj) {
         return new ResponseEntity<>(userChatService.create(obj), HttpStatus.OK);
-    }
+    } //verificação p isso?
 
-    @PutMapping
+    @PutMapping("/{userChatId}/user/{userId}")
     public ResponseEntity<GetUserChatDTO> update(@RequestBody UserChat obj) {
         return new ResponseEntity<>(userChatService.update(obj), HttpStatus.OK);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Collection<GetUserChatDTO>> getUserChatsByUserID(@PathVariable Long userId) {
+    public ResponseEntity<Collection<GetUserChatDTO>> getUserChatsByUserId(@PathVariable Long userId) {
         return new ResponseEntity<>(userChatService.getChatsByUserId(userId), HttpStatus.OK);
 
     }

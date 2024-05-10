@@ -1,11 +1,8 @@
 package net.weg.taskmanager.security.config;
 
 import lombok.AllArgsConstructor;
-import net.weg.taskmanager.security.authorization.ProjectAuthorizationManager;
-import net.weg.taskmanager.security.authorization.TaskAuthorizationManager;
-import net.weg.taskmanager.security.authorization.TaskPermissionManager;
+import net.weg.taskmanager.security.authorization.*;
 import net.weg.taskmanager.security.filter.AuthFilter;
-import net.weg.taskmanager.security.authorization.TeamAuthorizationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,6 +25,7 @@ public class SecurityConfig {
     private final ProjectAuthorizationManager projectAuthorizationManager;
     private final TeamAuthorizationManager teamAuthorizationManager;
     private final TaskAuthorizationManager taskAuthorizationManager;
+    private final UserAuthorizationPermission userAuthorizationPermission;
 
     private final CorsConfigurationSource corsConfig;
 
@@ -86,10 +84,23 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/team/{teamId}").access(teamAuthorizationManager)
 //
 //                //USER
-//                .requestMatchers(HttpMethod.GET, "/user/login/{email}").access(permissionUser)
-//                .requestMatchers(HttpMethod.GET, "/user/{userId}").access(permissionUser)
-//                .requestMatchers(HttpMethod.DELETE, "/user/{userId}").access(permissionUser)
-//                .requestMatchers(HttpMethod.PATCH, "/user/{userId}").access(permissionUser)
+//                .requestMatchers(HttpMethod.GET, "/user/login/{email}").access(userAuthorizationPermission)
+                .requestMatchers(HttpMethod.GET, "/user/{userId}").access(userAuthorizationPermission)
+                .requestMatchers(HttpMethod.DELETE, "/user/{userId}").access(userAuthorizationPermission)
+                .requestMatchers(HttpMethod.PATCH, "/user/{userId}/**").access(userAuthorizationPermission)
+
+                //USERCHAT
+                .requestMatchers(HttpMethod.GET, "/userChat/{userChatId}/user/{userId}").access(userAuthorizationPermission)
+                .requestMatchers(HttpMethod.GET, "/userChat/user/{userId}").access(userAuthorizationPermission)
+                .requestMatchers(HttpMethod.PUT, "/userChat/{userChatId}/user/{userId}").access(userAuthorizationPermission)
+                .requestMatchers(HttpMethod.PATCH, "/userChat/{userChatId}/user/{userId}").access(userAuthorizationPermission)
+                .requestMatchers(HttpMethod.DELETE, "/userChat/{userChatId}/user/{userId}").access(userAuthorizationPermission)
+
+                //TEAMCHAT
+                .requestMatchers(HttpMethod.GET, "/teamChat/user/{userId}").access(userAuthorizationPermission)
+
+                //PROJECTCHAT
+                .requestMatchers(HttpMethod.GET, "/project/user/{userId}").access(userAuthorizationPermission)
 
                 .anyRequest().authenticated());
 

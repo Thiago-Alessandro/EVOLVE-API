@@ -42,19 +42,6 @@ public class UserController {
 //        }
     }
 
-//    @PutMapping
-//    public GetUserDTO update(@RequestBody User user){
-//        return userService.update(user);
-//    }
-
-    
-//    @PutMapping("/full")
-//    public GetUserDTO update(
-//                  @RequestParam String jsonUser,
-//                          @RequestParam MultipartFile profilePhoto){
-//
-//        return userService.update(jsonUser, profilePhoto);
-//    }
     @GetMapping("/login/{email}")
     public GetUserDTO loginByEmail(@PathVariable String email){return userService.findByEmail(email);}
 
