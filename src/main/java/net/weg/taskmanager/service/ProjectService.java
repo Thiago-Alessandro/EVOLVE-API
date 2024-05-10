@@ -93,12 +93,13 @@ public class ProjectService {
         return converter.convertOne(treatAndSave(project));
     }
 
-    public GetProjectDTO update(PutProjectDTO projectDTO){
+    public GetProjectDTO update(PutProjectDTO projectDTO, Long actionUserId){
 
         Project project = projectRepository.findById(projectDTO.getId()).get();
         modelMapper.map(projectDTO, project);
 
         updateProjectChat(project);
+        teamNotificationService.updateProjectInfoNotification(projectDTO.getId(), actionUserId);
 
         return converter.convertOne(treatAndSave(project));
     }
@@ -169,7 +170,7 @@ public class ProjectService {
         project.getChat().setUsers(project.getMembers());
     }
 
-    public GetProjectDTO deleteUserFromProject(Long idProject, Collection<User> usersToRemove) {
+    public GetProjectDTO deleteUserFromProject(Long idProject, Long actionUserId, Collection<User> usersToRemove) {
         Project project = projectRepository.findById(idProject).get();
 
         Long creatorId = project.getCreator().getId();
@@ -184,6 +185,15 @@ public class ProjectService {
                 .collect(Collectors.toSet());
 
         project.setMembers(updatedMembers);
+        teamNotificationService.deleteUserFromProjectNotification(idProject,actionUserId,userIdsToRemove);
+        return converter.convertOne(treatAndSave(project));
+    }
+
+    public GetProjectDTO addUserToProject(Long projectId, Long actionUserId, Long userAddedId) {
+        Project project = projectRepository.findById(projectId).get();
+        User userToAdd = userRepository.findById(userAddedId).get();
+        project.getMembers().add(userToAdd);
+        teamNotificationService.addUserToProject(projectId,actionUserId,userAddedId);
         return converter.convertOne(treatAndSave(project));
     }
 

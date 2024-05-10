@@ -38,8 +38,10 @@ public class ProjectController {
     @PostMapping
     public GetProjectDTO create(@RequestBody PostProjectDTO project){return projectService.create(project);}
 
-    @PutMapping
-    public GetProjectDTO update(@RequestBody PutProjectDTO project){return projectService.update(project);}
+    @PutMapping("/{actionUserId}")
+    public GetProjectDTO update(@RequestBody PutProjectDTO project, @PathVariable Long actionUserId){
+        return projectService.update(project, actionUserId);
+    }
 
     @PatchMapping("/{projectId}/{actionUserId}")
     public GetProjectDTO updateStatusList(@PathVariable Long projectId,@PathVariable Long actionUserId, @RequestBody Status status){
@@ -63,9 +65,14 @@ public class ProjectController {
         return projectService.getProjectsByTeam(teamId, userId);
     }
 
-    @PatchMapping("/{idProject}/delete-user")
-    public GetProjectDTO deleteUserFromProject(@PathVariable Long idProject, @RequestBody Collection<User> users){
-        return projectService.deleteUserFromProject(idProject, users);
+    @PatchMapping("/{idProject}/delete-user/{actionUserId}")
+    public GetProjectDTO deleteUserFromProject(@PathVariable Long idProject,@PathVariable Long actionUserId, @RequestBody Collection<User> users){
+        return projectService.deleteUserFromProject(idProject, actionUserId, users);
+    }
+
+    @PatchMapping("{projectId}/addUser/{userAddedId}/{userActionId}")
+    public GetProjectDTO addUserToProject(@PathVariable Long projectId, @PathVariable Long userAddedId, @PathVariable Long userActionId) {
+        return projectService.addUserToProject(projectId,userActionId,userAddedId);
     }
 
     @PatchMapping("/{id}/setImage")
