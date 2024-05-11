@@ -34,6 +34,7 @@ public class AuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         System.out.println("request");
+        System.out.println(request.getMethod());
         System.out.println(request.getRequestURI());
         System.out.println(!publicRoute(request));
         if (!publicRoute(request)) {
@@ -81,6 +82,7 @@ public class AuthFilter extends OncePerRequestFilter {
     }
 
     private boolean publicRoute(HttpServletRequest request) {
-        return ((request.getRequestURI().equals("/auth/login") || request.getRequestURI().equals("/user")) && request.getMethod().equals("POST"));
+        return ((request.getRequestURI().equals("/auth/login") || request.getRequestURI().equals("/user")) && request.getMethod().equals("POST"))
+                || (request.getRequestURI().contains("/user/login/") && request.getMethod().equals("GET"));
     }
 }

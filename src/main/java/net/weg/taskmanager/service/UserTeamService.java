@@ -1,6 +1,7 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.dto.UserTeamDTO2;
 import net.weg.taskmanager.model.entity.UserTeam;
 import net.weg.taskmanager.model.entity.UserTeamId;
 import net.weg.taskmanager.repository.UserTeamRepository;
@@ -19,6 +20,16 @@ public class UserTeamService {
     private final UserTeamRepository repository;
     private final ModelMapper mapper;
 
+    public Collection<UserTeamDTO2> findByUserId(Long userId){
+        Collection<UserTeam> userTeams = findUserTeamsByUser_Id(userId);
+        return userTeams.stream().map(UserTeamDTO2::new).toList();
+    }
+
+    public Collection<UserTeam> findUserTeamsByUser_Id(Long userId){
+        Optional<Collection<UserTeam>> optionalUserTeams = repository.findUserTeamsByUser_Id(userId);
+        if(optionalUserTeams.isEmpty()) throw new NoSuchElementException("Usuario não possui equipes");
+        return optionalUserTeams.get();
+    }
 
     public Collection<UserTeam> findAllWithTeamId(Long teamId){
         Optional<Collection<UserTeam>> optionalUserTeams = repository.findUserTeamsByTeam_Id(teamId);

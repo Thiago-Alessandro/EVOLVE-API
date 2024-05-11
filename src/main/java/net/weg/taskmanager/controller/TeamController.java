@@ -2,6 +2,8 @@ package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
 
+import net.weg.taskmanager.model.dto.UserTeamDTO;
+import net.weg.taskmanager.model.dto.UserTeamDTO2;
 import net.weg.taskmanager.model.dto.get.GetTeamDTO;
 import net.weg.taskmanager.model.dto.post.PostTeamDTO;
 import net.weg.taskmanager.model.entity.UserTeam;
@@ -36,7 +38,7 @@ public class TeamController {
     public GetTeamDTO create(@RequestBody PostTeamDTO team){return service.create(team);}
 
     @GetMapping("/user/{userId}")
-    public Collection<GetTeamDTO> findTeamsByUserId(@PathVariable Long userId){
+    public Collection<UserTeamDTO2> findTeamsByUserId(@PathVariable Long userId){
         return service.findTeamsByUserId(userId);
     }
 

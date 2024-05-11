@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 @RestController
@@ -44,7 +45,7 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<GetUserDTO> authenticate(@RequestBody UserLogin user, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Object> authenticate(@RequestBody UserLogin user, HttpServletRequest request, HttpServletResponse response) {
         System.out.println(user);
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
@@ -70,11 +71,8 @@ public class AuthController {
             return ResponseEntity.ok(loggedUser);
 //            return ResponseEntity.ok("authentication");
         } catch (AuthenticationException e) {
-            System.out.println(e.getMessage() + "e.getMessage()");
-            System.out.println("cai no catch");
-            e.printStackTrace();
-            throw e;
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Falha na autenticação");
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>( e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -82,6 +80,8 @@ public class AuthController {
     @PostMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         try {
+            System.out.println("cookie antes");
+            System.out.println(Arrays.toString(request.getCookies()));
             Cookie cookie = cookieutil.getCookie(request, "EV");
             cookie.setMaxAge(0);
             response.addCookie(cookie);

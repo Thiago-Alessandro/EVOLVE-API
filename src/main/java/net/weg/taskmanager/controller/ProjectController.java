@@ -44,7 +44,7 @@ public class ProjectController {
         }
     }
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Collection<GetProjectDTO>> findByUserId(@PathVariable Long userId) {
+    public ResponseEntity<Collection<GetProjectDTO>> findByUserId(@PathVariable Long userId) { //talve tenha que mudar para UserProject
         try{
             return ResponseEntity.ok(projectService.findByUserId(userId));
         } catch (NoSuchElementException e){

@@ -141,6 +141,7 @@ public class UserService {
     public GetUserDTO patchEmail(Long userId,String email){
         User user = findUserById(userId);
         user.setEmail(email);
+        System.out.println("eu seto o email mano rlxx");
         return converter.convertOne(userRepository.save(user));
     }
 

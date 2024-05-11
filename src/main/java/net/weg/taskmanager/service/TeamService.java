@@ -3,6 +3,8 @@ package net.weg.taskmanager.service;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
+import net.weg.taskmanager.model.dto.UserTeamDTO;
+import net.weg.taskmanager.model.dto.UserTeamDTO2;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetTeamConverter;
 import net.weg.taskmanager.model.dto.get.GetTeamDTO;
@@ -95,9 +97,11 @@ public class TeamService {
         teamRepository.deleteById(id);
     }
 
-    public Collection<GetTeamDTO> findTeamsByUserId(Long userId){
-        Collection<Team> teams = findTeamsByParticipants_User_Id(userId);
-        return converter.convertAll(teams);
+    public Collection<UserTeamDTO2> findTeamsByUserId(Long userId){
+//        Collection<Team> teams = findTeamsByParticipants_User_Id(userId);
+
+        return userTeamService.findByUserId(userId);
+//        return converter.convertAll(teams);
     }
 
     private Collection<Team> findTeamsByParticipants_User_Id(Long userId){

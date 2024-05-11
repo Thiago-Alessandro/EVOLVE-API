@@ -43,7 +43,13 @@ public class UserController {
     }
 
     @GetMapping("/login/{email}")
-    public GetUserDTO loginByEmail(@PathVariable String email){return userService.findByEmail(email);}
+    public ResponseEntity<GetUserDTO> loginByEmail(@PathVariable String email){
+        try {
+            return ResponseEntity.ok(userService.findByEmail(email));
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
     @PatchMapping("/{userId}")
@@ -58,6 +64,7 @@ public class UserController {
 
     @PatchMapping("/{userId}/email/{email}")
     public GetUserDTO patchEmail(@PathVariable Long userId, @PathVariable String email){
+        System.out.println("chego aqui na controler");
         return userService.patchEmail(userId, email);
     }
 

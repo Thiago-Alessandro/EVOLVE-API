@@ -16,7 +16,7 @@ public class Cookieutil {
         String token = new JwtUtil().createToken(userDetails);
         Cookie cookie = new Cookie("EV", token);
         cookie.setPath("/");
-        cookie.setMaxAge(300);
+        cookie.setMaxAge(86400);
         return cookie;
     }
 
@@ -30,9 +30,9 @@ public class Cookieutil {
 
 
     public Cookie getCookie(HttpServletRequest request, String name) throws Exception {
+        System.out.println("cookies");
+        System.out.println(Arrays.toString(request.getCookies()));
         Cookie cookie = WebUtils.getCookie(request, name);
-//        System.out.println(cookie.getName() + " Sou u cuqui");
-
         if (cookie != null) {
             return cookie;
         }
