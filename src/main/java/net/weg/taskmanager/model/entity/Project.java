@@ -59,7 +59,7 @@ public class Project {
     @JsonIgnore
     private Collection<Comment> comments;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private Collection<Property> properties;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(nullable = false)
