@@ -27,7 +27,6 @@ public class TeamController {
         service.delete(id);}
     @PostMapping("")
     public GetTeamDTO create(@RequestBody Team adminId){
-        System.out.println(adminId.getAdministrator());
         return service.create(adminId);}
     @PutMapping
     public GetTeamDTO update(@RequestBody Team team){
