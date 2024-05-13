@@ -72,7 +72,7 @@ public class Project {
     @JoinColumn(nullable = false)
     private Team team;
 
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @OneToOne(optional = false)
     private ProjectChat chat;
 
     @OneToMany(cascade = CascadeType.PERSIST)

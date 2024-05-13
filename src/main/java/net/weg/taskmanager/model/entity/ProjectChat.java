@@ -14,8 +14,8 @@ import net.weg.taskmanager.model.abstracts.Chat;
 @Data
 public class ProjectChat extends Chat {
 
-    @OneToOne(optional = false, mappedBy = "chat")
-    @JoinColumn(updatable = false, unique = true)
+    @OneToOne(mappedBy = "chat")
+    @JoinColumn( unique = true)
     //ao inserir, atualizar ou remover um projeto terá de ser criado, atualizado ou excuido seu chat
     private Project project;
 

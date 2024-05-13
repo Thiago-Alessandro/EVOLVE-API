@@ -83,14 +83,22 @@ public class ProjectService {
 
         project.setStatusList(listaNova);
 
-        updateProjectChat(project);
+      //  updateProjectChat(project);
         //Adiciona o projeto ao BD para que seja criado o seu Id
-        projectRepository.save(project);
+        createProjectChat(project);
+        project = projectRepository.save(project);
         //Referencia o projeto nas suas propriedades
         propertiesSetProject(project);
 
 
         return converter.convertOne(treatAndSave(project));
+    }
+   private final ProjectChatService projectChatService;
+    private void createProjectChat(Project project){
+        ProjectChat chat = new ProjectChat();
+//        chat.setProject(project);
+        ProjectChat createdChat = projectChatService.save(chat);
+        project.setChat(createdChat);
     }
 
     public GetProjectDTO update(PutProjectDTO projectDTO, Long actionUserId){

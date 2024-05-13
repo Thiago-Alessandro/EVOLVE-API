@@ -2,6 +2,7 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.get.GetProjectChatDTO;
+import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.dto.get.GetTeamChatDTO;
 import net.weg.taskmanager.model.entity.Project;
 import net.weg.taskmanager.model.entity.ProjectChat;
@@ -21,6 +22,10 @@ public class ProjectChatService {
     private final ProjectChatRepository projectChatRepository;
     private final UserRepository userRepository;
     private final ChatProcessor chatProcessor = new ChatProcessor();
+    public ProjectChat save(ProjectChat projectChat){
+       return projectChatRepository.save(projectChat);
+
+    }
 
     public Collection<GetProjectChatDTO> findProjectChatsByUserId(Long userId){
         User user = userRepository.findById(userId).get();
