@@ -25,8 +25,10 @@ public class TeamController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
         service.delete(id);}
-    @PostMapping("/admin/{adminId}")
-    public GetTeamDTO create(@PathVariable Long adminId){return service.create(adminId);}
+    @PostMapping("")
+    public GetTeamDTO create(@RequestBody Team adminId){
+        System.out.println(adminId.getAdministrator());
+        return service.create(adminId);}
     @PutMapping
     public GetTeamDTO update(@RequestBody Team team){
         return service.update(team);

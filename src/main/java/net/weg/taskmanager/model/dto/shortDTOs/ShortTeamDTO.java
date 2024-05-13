@@ -29,7 +29,7 @@ public class ShortTeamDTO {
     private ShortUserDTO administrator;
     private Collection<ShortUserDTO> participants;
     private Collection<GetTeamNotificationDTO> notifications;
-
+    private String code;
     public ShortTeamDTO(Team team){
         Converter<ShortUserDTO, User> userConverter = new ShortUserConverter();
         Converter<GetFileDTO, File> fileConverter = new GetFileConverter();

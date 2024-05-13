@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Setter;
 import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
-import net.weg.taskmanager.utils.ColorUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
@@ -46,6 +44,7 @@ public class Team {
 
     @Column(nullable = false)
     private Boolean personalWorkspace = false;
+    private String code;
 
     public Team(User user){
         this.name = user.getName() + " Workspace";
@@ -67,7 +66,7 @@ public class Team {
         this.chat.setTeam(this);
     }
 
-    public void setImage(MultipartFile image) {
+    public void setImageFromMultipartFile(MultipartFile image) {
         this.image = GetFileConverter.buildFileFromMultipartFile(image);
     }
 

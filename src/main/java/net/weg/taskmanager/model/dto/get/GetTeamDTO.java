@@ -29,6 +29,8 @@ public class GetTeamDTO{
     private GetTeamChatDTO chat;
     private Boolean personalWorkspace;
     private Collection<GetTeamNotificationDTO> notifications;
+    private String code;
+
 
     public GetTeamDTO(Team team){
         Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
