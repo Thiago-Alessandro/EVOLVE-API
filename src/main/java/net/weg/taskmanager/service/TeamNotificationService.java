@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -403,7 +404,7 @@ public class TeamNotificationService {
                 userAction,
                 this.verifyProjectNotificatedUsers(projectId),
                 false,
-                userAction.getName()+" criou uma nova dashboard chamada "+newDashboard.getName()+" no projeto " + project.getName(),
+                userAction.getName()+" criou uma nova dashboard no projeto " + project.getName(),
                 LocalDateTime.now(),
                 "project"
         );
@@ -467,6 +468,60 @@ public class TeamNotificationService {
         this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
+    }
+
+    public void deleteUserFromProjectNotification(Long projectId, Long userActionId, Set<Long> usersIdRemove) {
+        Project project = projectRepository.findById(projectId).get();
+        User userAction = userRepository.findById(userActionId).get();
+        usersIdRemove.forEach(userId ->{
+            User user = userRepository.findById(userId).get();
+            TeamNotification teamNotification = new TeamNotification(
+                    userAction,
+                    this.verifyProjectNotificatedUsers(projectId),
+                    false,
+                    userAction.getName()+" removeu "+user.getName()+" do projeto "+project.getName(),
+                    LocalDateTime.now(),
+                    "project"
+            );
+            this.teamNotificationRepository.save(teamNotification);
+            project.getTeam().getNotifications().add(teamNotification);
+            this.teamRepository.save(project.getTeam());
+        });
+    }
+
+    public void addUserToProject(Long projectId, Long userActionId, Long userAddedId) {
+        Project project = projectRepository.findById(projectId).get();
+        User userAction = userRepository.findById(userActionId).get();
+        User userAdded = userRepository.findById(userAddedId).get();
+
+        TeamNotification teamNotification = new TeamNotification(
+                userAction,
+                this.verifyProjectNotificatedUsers(projectId),
+                false,
+                userAction.getName()+" adicionou "+userAdded.getName()+" ao projeto " + project.getName(),
+                LocalDateTime.now(),
+                "project"
+        );
+        this.teamNotificationRepository.save(teamNotification);
+        project.getTeam().getNotifications().add(teamNotification);
+        this.teamRepository.save(project.getTeam());
+    }
+
+    public void updateProjectInfoNotification(Long projectId, Long userActionId) {
+        Project project = projectRepository.findById(projectId).get();
+        User userAction = userRepository.findById(userActionId).get();
+
+        TeamNotification teamNotification = new TeamNotification(
+                userAction,
+                this.verifyProjectNotificatedUsers(projectId),
+                false,
+                userAction.getName()+" alterou as informações principais do projeto " + project.getName(),
+                LocalDateTime.now(),
+                "project"
+        );
+        this.teamNotificationRepository.save(teamNotification);
+        project.getTeam().getNotifications().add(teamNotification);
+        this.teamRepository.save(project.getTeam());
     }
 
 
