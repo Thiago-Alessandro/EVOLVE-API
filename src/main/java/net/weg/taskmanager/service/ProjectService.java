@@ -85,10 +85,14 @@ public class ProjectService {
 
       //  updateProjectChat(project);
         //Adiciona o projeto ao BD para que seja criado o seu Id
+
         createProjectChat(project);
         project = projectRepository.save(project);
         //Referencia o projeto nas suas propriedades
-        propertiesSetProject(project);
+
+        projectRepository.save(project);
+        //Referencia o projeto nas suas propriedades ** HÁ PRINCIPIO NAO PRECISA MAIS **
+
 
 
         return converter.convertOne(treatAndSave(project));
@@ -161,18 +165,18 @@ public class ProjectService {
         return savedProject;
     }
 
-    private void propertiesSetProject(Project project){
-        //Verifica se há alguma propriedade no projeto
-        if(project.getProperties() != null && project.getProperties().size()>0){
-            //Passa pela lista de propriedades do projeto
-            for(Property propriedade : project.getProperties()) {
-                //Adiciona a referencia do projeto na propriedade
-                propriedade.setProject(project);
-                //Salva a propriedade atualizada com a referencia do projeto
-                propertyRepository.save(propriedade);
-            }
-        }
-    }
+//    private void propertiesSetProject(Project project){
+//        //Verifica se há alguma propriedade no projeto
+//        if(project.getProperties() != null && project.getProperties().size()>0){
+//            //Passa pela lista de propriedades do projeto
+//            for(Property propriedade : project.getProperties()) {
+//                //Adiciona a referencia do projeto na propriedade
+//                propriedade.setProject(project);
+//                //Salva a propriedade atualizada com a referencia do projeto
+//                propertyRepository.save(propriedade);
+//            }
+//        }
+//    }
 
     private void updateProjectChat(Project project){
         project.getChat().setUsers(project.getMembers());

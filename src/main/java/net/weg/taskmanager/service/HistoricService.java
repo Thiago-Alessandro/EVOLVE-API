@@ -202,8 +202,6 @@ public class HistoricService {
     public Task deleteSubtaskHistoric(Long subtaskId, Long taskId, Long userId) {
         User userForHistoric = userRepository.findById(userId).get();
         Task taskForHistoric = taskRepository.findById(taskId).get();
-        System.out.println("Oi mano");
-        System.out.println(taskForHistoric.getSubtasks());
         Subtask subtask = subTaskRepository.findById(subtaskId).get();
 
         Historic historic = new Historic(

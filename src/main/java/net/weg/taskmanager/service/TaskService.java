@@ -159,15 +159,19 @@ public class TaskService {
 
     public GetTaskDTO patchProperty(Property property, Long taskId, Long userId) {
         Task task = taskRepository.findById(taskId).get();
+        Project project = task.getProject();
         if (property.getOptions() != null) {
             optionRepository.saveAll(property.getOptions());
         }
         property = this.propertyRepository.save(property);
-        task.getProperties().add(property);
-
-        Task savedTask = historicService.patchProperty(property, userId, taskId);
-
-        return resolveAndGetDTO(savedTask);
+        if(property.isGlobal()) {
+            project.getProperties().add(property);
+            this.projectRepository.save(project);
+        } else {
+            task.getProperties().add(property);
+        }
+        task = historicService.patchProperty(property, userId, taskId);
+        return resolveAndGetDTO(task);
     }
 
     public GetTaskDTO deleteProperty(Long taskId, Long userId, Long propertyId) {

@@ -26,7 +26,7 @@ public class PropertyProcessor {
         resolvingProperty = property;
 
         resolvePropertyPropertyValue();
-        resolvePropertyProject();
+//        resolvePropertyProject();
 
         resolvingCascade.remove(propertyClassName);
 
@@ -47,14 +47,14 @@ public class PropertyProcessor {
                     .forEach(propertyValue ->  PropertyValueProcessor.getInstance().resolvePropertyValue(propertyValue, resolvingCascade));
         }
     }
-    private void resolvePropertyProject(){
-        if(resolvingProperty.getProject()!=null){
-            if(resolvingCascade.contains(Project.class.getSimpleName())){
-                resolvingProperty.setProject(null);
-                return;
-            }
-            ProjectProcessor.getInstance().resolveProject(resolvingProperty.getProject(), resolvingCascade);
-        }
-    }
+//    private void resolvePropertyProject(){
+//        if(resolvingProperty.getProject()!=null){
+//            if(resolvingCascade.contains(Project.class.getSimpleName())){
+//                resolvingProperty.setProject(null);
+//                return;
+//            }
+//            ProjectProcessor.getInstance().resolveProject(resolvingProperty.getProject(), resolvingCascade);
+//        }
+//    }
 
 }
