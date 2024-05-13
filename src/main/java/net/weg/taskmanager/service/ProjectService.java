@@ -191,7 +191,7 @@ public class ProjectService {
     public GetProjectDTO patchImage(Long id, MultipartFile image) {
         Project project = projectRepository.findById(id).get();
         project.setImage(image);
-        return new GetProjectDTO(treatAndSave(project));
+        return converter.convertOne(treatAndSave(project));
     }
 
     public Comment patchNewComment(Long projectId, Comment newComment, Long userId) {
