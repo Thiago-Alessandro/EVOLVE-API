@@ -176,9 +176,12 @@ public class ProjectService {
 
     public GetProjectDTO patchStatusList(Long projectId, Collection<Status> statusList) throws InvalidAttributeValueException {
         if(statusList == null) throw new InvalidAttributeValueException("StatusList on project cannot be null");
+        System.out.println("setei hein");
         Project project = findProjectById(projectId);
-        project.setStatusList(statusList);
-             return converter.convertOne(treatAndSave(project));
+        project.getStatusList().removeAll(project.getStatusList());
+        project.getStatusList().addAll(statusList);
+//        project.setStatusList(statusList);
+        return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchStatusListRemove(Long projectId, Long statusId) {

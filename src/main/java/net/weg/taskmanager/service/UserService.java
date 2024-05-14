@@ -61,10 +61,10 @@ public class UserService {
         userRepository.deleteById(id);}
 
     public GetUserDTO create(PostUserDTO userDTO){
-        System.out.println("vou criar");
+//        System.out.println("vou criar");
         User user = new User();
         BeanUtils.copyProperties(userDTO, user);
-        System.out.println("estou criando");
+//        System.out.println("estou criando");
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         user.setUserDetailsEntity(UserDetailsEntity
                 .builder()
@@ -79,9 +79,9 @@ public class UserService {
                 .build());
 
         User createdUser = userRepository.save(user);
-        System.out.println("criei1");
+//        System.out.println("criei1");
         setDefaultTeam(createdUser);
-        System.out.println("criei2");
+//        System.out.println("criei2");
         return converter.convertOne(createdUser);
     }
 
@@ -92,24 +92,21 @@ public class UserService {
         return converter.convertOne(updatedUser);
     }
 
-    public GetUserDTO update(User updatingUser){
-        User user = findUserById(updatingUser.getId());
-        modelMapper.map(updatingUser, user);
-        User updatedUser  = userRepository.save(user);
+    public GetUserDTO patchName(Long userId,String name){
+        User user = findUserById(userId);
+        user.setName(name);
+        User updatedUser = userRepository.save(user);
         return converter.convertOne(updatedUser);
     }
-    
-    
-//    public GetUserDTO update(String jsonUser, MultipartFile image){
-//        try {
-//            User user = objectMapper.readValue(jsonUser, User.class);
-//            user.setImage(image);
-//            User updatedUser = userRepository.save(user);
-//            return converter.convertOne(updatedUser);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
+
+//    public GetUserDTO update(User updatingUser){
+//        User user = findUserById(updatingUser.getId());
+//        modelMapper.map(updatingUser, user);
+//        User updatedUser  = userRepository.save(user);
+//        return converter.convertOne(updatedUser);
 //    }
+    
+
 
     public GetUserDTO findByEmail(String email){
         User loggedUser = userRepository.findByEmail(email);
@@ -142,7 +139,7 @@ public class UserService {
     public GetUserDTO patchEmail(Long userId,String email){
         User user = findUserById(userId);
         user.setEmail(email);
-        System.out.println("eu seto o email mano rlxx");
+        user.getUserDetailsEntity().setUsername(user.getEmail());
         return converter.convertOne(userRepository.save(user));
     }
 

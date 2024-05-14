@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.management.InvalidAttributeValueException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -138,7 +139,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/{projectId}/statusList")
-    public ResponseEntity<GetProjectDTO> patchStatusList(@PathVariable Long projectId, @RequestBody Collection<Status> statusList)  {
+    public ResponseEntity<GetProjectDTO> patchStatusList(@PathVariable Long projectId, @RequestBody Collection<Status> statusList) throws InvalidAttributeValueException {
         try {
             return ResponseEntity.ok(projectService.patchStatusList(projectId, statusList));
         } catch (Exception e){
@@ -185,7 +186,6 @@ public class ProjectController {
     @PatchMapping("/{projectId}/defaultRole")
     public ResponseEntity<GetProjectDTO> patchDefaultRole(@PathVariable Long projectId, @RequestBody Role defaultRole){
         try {
-            System.out.println(defaultRole);
             return ResponseEntity.ok(projectService.patchDefaultRole(projectId, defaultRole));
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

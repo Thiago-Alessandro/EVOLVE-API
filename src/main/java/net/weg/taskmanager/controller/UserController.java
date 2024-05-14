@@ -51,19 +51,24 @@ public class UserController {
         }
     }
 
+    @PatchMapping("/{userId}/name")
+    public GetUserDTO patchName(@PathVariable Long userId, @RequestParam String name){
+        return userService.patchName(userId, name);
+    }
+
 
     @PatchMapping("/{userId}")
     public GetUserDTO patchImage(@PathVariable Long userId, @RequestParam MultipartFile image) {
         return userService.patchImage(userId, image);
     }
 
-    @PatchMapping("/{userId}/theme/{theme}")
-    public GetUserDTO patchTheme(@PathVariable Long userId, @PathVariable String theme){
+    @PatchMapping("/{userId}/theme")
+    public GetUserDTO patchTheme(@PathVariable Long userId, @RequestParam String theme){
         return userService.patchTheme(userId, theme);
     }
 
-    @PatchMapping("/{userId}/email/{email}")
-    public GetUserDTO patchEmail(@PathVariable Long userId, @PathVariable String email){
+    @PatchMapping("/{userId}/email")
+    public GetUserDTO patchEmail(@PathVariable Long userId, @RequestParam String email){
         System.out.println("chego aqui na controler");
         return userService.patchEmail(userId, email);
     }
