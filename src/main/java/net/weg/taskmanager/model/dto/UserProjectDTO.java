@@ -25,7 +25,7 @@ public class UserProjectDTO {
 
     private Role role;
 
-    private boolean isManager = false;
+    private boolean manager = false;
 
     public UserProjectDTO(UserProject userProject){
         BeanUtils.copyProperties(userProject, this);

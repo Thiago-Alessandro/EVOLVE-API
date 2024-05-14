@@ -20,6 +20,7 @@ import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import net.weg.taskmanager.security.service.RoleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -147,7 +148,8 @@ public class UserService {
 
     public GetUserDTO patchPassword(Long userId,String password){
         User user = findUserById(userId);
-        user.setPassword(password);
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        user.getUserDetailsEntity().setPassword(user.getPassword());
         return converter.convertOne(userRepository.save(user));
     }
     public GetUserDTO patchPrimaryColor(Long userId,String primaryColor){

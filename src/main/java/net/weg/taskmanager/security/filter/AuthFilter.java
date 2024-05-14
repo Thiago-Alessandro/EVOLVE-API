@@ -49,7 +49,7 @@ public class AuthFilter extends OncePerRequestFilter {
             } catch (Exception e) {
                 System.out.println("Mano não achei o cookie :(");
                 System.out.println(e);
-                response.setStatus(405);
+                response.setStatus(500);
                 return;
             }
             String token = cookie.getValue();

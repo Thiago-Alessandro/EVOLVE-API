@@ -38,7 +38,7 @@ public class UserProjectService {
     public UserProject update(UserProject userProject){return repository.save(userProject);}
 
     public User findProjectCreator(Long projectId){
-        Optional<UserProject> optionalUserProject = repository.findUserProjectByProject_IdAndIsManagerIsTrue(projectId);
+        Optional<UserProject> optionalUserProject = repository.findUserProjectByProject_IdAndManagerIsTrue(projectId);
         if(optionalUserProject.isEmpty()) throw new NoSuchElementException();
         UserProject userProject = optionalUserProject.get();
         return userProject.getUser();

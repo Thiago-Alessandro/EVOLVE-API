@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.dto.ShortUserTeamDTO;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
 import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
@@ -14,6 +15,7 @@ import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.entity.UserTeam;
 import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
@@ -28,7 +30,7 @@ public class ShortTeamDTO {
 //    private ShortUserDTO administrator;
     @JsonIgnore
     //tirar e botar dtos dps
-    private Collection<UserTeam> participants;
+    private Collection<ShortUserTeamDTO> participants;
 
     public ShortTeamDTO(Team team){
         Converter<ShortUserDTO, User> userConverter = new ShortUserConverter();
@@ -37,7 +39,7 @@ public class ShortTeamDTO {
 
 //        this.administrator = userConverter.convertOne(team.getAdministrator());
 //        this.participants = userConverter.convertAll(team.getParticipants();
-        this.participants = team.getParticipants();
+        this.participants = team.getParticipants() != null? team.getParticipants().stream().map(ShortUserTeamDTO::new).toList() : new ArrayList<>();
         this.image = fileConverter.convertOne(team.getImage());
 
     }

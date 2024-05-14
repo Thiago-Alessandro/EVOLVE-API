@@ -33,7 +33,7 @@ public class UserProject {
     @ManyToOne
     private Role role;
 
-    private boolean isManager = false;
+    private boolean manager = false;
 //    private boolean isAdm;
 
     public UserProject(Long userId, Long projectId, Role acessProfile) {

@@ -36,6 +36,6 @@ public class Cookieutil {
         if (cookie != null) {
             return cookie;
         }
-        throw new Exception("CU-KIE IS GOOD ANYBODY GIVE ME");
+        throw new Exception("Não foi possivel encontrar cookie com o nome: " + name);
     }
 }

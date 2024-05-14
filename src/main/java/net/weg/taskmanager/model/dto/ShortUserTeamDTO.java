@@ -20,24 +20,23 @@ import org.springframework.beans.BeanUtils;
 
 @Data
 @AllArgsConstructor
-public class UserTeamDTO2 {
+public class ShortUserTeamDTO {
 
     private Long userId;
     private Long teamId;
 
     private ShortUserDTO user;
-    private GetTeam2 team;
+//    private ShortTeamDTO team;
 
     private Role role;
     private boolean isManager;
 
-    public UserTeamDTO2(UserTeam userTeam) {
+    public ShortUserTeamDTO(UserTeam userTeam) {
         BeanUtils.copyProperties(userTeam, this);
         Converter<ShortUserDTO, User> userConverter = new ShortUserConverter();
-//        Converter<GetTeamDTO, Team> teamConverter = new GetTeamConverter();
+        Converter<ShortTeamDTO, Team> teamConverter = new ShortTeamConverter();
         this.user = userConverter.convertOne(userTeam.getUser());
 //        this.team = teamConverter.convertOne(userTeam.getTeam());
-        this.team = userTeam.getTeam() != null ? new GetTeam2(userTeam.getTeam()) : null;
     }
 
 }

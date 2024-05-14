@@ -23,4 +23,5 @@ public class PostProjectDTO {
 //    private Collection<UserProject> members;
     private User creator;
     private Team team;
+    private String imageColor;
 }

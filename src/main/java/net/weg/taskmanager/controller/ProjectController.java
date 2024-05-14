@@ -185,6 +185,7 @@ public class ProjectController {
     @PatchMapping("/{projectId}/defaultRole")
     public ResponseEntity<GetProjectDTO> patchDefaultRole(@PathVariable Long projectId, @RequestBody Role defaultRole){
         try {
+            System.out.println(defaultRole);
             return ResponseEntity.ok(projectService.patchDefaultRole(projectId, defaultRole));
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
