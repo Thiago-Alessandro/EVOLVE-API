@@ -1,6 +1,8 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.dto.get.GetTaskDTO;
+import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.put.PutTaskDTO;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.enums.Priority;
@@ -26,6 +28,7 @@ public class HistoricService {
     private final TaskRepository taskRepository;
     private final PropertyRepository propertyRepository;
     private final SubTaskRepository subTaskRepository;
+    private final TeamNotificationService teamNotificationService;
 
     public Task patchNewCommentHistoric(Long taskId, Long userId) {
         User userForHistoric = userRepository.findById(userId).get();
@@ -38,6 +41,7 @@ public class HistoricService {
         );
 
         Historic savedHistoric = this.historicRepository.save(historic);
+        this.teamNotificationService.newCommentNotification(userId,taskId);
 
         taskForHistoric.getHistoric().add(savedHistoric);
 
@@ -55,6 +59,7 @@ public class HistoricService {
         );
 
         Historic savedHistoric = this.historicRepository.save(historic);
+        this.teamNotificationService.deleteCommentNotification(userId,taskId);
 
         taskForHistoric.getHistoric().add(savedHistoric);
 
@@ -79,6 +84,8 @@ public class HistoricService {
 
             taskForHistoric.getHistoric().add(savedHistoric);
 
+            teamNotificationService.putSimplePropertyValueNotification(userId,taskId,property);
+
             taskRepository.save(taskForHistoric);
         }
     }
@@ -97,6 +104,8 @@ public class HistoricService {
         Historic savedHistoric = this.historicRepository.save(historic);
 
         taskForHistoric.getHistoric().add(savedHistoric);
+
+        teamNotificationService.putPropertyOptionNotification(userId,taskId,property);
 
         taskRepository.save(taskForHistoric);
 
@@ -120,6 +129,8 @@ public class HistoricService {
 
         taskForHistoric.getHistoric().add(savedHistoric);
 
+        teamNotificationService.deletePropertyOptionNotification(userId,taskId,property);
+
         taskRepository.save(taskForHistoric);
 
         return taskForHistoric;
@@ -138,6 +149,29 @@ public class HistoricService {
         Historic savedHistoric = this.historicRepository.save(historic);
 
         taskForHistoric.getHistoric().add(savedHistoric);
+
+        teamNotificationService.updateFinalDateTaskNotification(userId,taskId);
+
+        taskRepository.save(taskForHistoric);
+
+        return taskForHistoric;
+    }
+
+    public Task updateTaskScheduledDateHistoric(Long taskId, Long userId, LocalDateTime newFinalDate) {
+        User userForHistoric = userRepository.findById(userId).get();
+        Task taskForHistoric = taskRepository.findById(taskId).get();
+
+        Historic historic = new Historic(
+                userForHistoric,
+                userForHistoric.getName() + " mudou a data de agendamento da tarefa para "+newFinalDate.toString(),
+                LocalDateTime.now()
+        );
+
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        taskForHistoric.getHistoric().add(savedHistoric);
+
+        teamNotificationService.updateFinalDateTaskNotification(userId,taskId);
 
         taskRepository.save(taskForHistoric);
 
@@ -158,6 +192,8 @@ public class HistoricService {
 
         taskForHistoric.getHistoric().add(savedHistoric);
 
+        teamNotificationService.patchSubtaskNotification(userId,taskId);
+
         taskRepository.save(taskForHistoric);
 
         return taskForHistoric;
@@ -177,6 +213,7 @@ public class HistoricService {
         Historic savedHistoric = this.historicRepository.save(historic);
 
         taskForHistoric.getHistoric().add(savedHistoric);
+        teamNotificationService.deleteSubtaskNotification(taskId,userId);
 
         taskRepository.save(taskForHistoric);
 
@@ -251,6 +288,8 @@ public class HistoricService {
 
         }
 
+        teamNotificationService.patchPropertyNotification(userId,taskId);
+
         Historic savedHistoric = this.historicRepository.save(historic);
 
         task.getHistoric().add(savedHistoric);
@@ -278,51 +317,33 @@ public class HistoricService {
         Historic savedHistoric = this.historicRepository.save(historic);
 
         taskForHistoric.getHistoric().add(savedHistoric);
+        teamNotificationService.patchAssociateNotification(userId,taskId);
+
+        return taskRepository.save(taskForHistoric);
+    }
+
+
+
+    public Task removeAssociateHistoric(Long taskId,Long userId, User removedAssociate) {
+        User userForHistoric = userRepository.findById(userId).get();
+        Task taskForHistoric = taskRepository.findById(taskId).get();
+
+        String description =  userForHistoric.getName() + " desassociou " + removedAssociate.getName() + " da tarefa";
+
+        Historic historic = new Historic(
+                userForHistoric,
+                description,
+                LocalDateTime.now()
+        );
+        Historic savedHistoric = this.historicRepository.save(historic);
+
+        taskForHistoric.getHistoric().add(savedHistoric);
+        teamNotificationService.removeAssociateNotification(userId,taskId,removedAssociate);
 
         return taskRepository.save(taskForHistoric);
     }
 
     // change later, divide in multiple functions with different services and requests
-    public Task generalUpdateHistoric(PutTaskDTO putTaskDTO, Task task, User userForHistoric) {
-
-        //for select
-//        putTaskDTO.getProperties().forEach(property -> {
-//            task.getProperties().forEach(property1 -> {
-//                if (property.getCurrentOptions() != property1.getCurrentOptions()) {
-//                    ArrayList<String> currentOptionListUpdate = new ArrayList<>();
-//                    property.getCurrentOptions().forEach(currentOption -> {
-//                        currentOptionListUpdate.add(currentOption.getValue());
-//                    });
-//                    String description = userForHistoric.getName() + " mudou o valor da propriedade " + property.getName() + " para " + currentOptionListUpdate.stream().toList();
-//                    description = description.replace("[", "");
-//                    description = description.replace("]", "");
-//                    Historic historic = new Historic(userForHistoric, description, LocalDateTime.now());
-//                    Historic savedHistoric = this.historicRepository.save(historic);
-//
-//                    task.getHistoric().add(savedHistoric);
-//
-//                    taskRepository.save(task);
-//                }
-//            });
-//        });
-        // for priority
-        if (!putTaskDTO.getPriority().name().toUpperCase().equals(task.getPriority().name())) {
-            Priority prioritySaved = Priority.valueOf(putTaskDTO.getPriority().name());
-            prioritySaved.backgroundColor = putTaskDTO.getPriority().backgroundColor();
-            BeanUtils.copyProperties(putTaskDTO, task);
-            task.setPriority(prioritySaved);
-
-            Historic historic = new Historic(userForHistoric, userForHistoric.getName() + " mudou o valor da propriedade prioridade para " + putTaskDTO.getPriority().name().toLowerCase(), LocalDateTime.now());
-            Historic savedHistoric = this.historicRepository.save(historic);
-
-            task.getHistoric().add(savedHistoric);
-
-            taskRepository.save(task);
-
-        }
-
-        return task;
-    }
 
     public Task updatePropertyCurrentOptions(Long userId, Long taskId, Option option,Property property) {
         User user = userRepository.findById(userId).get();
@@ -333,6 +354,7 @@ public class HistoricService {
         Historic savedHistoric = this.historicRepository.save(historic);
 
         task.getHistoric().add(savedHistoric);
+        teamNotificationService.updatePropertyCurrentOptionNotification(taskId,userId,property);
 
         return taskRepository.save(task);
     }
@@ -347,6 +369,7 @@ public class HistoricService {
         Historic savedHistoric = this.historicRepository.save(historic);
 
         task.getHistoric().add(savedHistoric);
+        teamNotificationService.deletePropertyNotification(userId,taskId);
 
         return taskRepository.save(task);
     }
@@ -360,6 +383,7 @@ public class HistoricService {
         Historic savedHistoric = this.historicRepository.save(historic);
 
         task.getHistoric().add(savedHistoric);
+        teamNotificationService.patchFileNotification(userId,taskId);
 
         return taskRepository.save(task);
     }
@@ -373,6 +397,7 @@ public class HistoricService {
         Historic savedHistoric = this.historicRepository.save(historic);
 
         task.getHistoric().add(savedHistoric);
+        teamNotificationService.deleteFileNotification(userId,taskId);
 
         return taskRepository.save(task);
     }
@@ -386,18 +411,20 @@ public class HistoricService {
         Historic savedHistoric = this.historicRepository.save(historic);
 
         task.getHistoric().add(savedHistoric);
+        teamNotificationService.deletePropertyCurrentOptionNotification(userId,taskId,property);
 
         return taskRepository.save(task);
     }
 
-    public Task updateCurrentStatusHistoric(User user,Task task, Status status) {
+    public GetTaskDTO updateCurrentStatusHistoric(User user, Task task, Status status) {
         Historic historic =
                 new Historic(user, user.getName() + " mudou o valor da propriedade status para " + status.getName(), LocalDateTime.now());
         Historic savedHistoric = this.historicRepository.save(historic);
 
         task.getHistoric().add(savedHistoric);
+        teamNotificationService.updateCurrentStatusNotification(user.getId(), task.getId());
 
-        return taskRepository.save(task);
+        return new GetTaskDTO(taskRepository.save(task));
     }
 
     public Task updateCurrentPriorityHistoric(Task task, User user, Priority priority) {
@@ -406,6 +433,7 @@ public class HistoricService {
         Historic savedHistoric = this.historicRepository.save(historic);
 
         task.getHistoric().add(savedHistoric);
+        teamNotificationService.updateCurrentPriorityNotification(user.getId(), task.getId());
 
         return taskRepository.save(task);
     }

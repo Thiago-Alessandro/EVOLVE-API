@@ -3,15 +3,20 @@ package net.weg.taskmanager.controller;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.UserProject;
+import net.weg.taskmanager.model.dto.post.PostProjectDTO;
+import net.weg.taskmanager.model.dto.put.PutProjectDTO;
 import net.weg.taskmanager.model.entity.Status;
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
-import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.entity.Task;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.security.model.entity.Role;
 import net.weg.taskmanager.service.ProjectService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import net.weg.taskmanager.model.dto.get.GetCommentDTO;
+import net.weg.taskmanager.model.entity.Comment;
+import net.weg.taskmanager.model.entity.User;
+import net.weg.taskmanager.service.TeamNotificationService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +24,7 @@ import javax.management.InvalidAttributeValueException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.NoSuchElementException;
+import java.util.HashSet;
 
 @RestController
 @AllArgsConstructor
@@ -26,14 +32,40 @@ import java.util.NoSuchElementException;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final TeamNotificationService teamNotificationService;
+
 
     @GetMapping("/{projectId}")
     public ResponseEntity<GetProjectDTO> findById(@PathVariable Long projectId) {
-        try{
+        try {
             return ResponseEntity.ok(projectService.findById(projectId));
-        } catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+//    @GetMapping
+//    public Collection<GetProjectDTO> findAll(){return projectService.findAll();}
+
+    @DeleteMapping("/{projectId}")
+    public void delete(@PathVariable Long projectId) {
+        projectService.delete(projectId);
+    }
+
+//    @PutMapping("/{actionUserId}")
+//    public GetProjectDTO update(@RequestBody PutProjectDTO project, @PathVariable Long actionUserId){
+//        return projectService.update(project, actionUserId);
+//    }
+
+    @PatchMapping("/{projectId}/{actionUserId}")
+    public GetProjectDTO updateStatusList(@PathVariable Long projectId,@PathVariable Long actionUserId, @RequestBody Status status){
+        //        teamNotificationService.updateProjectStatusList(projectId,actionUserId,status);
+        return projectService.updateStatusList(projectId,actionUserId, status);
+    }
+
+    @PatchMapping("/{projectId}/deleteStatus")
+    public GetProjectDTO deleteStatus(@PathVariable Long projectId, @RequestBody Status status){
+        return projectService.deleteStatus(projectId, status);
     }
 
     @GetMapping("/team/{teamId}")
@@ -53,27 +85,10 @@ public class ProjectController {
         }
     }
 
-
-
-//    @GetMapping
-//    public Collection<GetProjectDTO> findAll() {
-//        return projectService.findAll();
-//    }
-
-    @DeleteMapping("/{projectId}")
-    public void delete(@PathVariable Long projectId) {
-        projectService.delete(projectId);
-    }
-
     @PostMapping("/team/{teamId}")
     public GetProjectDTO create(@RequestBody PostProjectDTO project) {
         return projectService.create(project);
     }
-
-//    @PutMapping
-//    public GetProjectDTO update(@RequestBody PutProjectDTO project) {
-//        return projectService.update(project);
-//    }
 
     @PatchMapping("/{projectId}/name")
     public ResponseEntity<GetProjectDTO> patchName(@PathVariable Long projectId, @RequestParam String name){
@@ -190,6 +205,43 @@ public class ProjectController {
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
+    }
+
+//    @GetMapping("/team/{teamId}/{userId}")
+//    public Collection<GetProjectDTO> getProjectsByTeamId(@PathVariable Long teamId, @PathVariable Long userId){
+//        return projectService.getProjectsByTeam(teamId, userId);
+//    }
+
+//    @PatchMapping("/{projectId}/delete-user/{actionUserId}")
+//    public GetProjectDTO deleteUserFromProject(@PathVariable Long idProject,@PathVariable Long actionUserId, @RequestBody Collection<User> users){
+//        return projectService.deleteUserFromProject(idProject, actionUserId, users);
+//    }
+//
+//    @PatchMapping("{projectId}/addUser/{userAddedId}/{userActionId}")
+//    public GetProjectDTO addUserToProject(@PathVariable Long projectId, @PathVariable Long userAddedId, @PathVariable Long userActionId) {
+//        return projectService.addUserToProject(projectId,userActionId,userAddedId);
+//    }
+
+    @PatchMapping("/comments/patch/{projectId}/{userId}")
+    public Comment patchNewComment(@PathVariable Long projectId,
+                                   @RequestBody Comment newComment, @PathVariable Long userId) {
+        return projectService.patchNewComment(projectId, newComment, userId);
+    }
+
+    @DeleteMapping("/comments/delete/{commentId}/{projectId}/{userId}")
+    public Collection<Comment> deleteComment(@PathVariable Long commentId,
+                                             @PathVariable Long projectId, @PathVariable Long userId) {
+        return projectService.deleteComment(commentId,projectId,userId);
+    }
+
+    @GetMapping("/comments/getAll/{projectId}")
+    public Collection<GetCommentDTO> getAllCommentsOfTask(@PathVariable Long projectId) {
+        Collection<Comment> comments = projectService.getAllCommentsOfTask(projectId);
+        Collection<GetCommentDTO> commentDTOS = new HashSet<>();
+        for(Comment comment : comments){
+            commentDTOS.add(new GetCommentDTO(comment));
+        }
+        return commentDTOS;
     }
 
 }

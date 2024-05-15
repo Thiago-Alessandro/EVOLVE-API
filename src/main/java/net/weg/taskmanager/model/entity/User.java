@@ -7,9 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.UserProject;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
+import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -40,11 +40,6 @@ public class User {
     @OneToMany(mappedBy = "creator")
     private Collection<Task> createdTasks;
 
-//    @OneToMany(mappedBy = "administrator")
-//    private Collection<Team> managedTeams;
-//    @ManyToMany(mappedBy = "participants")
-//    private Collection<Team> teams;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     private UserDetailsEntity userDetailsEntity;
@@ -61,6 +56,7 @@ public class User {
     private String secondaryColor;
     private String primaryDarkColor;
     private String secondaryDarkColor;
+    private Integer fontSize;
 
 
 
@@ -73,16 +69,9 @@ public class User {
     }
 
 
-    public void setImage(MultipartFile image) {
-        File file = new File();
-        try {
-            file.setData(image.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        file.setName(image.getOriginalFilename());
-        file.setType(image.getContentType());
-        this.image = file;
+    public void setImageFromMultipartFile(MultipartFile image) {
+        this.image = GetFileConverter.buildFileFromMultipartFile(image);
+
     }
 
     @Override

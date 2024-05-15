@@ -1,14 +1,11 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
-
-import net.weg.taskmanager.model.dto.UserTeamDTO;
 import net.weg.taskmanager.model.dto.UserTeamDTO2;
 import net.weg.taskmanager.model.dto.get.GetTeamDTO;
 import net.weg.taskmanager.model.dto.post.PostTeamDTO;
 import net.weg.taskmanager.model.entity.UserTeam;
 import net.weg.taskmanager.security.model.entity.Role;
-import net.weg.taskmanager.model.entity.Team;
 import net.weg.taskmanager.service.TeamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +25,6 @@ public class TeamController {
     @GetMapping("/{teamId}")
     public GetTeamDTO findById(@PathVariable Long teamId){return service.findById(teamId);}
 
-//    @GetMapping
-//    public Collection<GetTeamDTO> findAll(){return service.findAll();}
-
     @DeleteMapping("/{teamId}")
     public void delete(@PathVariable Long teamId){service.delete(teamId);}
 
@@ -41,7 +35,6 @@ public class TeamController {
     public Collection<UserTeamDTO2> findTeamsByUserId(@PathVariable Long userId){
         return service.findTeamsByUserId(userId);
     }
-
 
 //    @PutMapping
 //    public GetTeamDTO update(@RequestBody Team team){
@@ -66,6 +59,7 @@ public class TeamController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
+
     @PatchMapping("/{teamId}/image/remove")
     public ResponseEntity<GetTeamDTO> patchImageRemove(@PathVariable Long teamId) {
         try {
@@ -82,6 +76,7 @@ public class TeamController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
+
     @PatchMapping("/{teamId}/participants")
     public ResponseEntity<GetTeamDTO> patchParticipants(@PathVariable Long teamId, @RequestBody Collection<UserTeam> participants) throws InvalidAttributeValueException {
 //        try {
@@ -117,5 +112,16 @@ public class TeamController {
 //            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 //        }
 //    }//projeto? não aparentemente
+
+    @PatchMapping("/{teamId}/{notificationId}")
+    public GetTeamDTO patchReadedNotification(@PathVariable Long teamId, @PathVariable Long notificationId) {
+        return service.patchReadedNotification(teamId,notificationId);
+    }
+
+    @DeleteMapping("/clean/{loggedUserId}")
+    public void cleanAllUserNotifications(@PathVariable Long loggedUserId) {
+        service.cleanAllUserNotifications(loggedUserId);
+
+    }
 
 }

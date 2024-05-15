@@ -20,7 +20,7 @@ public class PropertyService {
     public void createProjectPropertiesIfNotExists(Project project) throws InvalidAttributeValueException {
         Collection<Property> properties = project.getProperties();
         if (properties == null) throw new InvalidAttributeValueException();
-        properties.forEach(property -> property.setProject(project));
+//        properties.forEach(property -> property.setProject(project));
         properties.stream()
                 .filter(this::doesPropertyNotExists)
                 .forEach(repository::save);

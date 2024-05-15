@@ -58,7 +58,7 @@ public class Task {
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<Property> properties;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL) //orpahnRemoval?
     private Collection<Subtask> subtasks;
 
     @ManyToMany()

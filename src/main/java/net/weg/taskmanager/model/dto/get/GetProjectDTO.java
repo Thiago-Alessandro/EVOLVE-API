@@ -9,10 +9,12 @@ import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
 import net.weg.taskmanager.model.dto.converter.get.GetProjectChatConverter;
 import net.weg.taskmanager.model.dto.converter.get.GetTaskConverter;
+import net.weg.taskmanager.model.dto.converter.shorts.ShortTeamConverter;
 import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 import net.weg.taskmanager.model.entity.*;
+import net.weg.taskmanager.model.entity.DashBoard.Chart;
 import net.weg.taskmanager.model.property.Property;
 import org.springframework.beans.BeanUtils;
 
@@ -41,8 +43,11 @@ public class GetProjectDTO {
 //    private Collection<User> administrators;
     private Collection<Property> properties;
     private Collection<Status> statusList;
-    //retirar e botar dtos dps
+
     private Collection<UserProjectDTO> members;
+
+    private Collection<Chart> charts;
+    private Collection<GetCommentDTO> comments;
     private ShortTeamDTO team;
 
 //    private Collection<ShortUserDTO> members;
@@ -54,17 +59,20 @@ public class GetProjectDTO {
     private Collection<GetTaskDTO> tasks;
 
     public GetProjectDTO(Project project){
-        Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
+//        Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
         Converter<GetFileDTO, File> fileDTOConverter = new GetFileConverter();
         Converter<GetProjectChatDTO, ProjectChat> projectChatDTOConverter = new GetProjectChatConverter();
         Converter<GetTaskDTO, Task> taskDTOCOnverter = new GetTaskConverter();
+        Converter<ShortTeamDTO, Team> teamDTOTeamConverter = new ShortTeamConverter();
 
         BeanUtils.copyProperties(project, this);
         this.image = fileDTOConverter.convertOne(project.getImage());
+        this.team = teamDTOTeamConverter.convertOne(project.getTeam());
         this.chat = projectChatDTOConverter.convertOne(project.getChat());
 //        this.members = shortUserConverter.convertAll(project.getMembers());
         this.members = project.getMembers() != null ? project.getMembers().stream().map(UserProjectDTO::new).toList() : new ArrayList<>();
         this.tasks = taskDTOCOnverter.convertAll(project.getTasks());
+        this.comments = project.getComments() != null ? project.getComments().stream().map(GetCommentDTO::new).toList() : null;
 
     }
 

@@ -37,6 +37,7 @@ public class GetUserDTO {
     private String secondaryColor;
     private String primaryDarkColor;
     private String secondaryDarkColor;
+    private Integer fontSize;
     public GetUserDTO(User user){
         Converter<GetFileDTO, File> fileConverter = new GetFileConverter();
         Converter<ShortTaskDTO, Task> taskConverter = new ShortTaskConverter();

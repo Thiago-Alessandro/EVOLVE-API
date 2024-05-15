@@ -3,6 +3,8 @@ package net.weg.taskmanager.model.dto.post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.model.dto.shortDTOs.ShortProjectDTO;
+import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 import net.weg.taskmanager.model.entity.Project;
 import net.weg.taskmanager.model.entity.Status;
 import net.weg.taskmanager.model.entity.User;
@@ -24,9 +26,9 @@ public class PostTaskDTO {
     private String description;
     private Status currentStatus;
     private PriorityRecord priority ;
-    private User creator;
-    private Project project;
-    private Collection<User> associates;
+    private ShortUserDTO creator;
+    private ShortProjectDTO project;
+    private Collection<ShortUserDTO> associates;
     private Integer statusListIndex;
     private Collection<Property> properties;
 

@@ -2,16 +2,15 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.entity.UserTeam;
+import net.weg.taskmanager.model.dto.get.GetProjectChatDTO;
+import net.weg.taskmanager.model.entity.ProjectChat;
+import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.repository.ProjectChatRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
-import net.weg.taskmanager.model.dto.get.GetProjectChatDTO;
-import net.weg.taskmanager.model.entity.ProjectChat;
-import net.weg.taskmanager.model.entity.User;
 
 @Service
 @AllArgsConstructor
@@ -40,6 +39,10 @@ public class ProjectChatService {
         return repository.findProjectChatByProject_Id(projectId);
     }
 
+    public ProjectChat save(ProjectChat projectChat){
+       return repository.save(projectChat);
+    }
+
     public Collection<GetProjectChatDTO> findProjectChatsByUserId(Long userId){
         User user = userService.findUserById(userId);
 
@@ -54,13 +57,8 @@ public class ProjectChatService {
         return resolveAndGetDTOS(userProjectChats);
     }
 
-//    public Collection<GetProjectChatDTO> findAll(){
-//        Collection<ProjectChat> projects = projectChatRepository.findAll();
-//        return resolveAndGetDTOS(projects);
-//    }
 
     private GetProjectChatDTO resolveAndGetDTO(ProjectChat projectChat){
-//        chatProcessor.resolveChat(projectChat);
         return new GetProjectChatDTO(projectChat);
     }
     private Collection<GetProjectChatDTO> resolveAndGetDTOS(Collection<ProjectChat> projectChats){

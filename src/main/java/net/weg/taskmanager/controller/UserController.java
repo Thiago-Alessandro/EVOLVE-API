@@ -1,9 +1,7 @@
 package net.weg.taskmanager.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 
-import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.post.PostUserDTO;
 import net.weg.taskmanager.service.UserService;
@@ -28,8 +26,9 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public GetUserDTO findById(@PathVariable Long userId){
+        return userService.findById(userId);
+}
 
-        return userService.findById(userId);}
     @GetMapping
     public Collection<GetUserDTO> findAll(){return userService.findAll();}
 
@@ -92,6 +91,10 @@ public class UserController {
     @PatchMapping("/{userId}/secondaryDarkColor")
     public GetUserDTO patchSecondaryDarkColor(@PathVariable Long userId, @RequestParam String secondaryColor){
         return userService.patchSecondaryDarkColor(userId, secondaryColor);
+    }
+    @PatchMapping("/{userId}/fontSize")
+    public GetUserDTO patchFontSize(@PathVariable Long userId, @RequestParam Integer fontSize){
+        return userService.patchFontSize(userId, fontSize);
     }
 
 }

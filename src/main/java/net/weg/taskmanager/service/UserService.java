@@ -35,7 +35,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final ModelMapper modelMapper;
+//    private final ModelMapper modelMapper;
     private final TeamService teamService;
     private final UserTeamService userTeamService;
     private final Converter<GetUserDTO, User> converter = new GetUserConverter();
@@ -85,29 +85,6 @@ public class UserService {
         return converter.convertOne(createdUser);
     }
 
-    public GetUserDTO patchImage(Long id, MultipartFile image){
-        User user = findUserById(id);
-        user.setImage(image);
-        User updatedUser = userRepository.save(user);
-        return converter.convertOne(updatedUser);
-    }
-
-    public GetUserDTO patchName(Long userId,String name){
-        User user = findUserById(userId);
-        user.setName(name);
-        User updatedUser = userRepository.save(user);
-        return converter.convertOne(updatedUser);
-    }
-
-//    public GetUserDTO update(User updatingUser){
-//        User user = findUserById(updatingUser.getId());
-//        modelMapper.map(updatingUser, user);
-//        User updatedUser  = userRepository.save(user);
-//        return converter.convertOne(updatedUser);
-//    }
-    
-
-
     public GetUserDTO findByEmail(String email){
         User loggedUser = userRepository.findByEmail(email);
         if(loggedUser != null){
@@ -122,9 +99,8 @@ public class UserService {
         team.setPersonalWorkspace(true);
         team.setImage(user.getImage());
         Team savedTeam = teamService.save(team);
-//        UserTeam userTeam = userTeamService.findById(new UserTeamId(savedTeam.getId(), user.getId()));
         Role role = roleService.getRoleByName("TEAM_CREATOR");
-        UserTeam userTeam = new UserTeam(user.getId(), team.getId(), user, team, role, true);
+        UserTeam userTeam = new UserTeam(user.getId(), savedTeam.getId(), user, savedTeam, role, true);
         UserTeam createdUserTeam = userTeamService.create(userTeam);
         user.setTeamRoles(List.of(createdUserTeam));
     }
@@ -141,6 +117,20 @@ public class UserService {
         user.setEmail(email);
         user.getUserDetailsEntity().setUsername(user.getEmail());
         return converter.convertOne(userRepository.save(user));
+    }
+
+    public GetUserDTO patchImage(Long id, MultipartFile image){
+        User user = findUserById(id);
+        user.setImageFromMultipartFile(image);
+        User updatedUser = userRepository.save(user);
+        return converter.convertOne(updatedUser);
+    }
+
+    public GetUserDTO patchName(Long userId,String name){
+        User user = findUserById(userId);
+        user.setName(name);
+        User updatedUser = userRepository.save(user);
+        return converter.convertOne(updatedUser);
     }
 
     public GetUserDTO patchPassword(Long userId,String password){
@@ -169,5 +159,11 @@ public class UserService {
         user.setSecondaryDarkColor(secondaryColor);
         return converter.convertOne(userRepository.save(user));
     }
+    public GetUserDTO patchFontSize(Long userId,Integer fontSize){
+        User user = userRepository.findById(userId).get();
+        user.setFontSize(fontSize);
+        return converter.convertOne(userRepository.save(user));
+    }
+
 
 }
