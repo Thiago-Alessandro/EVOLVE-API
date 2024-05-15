@@ -1,6 +1,7 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.UserProject;
 import net.weg.taskmanager.model.dto.get.GetTaskDTO;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
@@ -38,7 +39,7 @@ public class TeamNotificationService {
 
     public Collection<User> verifyProjectNotificatedUsers(Long projectId) {
         Project project = projectRepository.findById(projectId).get();
-        return new ArrayList<>(project.getMembers());
+        return new ArrayList<>(project.getMembers().stream().map(UserProject::getUser).toList());
     }
 
     // Task notifications

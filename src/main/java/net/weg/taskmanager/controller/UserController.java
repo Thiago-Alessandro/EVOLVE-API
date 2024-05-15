@@ -1,12 +1,12 @@
 package net.weg.taskmanager.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 
-import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.post.PostUserDTO;
 import net.weg.taskmanager.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,76 +17,83 @@ import java.util.Collection;
 @RequestMapping("/user")
 public class UserController {
 
-    private final ObjectMapper objectMapper;
     private final UserService userService;
 
-    @GetMapping("/{id}")
-    public GetUserDTO findById(@PathVariable Long id){
-        return userService.findById(id);}
+    @DeleteMapping("/{userId}")
+    public void delete(@PathVariable Long userId){
+        userService.delete(userId);
+    }
+
+    @GetMapping("/{userId}")
+    public GetUserDTO findById(@PathVariable Long userId){
+        return userService.findById(userId);
+}
+
     @GetMapping
     public Collection<GetUserDTO> findAll(){return userService.findAll();}
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-        userService.delete(id);}
+
     @PostMapping
-    public GetUserDTO create(@RequestBody PostUserDTO user){return userService.create(user);}
-    
-    @PutMapping
-    public GetUserDTO update(@RequestBody User user){
-        return userService.update(user);
+    public ResponseEntity<GetUserDTO> create(@RequestBody PostUserDTO user){
+        try {
+            return ResponseEntity.ok(userService.create(user));
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
-    
-    @PutMapping("/full")
-    public GetUserDTO update(
-                  @RequestParam String jsonUser,
-                          @RequestParam MultipartFile profilePhoto){
 
-        return userService.update(jsonUser, profilePhoto);
-    }
-    
-    @PatchMapping("/{id}")
-    public GetUserDTO patchImage(@PathVariable Long id, @RequestParam MultipartFile image){
-        return userService.patchImage(id, image);
-    }
     @GetMapping("/login/{email}")
-    public GetUserDTO loginByEmail(@PathVariable String email){return userService.findByEmail(email);}
-
-    @PatchMapping("/theme/{userId}/{theme}")
-    public GetUserDTO patchTheme(@PathVariable Long userId, @PathVariable String theme){
-        return userService.patchTheme(userId, theme);
+    public ResponseEntity<GetUserDTO> loginByEmail(@PathVariable String email){
+        try {
+            return ResponseEntity.ok(userService.findByEmail(email));
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PatchMapping("/email/{userId}/{email}")
-    public GetUserDTO patchEmail(@PathVariable Long userId, @PathVariable String email){
-        return userService.patchEmail(userId, email);
-    }
-    @PatchMapping("/name/{userId}/{name}")
-    public GetUserDTO patchName(@PathVariable Long userId, @PathVariable String name){
+    @PatchMapping("/{userId}/name")
+    public GetUserDTO patchName(@PathVariable Long userId, @RequestParam String name){
         return userService.patchName(userId, name);
     }
 
-    @PatchMapping("/password/{userId}/{password}")
-    public GetUserDTO patchPassword(@PathVariable Long userId, @PathVariable String password){
+
+    @PatchMapping("/{userId}")
+    public GetUserDTO patchImage(@PathVariable Long userId, @RequestParam MultipartFile image) {
+        return userService.patchImage(userId, image);
+    }
+
+    @PatchMapping("/{userId}/theme")
+    public GetUserDTO patchTheme(@PathVariable Long userId, @RequestParam String theme){
+        return userService.patchTheme(userId, theme);
+    }
+
+    @PatchMapping("/{userId}/email")
+    public GetUserDTO patchEmail(@PathVariable Long userId, @RequestParam String email){
+        System.out.println("chego aqui na controler");
+        return userService.patchEmail(userId, email);
+    }
+
+    @PatchMapping("/{userId}/password")
+    public GetUserDTO patchPassword(@PathVariable Long userId, @RequestParam String password){
         return userService.patchPassword(userId, password);
     }
-    @PatchMapping("/primaryColor/{userId}")
+    @PatchMapping("/{userId}/primaryColor")
     public GetUserDTO patchPrimaryColor(@PathVariable Long userId, @RequestParam String primaryColor){
         return userService.patchPrimaryColor(userId, primaryColor);
     }
-    @PatchMapping("/secondaryColor/{userId}")
+    @PatchMapping("/{userId}/secondaryColor")
     public GetUserDTO patchSecondaryColor(@PathVariable Long userId, @RequestParam String secondaryColor){
         return userService.patchSecondaryColor(userId, secondaryColor);
     }
-    @PatchMapping("/primaryDarkColor/{userId}")
+    @PatchMapping("/{userId}/primaryDarkColor")
     public GetUserDTO patchPrimaryDarkColor(@PathVariable Long userId, @RequestParam String primaryColor){
         return userService.patchPrimaryDarkColor(userId, primaryColor);
     }
-    @PatchMapping("/secondaryDarkColor/{userId}")
+    @PatchMapping("/{userId}/secondaryDarkColor")
     public GetUserDTO patchSecondaryDarkColor(@PathVariable Long userId, @RequestParam String secondaryColor){
         return userService.patchSecondaryDarkColor(userId, secondaryColor);
     }
-    @PatchMapping("/fontSize/{userId}/{fontSize}")
-    public GetUserDTO patchFontSize(@PathVariable Long userId, @PathVariable Integer fontSize){
+    @PatchMapping("/{userId}/fontSize")
+    public GetUserDTO patchFontSize(@PathVariable Long userId, @RequestParam Integer fontSize){
         return userService.patchFontSize(userId, fontSize);
     }
 

@@ -3,6 +3,7 @@ package net.weg.taskmanager.utils;
 import java.util.Random;
 
 public class ColorUtils {
+
     // Private constructor to prevent instantiation
     private ColorUtils() {}
 
@@ -17,8 +18,7 @@ public class ColorUtils {
         int blue = random.nextInt(256);
 
         // Convert RGB to hexadecimal color code
-
-        return "#" + rgbToHex(red, green, blue);
+        return rgbToHex(red, green, blue);
     }
 
     // Method to convert RGB values to hexadecimal color code
@@ -36,11 +36,16 @@ public class ColorUtils {
         // Concatenate the hexadecimal strings
         String hexColor = hexRed + hexGreen + hexBlue;
 
-        return hexColor;
+        return "#"+hexColor;
     }
 
     // Method to ensure each hexadecimal string is two characters long
     private static String padZero(String hex) {
         return hex.length() == 1 ? "0" + hex : hex;
     }
+
+    public static boolean isHexColorValid(String hexColor){
+        return hexColor.length()==7 && hexColor.startsWith("#");
+    }
+
 }

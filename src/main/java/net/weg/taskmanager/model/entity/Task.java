@@ -28,10 +28,10 @@ public class Task {
     @Column(nullable = false)
     private Boolean favorited = false;
 
-    private LocalDate finalDate;
-    private LocalDate creationDate = LocalDate.now();
+    private LocalDateTime finalDate;
+    private LocalDateTime creationDate = LocalDateTime.now();
     private LocalDateTime lastTimeEdited = LocalDateTime.now();
-    private LocalDate scheduledDate;
+    private LocalDateTime scheduledDate;
 
     private String description;
 
@@ -58,7 +58,7 @@ public class Task {
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<Property> properties;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL) //orpahnRemoval?
     private Collection<Subtask> subtasks;
 
     @ManyToMany()

@@ -7,17 +7,17 @@ import lombok.Data;
 
 import lombok.ToString;
 
-import net.weg.taskmanager.model.entity.DashBoard.Chart;
-import net.weg.taskmanager.model.entity.DashBoard.Dashboard;
+import net.weg.taskmanager.model.UserProject;
+import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.property.Property;
+import net.weg.taskmanager.security.model.entity.Role;
+import org.springframework.beans.BeanUtils;
+import net.weg.taskmanager.model.entity.DashBoard.Chart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 @Entity
 @Data
@@ -28,32 +28,22 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column()
     private String name;
-//    @Column(nullable = false)
     private String description;
-//    @Column(nullable = false)
     private Boolean favorited = false;
 
     @OneToOne(cascade = CascadeType.ALL)
     private File image;
     private String imageColor;
-    @JoinColumn(nullable = false)
-    @ManyToOne()
-    private User creator;
 
+    @Column()
+    private LocalDateTime finalDate;
     @Column(nullable = false)
-    private LocalDate finalDate;
-//    @Column(nullable = false)
-    private LocalDate creationDate;
-//    @Column(nullable = false)
+    private LocalDateTime creationDate;
+    @Column(nullable = false)
     private LocalDateTime lastTimeEdited;
 
-
-    //vai continuar msm?
-    @ManyToMany
-//    @Column(nullable = false)
-    private Collection<User> administrators;
 
     @OneToMany(mappedBy = "project")
     @JsonIgnore
@@ -61,18 +51,14 @@ public class Project {
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<Property> properties;
+//    @JoinColumn(nullable = false)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(nullable = false)
-    @JoinColumn(nullable = false)
     private Collection<Status> statusList;
-    @ManyToMany
-    @JoinColumn(nullable = false)
-    private Collection<User> members;
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(optional = false)
     private Team team;
 
-    @OneToOne(optional = false)
+    @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @OneToOne(optional = false)
     private ProjectChat chat;
 
     @OneToMany(cascade = CascadeType.PERSIST)
@@ -81,45 +67,34 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private Collection<Task> tasks;
 
-//    public void setDefaultStatus() {
-//        Collection<Status> defaultStatus = new HashSet<>();
-//        defaultStatus.add(new Status("pendente", "#7CD5F4", "#000000",true));
-//        defaultStatus.add(new Status("em progresso", "#FCEC62", "#000000",true));
-//        defaultStatus.add(new Status("concluido", "#86C19F", "#000000",true));
-//        defaultStatus.add(new Status("não atribuido", "#9CA3AE", "#000000",true));
-//        if(this.getStatusList()!=null){
-//            this.getStatusList().addAll(defaultStatus);
-//        } else{
-//            this.setStatusList((defaultStatus));
-//        }
-//    }
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "project")
+    private Collection<UserProject> members;
+
+    @ManyToOne
+    private Role defaultRole;
+
 
     public void updateLastTimeEdited() {
         this.lastTimeEdited = LocalDateTime.now();
     }
 
-    public Project(){
+    public Project() {
         this.chat = new ProjectChat();
         this.chat.setProject(this);
-        this.chat.setUsers(this.members);
 //        this.chat.setUsers(this.members);
-        this.creationDate = LocalDate.now();
+        this.creationDate = LocalDateTime.now();
         updateLastTimeEdited();
 //        setDefaultStatus();
+
+//        setDefaultAcessProfile();
+
     }
 
-    public void setImage(MultipartFile image) {
-        if(image!=null){
-            File file = new File();
-            try {
-                file.setData(image.getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            file.setName(image.getOriginalFilename());
-            file.setType(image.getContentType());
-            this.image = file;
-        }
+    public Project(PostProjectDTO projectDTO) {
+        BeanUtils.copyProperties(projectDTO, this);
+        this.creationDate = LocalDateTime.now();
+//        setDefaultStatus();
+        updateLastTimeEdited();
     }
-
 }

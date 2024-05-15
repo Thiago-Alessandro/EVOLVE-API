@@ -1,51 +1,56 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.get.GetTeamChatConverter;
 import net.weg.taskmanager.model.dto.get.GetTeamChatDTO;
 import net.weg.taskmanager.model.entity.TeamChat;
 import net.weg.taskmanager.model.entity.User;
+import net.weg.taskmanager.model.entity.UserTeam;
 import net.weg.taskmanager.repository.TeamChatRepository;
 import net.weg.taskmanager.repository.UserRepository;
-import net.weg.taskmanager.service.processor.ChatProcessor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class TeamChatService {
 
     private final TeamChatRepository teamChatRepository;
-    private final UserRepository userRepository;
-    private final ChatProcessor chatProcessor = new ChatProcessor();
+    private final UserService userService;
 
-    public GetTeamChatDTO findById(Long id){
-        TeamChat teamChat = teamChatRepository.findById(id).get();
-        return resolveAndGetDTO(teamChat);
+    private final Converter<GetTeamChatDTO, TeamChat> converter = new GetTeamChatConverter();
+
+    public GetTeamChatDTO findById(Long id, Long userId){
+        TeamChat teamChat = findTeamChatById(id);
+        if(teamChat.getTeam().getParticipants().stream().noneMatch(userTeam -> userTeam.getUserId().equals(userId))) throw new NoSuchElementException("Usuario não pertence à equipe");
+        return converter.convertOne(teamChat);
     }
 
-    public Collection<GetTeamChatDTO> finAll(){
-        Collection<TeamChat> teamChats = teamChatRepository.findAll();
-        return resolveAndGetDTOS(teamChats);
+    public TeamChat findTeamChatById(Long teamChatId){
+        Optional<TeamChat> teamChat = teamChatRepository.findById(teamChatId);
+        if (teamChat.isEmpty()) throw new NoSuchElementException();
+        return teamChat.get();
     }
 
-    public Collection<GetTeamChatDTO> findTeamChatsByUserId(Long id){
-        User user = userRepository.findById(id).get();
+//    public Collection<GetTeamChatDTO> finAll(){
+//        Collection<TeamChat> teamChats = teamChatRepository.findAll();
+//        return converter.convertAll(teamChats);
+//    }
+
+    public Collection<GetTeamChatDTO> findTeamChatsByUserId(Long userId) {
+        User user = userService.findUserById(userId);
 
         Collection<TeamChat> userTeamChats =
-                user.getTeams().stream()
-                .map(team -> teamChatRepository.findTeamChatByTeam_Id(team.getId()))
-                .toList();
+                user.getTeamRoles().stream()
+                    .map(UserTeam::getUser)
+                    .map(team -> teamChatRepository.findTeamChatByTeam_Id(team.getId()))
+                    .toList();
 
-        return resolveAndGetDTOS(userTeamChats);
-    }
-
-    private GetTeamChatDTO resolveAndGetDTO(TeamChat teamChat){
-        chatProcessor.resolveChat(teamChat);
-        return new GetTeamChatDTO(teamChat);
-    }
-    private Collection<GetTeamChatDTO> resolveAndGetDTOS(Collection<TeamChat> teamChats){
-        return teamChats.stream().map(this::resolveAndGetDTO).toList();
+        return converter.convertAll(userTeamChats);
     }
 
 }
