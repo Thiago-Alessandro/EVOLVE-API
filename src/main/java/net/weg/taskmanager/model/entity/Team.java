@@ -31,9 +31,9 @@ public class Team {
     private File image;
     private String imageColor;
 
-
     @OneToMany(mappedBy = "team")
     private Collection<UserTeam> participants;
+
 
     @OneToMany(mappedBy = "team")
     private Collection<Project> projects;
