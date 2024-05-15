@@ -22,8 +22,12 @@ public class GetUserTaskDTO {
     private Integer workedSeconds;
 
     public GetUserTaskDTO(UserTask userTask) {
-        BeanUtils.copyProperties(userTask, this);
-        Converter<ShortUserDTO, User> userConverter = new ShortUserConverter();
-        this.user = userConverter.convertOne(userTask.getUser());
+        if(userTask != null) {
+            BeanUtils.copyProperties(userTask, this);
+            Converter<ShortUserDTO, User> userConverter = new ShortUserConverter();
+            this.user = userConverter.convertOne(userTask.getUser());
+        } else {
+            this.user = null;
+        }
     }
 }

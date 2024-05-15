@@ -51,7 +51,6 @@ public class TaskController {
 
     @PostMapping
     public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
-        System.out.println("CHEGANDO NA CONTROLLER");
         return taskService.create(postTaskDTO);}
 
     @PutMapping("/{userId}")

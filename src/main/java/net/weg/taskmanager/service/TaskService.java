@@ -261,9 +261,14 @@ public class TaskService {
         Task task = new Task();
         BeanUtils.copyProperties(postTaskDTO, task);
         Project projectTask = projectRepository.findById(postTaskDTO.getProject().getId()).get();
-        User user = new User();
+        User user = userRepository.findById(postTaskDTO.getProject().getId()).get();
         user.setId(postTaskDTO.getCreator().getId());
+        Priority priority = Priority.valueOf("NENHUMA");
+        task.setPriority(priority);
         task.setCreator(user);
+        ArrayList<User> userlist = new ArrayList<>();
+        userlist.add(user);
+        task.setAssociates(userlist);
         task.setProject(projectTask);
         setStatusListIndex(task);
         taskRepository.save(task);

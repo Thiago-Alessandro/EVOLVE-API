@@ -27,8 +27,7 @@ public class Team {
     private File image;
     private String imageColor;
 
-    @ManyToOne(optional = false)
-
+    @ManyToOne
     private User administrator;
     @ManyToMany()
     @JoinColumn(nullable = false)
