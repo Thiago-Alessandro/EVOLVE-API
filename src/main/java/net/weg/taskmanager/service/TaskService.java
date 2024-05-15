@@ -281,6 +281,8 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
+    private final UserRepository userRepository;
+
     public GetTaskDTO create(PostTaskDTO postTaskDTO) {
         Task task = new Task();
         BeanUtils.copyProperties(postTaskDTO, task);
