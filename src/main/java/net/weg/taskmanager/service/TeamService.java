@@ -45,7 +45,8 @@ public class TeamService {
     private final Converter<GetTeamDTO, Team> converter = new GetTeamConverter();
 
     public GetTeamDTO findById(Long id){
-        Team team = findTeamById(id);
+        System.out.println("REQUISICAO GET TEAM AQUI");
+        Team team = teamRepository.findById(id).get();
         return converter.convertOne(team);
     }
 
@@ -60,16 +61,16 @@ public class TeamService {
 //        return converter.convertAll(teams);
 //    }
 
-//    public Team createTeam(PostTeamDTO teamDTO) {
-//        Team team =  new Team(teamDTO);
-//        Team createdTeam = teamRepository.save(team);
-//
-//        setCreator(teamDTO.getCreator(), createdTeam);
-//        setDefaultRole(createdTeam);
-////        updateTeamChat(createdTeam);
-//        setPossibleRoles(createdTeam);
-//        return teamRepository.save(createdTeam);
-//    }
+    public Team createTeam(PostTeamDTO teamDTO) {
+        Team team =  new Team(teamDTO);
+        Team createdTeam = teamRepository.save(team);
+
+        setCreator(teamDTO.getCreator(), createdTeam);
+        setDefaultRole(createdTeam);
+//        updateTeamChat(createdTeam);
+        setPossibleRoles(createdTeam);
+        return teamRepository.save(createdTeam);
+    }
 
 //    public GetTeamDTO create(PostTeamDTO teamDTO){
 //        return converter.convertOne(createTeam(teamDTO));

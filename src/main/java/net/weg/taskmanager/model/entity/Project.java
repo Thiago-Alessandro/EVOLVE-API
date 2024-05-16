@@ -52,7 +52,7 @@ public class Project {
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<Property> properties;
 //    @JoinColumn(nullable = false)
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany()
     private Collection<Status> statusList;
     @ManyToOne(optional = false)
     private Team team;

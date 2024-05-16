@@ -40,6 +40,7 @@ public class ProjectService {
     private final HistoricService historicService;
     private final TeamNotificationService teamNotificationService;
     private final ChartService chartService;
+    private final StatusRepository statusRepository;
 
 
     private final TeamRepository teamRepository;
@@ -95,19 +96,22 @@ public class ProjectService {
 
     public GetProjectDTO create(PostProjectDTO projectDTO) {
         Project project = new Project(projectDTO);
+        System.out.println(projectDTO);
+        project.setStatusList(statusRepository.saveAll(project.getStatusList()));
+        project.setMembers(new ArrayList<>());
         Project projectSaved = projectRepository.save(project);
 
         setCreator(projectDTO.getCreator(), projectSaved);
         createProjectChat(projectSaved);
         setDefaultRole(projectSaved);
 
-        Collection<Status> listaNova = new HashSet<>();
-        if(projectDTO.getStatusList()!=null){
-            for (Status st: projectDTO.getStatusList()){
-                listaNova.add(new Status(st.getName(), st.getBackgroundColor(), st.getTextColor(), st.getEnabled()));
-            }
-        }
-        projectSaved.setStatusList(listaNova);
+//        Collection<Status> listaNova = new HashSet<>();
+//        if(projectDTO.getStatusList()!=null){
+//            for (Status st: projectDTO.getStatusList()){
+//                listaNova.add(new Status(st.getName(), st.getBackgroundColor(), st.getTextColor(), st.getEnabled()));
+//            }
+//        }
+//        projectSaved.setStatusList(listaNova);
 
         return converter.convertOne(treatAndSave(projectSaved));
     }

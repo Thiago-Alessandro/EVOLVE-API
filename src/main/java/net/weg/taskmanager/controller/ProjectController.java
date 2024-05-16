@@ -222,7 +222,7 @@ public class ProjectController {
 //        return projectService.addUserToProject(projectId,userActionId,userAddedId);
 //    }
 
-    @PatchMapping("/comments/patch/{projectId}/{userId}")
+    @PatchMapping("/{projectId}/comments/patch/{userId}")
     public Comment patchNewComment(@PathVariable Long projectId,
                                    @RequestBody Comment newComment, @PathVariable Long userId) {
         return projectService.patchNewComment(projectId, newComment, userId);
