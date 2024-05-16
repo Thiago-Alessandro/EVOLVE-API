@@ -14,7 +14,7 @@ import net.weg.taskmanager.model.abstracts.Chat;
 @Data
 public class TeamChat extends Chat {
 
-    @OneToOne(optional = false, mappedBy = "chat")
+    @OneToOne()
 //    @JoinColumn(updatable = false, unique = true)
     //ao inserir, atualizar ou remover uma equipe terá de ser criado, atualizado ou excuido seu chat
     private Team team;

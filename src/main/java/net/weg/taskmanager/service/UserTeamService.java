@@ -22,12 +22,19 @@ public class UserTeamService {
 
     public Collection<UserTeamDTO2> findByUserId(Long userId){
         Collection<UserTeam> userTeams = findUserTeamsByUser_Id(userId);
+        System.out.println(userTeams.stream().findFirst().get());
         return userTeams.stream().map(UserTeamDTO2::new).toList();
     }
 
     public Collection<UserTeam> findUserTeamsByUser_Id(Long userId){
         Optional<Collection<UserTeam>> optionalUserTeams = repository.findUserTeamsByUser_Id(userId);
+        Collection<UserTeam> d = repository.findAll();
+        System.out.println(d);
+        System.out.println("auimaue");
+
         if(optionalUserTeams.isEmpty()) throw new NoSuchElementException("Usuario não possui equipes");
+        System.out.println(optionalUserTeams.get().stream().findFirst().get());
+
         return optionalUserTeams.get();
     }
 

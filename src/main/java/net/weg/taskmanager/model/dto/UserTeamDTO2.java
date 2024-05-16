@@ -37,6 +37,9 @@ public class UserTeamDTO2 {
 //        Converter<GetTeamDTO, Team> teamConverter = new GetTeamConverter();
         this.user = userConverter.convertOne(userTeam.getUser());
 //        this.team = teamConverter.convertOne(userTeam.getTeam());
+        System.out.println(userTeam.getUser());
+//        System.out.println(userTeam.getTeam());
+        System.out.println("userTeam.getTeam()");
         this.team = userTeam.getTeam() != null ? new GetTeam2(userTeam.getTeam()) : null;
     }
 

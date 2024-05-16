@@ -94,15 +94,15 @@ public class UserService {
     }
     private final RoleService roleService;
     private void setDefaultTeam(User user) {
-        Team team = teamService.createTeam(new PostTeamDTO(user));
-        team.setName(user.getName() + "'s Team");
-        team.setPersonalWorkspace(true);
-        team.setImage(user.getImage());
-        Team savedTeam = teamService.save(team);
-        Role role = roleService.getRoleByName("TEAM_CREATOR");
-        UserTeam userTeam = new UserTeam(user.getId(), savedTeam.getId(), user, savedTeam, role, true);
-        UserTeam createdUserTeam = userTeamService.create(userTeam);
-        user.setTeamRoles(List.of(createdUserTeam));
+//        Team team = teamService.createTeam(new PostTeamDTO(user));
+//        team.setName(user.getName() + "'s Team");
+//        team.setPersonalWorkspace(true);
+//        team.setImage(user.getImage());
+//        Team savedTeam = teamService.save(team);
+//        Role role = roleService.getRoleByName("TEAM_CREATOR");
+//        UserTeam userTeam = new UserTeam(user.getId(), savedTeam.getId(), user, savedTeam, role, true);
+//        UserTeam createdUserTeam = userTeamService.create(userTeam);
+//        user.setTeamRoles(List.of(createdUserTeam));
     }
 
 

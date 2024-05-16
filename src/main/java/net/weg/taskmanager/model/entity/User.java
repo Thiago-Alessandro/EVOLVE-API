@@ -56,7 +56,7 @@ public class User {
     private String secondaryColor;
     private String primaryDarkColor;
     private String secondaryDarkColor;
-    private Integer fontSize;
+    private Integer fontSize = 16;
 
 
 

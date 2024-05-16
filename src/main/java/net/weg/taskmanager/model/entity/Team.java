@@ -38,7 +38,7 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private Collection<Project> projects;
 
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "team", optional = false, cascade = CascadeType.ALL)
     private TeamChat chat;
 
     @OneToMany

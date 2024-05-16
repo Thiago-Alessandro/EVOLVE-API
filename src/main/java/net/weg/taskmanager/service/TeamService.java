@@ -60,19 +60,37 @@ public class TeamService {
 //        return converter.convertAll(teams);
 //    }
 
-    public Team createTeam(PostTeamDTO teamDTO) {
-        Team team =  new Team(teamDTO);
-        Team createdTeam = teamRepository.save(team);
+//    public Team createTeam(PostTeamDTO teamDTO) {
+//        Team team =  new Team(teamDTO);
+//        Team createdTeam = teamRepository.save(team);
+//
+//        setCreator(teamDTO.getCreator(), createdTeam);
+//        setDefaultRole(createdTeam);
+////        updateTeamChat(createdTeam);
+//        setPossibleRoles(createdTeam);
+//        return teamRepository.save(createdTeam);
+//    }
 
-        setCreator(teamDTO.getCreator(), createdTeam);
-        setDefaultRole(createdTeam);
+//    public GetTeamDTO create(PostTeamDTO teamDTO){
+//        return converter.convertOne(createTeam(teamDTO));
+//    }
+    public GetTeamDTO create(Team team){
+        setDefaultRole(team);
 //        updateTeamChat(createdTeam);
-        setPossibleRoles(createdTeam);
-        return teamRepository.save(createdTeam);
-    }
+        setPossibleRoles(team);
+        Team team1 = teamRepository.save(team);
+        team1.getParticipants().stream().forEach(userTeam -> {
+            userTeam.setRole(team1.getDefaultRole());
+            userTeam.setTeamId(team1.getId());
+            userTeam.setTeam(team1);
+            userTeamService.save(userTeam);
+        });
 
-    public GetTeamDTO create(PostTeamDTO teamDTO){
-        return converter.convertOne(createTeam(teamDTO));
+//        System.out.println(team1.getParticipants().stream().findFirst().get());
+        System.out.println("Claro que sim");
+        System.out.println(team1);
+
+        return new GetTeamDTO(findTeamById(team1.getId()));
     }
 
 
@@ -139,9 +157,7 @@ public class TeamService {
         return new GetTeamDTO(teamRepository.save(team));
     }
 
-    public GetTeamDTO create(Team team){
-        teamRepository.save(team);
-        return saveAndGetDTO(team);}
+
 
 //    private Team newTeam(User admin){
 //        Team team = new Team();
@@ -154,6 +170,8 @@ public class TeamService {
 
 
     public Collection<UserTeamDTO2> findTeamsByUserId(Long userId){
+        System.out.println(userTeamService.findByUserId(userId).stream().findFirst().get().getTeam());
+        System.out.println("MEOLHE");
         return userTeamService.findByUserId(userId);
     }
 

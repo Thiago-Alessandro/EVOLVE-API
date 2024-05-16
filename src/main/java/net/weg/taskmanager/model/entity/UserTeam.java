@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import net.weg.taskmanager.security.model.entity.Role;
 
 import javax.management.InvalidAttributeValueException;
@@ -14,6 +15,7 @@ import java.util.NoSuchElementException;
 @AllArgsConstructor
 @NoArgsConstructor
 @IdClass(UserTeamId.class)
+@ToString(onlyExplicitlyIncluded = true)
 public class UserTeam {
 
     @Id
@@ -24,6 +26,7 @@ public class UserTeam {
     @ManyToOne()
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     private User user;
+    @ToString.Exclude
     @ManyToOne()
     @JoinColumn(name = "teamId", insertable = false, updatable = false)
     private Team team;

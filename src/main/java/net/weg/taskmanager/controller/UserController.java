@@ -26,6 +26,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public GetUserDTO findById(@PathVariable Long userId){
+//        System.out.println(userService.findById(userId).getTeamRoles().stream().findFirst().get().getTeam());
         return userService.findById(userId);
 }
 
