@@ -218,11 +218,13 @@ public class ProjectService {
              return converter.convertOne(treatAndSave(project));
     }
 
-    public GetProjectDTO patchStatusList(Long projectId, Collection<Status> statusList) throws InvalidAttributeValueException {
+    public GetProjectDTO patchStatusList(Long projectId,Long actionUserId, Collection<Status> statusList) throws InvalidAttributeValueException {
         if(statusList == null) throw new InvalidAttributeValueException("StatusList on project cannot be null");
         Project project = findProjectById(projectId);
         project.getStatusList().removeAll(project.getStatusList());
+        statusRepository.saveAll(statusList);
         project.getStatusList().addAll(statusList);
+
 //        project.setStatusList(statusList);
         return converter.convertOne(treatAndSave(project));
     }

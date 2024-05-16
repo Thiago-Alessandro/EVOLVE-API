@@ -136,7 +136,7 @@ public class HistoricService {
         return taskForHistoric;
     }
 
-    public Task updateTaskFinalDateHistoric(Long taskId, Long userId, LocalDateTime newFinalDate) {
+    public Task updateTaskFinalDateHistoric(Long taskId, Long userId, LocalDate newFinalDate) {
         User userForHistoric = userRepository.findById(userId).get();
         Task taskForHistoric = taskRepository.findById(taskId).get();
 
@@ -157,7 +157,7 @@ public class HistoricService {
         return taskForHistoric;
     }
 
-    public Task updateTaskScheduledDateHistoric(Long taskId, Long userId, LocalDateTime newFinalDate) {
+    public Task updateTaskScheduledDateHistoric(Long taskId, Long userId, LocalDate newFinalDate) {
         User userForHistoric = userRepository.findById(userId).get();
         Task taskForHistoric = taskRepository.findById(taskId).get();
 

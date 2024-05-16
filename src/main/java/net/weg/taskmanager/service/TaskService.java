@@ -24,6 +24,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -287,7 +288,7 @@ public class TaskService {
         Task task = new Task();
         BeanUtils.copyProperties(postTaskDTO, task);
         Project projectTask = projectRepository.findById(postTaskDTO.getProject().getId()).get();
-        User user = userRepository.findById(postTaskDTO.getProject().getId()).get();
+        User user = new User();
         user.setId(postTaskDTO.getCreator().getId());
         Priority priority = Priority.valueOf("NENHUMA");
         task.setPriority(priority);
@@ -450,7 +451,7 @@ public class TaskService {
         return converter.convertOne(savedTask);
     }
 
-    public GetTaskDTO updateTaskFinalDate(Long taskId, Long userId, LocalDateTime newFinalDate) {
+    public GetTaskDTO updateTaskFinalDate(Long taskId, Long userId, LocalDate newFinalDate) {
         Task task = findTaskById(taskId);
         task.setFinalDate(newFinalDate);
         taskRepository.save(task);
@@ -458,7 +459,7 @@ public class TaskService {
         return converter.convertOne(task);
     }
 
-    public GetTaskDTO updateTaskScheludeDate(Long taskId, Long userId, LocalDateTime newFinalDate) {
+    public GetTaskDTO updateTaskScheludeDate(Long taskId, Long userId, LocalDate newFinalDate) {
         Task task = findTaskById(taskId);
         task.setScheduledDate(newFinalDate);
         taskRepository.save(task);

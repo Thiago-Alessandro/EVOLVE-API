@@ -20,9 +20,11 @@ import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.service.TaskService;
 import net.weg.taskmanager.service.UserTaskService;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -74,19 +76,23 @@ public class TaskController {
         return taskService.patchAssociate(taskId,associates,userId);
     }
 
-    @DeleteMapping("property/associates/delete/{taskId}/{userId}/{removedAssociateId}")
-    public Collection<GetUserDTO> deleteAssociate(@PathVariable Long taskId, @PathVariable Long userId, @PathVariable Long removedAssociateId) {
+    @PatchMapping("/{taskId}/property/associates/delete/{userId}")
+    public Collection<GetUserDTO> deleteAssociate(@PathVariable Long taskId, @PathVariable Long userId, @RequestParam Long removedAssociateId) {
         return taskService.removeAssociate(taskId,removedAssociateId,userId);
     }
 
-    @PatchMapping("/{taskId}/update/finalDate/{userId}/calendar/{newFinalDate}")
-    public GetTaskDTO updateTaskFinalDate(@PathVariable Long taskId, @PathVariable Long userId, @PathVariable LocalDateTime newFinalDate) {
-        return taskService.updateTaskFinalDate(taskId,userId,newFinalDate);
+    @PatchMapping("/{taskId}/update/finalDate/{userId}/calendar")
+    public GetTaskDTO updateTaskFinalDate(@PathVariable Long taskId, @PathVariable Long userId, @RequestParam String newFinalDate) {
+        System.out.println(newFinalDate);
+        LocalDate localDateTime = LocalDate.parse(newFinalDate);
+        return taskService.updateTaskFinalDate(taskId,userId,localDateTime);
     }
 
-    @PatchMapping("/update/{taskId}/scheludeDate/{userId}/calendar/{newDate}")
-    public GetTaskDTO updateTaskScheludeDate(@PathVariable Long taskId, @PathVariable Long userId, @PathVariable LocalDateTime newDate) {
-        return taskService.updateTaskScheludeDate(taskId,userId,newDate);
+    @PatchMapping("/{taskId}/update/scheludeDate/{userId}/calendar")
+    public GetTaskDTO updateTaskScheludeDate(@PathVariable Long taskId, @PathVariable Long userId, @RequestParam String newDate) {
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA");
+        LocalDate localDateTime = LocalDate.parse(newDate);
+        return taskService.updateTaskScheludeDate(taskId,userId,localDateTime);
     }
 
     @GetMapping("/userTask/{userId}/{taskId}")
@@ -226,10 +232,10 @@ public class TaskController {
         return taskService.updateCurrentPriority(taskId,userId,priorityRecord);
     } //é usado?
 
-    @PatchMapping("/{taskId}/update/user/{userId}/name/{name}")
+    @PatchMapping("/{taskId}/update/user/{userId}/name")
     public GetTaskDTO updateTaskName(@PathVariable Long taskId,
                                      @PathVariable Long userId,
-                                     @PathVariable String name) {
+                                     @RequestParam String name) {
         return taskService.updateTaskName(taskId,name);
     }
 
