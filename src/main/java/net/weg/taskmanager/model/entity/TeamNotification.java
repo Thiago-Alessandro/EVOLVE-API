@@ -30,6 +30,10 @@ public class TeamNotification {
     private LocalDateTime dateTime;
     private String type;
 
+    @JsonIgnore
+    @ManyToOne
+    private Team team;
+
     public TeamNotification(User userAction, Collection<User> users, boolean b, String s, LocalDateTime now, String type) {
         this.actionUser = userAction;
         this.notificatedUsers = users;

@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetTeamConverter;
+import net.weg.taskmanager.model.dto.get.GetTeamNotificationDTO;
 import net.weg.taskmanager.model.entity.User;
 
 import net.weg.taskmanager.model.dto.UserTeamDTO2;
@@ -48,6 +49,11 @@ public class TeamService {
         System.out.println("REQUISICAO GET TEAM AQUI");
         Team team = teamRepository.findById(id).get();
         return converter.convertOne(team);
+    }
+
+    public Collection<GetTeamNotificationDTO> getAllNotifications(Long teamId) {
+        Collection<TeamNotification> teamNotifications = teamNotificationRepository.findAllByTeam_Id(teamId);
+        return teamNotifications != null ? teamNotifications.stream().map(GetTeamNotificationDTO::new).toList() : new ArrayList<>();
     }
 
     public Team findTeamById(Long teamId){

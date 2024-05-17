@@ -67,7 +67,8 @@ public class TeamNotificationService {
                 LocalDateTime.now(),
                 "task"
         );
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -85,7 +86,8 @@ public class TeamNotificationService {
                 LocalDateTime.now(),
                 "task"
         );
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -104,7 +106,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -123,7 +126,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -142,7 +146,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -161,7 +166,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -180,7 +186,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -199,7 +206,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -218,7 +226,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -237,7 +246,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -256,7 +266,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -275,7 +286,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -294,7 +306,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -313,7 +326,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -332,7 +346,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -351,7 +366,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -370,7 +386,8 @@ public class TeamNotificationService {
                 "task"
         );
 
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -388,7 +405,8 @@ public class TeamNotificationService {
                 LocalDateTime.now(),
                 "task"
         );
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
 
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
@@ -409,7 +427,8 @@ public class TeamNotificationService {
                 LocalDateTime.now(),
                 "project"
         );
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
 
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
@@ -428,7 +447,8 @@ public class TeamNotificationService {
                 LocalDateTime.now(),
                 "project"
         );
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
 
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
@@ -447,7 +467,8 @@ public class TeamNotificationService {
                 LocalDateTime.now(),
                 "project"
         );
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -466,7 +487,8 @@ public class TeamNotificationService {
                 LocalDateTime.now(),
                 "project"
         );
-        this.teamNotificationRepository.save(teamNotification);
+                teamNotification.setTeam(teamOfNotification);
+this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -520,6 +542,7 @@ public class TeamNotificationService {
                 LocalDateTime.now(),
                 "project"
         );
+
         this.teamNotificationRepository.save(teamNotification);
         project.getTeam().getNotifications().add(teamNotification);
         this.teamRepository.save(project.getTeam());

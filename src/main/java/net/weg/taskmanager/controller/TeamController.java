@@ -3,6 +3,7 @@ package net.weg.taskmanager.controller;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.UserTeamDTO2;
 import net.weg.taskmanager.model.dto.get.GetTeamDTO;
+import net.weg.taskmanager.model.dto.get.GetTeamNotificationDTO;
 import net.weg.taskmanager.model.dto.post.PostTeamDTO;
 import net.weg.taskmanager.model.entity.Team;
 import net.weg.taskmanager.model.entity.UserTeam;
@@ -35,6 +36,11 @@ public class TeamController {
     @GetMapping("/user/{userId}")
     public Collection<UserTeamDTO2> findTeamsByUserId(@PathVariable Long userId){
         return service.findTeamsByUserId(userId);
+    }
+
+    @GetMapping("/{teamId}/notifications")
+    public Collection<GetTeamNotificationDTO> getAllNotifications(@PathVariable Long teamId) {
+        return service.getAllNotifications(teamId);
     }
 
 //    @PutMapping

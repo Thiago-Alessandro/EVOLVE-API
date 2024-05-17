@@ -41,7 +41,7 @@ public class Team {
     @OneToOne(mappedBy = "team", optional = false, cascade = CascadeType.ALL)
     private TeamChat chat;
 
-    @OneToMany
+    @OneToMany(mappedBy = "team")
     private Collection<TeamNotification> notifications;
 
     @Column(nullable = false)
