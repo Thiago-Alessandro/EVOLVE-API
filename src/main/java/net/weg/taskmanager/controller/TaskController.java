@@ -21,6 +21,8 @@ import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.service.TaskService;
 import net.weg.taskmanager.service.UserTaskService;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -266,12 +268,16 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}/get/{userId}")
-    public GetUserTaskDTO getUserWorkedTime(@PathVariable Long userId,
-                                            @PathVariable Long taskId) {
-        return userTaskService.getUserWorkedTime(userId,taskId);
+    public ResponseEntity<GetUserTaskDTO> getUserWorkedTime(@PathVariable Long userId,
+                                                           @PathVariable Long taskId) {
+        try {
+            return ResponseEntity.ok(userTaskService.getUserWorkedTime(userId,taskId));
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
     }
 
-    @PutMapping("/{taskId}/put/workedTime")
+    @PatchMapping("/{taskId}/put/workedTime")
     public void updateUserWorkedTime(@RequestBody UserTask userTaskUpdated) {
         userTaskService.updateWorkedTime(userTaskUpdated);
     }

@@ -189,10 +189,8 @@ public class TaskService {
             this.projectRepository.save(project);
         } else {
             task.getProperties().add(property);
+            this.taskRepository.save(task);
         }
-
-        property = propertyRepository.save(property);
-        task.getProperties().add(property);
 
         Task savedTask = historicService.patchProperty(property, userId, taskId);
 
