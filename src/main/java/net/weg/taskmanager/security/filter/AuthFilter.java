@@ -47,7 +47,7 @@ public class AuthFilter extends OncePerRequestFilter {
 //                System.out.println("Ó meu nome in baixo di mim");
 //                System.out.println(cookie.getName() + "to na aufi");
             } catch (Exception e) {
-//                System.out.println("Mano não achei o cookie :(");
+                System.out.println("Mano não achei o cookie :(");
                 System.out.println(e);
                 response.setStatus(500);
                 return;
