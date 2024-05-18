@@ -2,6 +2,7 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.get.GetUserTaskDTO;
+import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.entity.UserTask;
 import net.weg.taskmanager.repository.TaskRepository;
 import net.weg.taskmanager.repository.UserRepository;
@@ -24,6 +25,12 @@ public class UserTaskService {
         Optional<UserTask> optionalUserTask = repository.findByUserIdAndTaskId(userId, taskId);
         if(optionalUserTask.isEmpty()) throw new NoSuchElementException("UserTask not found");
         return optionalUserTask.get();
+    }
+
+    public Collection<UserTask> findAllByUserId(Long userId) {
+        Collection<UserTask> userTaskCollection = repository.findAllByUserId(userId);
+        if(userTaskCollection.isEmpty()) throw new NoSuchElementException("UserTask not found");
+        return userTaskCollection;
     }
 
     public GetUserTaskDTO getUserWorkedTime(Long userId, Long taskId) {
