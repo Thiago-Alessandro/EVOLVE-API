@@ -16,7 +16,7 @@ public class TeamPermissionManager {
         //somente o criador pode excluir a equipe
         return user.getTeamRoles().stream()
                 .filter(userTeam -> userTeam.getTeamId().equals(teamId))
-                .anyMatch(userProject -> userProject.getRole().getPermissions().contains(Permission.PROJECT_CREATOR) || userProject.isManager());
+                .anyMatch(userProject -> userProject.getRole().getPermissions().contains(Permission.PROJECT_CREATOR) || userProject.getManager());
     }
 
 
@@ -31,7 +31,7 @@ public class TeamPermissionManager {
     public boolean hasPatchRolesPermission(Long teamId,User user){
         return user.getTeamRoles().stream()
                 .filter(userTeam -> userTeam.getTeamId().equals(teamId))
-                .anyMatch(userTeam -> userTeam.getRole().getPermissions().contains(Permission.TEAM_CREATOR) || userTeam.isManager());
+                .anyMatch(userTeam -> userTeam.getRole().getPermissions().contains(Permission.TEAM_CREATOR) || userTeam.getManager());
     }
 
     public boolean hasPatchMembersPermission(Long teamId, User user){

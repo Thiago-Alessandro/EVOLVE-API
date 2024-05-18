@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.UserTeamDTO2;
 import net.weg.taskmanager.model.dto.get.GetTeamDTO;
 import net.weg.taskmanager.model.dto.get.GetTeamNotificationDTO;
-import net.weg.taskmanager.model.dto.post.PostTeamDTO;
 import net.weg.taskmanager.model.entity.Team;
 import net.weg.taskmanager.model.entity.UserTeam;
 import net.weg.taskmanager.security.model.entity.Role;
@@ -31,7 +30,9 @@ public class TeamController {
     public void delete(@PathVariable Long teamId){service.delete(teamId);}
 
     @PostMapping
-    public GetTeamDTO create(@RequestBody Team team){return service.create(team);}
+    public GetTeamDTO create(@RequestBody Team team){
+        return
+            service.create(team);}
 
     @GetMapping("/user/{userId}")
     public Collection<UserTeamDTO2> findTeamsByUserId(@PathVariable Long userId){

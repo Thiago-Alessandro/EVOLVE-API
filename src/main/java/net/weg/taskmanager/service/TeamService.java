@@ -11,12 +11,10 @@ import net.weg.taskmanager.model.dto.UserTeamDTO2;
 import net.weg.taskmanager.model.dto.get.GetTeamDTO;
 import net.weg.taskmanager.model.dto.post.PostTeamDTO;
 import net.weg.taskmanager.model.entity.*;
-import net.weg.taskmanager.repository.TeamNotificationRepository;
-import net.weg.taskmanager.repository.TeamRepository;
+import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.security.model.entity.Role;
 import net.weg.taskmanager.security.service.RoleService;
 
-import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.utils.ColorUtils;
 import net.weg.taskmanager.utils.FileUtils;
 import org.springframework.stereotype.Service;
@@ -57,6 +55,7 @@ public class TeamService {
     }
 
     public Team findTeamById(Long teamId){
+        System.out.println(teamRepository.findAll());
         Optional<Team> optionalTeam = teamRepository.findById(teamId);
         if(optionalTeam.isEmpty()) throw new NoSuchElementException("Could not find team with id: " + teamId);
         return optionalTeam.get();
@@ -67,10 +66,9 @@ public class TeamService {
 //        return converter.convertAll(teams);
 //    }
 
-    public Team createTeam(PostTeamDTO teamDTO) {
+    public Team createTeam(PostTeamDTO teamDTO) { //creates aa team automaticatlly
         Team team =  new Team(teamDTO);
         Team createdTeam = teamRepository.save(team);
-
         setCreator(teamDTO.getCreator(), createdTeam);
         setDefaultRole(createdTeam);
 //        updateTeamChat(createdTeam);
@@ -85,19 +83,24 @@ public class TeamService {
         setDefaultRole(team);
 //        updateTeamChat(createdTeam);
         setPossibleRoles(team);
+//        team.setChat(new TeamChat());
         Team team1 = teamRepository.save(team);
-        team1.getParticipants().stream().forEach(userTeam -> {
-            userTeam.setRole(team1.getDefaultRole());
+        team1.getParticipants().forEach(userTeam -> {
+            userTeam.setRole(roleService.findRoleById(userTeam.getRole().getId()));
             userTeam.setTeamId(team1.getId());
             userTeam.setTeam(team1);
             userTeamService.save(userTeam);
         });
+        TeamChat teamChat = new TeamChat(team1);
+        teamChat.setUsers(new ArrayList<>(team1.getParticipants().stream().map(UserTeam::getUser).toList()));
+        team1.setChat(teamChat);
 
-//        System.out.println(team1.getParticipants().stream().findFirst().get());
-        System.out.println("Claro que sim");
-        System.out.println(team1);
+        Team team2 = teamRepository.save(team1);
+        System.out.println(team2.getChat());
 
-        return new GetTeamDTO(findTeamById(team1.getId()));
+
+
+        return new GetTeamDTO(findTeamById(team2 .getId()));
     }
 
 
@@ -193,25 +196,36 @@ public class TeamService {
     }
 
 
-    @Transactional
+    private final UserTeamRepository userTeamRepository;
     public GetTeamDTO patchParticipants(Long teamId, Collection<UserTeam> participants) throws InvalidAttributeValueException {
         Team team = findTeamById(teamId);
         if(participants == null ) throw new InvalidAttributeValueException("Participants in Team can not be null");
-        Collection<UserTeam> createdParticipants = userTeamService.setRoleAndCreateAllIfNotExists(participants, team.getDefaultRole());
-        deleteUserTeamIfUserIsNotParticipant(team);
-        createdParticipants.forEach(userTeam -> userTeam.setUser(userRepository.findById(userTeam.getUserId()).get()));
-        //team must have at least one manager (creator/owner)
-        team.setParticipants(new ArrayList<>(createdParticipants.stream().map(userTeamService::save).toList()));
+
+        participants.forEach(userTeam -> userTeam.setRole(roleService.findRoleById(userTeam.getRole().getId())));
+        participants.forEach(userTeam -> userTeam.setTeam(findTeamById(userTeam.getTeamId())));
+        team.getParticipants().forEach(userTeam ->  {
+           if (!participants.contains(userTeam)){
+               userTeamRepository.delete(userTeam);
+           }
+        });
+
+
+        team.getChat().setUsers(userTeamRepository.saveAll(participants).stream().map(UserTeam::getUser).toList());
+        System.out.println("OLHA O SOUT AQUI POH");
+        System.out.println(team.getChat().getUsers());
+        teamRepository.save(team);
         if(!hasManager(team)) throw new InvalidAttributeValueException();
-        updateTeamChat(team);
-        return new GetTeamDTO(teamRepository.save(team));
+        return new GetTeamDTO(findTeamById(teamId));
     }
 
-    private void updateTeamChat(Team team) {
-        if(team.getParticipants() == null) return;
-        ArrayList<User> users = new ArrayList<>(team.getParticipants().stream().map(UserTeam::getUser).toList());
-        team.getChat().setUsers(users);
-    }
+//    private void updateTeamChat(Long teamId) {
+//        Team team = findTeamById(teamId);
+//        if(team.getParticipants() == null) throw new NoSuchElementException();
+//        ArrayList<User> users = new ArrayList<>(team.getParticipants().stream().map(UserTeam::getUser).toList());
+//        team.getChat().setUsers(users);
+//        team.getParticipants().forEach(userTeam -> System.out.println(userTeam.getUser()));
+//        teamRepository.save(team);
+//    }
 
     private GetTeamDTO saveAndGetDTO(Team team){
         Team savedTeam = teamRepository.save(team);
@@ -268,7 +282,7 @@ public class TeamService {
 //        deleteUserTeamIfUserIsNotParticipant(team);
 //    }
     private boolean hasManager(Team team){
-        return !team.getParticipants().stream().map(UserTeam::isManager).toList().isEmpty();
+        return !team.getParticipants().stream().map(UserTeam::getManager).toList().isEmpty();
     }
 
 //    private void createDefaultUserTeam(UserTeam userTeam) {

@@ -9,6 +9,7 @@ import net.weg.taskmanager.security.model.entity.Role;
 
 import javax.management.InvalidAttributeValueException;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Entity
 @Data
@@ -17,6 +18,18 @@ import java.util.NoSuchElementException;
 @IdClass(UserTeamId.class)
 @ToString(onlyExplicitlyIncluded = true)
 public class UserTeam {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserTeam userTeam = (UserTeam) o;
+        return Objects.equals(userId, userTeam.userId) && Objects.equals(teamId, userTeam.teamId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, teamId);
+    }
 
     @Id
     private Long userId;
@@ -33,7 +46,11 @@ public class UserTeam {
 
     @ManyToOne
     private Role role;
-    private boolean isManager;
+    private boolean manager;
+
+    public boolean getManager(){
+        return manager;
+    }
 
 //    public UserTeam(Long userId, Long teamId, Role role) {
 //        this.userId = userId;
