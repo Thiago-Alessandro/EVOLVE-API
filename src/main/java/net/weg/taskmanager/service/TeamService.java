@@ -73,6 +73,8 @@ public class TeamService {
         setDefaultRole(createdTeam);
 //        updateTeamChat(createdTeam);
         setPossibleRoles(createdTeam);
+        UUID code = UUID.randomUUID();
+        team.setCode(code.toString());
         return teamRepository.save(createdTeam);
     }
 
@@ -310,5 +312,11 @@ public class TeamService {
 //    private Collection<GetTeamDTO> resolveAndGetDTOs(Collection<Team> teams){
 //        return teams.stream().map(this::resolveAndGetDTO).toList();
 //    }
+
+    public   GetTeamDTO findByCode(String code){
+       return new GetTeamDTO(
+               teamRepository.findTeamByCode(code)
+       );
+    }
 
 }

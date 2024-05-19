@@ -83,7 +83,6 @@ public class SecurityConfig {
 //                .requestMatchers(HttpMethod.GET, "/team/user/{userId}").access(teamAuthorizationManager)
                 .requestMatchers(HttpMethod.PATCH, "/team/{teamId}/**").access(teamAuthorizationManager)
                 .requestMatchers(HttpMethod.DELETE, "/team/{teamId}").access(teamAuthorizationManager)
-//
 //                //USER
 //                .requestMatchers(HttpMethod.GET, "/user/login/{email}").access(userAuthorizationPermission)
 //                .requestMatchers(HttpMethod.GET, "/user/{userId}").access(userAuthorizationPermission)

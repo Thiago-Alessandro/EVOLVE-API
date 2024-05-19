@@ -110,6 +110,14 @@ public class TeamController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
+    @GetMapping("code/{teamCode}")
+    public ResponseEntity<GetTeamDTO> getTeamByCode(@PathVariable String teamCode) {
+        try {
+            return ResponseEntity.ok(service.findByCode(teamCode));
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
 
 //    @PatchMapping("/{teamId}/projects")
@@ -125,6 +133,7 @@ public class TeamController {
     public GetTeamDTO patchReadedNotification(@PathVariable Long teamId, @PathVariable Long notificationId) {
         return service.patchReadedNotification(teamId,notificationId);
     }
+
 
     @DeleteMapping("/clean/{loggedUserId}")
     public void cleanAllUserNotifications(@PathVariable Long loggedUserId) {

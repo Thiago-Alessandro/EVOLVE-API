@@ -35,6 +35,7 @@ public class GetTeam2{
     private Collection<ShortProjectDTO> projects;
     private GetTeamChatDTO chat;
     private Boolean personalWorkspace;
+    private String code;
 
     public GetTeam2(Team team){
 //        Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
