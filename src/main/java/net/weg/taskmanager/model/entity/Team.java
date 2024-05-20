@@ -3,6 +3,7 @@ package net.weg.taskmanager.model.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 import net.weg.taskmanager.model.dto.post.PostTeamDTO;
 import net.weg.taskmanager.security.model.entity.Role;
 import net.weg.taskmanager.utils.ColorUtils;
@@ -18,6 +19,7 @@ import java.util.List;
 @Entity
 @Data
 @AllArgsConstructor
+@ToString(onlyExplicitlyIncluded = true)
 public class Team {
 
     @Id
@@ -35,10 +37,11 @@ public class Team {
     private Collection<UserTeam> participants;
 
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "team")
     private Collection<Project> projects;
 
-    @OneToOne(mappedBy = "team", optional = false, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "team", cascade = CascadeType.ALL)
     private TeamChat chat;
 
     @OneToMany(mappedBy = "team")

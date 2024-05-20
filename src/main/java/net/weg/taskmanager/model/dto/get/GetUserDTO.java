@@ -39,13 +39,13 @@ public class GetUserDTO {
     private String secondaryDarkColor;
     private Integer fontSize;
     public GetUserDTO(User user){
-        Converter<GetFileDTO, File> fileConverter = new GetFileConverter();
+        GetFileConverter fileConverter = new GetFileConverter();
         Converter<ShortTaskDTO, Task> taskConverter = new ShortTaskConverter();
         Converter<GetUserChatDTO, UserChat> userChatConverter = new GetUserChatConverter();
 //        Converter<GetTeamDTO, Team> teamConverter = new GetTeamConverter();
 
         BeanUtils.copyProperties(user, this);
-        this.image = fileConverter.convertOne(user.getImage());
+        this.image = fileConverter.convertOne(user.getImage(), user.isSocialLogin());
         this.createdTasks = taskConverter.convertAll(user.getCreatedTasks());
         this.chats = userChatConverter.convertAll(user.getChats());
 //        this.teams = teamConverter.convertAll(user.getTeams());

@@ -17,6 +17,7 @@ import net.weg.taskmanager.model.enums.MessageStatus;
 import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
@@ -35,11 +36,11 @@ public class GetMessageDTO {
 
     public GetMessageDTO(Message message){
         Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
-        Converter<GetFileDTO, File> fileDTOCOnverter = new GetFileConverter();
+        GetFileConverter fileDTOCOnverter = new GetFileConverter();
         Converter<ShortChatDTO, Chat> shortChatConverter = new ShortChatConverter();
 
         BeanUtils.copyProperties(message, this);
-        this.attachments = fileDTOCOnverter.convertAll(message.getAttachments());
+        this.attachments = message.getAttachments() != null ? message.getAttachments().stream().map(attachment -> fileDTOCOnverter.convertOne(attachment, false)).toList() : new ArrayList<>();
         this.sender = shortUserConverter.convertOne(message.getSender());
         this.chat = shortChatConverter.convertOne(message.getChat());
     }

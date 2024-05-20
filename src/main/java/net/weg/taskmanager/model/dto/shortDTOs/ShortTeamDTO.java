@@ -32,13 +32,13 @@ public class ShortTeamDTO {
 
     public ShortTeamDTO(Team team){
         Converter<ShortUserDTO, User> userConverter = new ShortUserConverter();
-        Converter<GetFileDTO, File> fileConverter = new GetFileConverter();
+        GetFileConverter fileConverter = new GetFileConverter();
         BeanUtils.copyProperties(team, this);
 
 //        this.administrator = userConverter.convertOne(team.getAdministrator());
 //        this.participants = userConverter.convertAll(team.getParticipants();
         this.participants = team.getParticipants() != null? team.getParticipants().stream().map(ShortUserTeamDTO::new).toList() : new ArrayList<>();
-        this.image = fileConverter.convertOne(team.getImage());
+        this.image = fileConverter.convertOne(team.getImage(), false);
         this.notifications = team.getNotifications() != null ?
                 team.getNotifications().stream().map(GetTeamNotificationDTO::new).toList()
                 : new ArrayList<>();

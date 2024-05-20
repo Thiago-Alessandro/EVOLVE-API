@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.UserTeamDTO2;
 import net.weg.taskmanager.model.dto.get.GetTeamDTO;
 import net.weg.taskmanager.model.dto.get.GetTeamNotificationDTO;
-import net.weg.taskmanager.model.dto.post.PostTeamDTO;
 import net.weg.taskmanager.model.entity.Team;
 import net.weg.taskmanager.model.entity.UserTeam;
 import net.weg.taskmanager.security.model.entity.Role;
@@ -31,7 +30,9 @@ public class TeamController {
     public void delete(@PathVariable Long teamId){service.delete(teamId);}
 
     @PostMapping
-    public GetTeamDTO create(@RequestBody Team team){return service.create(team);}
+    public GetTeamDTO create(@RequestBody Team team){
+        return
+            service.create(team);}
 
     @GetMapping("/user/{userId}")
     public Collection<UserTeamDTO2> findTeamsByUserId(@PathVariable Long userId){
@@ -76,12 +77,12 @@ public class TeamController {
         }
     }
     @PatchMapping("/{teamId}/imageColor")
-    public ResponseEntity<GetTeamDTO> patchImageColor(@PathVariable Long teamId, @RequestParam String imageColor){
-        try {
+    public ResponseEntity<GetTeamDTO> patchImageColor(@PathVariable Long teamId, @RequestParam String imageColor) throws InvalidAttributeValueException {
+//        try {
             return ResponseEntity.ok(service.patchImageColor(teamId, imageColor));
-        } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-        }
+//        } catch (Exception e){
+//            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+//        }
     }
 
     @PatchMapping("/{teamId}/participants")
@@ -92,6 +93,15 @@ public class TeamController {
 //            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 //        }
     }
+    @PutMapping("/code/{teamId}/participant")
+    public ResponseEntity<GetTeamDTO> patchParticipantsByCode(@PathVariable Long teamId, @RequestBody UserTeam participant) throws InvalidAttributeValueException {
+//        try {
+        return ResponseEntity.ok(service.patchParticipantsByCode(teamId, participant));
+//        } catch (Exception e){
+//            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+//        }
+    }
+
 
     @PatchMapping("/{teamId}/roles")
     public ResponseEntity<GetTeamDTO> patchRoles(@PathVariable Long teamId, @RequestBody Collection<Role> roles){
@@ -109,6 +119,14 @@ public class TeamController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
+    @GetMapping("code/{teamCode}")
+    public ResponseEntity<GetTeamDTO> getTeamByCode(@PathVariable String teamCode) {
+        try {
+            return ResponseEntity.ok(service.findByCode(teamCode));
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
 
 //    @PatchMapping("/{teamId}/projects")
@@ -124,6 +142,7 @@ public class TeamController {
     public GetTeamDTO patchReadedNotification(@PathVariable Long teamId, @PathVariable Long notificationId) {
         return service.patchReadedNotification(teamId,notificationId);
     }
+
 
     @DeleteMapping("/clean/{loggedUserId}")
     public void cleanAllUserNotifications(@PathVariable Long loggedUserId) {

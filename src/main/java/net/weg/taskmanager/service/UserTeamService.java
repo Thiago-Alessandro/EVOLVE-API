@@ -29,18 +29,17 @@ public class UserTeamService {
     public Collection<UserTeam> findUserTeamsByUser_Id(Long userId){
         Optional<Collection<UserTeam>> optionalUserTeams = repository.findUserTeamsByUser_Id(userId);
         Collection<UserTeam> d = repository.findAll();
-        System.out.println(d);
-        System.out.println("auimaue");
 
         if(optionalUserTeams.isEmpty()) throw new NoSuchElementException("Usuario não possui equipes");
-        System.out.println(optionalUserTeams.get().stream().findFirst().get());
 
         return optionalUserTeams.get();
     }
 
     public Collection<UserTeam> findAllWithTeamId(Long teamId){
+        System.out.println("YOOOOOO");
         Optional<Collection<UserTeam>> optionalUserTeams = repository.findUserTeamsByTeam_Id(teamId);
         if(optionalUserTeams.isEmpty()) throw new NoSuchElementException();
+        System.out.println(optionalUserTeams.get());
         return optionalUserTeams.get();
     }
     public UserTeam create(UserTeam userTeam){

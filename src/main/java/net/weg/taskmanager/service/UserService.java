@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 
+import net.weg.taskmanager.model.dto.get.GetFileDTO;
 import net.weg.taskmanager.model.dto.post.PostTeamDTO;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetUserConverter;
@@ -54,6 +55,16 @@ public class UserService {
     public Collection<GetUserDTO> findAll(){
         Collection<User> users = userRepository.findAll();
         return converter.convertAll(users);
+    }
+
+    public GetUserDTO patchImageFromLink(Long userId, GetFileDTO image){
+        User user = findUserById(userId);
+        File file = new File();
+        BeanUtils.copyProperties(image, file);
+        file.setLink(image.getData());
+//        if(file.getLink()==null) throw new InvalidPropertiesFormatException("Image link on user cannot be null");
+        user.setImage(file);
+        return new GetUserDTO(userRepository.save(user));
     }
 
     public void delete(Long id){

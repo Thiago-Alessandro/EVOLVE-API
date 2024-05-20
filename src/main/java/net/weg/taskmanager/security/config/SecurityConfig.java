@@ -83,13 +83,14 @@ public class SecurityConfig {
 //                //TEAM
                 .requestMatchers(HttpMethod.GET, "/team/{teamId}").access(teamAuthorizationManager)
 //                .requestMatchers(HttpMethod.GET, "/team/user/{userId}").access(teamAuthorizationManager)
+                .requestMatchers(HttpMethod.PUT, "/team/code/{teamId}/participant").authenticated()
                 .requestMatchers(HttpMethod.PATCH, "/team/{teamId}/**").access(teamAuthorizationManager)
                 .requestMatchers(HttpMethod.DELETE, "/team/{teamId}").access(teamAuthorizationManager)
-//
 //                //USER
 //                .requestMatchers(HttpMethod.GET, "/user/login/{email}").access(userAuthorizationPermission)
 //                .requestMatchers(HttpMethod.GET, "/user/{userId}").access(userAuthorizationPermission)
                 .requestMatchers(HttpMethod.DELETE, "/user/{userId}").access(userAuthorizationPermission)
+                .requestMatchers(HttpMethod.PATCH, "/user/{userId}/image/link").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/user/{userId}/**").access(userAuthorizationPermission)
 //                .requestMatchers(HttpMethod.PATCH, "/user/{userId}/email/{email}").access(userAuthorizationPermission)
 
