@@ -9,6 +9,7 @@ import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.repository.UserTaskRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -43,6 +44,16 @@ public class UserTaskService {
         userTask.setUser(userRepository.findById(userTask.getUserId()).get());
         System.out.println(userTask);
         repository.save(userTask);
+    }
+
+    public Collection<GetUserTaskDTO> getAllWorkedTime(Long userId, Long projectId) {
+        Collection<UserTask> userTaskCollection = repository.findAllByUserId(userId);
+        if(userTaskCollection.isEmpty()) throw new NoSuchElementException("UserTask not found");
+        Collection<GetUserTaskDTO> userTaskDTOCollection = new ArrayList<>();
+        userTaskCollection.forEach(userTask -> {
+            userTaskDTOCollection.add(new GetUserTaskDTO(userTask));
+        });
+        return userTaskDTOCollection;
     }
 
 }
