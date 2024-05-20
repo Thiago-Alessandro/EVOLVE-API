@@ -67,6 +67,7 @@ public class TeamAuthorizationManager implements AuthorizationManager<RequestAut
     }
 
     private AuthorizationDecision hasPatchPermission(User user, Map<String, String> variables, String uri){
+        System.out.println(variables.get("teamId"));
         Long teamId = Long.parseLong(variables.get("teamId"));
         return new AuthorizationDecision(permissionManager.hasPatchPermission(teamId, user, uri));
     }

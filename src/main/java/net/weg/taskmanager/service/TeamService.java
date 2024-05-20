@@ -220,6 +220,19 @@ public class TeamService {
         return new GetTeamDTO(findTeamById(teamId));
     }
 
+   public GetTeamDTO patchParticipantsByCode(Long teamId, UserTeam userTeam ){
+       Team team = findTeamById(teamId);
+       UserTeam userTeam1 = new UserTeam();
+       userTeam1.setTeamId(teamId);
+       userTeam1.setTeam(userTeam.getTeam());
+       userTeam1.setUserId(userTeam.getUserId());
+       userTeam1.setUser(userTeam.getUser());
+       userTeam1.setRole(roleService.getRoleByName("TEAM_COLABORATOR"));
+       userTeamService.create(userTeam1);
+       team.getParticipants().add(userTeam1);
+       return  new GetTeamDTO(teamRepository.save(team));
+   }
+
 //    private void updateTeamChat(Long teamId) {
 //        Team team = findTeamById(teamId);
 //        if(team.getParticipants() == null) throw new NoSuchElementException();
