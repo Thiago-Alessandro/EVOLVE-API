@@ -93,6 +93,15 @@ public class TeamController {
 //            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 //        }
     }
+    @PutMapping("/code/{teamId}/participant")
+    public ResponseEntity<GetTeamDTO> patchParticipantsByCode(@PathVariable Long teamId, @RequestBody UserTeam participant) throws InvalidAttributeValueException {
+//        try {
+        return ResponseEntity.ok(service.patchParticipantsByCode(teamId, participant));
+//        } catch (Exception e){
+//            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+//        }
+    }
+
 
     @PatchMapping("/{teamId}/roles")
     public ResponseEntity<GetTeamDTO> patchRoles(@PathVariable Long teamId, @RequestBody Collection<Role> roles){
