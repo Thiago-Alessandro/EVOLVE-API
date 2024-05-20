@@ -220,13 +220,14 @@ public class TeamService {
         return new GetTeamDTO(findTeamById(teamId));
     }
 
-   public GetTeamDTO patchParticipantsByCode(Long teamId, UserTeam userTeam ){
+   public GetTeamDTO patchParticipantsByCode(Long teamId, Long userId ){
        Team team = findTeamById(teamId);
+       User user = userRepository.findById(userId).get();
        UserTeam userTeam1 = new UserTeam();
        userTeam1.setTeamId(teamId);
-       userTeam1.setTeam(userTeam.getTeam());
-       userTeam1.setUserId(userTeam.getUserId());
-       userTeam1.setUser(userTeam.getUser());
+       userTeam1.setTeam(team);
+       userTeam1.setUserId(userId);
+       userTeam1.setUser(user);
        userTeam1.setRole(roleService.getRoleByName("TEAM_COLABORATOR"));
        userTeamService.create(userTeam1);
        team.getParticipants().add(userTeam1);
