@@ -230,10 +230,15 @@ public class TaskService {
 
     }
 
+    public void setTaskConcluded(Long taskId) {
+        Task task = findTaskById(taskId);
+        task.setConcluded(true);
+        taskRepository.save(task);
+    }
+
     public GetTaskDTO patchCurrentStatus(Long taskId, Long userId, Status status) {
         Task task = findTaskById(taskId);
         User user = userService.findUserById(userId);
-
         task.setCurrentStatus(status);
         return historicService.updateCurrentStatusHistoric(user, task, status);
 //        task =

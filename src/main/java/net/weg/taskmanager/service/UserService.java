@@ -13,6 +13,7 @@ import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.post.PostUserDTO;
 import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.repository.UserRepository;
+import net.weg.taskmanager.repository.UserTaskRepository;
 import net.weg.taskmanager.security.model.entity.Role;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import net.weg.taskmanager.security.service.RoleService;
@@ -36,6 +37,7 @@ public class UserService {
 //    private final ModelMapper modelMapper;
     private final TeamService teamService;
     private final UserTeamService userTeamService;
+    private final UserTaskService userTaskService;
     private final Converter<GetUserDTO, User> converter = new GetUserConverter();
 
 
@@ -111,6 +113,14 @@ public class UserService {
         UserTeam userTeam = new UserTeam(user.getId(), savedTeam.getId(), user, savedTeam, role, true);
         UserTeam createdUserTeam = userTeamService.create(userTeam);
         user.setTeamRoles(List.of(createdUserTeam));
+    }
+
+    public Collection<UserTask> getAllWorkedTime(Long userId) {
+        Collection<UserTask> userTasks = new ArrayList<>();
+        userTasks = this.userTaskService.findAllByUserId(userId);
+        System.out.println("SOUT DA USERTASKS AQUIII ");
+        System.out.println(userTasks);
+        return userTasks;
     }
 
 

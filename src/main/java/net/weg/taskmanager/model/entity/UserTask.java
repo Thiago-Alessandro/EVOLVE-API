@@ -25,6 +25,9 @@ public class UserTask {
     @ManyToOne
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     private User user;
+    @ManyToOne
+    @JoinColumn(name = "taskId", insertable = false, updatable = false)
+    private Task task;
 
     private Integer workedHours;
     private Integer workedMinutes;

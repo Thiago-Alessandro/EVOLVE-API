@@ -227,6 +227,11 @@ public class TaskController {
         return taskService.updatePropertyCurrentOptions(newCurrentOptions, propertyId, taskId, userId);
     }
 
+    @PatchMapping("/setConcluded")
+    public void setTaskConcluded(@RequestParam Long taskId) {
+        taskService.setTaskConcluded(taskId);
+    }
+
     @PatchMapping("/{taskId}/user/{userId}/update/currentPriority")
     public GetTaskDTO updateCurrentPriority(@PathVariable Long taskId,
                                             @PathVariable Long userId,

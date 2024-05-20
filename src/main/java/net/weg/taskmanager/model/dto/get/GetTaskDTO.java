@@ -56,6 +56,7 @@ public class GetTaskDTO {
 
     private Integer statusListIndex;
     private Double progress;
+    private Boolean concluded;
     private Collection<File> files;
 
     public GetTaskDTO(Task task){
