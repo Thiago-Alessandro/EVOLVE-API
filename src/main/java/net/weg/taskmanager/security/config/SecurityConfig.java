@@ -88,6 +88,7 @@ public class SecurityConfig {
 //                .requestMatchers(HttpMethod.GET, "/user/login/{email}").access(userAuthorizationPermission)
 //                .requestMatchers(HttpMethod.GET, "/user/{userId}").access(userAuthorizationPermission)
                 .requestMatchers(HttpMethod.DELETE, "/user/{userId}").access(userAuthorizationPermission)
+                .requestMatchers(HttpMethod.PATCH, "/user/{userId}/image/link").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/user/{userId}/**").access(userAuthorizationPermission)
 //                .requestMatchers(HttpMethod.PATCH, "/user/{userId}/email/{email}").access(userAuthorizationPermission)
 

@@ -60,13 +60,13 @@ public class GetProjectDTO {
 
     public GetProjectDTO(Project project){
 //        Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
-        Converter<GetFileDTO, File> fileDTOConverter = new GetFileConverter();
+        GetFileConverter fileDTOConverter = new GetFileConverter();
         Converter<GetProjectChatDTO, ProjectChat> projectChatDTOConverter = new GetProjectChatConverter();
         Converter<GetTaskDTO, Task> taskDTOCOnverter = new GetTaskConverter();
         Converter<ShortTeamDTO, Team> teamDTOTeamConverter = new ShortTeamConverter();
 
         BeanUtils.copyProperties(project, this);
-        this.image = fileDTOConverter.convertOne(project.getImage());
+        this.image = fileDTOConverter.convertOne(project.getImage(), false);
         this.team = teamDTOTeamConverter.convertOne(project.getTeam());
         this.chat = projectChatDTOConverter.convertOne(project.getChat());
 //        this.members = shortUserConverter.convertAll(project.getMembers());

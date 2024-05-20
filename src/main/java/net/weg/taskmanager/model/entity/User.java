@@ -58,6 +58,8 @@ public class User {
     private String secondaryDarkColor;
     private Integer fontSize = 16;
 
+    private boolean socialLogin = false;
+
 
 
     @Override

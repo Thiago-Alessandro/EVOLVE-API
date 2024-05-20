@@ -45,11 +45,11 @@ public class ShortProjectDTO {
 //    private Collection<GetTaskDTO> tasks;
 
     public ShortProjectDTO(Project project){
-        Converter<GetFileDTO, File> fileConverter = new GetFileConverter();
+        GetFileConverter fileConverter = new GetFileConverter();
         Converter<ShortUserDTO, User> userConverter = new ShortUserConverter();
         Converter<ShortTeamDTO, Team> teamConverter = new ShortTeamConverter();
         BeanUtils.copyProperties(project, this);
-        this.image = fileConverter.convertOne(project.getImage());
+        this.image = fileConverter.convertOne(project.getImage(), false);
 //        this.members = userConverter.convertAll(project.getMembers());
 //        this.members = project.getMembers() !=null ? project.getMembers().stream().map(UserProjectDTO::new).toList() : new ArrayList<>();
         this.team = teamConverter.convertOne(project.getTeam());

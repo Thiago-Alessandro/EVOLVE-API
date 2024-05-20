@@ -2,8 +2,10 @@ package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
 
+import net.weg.taskmanager.model.dto.get.GetFileDTO;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.post.PostUserDTO;
+import net.weg.taskmanager.model.entity.File;
 import net.weg.taskmanager.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,6 +73,11 @@ public class UserController {
     public GetUserDTO patchEmail(@PathVariable Long userId, @RequestParam String email){
         System.out.println("chego aqui na controler");
         return userService.patchEmail(userId, email);
+    }
+
+    @PatchMapping("/{userId}/image/link")
+    public GetUserDTO patchImageFromLink(@PathVariable Long userId, @RequestBody GetFileDTO image){
+        return userService.patchImageFromLink(userId, image);
     }
 
     @PatchMapping("/{userId}/password")

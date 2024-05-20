@@ -13,6 +13,7 @@ public class PostUserDTO {
     private String email;
     private String password;
     private String imageColor;
+    private boolean socialLogin;
 //    @Lob
 //    @Column(columnDefinition = "LONGBLOB")
 //    private MultipartFile image;

@@ -36,14 +36,14 @@ public class GetTeamDTO{
 
     public GetTeamDTO(Team team){
 //        Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
-        Converter<GetFileDTO, File> fileDTOConverter = new GetFileConverter();
+        GetFileConverter fileDTOConverter = new GetFileConverter();
         Converter<GetTeamChatDTO, TeamChat> teamChatDTOConverter = new GetTeamChatConverter();
         Converter<GetProjectDTO, Project> projectDTOConverter = new GetProjectConverter();
 
         BeanUtils.copyProperties(team, this);
         this.participants = team.getParticipants() != null ? team.getParticipants().stream().map(UserTeamDTO::new).toList() : new ArrayList<>();
 //        this.administrator = shortUserConverter.convertOne(team.getAdministrator());
-        this.image = fileDTOConverter.convertOne(team.getImage());
+        this.image = fileDTOConverter.convertOne(team.getImage(), false);
         this.chat = teamChatDTOConverter.convertOne(team.getChat());
         this.projects = projectDTOConverter.convertAll(team.getProjects());
         this.notifications = team.getNotifications() != null ? team.getNotifications().stream().map(GetTeamNotificationDTO::new).toList() : null;

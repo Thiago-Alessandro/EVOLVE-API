@@ -39,7 +39,7 @@ public class GetTeam2{
 
     public GetTeam2(Team team){
 //        Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
-        Converter<GetFileDTO, File> fileDTOConverter = new GetFileConverter();
+        GetFileConverter fileDTOConverter = new GetFileConverter();
         Converter<GetTeamChatDTO, TeamChat> teamChatDTOConverter = new GetTeamChatConverter();
         Converter<ShortProjectDTO, Project> projectDTOConverter = new ShortProjectConverter();
 
@@ -47,7 +47,7 @@ public class GetTeam2{
 //        this.participants = team.getParticipants() != null ? team.getParticipants().stream().map(UserTeamDTO::new).toList() : new ArrayList<>();
         this.participants = team.getParticipants() != null ? team.getParticipants().stream().map(ShortUserTeamDTO::new).toList() : new ArrayList<>();
 //        this.administrator = shortUserConverter.convertOne(team.getAdministrator());
-        this.image = fileDTOConverter.convertOne(team.getImage());
+        this.image = fileDTOConverter.convertOne(team.getImage(), false);
         this.chat = teamChatDTOConverter.convertOne(team.getChat());
         this.projects = projectDTOConverter.convertAll(team.getProjects());
     }

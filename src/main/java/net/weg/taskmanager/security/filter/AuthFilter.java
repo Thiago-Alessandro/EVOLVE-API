@@ -83,6 +83,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
     private boolean publicRoute(HttpServletRequest request) {
         return ((request.getRequestURI().equals("/auth/login") || request.getRequestURI().equals("/user")) && request.getMethod().equals("POST"))
-                || (request.getRequestURI().contains("/user/login/") && request.getMethod().equals("GET"));
+                || (request.getRequestURI().contains("/user/login/") && request.getMethod().equals("GET"))
+                || (request.getRequestURI().contains("/image/link") && request.getMethod().equals("PATCH"));
     }
 }

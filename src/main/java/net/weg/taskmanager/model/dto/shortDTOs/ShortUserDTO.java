@@ -25,9 +25,9 @@ public class ShortUserDTO {
 //    private Collection<ShortTaskDTO> createdTasks;
 //    private Collection<UserChat> chats;
     public ShortUserDTO(User user){
-        Converter<GetFileDTO, File> fileConverter = new GetFileConverter();
+        GetFileConverter fileConverter = new GetFileConverter();
         BeanUtils.copyProperties(user, this);
-        this.image = fileConverter.convertOne(user.getImage());
+        this.image = fileConverter.convertOne(user.getImage(), user.isSocialLogin());
 //        this.createdTasks = DTOUtils.tasksToShortGetTaskDTOS(user.getCreatedTasks());
 //        this.createdTasks = DTOUtils.user.getCreatedTasks()
     }
