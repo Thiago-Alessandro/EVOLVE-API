@@ -77,12 +77,12 @@ public class TeamController {
         }
     }
     @PatchMapping("/{teamId}/imageColor")
-    public ResponseEntity<GetTeamDTO> patchImageColor(@PathVariable Long teamId, @RequestParam String imageColor){
-        try {
+    public ResponseEntity<GetTeamDTO> patchImageColor(@PathVariable Long teamId, @RequestParam String imageColor) throws InvalidAttributeValueException {
+//        try {
             return ResponseEntity.ok(service.patchImageColor(teamId, imageColor));
-        } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-        }
+//        } catch (Exception e){
+//            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+//        }
     }
 
     @PatchMapping("/{teamId}/participants")

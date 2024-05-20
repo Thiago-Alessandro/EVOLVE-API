@@ -212,7 +212,7 @@ public class TeamService {
         });
 
 
-        team.getChat().setUsers(userTeamRepository.saveAll(participants).stream().map(UserTeam::getUser).toList());
+        team.getChat().setUsers(new ArrayList<>(userTeamRepository.saveAll(participants).stream().map(UserTeam::getUser).toList()));
         System.out.println("OLHA O SOUT AQUI POH");
         System.out.println(team.getChat().getUsers());
         teamRepository.save(team);
