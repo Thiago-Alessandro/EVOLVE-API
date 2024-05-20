@@ -87,4 +87,10 @@ public class DashboardService {
             }
         }
     }
+
+    public Dashboard updateName(Long idDashboard, Dashboard dashboard) {
+        Dashboard dashboard1 = dashboardRepository.findById(idDashboard).get();
+        dashboard1.setName(dashboard.getName());
+        return dashboardRepository.save(dashboard1);
+    }
 }

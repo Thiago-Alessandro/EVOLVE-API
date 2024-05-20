@@ -22,10 +22,6 @@ public class Property {
 
     private String name;
 
-    @ManyToOne()
-    @JsonIgnore
-    private Project project;  // Possivelmente relacionada
-
     @OneToMany(mappedBy = "property",orphanRemoval = true)
     private Collection<PropertyValue> propertyValues; //
 
@@ -37,5 +33,7 @@ public class Property {
 
     @OneToMany
     private Collection<Option> currentOptions;
+
+    private boolean global = false;
 
 }

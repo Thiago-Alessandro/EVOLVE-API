@@ -21,14 +21,14 @@ public class ProjectChatController {
 //    @GetMapping("/{id}")
 //    public TeamChat findById(@PathVariable Long id){return teamChatService.findById(id);}
 //
-    @GetMapping
-    public Collection<GetProjectChatDTO> findAll(){
-        return projectChatService.findAll();
-    }
+//    @GetMapping
+//    public Collection<GetProjectChatDTO> findAll(){
+//        return projectChatService.findAll();
+//    }
 
-    @GetMapping("/user/{userID}")
-    public Collection<GetProjectChatDTO> findProjectChatsByUserId(@PathVariable Long userID){
-        return projectChatService.findProjectChatsByUserId(userID);
+    @GetMapping("/user/{userId}")
+    public Collection<GetProjectChatDTO> findProjectChatsByUserId(@PathVariable Long userId){
+        return projectChatService.findProjectChatsByUserId(userId);
     }
 
 }

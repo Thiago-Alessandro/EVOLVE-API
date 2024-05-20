@@ -2,8 +2,6 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.get.GetUserChatDTO;
-import net.weg.taskmanager.model.dto.get.GetUserDTO;
-import net.weg.taskmanager.service.processor.ChatProcessor;
 import net.weg.taskmanager.model.entity.UserChat;
 import net.weg.taskmanager.repository.UserChatRepository;
 import net.weg.taskmanager.repository.UserRepository;
@@ -13,9 +11,7 @@ import java.util.Collection;
 
 @Service
 @AllArgsConstructor
-public class UserChatService
-//        implements IService<UserChat>
-{
+public class UserChatService {
 
     //para fins de teste
     private final UserRepository userRepository;
@@ -63,7 +59,6 @@ public class UserChatService
     }
 
     private GetUserChatDTO resolveAndTreat(UserChat chat){
-        ChatProcessor.getInstance().resolveChat(chat);
         return new GetUserChatDTO(chat);
     }
 

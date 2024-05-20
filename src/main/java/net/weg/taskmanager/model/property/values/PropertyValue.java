@@ -17,7 +17,7 @@ public class PropertyValue {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @OneToOne(cascade = CascadeType.ALL)
-    private Value value;
+    private Value<?> value;
     @ManyToOne
     @ToString.Exclude
     @JsonIgnore
