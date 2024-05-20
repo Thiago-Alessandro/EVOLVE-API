@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/task/project/{projectId}").access(taskAuthorizationManager)
                 .requestMatchers(HttpMethod.GET, "/task/user/{userId}").access(taskAuthorizationManager)
 //                .requestMatchers(HttpMethod.GET, "/task/{projectId}/status/{statusId}").access(getTaskByStatusPermissionRoute)
+                .requestMatchers(HttpMethod.PATCH, "/task/setConcluded").authenticated()
                 .requestMatchers(HttpMethod.PATCH, "/task/{taskId}/**").access(taskAuthorizationManager)
                 .requestMatchers(HttpMethod.DELETE, "/task/{taskId}/**").access(taskAuthorizationManager)
 
@@ -65,6 +66,7 @@ public class SecurityConfig {
 //
                 //PROJECT
                 .requestMatchers(HttpMethod.GET, "/project/{projectId}").access(projectAuthorizationManager)
+                .requestMatchers(HttpMethod.GET, "/project/{projectId}/**").access(projectAuthorizationManager)
                 .requestMatchers(HttpMethod.GET, "/project/team/{teamId}").access(projectAuthorizationManager)
                 .requestMatchers(HttpMethod.GET, "/project/user/{userId}").access(projectAuthorizationManager)
 

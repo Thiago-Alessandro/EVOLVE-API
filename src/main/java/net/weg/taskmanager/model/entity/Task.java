@@ -70,6 +70,7 @@ public class Task {
 
     private Integer statusListIndex;
     private Double progress;
+    private Boolean concluded = false;
 
     @Override
     public String toString() {

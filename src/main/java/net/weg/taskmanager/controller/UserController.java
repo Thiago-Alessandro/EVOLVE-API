@@ -5,7 +5,11 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.get.GetFileDTO;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.post.PostUserDTO;
+
+import net.weg.taskmanager.model.entity.UserTask;
+
 import net.weg.taskmanager.model.entity.File;
+
 import net.weg.taskmanager.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +46,11 @@ public class UserController {
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+    }
+
+    @GetMapping("/{userId}/getAllWorkedTime")
+    public Collection<UserTask> getAllWorkedTime(@PathVariable Long userId) {
+        return userService.getAllWorkedTime(userId);
     }
 
     @GetMapping("/login/{email}")

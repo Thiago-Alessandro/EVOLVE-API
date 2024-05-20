@@ -3,19 +3,18 @@ package net.weg.taskmanager.controller;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.UserProject;
+import net.weg.taskmanager.model.dto.get.GetUserTaskDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.dto.put.PutProjectDTO;
-import net.weg.taskmanager.model.entity.Status;
+import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.dto.get.GetProjectDTO;
-import net.weg.taskmanager.model.entity.Task;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.security.model.entity.Role;
 import net.weg.taskmanager.service.ProjectService;
+import net.weg.taskmanager.service.UserTaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import net.weg.taskmanager.model.dto.get.GetCommentDTO;
-import net.weg.taskmanager.model.entity.Comment;
-import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.service.TeamNotificationService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +32,7 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final TeamNotificationService teamNotificationService;
+    private final UserTaskService userTaskService;
 
 
     @GetMapping("/{projectId}")
@@ -42,6 +42,11 @@ public class ProjectController {
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/{projectId}/workedTime/{userId}")
+    public Collection<GetUserTaskDTO> getAllWorkedTime(@PathVariable Long userId, @PathVariable Long projectId) {
+        return userTaskService.getAllWorkedTime(userId, projectId);
     }
 
 //    @GetMapping
