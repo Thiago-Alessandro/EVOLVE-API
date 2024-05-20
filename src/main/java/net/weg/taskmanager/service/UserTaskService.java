@@ -9,10 +9,7 @@ import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.repository.UserTaskRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -51,7 +48,9 @@ public class UserTaskService {
         if(userTaskCollection.isEmpty()) throw new NoSuchElementException("UserTask not found");
         Collection<GetUserTaskDTO> userTaskDTOCollection = new ArrayList<>();
         userTaskCollection.forEach(userTask -> {
-            userTaskDTOCollection.add(new GetUserTaskDTO(userTask));
+            if(Objects.equals(userTask.getTask().getProject().getId(), projectId)) {
+                userTaskDTOCollection.add(new GetUserTaskDTO(userTask));
+            }
         });
         return userTaskDTOCollection;
     }
