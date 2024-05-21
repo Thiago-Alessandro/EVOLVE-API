@@ -3,8 +3,14 @@ package net.weg.taskmanager.service;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.UserProject;
 import net.weg.taskmanager.model.UserProjectId;
+import net.weg.taskmanager.model.dto.UserProjectDTO;
 import net.weg.taskmanager.model.entity.User;
+import net.weg.taskmanager.repository.ProjectRepository;
 import net.weg.taskmanager.repository.UserProjectRepository;
+import net.weg.taskmanager.repository.UserRepository;
+import net.weg.taskmanager.security.model.entity.Role;
+import net.weg.taskmanager.security.repository.RoleRepository;
+import net.weg.taskmanager.security.service.RoleService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -48,6 +54,16 @@ public class UserProjectService {
         Optional<Collection<UserProject>> optionalUserProjects = repository.findUserProjectsByProject_Id(projectId);
         if(optionalUserProjects.isEmpty()) throw new NoSuchElementException();
         return optionalUserProjects.get();
+    }
+    private final RoleRepository roleRepository;
+    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
+    public UserProjectDTO setRole(UserProject userProject) {
+        Role roleToSet = roleRepository.findByName(userProject.getRole().getName());
+        userProject.setRole(roleToSet);
+        userProject.setProject(projectRepository.findById(userProject.getProjectId()).get());
+        userProject.setUser(userRepository.findById(userProject.getUserId()).get());
+        return new UserProjectDTO(repository.save(userProject));
     }
 
     public boolean existsById(UserProjectId userProjectId){

@@ -36,7 +36,6 @@ public class UserTeamService {
     }
 
     public Collection<UserTeam> findAllWithTeamId(Long teamId){
-        System.out.println("YOOOOOO");
         Optional<Collection<UserTeam>> optionalUserTeams = repository.findUserTeamsByTeam_Id(teamId);
         if(optionalUserTeams.isEmpty()) throw new NoSuchElementException();
         System.out.println(optionalUserTeams.get());
