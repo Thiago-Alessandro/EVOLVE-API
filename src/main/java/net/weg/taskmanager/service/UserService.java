@@ -42,7 +42,9 @@ public class UserService {
 
 
     public User findUserById(Long userId){
+        System.out.println("Entrei em ota pira");
         Optional<User> optionalUser = userRepository.findById(userId);
+        System.out.println("passei da ota pira");
         if(optionalUser.isEmpty()) throw new NoSuchElementException();
         return optionalUser.get();
     }

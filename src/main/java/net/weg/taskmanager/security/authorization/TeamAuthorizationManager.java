@@ -80,7 +80,9 @@ public class TeamAuthorizationManager implements AuthorizationManager<RequestAut
     private User getUserFromAuthSupplier(Supplier<Authentication> supplier){
         Authentication auth = supplier.get();
         UserDetailsEntity userDetails = (UserDetailsEntity) auth.getPrincipal();
+        System.out.println("entrei nessa pira");
         User user = userDetails.getUser();
+        System.out.println("saí dessa pira");
         return userService.findUserById(user.getId());
     }
 

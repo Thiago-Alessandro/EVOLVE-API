@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import net.weg.taskmanager.model.UserProject;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
@@ -60,7 +61,13 @@ public class User {
 
     private boolean socialLogin = false;
 
-
+//    public void setImage(File image){
+//        if(image!=null){
+//            File fi = new File();
+//            fi.setLink(image.getLink());
+//            if(socialLogin) this.image = fi;
+//        }
+//    }
 
     @Override
     public boolean equals(Object o) {

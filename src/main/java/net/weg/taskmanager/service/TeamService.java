@@ -2,6 +2,7 @@ package net.weg.taskmanager.service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.dto.UserTeamDTO;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetTeamConverter;
 import net.weg.taskmanager.model.dto.get.GetTeamNotificationDTO;
@@ -17,6 +18,7 @@ import net.weg.taskmanager.security.service.RoleService;
 
 import net.weg.taskmanager.utils.ColorUtils;
 import net.weg.taskmanager.utils.FileUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -199,25 +201,48 @@ public class TeamService {
 
 
     private final UserTeamRepository userTeamRepository;
-    public GetTeamDTO patchParticipants(Long teamId, Collection<UserTeam> participants) throws InvalidAttributeValueException {
+    public GetTeamDTO patchParticipants(Long teamId, Collection<UserTeamDTO> participantsDTO) throws InvalidAttributeValueException {
         Team team = findTeamById(teamId);
-        if(participants == null ) throw new InvalidAttributeValueException("Participants in Team can not be null");
+        System.out.println("aaaaaaaaaaaaaa");
+//        System.out.println(participants);
+        if(participantsDTO == null ) throw new InvalidAttributeValueException("Participants in Team can not be null");
+        System.out.println(participantsDTO);
+        Collection<UserTeam> participants = new ArrayList<>();
+        participantsDTO.forEach(participant -> {
+            UserTeam userTeam = new UserTeam();
+            BeanUtils.copyProperties(participant, userTeam);
+            userTeam.setUser(userRepository.findById(participant.getUserId()).get());
+            participants.add(userTeam);
+        });
 
         participants.forEach(userTeam -> userTeam.setRole(roleService.findRoleById(userTeam.getRole().getId())));
         participants.forEach(userTeam -> userTeam.setTeam(findTeamById(userTeam.getTeamId())));
+
+
+        Collection<UserTeam> muitagente = userTeamRepository.saveAll(participants);
+
         team.getParticipants().forEach(userTeam ->  {
-           if (!participants.contains(userTeam)){
-               userTeamRepository.delete(userTeam);
-           }
+            if (!participants.contains(userTeam)){
+                userTeamRepository.delete(userTeam);
+            }
         });
 
-
-        team.getChat().setUsers(new ArrayList<>(userTeamRepository.saveAll(participants).stream().map(UserTeam::getUser).toList()));
+//        team.getChat().setUsers(new ArrayList<>(userTeamRepository.saveAll(participants).stream().map(UserTeam::getUser).toList()));
         System.out.println("OLHA O SOUT AQUI POH");
-        System.out.println(team.getChat().getUsers());
-        teamRepository.save(team);
+        team.setParticipants(muitagente);
+
+//        System.out.println(team.getChat().getUsers());
+        team = teamRepository.save(team);
+        System.out.println(team);
+
         if(!hasManager(team)) throw new InvalidAttributeValueException();
-        return new GetTeamDTO(findTeamById(teamId));
+        GetTeamDTO get = new GetTeamDTO(findTeamById(teamId));
+        System.out.println("sjdk had");
+        for(UserTeamDTO userTeam: get.getParticipants()){
+            System.out.println(userTeam);
+        }
+//        System.out.println(get.getParticipants());
+        return new GetTeamDTO(team);
     }
 
    public GetTeamDTO patchParticipantsByCode(Long teamId, Long userId ){
