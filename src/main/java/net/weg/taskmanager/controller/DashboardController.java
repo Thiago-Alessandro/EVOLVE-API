@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/{idProject}/dashboard")
+@RequestMapping("/project/{idProject}/dashboard")
 @AllArgsConstructor
 public class DashboardController {
 
@@ -21,7 +21,7 @@ public class DashboardController {
     private ProjectRepository projectRepository;
     private TeamNotificationService teamNotificationService;
 
-    @PostMapping("/{userActionId}")
+    @PatchMapping("/create/{userActionId}")
     public Dashboard create(@RequestBody Dashboard dashboard, @PathVariable Long idProject, @PathVariable Long userActionId){
         teamNotificationService.createDashboardNotification(idProject, userActionId, dashboard);
         return dashboardService.create(dashboard, idProject);
@@ -37,7 +37,7 @@ public class DashboardController {
         return chartService.getChartsValues(projectRepository.findById(idProject).get());
     }
 
-    @DeleteMapping("/{idDashboard}/{idActionUser}")
+    @DeleteMapping("/delete/{idDashboard}/{idActionUser}")
     public void delete(@PathVariable Long idDashboard, @PathVariable Long idActionUser){
         try {
             teamNotificationService.deleteDashboardNotification(idDashboard, idActionUser);
