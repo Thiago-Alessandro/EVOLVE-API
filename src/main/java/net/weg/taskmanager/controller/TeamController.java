@@ -1,6 +1,7 @@
 package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.dto.UserTeamDTO;
 import net.weg.taskmanager.model.dto.UserTeamDTO2;
 import net.weg.taskmanager.model.dto.get.GetTeamDTO;
 import net.weg.taskmanager.model.dto.get.GetTeamNotificationDTO;
@@ -86,8 +87,9 @@ public class TeamController {
     }
 
     @PatchMapping("/{teamId}/participants")
-    public ResponseEntity<GetTeamDTO> patchParticipants(@PathVariable Long teamId, @RequestBody Collection<UserTeam> participants) throws InvalidAttributeValueException {
+    public ResponseEntity<GetTeamDTO> patchParticipants(@PathVariable Long teamId, @RequestBody Collection<UserTeamDTO> participants) throws InvalidAttributeValueException {
 //        try {
+        System.out.println("CHEGUEI AQUI NA CONTROLLER EIIIII");
             return ResponseEntity.ok(service.patchParticipants(teamId, participants));
 //        } catch (Exception e){
 //            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
