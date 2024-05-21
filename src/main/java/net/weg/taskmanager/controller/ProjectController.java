@@ -262,7 +262,7 @@ public class ProjectController {
         return projectService.deleteComment(commentId,projectId,userId);
     }
 
-    @GetMapping("/comments/getAll/{projectId}")
+    @GetMapping("/{projectId}/comments/getAll")
     public Collection<GetCommentDTO> getAllCommentsOfTask(@PathVariable Long projectId) {
         Collection<Comment> comments = projectService.getAllCommentsOfTask(projectId);
         Collection<GetCommentDTO> commentDTOS = new HashSet<>();
