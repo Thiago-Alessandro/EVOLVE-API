@@ -3,6 +3,7 @@ package net.weg.taskmanager.controller;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.UserProject;
+import net.weg.taskmanager.model.dto.UserProjectDTO;
 import net.weg.taskmanager.model.dto.get.GetUserTaskDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
 import net.weg.taskmanager.model.dto.put.PutProjectDTO;
@@ -11,6 +12,7 @@ import net.weg.taskmanager.model.dto.get.GetProjectDTO;
 import net.weg.taskmanager.model.property.Property;
 import net.weg.taskmanager.security.model.entity.Role;
 import net.weg.taskmanager.service.ProjectService;
+import net.weg.taskmanager.service.UserProjectService;
 import net.weg.taskmanager.service.UserTaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,7 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final TeamNotificationService teamNotificationService;
+    private final UserProjectService userProjectService;
     private final UserTaskService userTaskService;
 
 
@@ -192,6 +195,12 @@ public class ProjectController {
 //        } catch (Exception e){
 //            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 //        }
+    }
+
+    @PatchMapping("/{projectId}/setRole")
+    public UserProjectDTO setUserProjectRole(@PathVariable Long projectId, @RequestBody UserProject userProject) {
+        System.out.println(userProject);
+        return userProjectService.setRole(userProject);
     }
 
     @PatchMapping("/{projectId}/delete/member")
