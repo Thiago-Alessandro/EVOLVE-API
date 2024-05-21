@@ -25,7 +25,7 @@ public class PostTaskDTO {
     private LocalDateTime scheduledDate;
     private String description;
     private Status currentStatus;
-    private PriorityRecord priority ;
+    private PriorityRecord priority;
     private ShortUserDTO creator;
     private ShortProjectDTO project;
     private Collection<ShortUserDTO> associates;

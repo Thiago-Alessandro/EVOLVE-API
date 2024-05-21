@@ -74,6 +74,11 @@ public class TeamService {
         setCreator(teamDTO.getCreator(), createdTeam);
         setDefaultRole(createdTeam);
 //        updateTeamChat(createdTeam);
+
+        TeamChat teamChat = new TeamChat(createdTeam);
+        teamChat.setUsers(new ArrayList<>(createdTeam.getParticipants().stream().map(UserTeam::getUser).toList()));
+        createdTeam.setChat(teamChat);
+
         setPossibleRoles(createdTeam);
         UUID code = UUID.randomUUID();
         team.setCode(code.toString());
