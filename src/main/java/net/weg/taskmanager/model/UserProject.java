@@ -9,6 +9,8 @@ import net.weg.taskmanager.model.entity.Project;
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.security.model.entity.Role;
 
+import java.util.Objects;
+
 @Entity
 @AllArgsConstructor
 @Data

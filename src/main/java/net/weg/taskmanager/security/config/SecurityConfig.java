@@ -71,6 +71,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/project/{projectId}/**").access(projectAuthorizationManager)
 
                 .requestMatchers(HttpMethod.POST, "/project/team/{teamId}").access(projectAuthorizationManager)
+
+                .requestMatchers(HttpMethod.PATCH, "/project/{projectId}/member").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "/project/{projectId}").access(projectAuthorizationManager)
 
                 .requestMatchers(HttpMethod.PATCH, "/project/{projectId}/**").access(projectAuthorizationManager)

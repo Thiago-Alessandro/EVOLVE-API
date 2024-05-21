@@ -116,6 +116,18 @@ public class ProjectService {
         return converter.convertOne(treatAndSave(projectSaved));
     }
 
+    public GetProjectDTO removeMember(Long projectId,Long userId){
+        Project project = projectRepository.findById(projectId).get();
+        project.getMembers().forEach(member -> {
+            if (member.getUserId().equals(userId)) {
+                userProjectRepository.delete(member);
+                project.getMembers().remove(member);
+            };
+        });
+        return converter.convertOne(projectRepository.save(project));
+    }
+
+
     private void createProjectChat(Project project){
         ProjectChat chat = new ProjectChat();
 //        chat.setProject(project);
@@ -237,8 +249,10 @@ public class ProjectService {
     }
 
     public GetProjectDTO patchMembers(Long projectId, Collection<UserProject> members) throws InvalidAttributeValueException {
+
         if(members == null) throw new InvalidAttributeValueException("Members on project cannot be null");
         Project project = findProjectById(projectId);
+        members.forEach(member -> member.setProject(project));
         Collection<UserProject> filteredMembers = syncUserProjectTable(project, members);
         project.setMembers(filteredMembers);
         updateProjectChat(project);
@@ -319,7 +333,7 @@ public class ProjectService {
     private void deleteUserProjectIfUserIsNotAssociate(Project project) {
         Collection<UserProject> userProjects = userProjectService.findAllWithProjectId(project.getId());
         userProjects.stream()
-                .filter(userProject -> !project.getMembers().contains(userProject.getUser()))
+                .filter(userProject -> !project.getMembers().contains(userProject))
                 .forEach(userProjectService::delete);
     }
 
