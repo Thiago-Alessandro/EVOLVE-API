@@ -59,7 +59,7 @@ public class TaskController {
     public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
         return taskService.create(postTaskDTO);}
 
-    @PutMapping("/{userId}")
+    @PutMapping("/{taskId}/user/{userId}")
     public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO,@PathVariable Long userId){
 //        GetTaskDTO getTaskDTO = taskService.update(putTaskDTO);
         return taskService.update(putTaskDTO,userId);

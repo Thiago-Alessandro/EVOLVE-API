@@ -89,6 +89,12 @@ public class ProjectService {
         return converter.convertAll(optionalProjects.get());
     }
 
+    public GetProjectDTO patchFavorited(Long projectId, String favorited){
+        Project project = findProjectById(projectId);
+        project.setFavorited(favorited.equals("true"));
+        return converter.convertOne(projectRepository.save(project));
+    }
+
 //    public Collection<GetProjectDTO> findAll() {
 //        Collection<Project> projects =  projectRepository.findAll();
 //        return converter.convertAll(projects);

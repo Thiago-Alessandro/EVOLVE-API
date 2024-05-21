@@ -113,6 +113,15 @@ public class ProjectController {
         }
     }
 
+    @PatchMapping("{projectId}/favorited")
+    public ResponseEntity<GetProjectDTO> patchFavorited(@PathVariable Long projectId, @RequestParam String favorited){
+        try {
+            return ResponseEntity.ok(projectService.patchFavorited(projectId, favorited));
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
     @PatchMapping("/{projectId}/image")
     public ResponseEntity<GetProjectDTO> patchImage(@PathVariable Long projectId, @RequestParam MultipartFile image){
         try {
