@@ -67,7 +67,7 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private Collection<Task> tasks;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "project")
 //    @JoinColumn(name = "project")
     private Collection<UserProject> members;
 

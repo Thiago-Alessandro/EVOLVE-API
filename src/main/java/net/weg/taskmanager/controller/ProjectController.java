@@ -177,12 +177,17 @@ public class ProjectController {
     }
 
     @PatchMapping("/{projectId}/members")
-    public ResponseEntity<GetProjectDTO> patchMembers(@PathVariable Long projectId, @RequestBody Collection<UserProject> members){
-        try {
+    public ResponseEntity<GetProjectDTO> patchMembers(@PathVariable Long projectId, @RequestBody Collection<UserProject> members) throws InvalidAttributeValueException {
+//        try {
             return ResponseEntity.ok(projectService.patchMembers(projectId, members));
-        } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-        }
+//        } catch (Exception e){
+//            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+//        }
+    }
+
+    @PatchMapping("/{projectId}/delete/member")
+    public GetProjectDTO deleteMember(@PathVariable Long projectId, @RequestParam Long userId){
+        return projectService.removeMember(projectId, userId);
     }
 
     @PatchMapping("/{projectId}/tasks")
