@@ -1,6 +1,7 @@
 package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
+import net.weg.taskmanager.model.entity.Project;
 import net.weg.taskmanager.model.entity.UserTeam;
 import net.weg.taskmanager.model.dto.get.GetProjectChatDTO;
 import net.weg.taskmanager.model.entity.ProjectChat;
@@ -46,13 +47,27 @@ public class ProjectChatService {
     public Collection<GetProjectChatDTO> findProjectChatsByUserId(Long userId){
         User user = userService.findUserById(userId);
 
+        System.out.println(
+                user.getTeamRoles().stream()
+                        .map(UserTeam::getTeam)
+                        .flatMap(team -> team.getProjects().stream()
+                                .map(Project::getChat)).toList()
+        );
+
+        user.getTeamRoles().stream()
+                .map(UserTeam::getTeam)
+                .flatMap(team -> team.getProjects().stream()
+                        .map(Project::getChat)).forEach(chat -> System.out.println(chat.getUsers()));
+
         Collection<ProjectChat> userProjectChats =
                 user.getTeamRoles().stream()
                         .map(UserTeam::getTeam)
                         .flatMap(team -> team.getProjects().stream()
-                                        .map( project -> repository.findProjectChatByProject_Id(project.getId()))
+                                        .map(Project::getChat)
                                         .filter(projectChat -> projectChat.getUsers().contains(user)))
                         .toList();
+
+        System.out.println(userProjectChats);
 
         return resolveAndGetDTOS(userProjectChats);
     }

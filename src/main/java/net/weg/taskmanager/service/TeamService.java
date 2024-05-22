@@ -208,8 +208,6 @@ public class TeamService {
     private final UserTeamRepository userTeamRepository;
     public GetTeamDTO patchParticipants(Long teamId, Collection<UserTeamDTO> participantsDTO) throws InvalidAttributeValueException {
         Team team = findTeamById(teamId);
-        System.out.println("aaaaaaaaaaaaaa");
-//        System.out.println(participants);
         if(participantsDTO == null ) throw new InvalidAttributeValueException("Participants in Team can not be null");
         System.out.println(participantsDTO);
         Collection<UserTeam> participants = new ArrayList<>();
@@ -238,6 +236,9 @@ public class TeamService {
 
 //        System.out.println(team.getChat().getUsers());
         team = teamRepository.save(team);
+        updateTeamChat(team);
+        team = teamRepository.save(team);
+
         System.out.println(team);
 
         if(!hasManager(team)) throw new InvalidAttributeValueException();
@@ -249,6 +250,15 @@ public class TeamService {
 //        System.out.println(get.getParticipants());
         return new GetTeamDTO(team);
     }
+
+    public void updateTeamChat(Team team){
+        HashSet<User> members = new HashSet<>();
+        team.getParticipants().forEach(userProject -> members.add(userProject.getUser()));
+        team.getParticipants().forEach(userProject -> System.out.println(userProject.getUserId()));
+        team.setChat(teamChatService.patchUsers(team.getChat().getId(), members));
+    }
+
+    private final TeamChatService teamChatService;
 
    public GetTeamDTO patchParticipantsByCode(Long teamId, Long userId ){
        Team team = findTeamById(teamId);

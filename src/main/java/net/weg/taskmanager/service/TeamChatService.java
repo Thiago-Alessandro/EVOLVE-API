@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetTeamChatConverter;
 import net.weg.taskmanager.model.dto.get.GetTeamChatDTO;
+import net.weg.taskmanager.model.entity.ProjectChat;
 import net.weg.taskmanager.model.entity.TeamChat;
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.model.entity.UserTeam;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -20,7 +22,7 @@ import java.util.Optional;
 public class TeamChatService {
 
     private final TeamChatRepository teamChatRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     private final Converter<GetTeamChatDTO, TeamChat> converter = new GetTeamChatConverter();
 
@@ -42,15 +44,22 @@ public class TeamChatService {
 //    }
 
     public Collection<GetTeamChatDTO> findTeamChatsByUserId(Long userId) {
-        User user = userService.findUserById(userId);
+        User user = userRepository.findById(userId).get();
 
         Collection<TeamChat> userTeamChats =
                 user.getTeamRoles().stream()
-                    .map(UserTeam::getUser)
-                    .map(team -> teamChatRepository.findTeamChatByTeam_Id(team.getId()))
+                    .map(UserTeam::getTeamId)
+                    .map(teamChatRepository::findTeamChatByTeam_Id)
+                        .filter(Objects::nonNull) //não é para ser necessario pq todos os teams devem ter chat
                     .toList();
 
         return converter.convertAll(userTeamChats);
+    }
+
+    public TeamChat patchUsers(Long chatId, Collection<User> users){
+        TeamChat teamChat = findTeamChatById(chatId);
+        teamChat.setUsers(users);
+        return teamChatRepository.save(teamChat);
     }
 
 }

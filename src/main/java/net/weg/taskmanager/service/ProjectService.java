@@ -130,7 +130,9 @@ public class ProjectService {
                 project.getMembers().remove(member);
             };
         });
-        return converter.convertOne(projectRepository.save(project));
+        Project projectSaved = projectRepository.save(project);
+        updateProjectChat(projectSaved);
+        return converter.convertOne(projectRepository.save(projectSaved));
     }
 
 
@@ -138,6 +140,7 @@ public class ProjectService {
         ProjectChat chat = new ProjectChat();
 //        chat.setProject(project);
         chat.setProject(project);
+        chat.setUsers(project.getMembers().stream().map(UserProject::getUser).toList());
         ProjectChat createdChat = projectChatService.create(chat);
         project.setChat(createdChat);
     }
@@ -259,6 +262,7 @@ public class ProjectService {
         if(members == null) throw new InvalidAttributeValueException("Members on project cannot be null");
         Project project = findProjectById(projectId);
         members.forEach(member -> member.setProject(project));
+        members.forEach(member -> member.setUser(userRepository.findById(member.getUserId()).get()));
         Collection<UserProject> filteredMembers = syncUserProjectTable(project, members);
         project.setMembers(filteredMembers);
         updateProjectChat(project);
@@ -346,6 +350,7 @@ public class ProjectService {
     private void updateProjectChat(Project project) {
         HashSet<User> members = new HashSet<>();
         project.getMembers().forEach(userProject -> members.add(userProject.getUser()));
+        project.getMembers().forEach(userProject -> System.out.println(userProject.getUserId()));
         project.setChat(projectChatService.patchUsers(project.getChat().getId(), members));
     }
 
