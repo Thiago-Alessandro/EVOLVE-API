@@ -493,7 +493,7 @@ public class TaskService {
 
     public GetTaskDTO deleteSubtask(Long subtaskId, Long taskId, Long userId) {
         Subtask subtask = subtaskService.findSubtaskById(subtaskId);
-        Task task = historicService.deleteSubtaskHistoric(subtaskId, userId, taskId);
+        Task task = historicService.deleteSubtaskHistoric(subtaskId, taskId, userId);
         task.getSubtasks().remove(subtask);
         subTaskRepository.delete(subtask);
         task = taskRepository.save(task);

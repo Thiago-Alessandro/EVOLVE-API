@@ -230,7 +230,7 @@ public class HistoricService {
         Historic savedHistoric = this.historicRepository.save(historic);
 
         taskForHistoric.getHistoric().add(savedHistoric);
-        teamNotificationService.deleteSubtaskNotification(taskId,userId);
+        teamNotificationService.deleteSubtaskNotification(userId,taskId);
 
         taskRepository.save(taskForHistoric);
 
