@@ -16,6 +16,7 @@ import net.weg.taskmanager.model.entity.DashBoard.Chart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -38,7 +39,7 @@ public class Project {
     private String imageColor;
 
     @Column()
-    private LocalDateTime finalDate;
+    private LocalDate finalDate;
     @Column(nullable = false)
     private LocalDateTime creationDate;
     @Column(nullable = false)

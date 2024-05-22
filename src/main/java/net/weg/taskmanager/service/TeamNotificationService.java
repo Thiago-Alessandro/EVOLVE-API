@@ -494,7 +494,6 @@ this.teamNotificationRepository.save(teamNotification);
     }
 
     public void updateProjectStatusList(Long projectId, Long userActionId, Status newStatus) {
-        System.out.println(projectId);
         User userAction = userRepository.findById(userActionId).get();
         Project project = projectRepository.findById(projectId).get();
         Team teamOfNotification = project.getTeam();

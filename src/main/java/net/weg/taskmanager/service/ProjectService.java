@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.management.InvalidAttributeValueException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Collection;
@@ -109,12 +110,14 @@ public class ProjectService {
 
     public GetProjectDTO removeMember(Long projectId,Long userId){
         Project project = projectRepository.findById(projectId).get();
+        Collection<UserProject> removedMembers = new ArrayList<>();
         project.getMembers().forEach(member -> {
             if (member.getUserId().equals(userId)) {
                 userProjectRepository.delete(member);
-                project.getMembers().remove(member);
+              removedMembers.add(member);
             };
         });
+        removedMembers.forEach(project.getMembers()::remove);
         Project projectSaved = projectRepository.save(project);
         updateProjectChat(projectSaved);
         return converter.convertOne(projectRepository.save(projectSaved));
@@ -189,9 +192,9 @@ public class ProjectService {
              return converter.convertOne(treatAndSave(project));
     }
 
-    public GetProjectDTO patchFinalDate(Long projectId, LocalDateTime finalDate) throws InvalidAttributeValueException {
+    public GetProjectDTO patchFinalDate(Long projectId, LocalDate finalDate) throws InvalidAttributeValueException {
         Project project = findProjectById(projectId);
-        if(finalDate == null || finalDate.isBefore(project.getCreationDate())) throw new InvalidAttributeValueException("Image on project cannot be null");
+        if(finalDate == null || finalDate.isBefore(project.getCreationDate().toLocalDate())) throw new InvalidAttributeValueException("Image on project cannot be null");
         project.setFinalDate(finalDate);
         return converter.convertOne(treatAndSave(project));
     }
