@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.InvalidAttributeValueException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -145,9 +146,10 @@ public class ProjectController {
     }
 
     @PatchMapping("/{projectId}/finalDate")
-    public ResponseEntity<GetProjectDTO> patchFinalDate(@PathVariable Long projectId, @RequestParam LocalDateTime finalDate){
+    public ResponseEntity<GetProjectDTO> patchFinalDate(@PathVariable Long projectId, @RequestParam String finalDate){
+        LocalDate dateConverted = LocalDate.parse(finalDate);
         try {
-            return ResponseEntity.ok(projectService.patchFinalDate(projectId, finalDate));
+            return ResponseEntity.ok(projectService.patchFinalDate(projectId, dateConverted));
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
@@ -182,11 +184,11 @@ public class ProjectController {
 
     @PatchMapping("/{projectId}/members")
     public ResponseEntity<GetProjectDTO> patchMembers(@PathVariable Long projectId, @RequestBody Collection<UserProject> members) throws InvalidAttributeValueException {
-//        try {
+        try {
             return ResponseEntity.ok(projectService.patchMembers(projectId, members));
-//        } catch (Exception e){
-//            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-//        }
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
     }
 
     @PatchMapping("/{projectId}/setRole")

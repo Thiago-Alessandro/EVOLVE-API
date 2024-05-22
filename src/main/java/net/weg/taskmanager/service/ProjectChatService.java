@@ -47,18 +47,6 @@ public class ProjectChatService {
     public Collection<GetProjectChatDTO> findProjectChatsByUserId(Long userId){
         User user = userService.findUserById(userId);
 
-        System.out.println(
-                user.getTeamRoles().stream()
-                        .map(UserTeam::getTeam)
-                        .flatMap(team -> team.getProjects().stream()
-                                .map(Project::getChat)).toList()
-        );
-
-        user.getTeamRoles().stream()
-                .map(UserTeam::getTeam)
-                .flatMap(team -> team.getProjects().stream()
-                        .map(Project::getChat)).forEach(chat -> System.out.println(chat.getUsers()));
-
         Collection<ProjectChat> userProjectChats =
                 user.getTeamRoles().stream()
                         .map(UserTeam::getTeam)
@@ -66,8 +54,6 @@ public class ProjectChatService {
                                         .map(Project::getChat)
                                         .filter(projectChat -> projectChat.getUsers().contains(user)))
                         .toList();
-
-        System.out.println(userProjectChats);
 
         return resolveAndGetDTOS(userProjectChats);
     }

@@ -18,7 +18,6 @@ public class UserAuthorizationPermission implements AuthorizationManager<Request
 
     @Override
     public AuthorizationDecision check(Supplier<Authentication> supplier, RequestAuthorizationContext reqContext) {
-        System.out.println("EEEEIii" + reqContext.getRequest().getRequestURI());
         User user = getUserFromAuthSupplier(supplier);
         Map<String, String> variables = reqContext.getVariables();
         return new AuthorizationDecision(isAuthorized(user, variables));

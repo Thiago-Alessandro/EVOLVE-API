@@ -75,7 +75,6 @@ public class TeamService {
 
 //        updateTeamChat(createdTeam);
         createdTeam = findTeamById(createdTeam.getId());
-        System.out.println(createdTeam);
         TeamChat teamChat = new TeamChat(createdTeam);
         teamChat.setUsers(new ArrayList<>(createdTeam.getParticipants().stream().map(UserTeam::getUser).toList()));
         createdTeam.setChat(teamChat);
