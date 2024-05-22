@@ -141,6 +141,8 @@ public class ProjectService {
     @Transactional
     public void delete(Long id) {
         Project project = findProjectById(id);
+        Optional<Collection<UserProject>> userProjects = userProjectRepository.findUserProjectsByProject_Id(project.getId());
+        userProjects.get().forEach(userProjectService::delete);
         taskService.deleteAll(project.getTasks());
         statusService.deleteAll(project.getStatusList());
         dashboardRepository.deleteDashboardsByProject_Id(project.getId());
@@ -161,11 +163,10 @@ public class ProjectService {
              return converter.convertOne(treatAndSave(project));
     }
 
-    public GetProjectDTO patchDescription(Long projectId, String description) throws InvalidAttributeValueException {
-        if(description == null) throw new InvalidAttributeValueException("Description on project cannot be null");
+    public GetProjectDTO patchDescription(Long projectId, String description) {
         Project project = findProjectById(projectId);
         project.setDescription(description);
-             return converter.convertOne(treatAndSave(project));
+        return converter.convertOne(treatAndSave(project));
     }
 
     public GetProjectDTO patchImage(Long projectId, MultipartFile image) throws InvalidAttributeValueException {

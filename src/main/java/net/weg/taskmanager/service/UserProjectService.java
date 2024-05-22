@@ -24,11 +24,7 @@ public class UserProjectService {
     private final UserProjectRepository repository;
 
     public UserProject create(UserProject userProject){
-        try{
-            return repository.save(userProject);
-        } catch (Exception e){
-            throw new RuntimeException("UserProject with id user: "+ userProject.getUserId() + " project: " + userProject.getProjectId() + " already exists");
-        }
+        return repository.save(userProject);
     }
 
     public Collection<UserProject> findAllByUserId(Long userId){
