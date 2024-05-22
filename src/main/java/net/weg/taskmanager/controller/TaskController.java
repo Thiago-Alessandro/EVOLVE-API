@@ -90,6 +90,11 @@ public class TaskController {
         return taskService.updateTaskFinalDate(taskId,userId,localDateTime);
     }
 
+    @PatchMapping("/{taskId}/notes")
+    public void setTaskNotes(@PathVariable Long taskId, @RequestParam String notes) {
+        taskService.patchNotes(taskId,notes);
+    }
+
     @PatchMapping("/{taskId}/description/{userId}")
     public ResponseEntity<GetTaskDTO> patchDescription(@PathVariable Long taskId, @PathVariable Long userId, @RequestParam String description) {
         try {
