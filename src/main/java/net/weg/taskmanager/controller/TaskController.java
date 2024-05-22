@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.dto.GetCommentDTO;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.get.GetUserTaskDTO;
+import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.enums.Priority;
 
@@ -74,7 +75,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{taskId}/property/associates/{userId}")
-    public Collection<GetUserDTO> patchAssociate(@PathVariable Long taskId, @RequestBody Collection<GetUserDTO> associates, @PathVariable Long userId) {
+    public Collection<GetUserDTO> patchAssociate(@PathVariable Long taskId, @RequestBody Collection<ShortUserDTO> associates, @PathVariable Long userId) {
         return taskService.patchAssociate(taskId,associates,userId);
     }
 

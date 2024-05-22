@@ -7,6 +7,7 @@ import net.weg.taskmanager.model.dto.GetCommentDTO;
 import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetTaskConverter;
 import net.weg.taskmanager.model.dto.converter.get.GetUserConverter;
+import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.post.PostTaskDTO;
@@ -210,7 +211,7 @@ public class TaskService {
         return converter.convertOne(taskRepository.save(taskSaved));
     }
 
-    public Collection<GetUserDTO> patchAssociate(Long taskId, Collection<GetUserDTO> associates, Long userId) {
+    public Collection<GetUserDTO> patchAssociate(Long taskId, Collection<ShortUserDTO> associates, Long userId) {
         Collection<User> newList = new ArrayList<>();
         Task task = findTaskById(taskId);
         associates.forEach(associate -> {
