@@ -14,6 +14,7 @@ import net.weg.taskmanager.model.dto.post.PostTeamDTO;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.repository.*;
 import net.weg.taskmanager.security.model.entity.Role;
+import net.weg.taskmanager.security.repository.RoleRepository;
 import net.weg.taskmanager.security.service.RoleService;
 
 import net.weg.taskmanager.utils.ColorUtils;
@@ -137,8 +138,13 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
+    private final RoleRepository roleRepository;
+
     public void delete(Long id){
-        teamRepository.deleteById(id);
+        Team team = findTeamById(id);
+
+        userTeamRepository.deleteAll(team.getParticipants());
+        teamRepository.delete(team);
     }
 
 
