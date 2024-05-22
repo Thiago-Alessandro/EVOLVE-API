@@ -72,6 +72,7 @@ public class TaskService {
     public Comment patchNewComment(Long taskId, Comment newComment, Long userId) {
         Task task = findTaskById(taskId);
         newComment.setTask(task);
+        newComment.setProject(null);
         Comment commentSaved = commentRepository.save(newComment);
 
         task = historicService.patchNewCommentHistoric(taskId, userId);
