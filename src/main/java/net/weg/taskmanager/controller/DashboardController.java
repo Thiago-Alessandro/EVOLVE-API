@@ -37,7 +37,7 @@ public class DashboardController {
         return chartService.getChartsValues(projectRepository.findById(idProject).get());
     }
 
-    @DeleteMapping("/delete/{idDashboard}/{idActionUser}")
+    @DeleteMapping("/{idDashboard}/{idActionUser}")
     public void delete(@PathVariable Long idDashboard, @PathVariable Long idActionUser){
         try {
             teamNotificationService.deleteDashboardNotification(idDashboard, idActionUser);
