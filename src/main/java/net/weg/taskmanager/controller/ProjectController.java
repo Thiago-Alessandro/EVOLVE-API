@@ -52,18 +52,10 @@ public class ProjectController {
         return userTaskService.getAllWorkedTime(userId, projectId);
     }
 
-//    @GetMapping
-//    public Collection<GetProjectDTO> findAll(){return projectService.findAll();}
-
     @DeleteMapping("/{projectId}")
     public void delete(@PathVariable Long projectId) {
         projectService.delete(projectId);
     }
-
-//    @PutMapping("/{actionUserId}")
-//    public GetProjectDTO update(@RequestBody PutProjectDTO project, @PathVariable Long actionUserId){
-//        return projectService.update(project, actionUserId);
-//    }
 
     @PatchMapping("/{projectId}/{actionUserId}")
     public GetProjectDTO updateStatusList(@PathVariable Long projectId,@PathVariable Long actionUserId, @RequestBody Status status){
@@ -199,7 +191,6 @@ public class ProjectController {
 
     @PatchMapping("/{projectId}/setRole")
     public UserProjectDTO setUserProjectRole(@PathVariable Long projectId, @RequestBody UserProject userProject) {
-        System.out.println(userProject);
         return userProjectService.setRole(userProject);
     }
 

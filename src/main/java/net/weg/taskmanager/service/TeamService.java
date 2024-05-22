@@ -46,7 +46,6 @@ public class TeamService {
     private final Converter<GetTeamDTO, Team> converter = new GetTeamConverter();
 
     public GetTeamDTO findById(Long id){
-        System.out.println("REQUISICAO GET TEAM AQUI");
         Team team = teamRepository.findById(id).get();
         return converter.convertOne(team);
     }
@@ -57,7 +56,6 @@ public class TeamService {
     }
 
     public Team findTeamById(Long teamId){
-        System.out.println(teamRepository.findAll());
         Optional<Team> optionalTeam = teamRepository.findById(teamId);
         if(optionalTeam.isEmpty()) throw new NoSuchElementException("Could not find team with id: " + teamId);
         return optionalTeam.get();
@@ -105,7 +103,6 @@ public class TeamService {
         team1.setChat(teamChat);
 
         Team team2 = teamRepository.save(team1);
-        System.out.println(team2.getChat());
 
 
 
@@ -190,7 +187,7 @@ public class TeamService {
 
     public Collection<UserTeamDTO2> findTeamsByUserId(Long userId){
         System.out.println(userTeamService.findByUserId(userId).stream().findFirst().get().getTeam());
-        System.out.println("MEOLHE");
+        System.out.println("findTeamsByUserId");
         return userTeamService.findByUserId(userId);
     }
 
@@ -209,7 +206,7 @@ public class TeamService {
     public GetTeamDTO patchParticipants(Long teamId, Collection<UserTeamDTO> participantsDTO) throws InvalidAttributeValueException {
         Team team = findTeamById(teamId);
         if(participantsDTO == null ) throw new InvalidAttributeValueException("Participants in Team can not be null");
-        System.out.println(participantsDTO);
+
         Collection<UserTeam> participants = new ArrayList<>();
         participantsDTO.forEach(participant -> {
             UserTeam userTeam = new UserTeam();
@@ -221,40 +218,18 @@ public class TeamService {
         participants.forEach(userTeam -> userTeam.setRole(roleService.findRoleById(userTeam.getRole().getId())));
         participants.forEach(userTeam -> userTeam.setTeam(findTeamById(userTeam.getTeamId())));
 
-
-        Collection<UserTeam> muitagente = userTeamRepository.saveAll(participants);
-
-        team.getParticipants().forEach(userTeam ->  {
-            if (!participants.contains(userTeam)){
-                userTeamRepository.delete(userTeam);
-            }
-        });
-
-//        team.getChat().setUsers(new ArrayList<>(userTeamRepository.saveAll(participants).stream().map(UserTeam::getUser).toList()));
-        System.out.println("OLHA O SOUT AQUI POH");
-        team.setParticipants(muitagente);
-
-//        System.out.println(team.getChat().getUsers());
+        if(!hasManager(participants)) throw new InvalidAttributeValueException();
+        team.setParticipants(userTeamRepository.saveAll(participants));
         team = teamRepository.save(team);
         updateTeamChat(team);
-        team = teamRepository.save(team);
 
-        System.out.println(team);
 
-        if(!hasManager(team)) throw new InvalidAttributeValueException();
-        GetTeamDTO get = new GetTeamDTO(findTeamById(teamId));
-        System.out.println("sjdk had");
-        for(UserTeamDTO userTeam: get.getParticipants()){
-            System.out.println(userTeam);
-        }
-//        System.out.println(get.getParticipants());
-        return new GetTeamDTO(team);
+        return new GetTeamDTO(teamRepository.save(team));
     }
 
     public void updateTeamChat(Team team){
         HashSet<User> members = new HashSet<>();
         team.getParticipants().forEach(userProject -> members.add(userProject.getUser()));
-        team.getParticipants().forEach(userProject -> System.out.println(userProject.getUserId()));
         team.setChat(teamChatService.patchUsers(team.getChat().getId(), members));
     }
 
@@ -337,8 +312,8 @@ public class TeamService {
 //                .forEach(this::createDefaultUserTeam);
 //        deleteUserTeamIfUserIsNotParticipant(team);
 //    }
-    private boolean hasManager(Team team){
-        return !team.getParticipants().stream().map(UserTeam::getManager).toList().isEmpty();
+    private boolean hasManager(Collection<UserTeam> userTeams){
+        return !userTeams.stream().map(UserTeam::getManager).toList().isEmpty();
     }
 
 //    private void createDefaultUserTeam(UserTeam userTeam) {

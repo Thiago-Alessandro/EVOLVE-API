@@ -45,7 +45,6 @@ public class ProjectService {
 
     private final TeamRepository teamRepository;
     private final DashboardRepository dashboardRepository;
-    //    private final ModelMapper modelMapper;
     private final CommentRepository commentRepository;
 
     private final UserProjectRepository userProjectRepository;
@@ -95,14 +94,8 @@ public class ProjectService {
         return converter.convertOne(projectRepository.save(project));
     }
 
-//    public Collection<GetProjectDTO> findAll() {
-//        Collection<Project> projects =  projectRepository.findAll();
-//        return converter.convertAll(projects);
-//    }
-
     public GetProjectDTO create(PostProjectDTO projectDTO) {
         Project project = new Project(projectDTO);
-        System.out.println(projectDTO);
         project.setStatusList(statusRepository.saveAll(project.getStatusList()));
         project.setMembers(new ArrayList<>());
         Project projectSaved = projectRepository.save(project);
@@ -110,14 +103,6 @@ public class ProjectService {
         setCreator(projectDTO.getCreator(), projectSaved);
         createProjectChat(projectSaved);
         setDefaultRole(projectSaved);
-
-//        Collection<Status> listaNova = new HashSet<>();
-//        if(projectDTO.getStatusList()!=null){
-//            for (Status st: projectDTO.getStatusList()){
-//                listaNova.add(new Status(st.getName(), st.getBackgroundColor(), st.getTextColor(), st.getEnabled()));
-//            }
-//        }
-//        projectSaved.setStatusList(listaNova);
 
         return converter.convertOne(treatAndSave(projectSaved));
     }
@@ -153,17 +138,6 @@ public class ProjectService {
     }
 
 
-//    public GetProjectDTO update(PutProjectDTO projectDTO, Long actionUserId){
-//
-//        Project project = findProjectById(projectDTO.getId());
-//        modelMapper.map(projectDTO, project);
-//
-//        updateProjectChat(project);
-//        teamNotificationService.updateProjectInfoNotification(projectDTO.getId(), actionUserId);
-//
-//        return converter.convertOne(treatAndSave(project));
-//    }
-
     @Transactional
     public void delete(Long id) {
         Project project = findProjectById(id);
@@ -172,15 +146,6 @@ public class ProjectService {
         dashboardRepository.deleteDashboardsByProject_Id(project.getId());
         projectRepository.deleteById(id);
     }
-
-
-
-//    public GetProjectDTO update(PutProjectDTO projectDTO) {
-//        Project project = findProjectById(projectDTO.getId());
-//        modelMapper.map(projectDTO, project);
-//        syncProjectInfos(project);
-//        return transformToGetProjectDTO(treatAndSave(project));
-//    }
 
 
     public Project findProjectById(Long projectId){
@@ -350,26 +315,10 @@ public class ProjectService {
     private void updateProjectChat(Project project) {
         HashSet<User> members = new HashSet<>();
         project.getMembers().forEach(userProject -> members.add(userProject.getUser()));
-        project.getMembers().forEach(userProject -> System.out.println(userProject.getUserId()));
         project.setChat(projectChatService.patchUsers(project.getChat().getId(), members));
     }
 
-//    private boolean updateMemberProfileAcess(Long projectId, Long memberId, String profileAcessName) {
-//        Project project = findProjectById(projectId);
-//        User member = userService.findUserById(memberId);
-//        UserProject userProject = userProjectRepository.findByUserIdAndProjectId(member.getId(), project.getId());
-//        Role role = roleService.getRoleByName(profileAcessName);
-//        boolean existsOnProject = projectRepository.existsByIdAndRolesContaining(project.getId(), role);
-//        if (existsOnProject) {
-//            userProject.setRole(role);
-//            userProjectRepository.save(userProject);
-//            return true;
-//        }
-//        return false;
-//    }
 
-
-    //region deprecated methods
 
 
     private Project treatAndSave(Project project) {
@@ -377,36 +326,7 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-//    public GetProjectDTO deleteUserFromProject(Long idProject, Long actionUserId, Collection<UserProject> userProjectsToRemove) {
-//        Project project = projectRepository.findById(idProject).get();
-//
-//
-//        Set<UserProjectId> userIdsToRemove = userProjectsToRemove.stream()
-//                .filter(userProject -> !userProject.isManager())
-//                .map(userProject -> new UserProjectId(userProject.getUserId(), userProject.getProjectId()))
-//                .collect(Collectors.toSet());
-//
-//        Set<UserProject> updatedMembers = project.getMembers().stream()
-//                .filter(userProject -> !userIdsToRemove.contains(new UserProjectId(userProject.getUserId(), userProject.getProjectId())))
-//                .collect(Collectors.toSet());
-//
-//        project.setMembers(updatedMembers);
-//        teamNotificationService.deleteUserFromProjectNotification(idProject,actionUserId,userIdsToRemove);
-//        return converter.convertOne(treatAndSave(project));
-//    }
-//
     private final UserRepository userRepository;
-//
-//    public GetProjectDTO addUserToProject(Long projectId, Long actionUserId, Long userAddedId) {
-//        Project project = projectRepository.findById(projectId).get();
-//        User userToAdd = userRepository.findById(userAddedId).get();
-//        project.getMembers().add(userToAdd);
-//        teamNotificationService.addUserToProject(projectId,actionUserId,userAddedId);
-//        return converter.convertOne(treatAndSave(project));
-//    }
-
-
-
 
     public Comment patchNewComment(Long projectId, Comment newComment, Long userId) {
         Project project = projectRepository.findById(projectId).get();
