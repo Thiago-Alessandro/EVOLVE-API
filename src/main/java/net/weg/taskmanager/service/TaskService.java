@@ -159,6 +159,12 @@ public class TaskService {
         return getTaskDTO;
     }
 
+    public void patchNotes(Long taskId, String note) {
+        Task task = findTaskById(taskId);
+        task.setNotes(note);
+        taskRepository.save(task);
+    }
+
 
     public Property updatePropertyCurrentOptions(Collection<Option> newCurrentOptions, Long propertyId, Long taskId, Long userId) {
         Property property = propertyService.findPropertyById(propertyId);

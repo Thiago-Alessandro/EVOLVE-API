@@ -71,6 +71,7 @@ public class Task {
     private Integer statusListIndex;
     private Double progress;
     private Boolean concluded = false;
+    private String notes;
 
     @Override
     public String toString() {
