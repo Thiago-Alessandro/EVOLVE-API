@@ -87,7 +87,27 @@ this.teamNotificationRepository.save(teamNotification);
                 "task"
         );
                 teamNotification.setTeam(teamOfNotification);
-this.teamNotificationRepository.save(teamNotification);
+        this.teamNotificationRepository.save(teamNotification);
+        teamOfNotification.getNotifications().add(teamNotification);
+        this.teamRepository.save(teamOfNotification);
+    }
+
+    public void patchTaskDescriptionNotification(Long userId, Long taskId){
+        User userAction = userRepository.findById(userId).get();
+        Task taskUpdated = taskRepository.findById(taskId).get();
+        Team teamOfNotification = taskUpdated.getProject().getTeam();
+
+
+        TeamNotification teamNotification = new TeamNotification(
+                userAction,
+                this.verifyTaskNotificatedUsers(taskId),
+                false,
+                userAction.getName()+" alterou a descrição da tarefa " + taskUpdated.getName() + " no projeto " + taskUpdated.getProject().getName(),
+                LocalDateTime.now(),
+                "task"
+        );
+        teamNotification.setTeam(teamOfNotification);
+        this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }

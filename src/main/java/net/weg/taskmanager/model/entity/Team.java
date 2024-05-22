@@ -12,6 +12,7 @@ import lombok.Setter;
 import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.List;
@@ -33,7 +34,7 @@ public class Team {
     private File image;
     private String imageColor;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
     private Collection<UserTeam> participants;
 
 

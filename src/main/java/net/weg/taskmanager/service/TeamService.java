@@ -66,13 +66,15 @@ public class TeamService {
 //        return converter.convertAll(teams);
 //    }
 
-    public Team createTeam(PostTeamDTO teamDTO) { //creates aa team automaticatlly
+    public Team createTeam(PostTeamDTO teamDTO) { //creates a team automaticatlly
         Team team =  new Team(teamDTO);
         Team createdTeam = teamRepository.save(team);
         setCreator(teamDTO.getCreator(), createdTeam);
         setDefaultRole(createdTeam);
-//        updateTeamChat(createdTeam);
 
+//        updateTeamChat(createdTeam);
+        createdTeam = findTeamById(createdTeam.getId());
+        System.out.println(createdTeam);
         TeamChat teamChat = new TeamChat(createdTeam);
         teamChat.setUsers(new ArrayList<>(createdTeam.getParticipants().stream().map(UserTeam::getUser).toList()));
         createdTeam.setChat(teamChat);
@@ -98,6 +100,7 @@ public class TeamService {
             userTeam.setTeam(team1);
             userTeamService.save(userTeam);
         });
+
         TeamChat teamChat = new TeamChat(team1);
         teamChat.setUsers(new ArrayList<>(team1.getParticipants().stream().map(UserTeam::getUser).toList()));
         team1.setChat(teamChat);
@@ -122,6 +125,7 @@ public class TeamService {
         Role role = roleService.getRoleByName("TEAM_CREATOR");
         UserTeam userTeam = new UserTeam(creator.getId(), team.getId(), creator, team, role);
         userTeam.setManager(true);
+        team.setParticipants(new ArrayList<>(List.of(userTeam)));
         userTeamService.create(userTeam);
     }
 
@@ -203,6 +207,7 @@ public class TeamService {
 
 
     private final UserTeamRepository userTeamRepository;
+
     public GetTeamDTO patchParticipants(Long teamId, Collection<UserTeamDTO> participantsDTO) throws InvalidAttributeValueException {
         Team team = findTeamById(teamId);
         if(participantsDTO == null ) throw new InvalidAttributeValueException("Participants in Team can not be null");

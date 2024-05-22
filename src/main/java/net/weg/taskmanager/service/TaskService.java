@@ -179,6 +179,14 @@ public class TaskService {
         return propertyRepository.save(property);
     }
 
+    public GetTaskDTO patchDescription(Long taskId,Long userId,String description) throws InvalidPropertiesFormatException {
+        Task task = findTaskById(taskId);
+        if(description==null) throw new InvalidPropertiesFormatException("Descrição na tarefa não pode ser nula");
+        task.setDescription(description);
+        historicService.patchTaskDescription(taskId, userId);
+        return converter.convertOne(task);
+    }
+
     public GetTaskDTO patchProperty(Property property, Long taskId, Long userId) {
         Task task = findTaskById(taskId);
         Project project = task.getProject();

@@ -68,6 +68,23 @@ public class HistoricService {
         return taskForHistoric;
     }
 
+    public Task patchTaskDescription(Long taskId, Long userId){
+        User user = userRepository.findById(userId).get();
+        Task task = taskRepository.findById(taskId).get();
+
+        Historic historic = new Historic(
+                user,
+                user.getName() + " alterou a descrição da task " + task.getName() + " no projeto " + task.getProject().getName(),
+                LocalDateTime.now()
+        );
+
+        Historic savedHistoric = this.historicRepository.save(historic);
+        this.teamNotificationService.patchTaskDescriptionNotification(userId,taskId);
+        task.getHistoric().add(savedHistoric);
+
+        return taskRepository.save(task);
+    }
+
     public void putPropertyValueHistoric(Property property, PropertyValue propertyValue,
                                          Long userId, Long taskId) {
         User userForHistoric = userRepository.findById(userId).get();

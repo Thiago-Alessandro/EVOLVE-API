@@ -105,6 +105,7 @@ public class UserService {
         return null;
     }
     private final RoleService roleService;
+
     private void setDefaultTeam(User user) {
         Team team = teamService.createTeam(new PostTeamDTO(user));
         team.setName(user.getName() + "'s Team");

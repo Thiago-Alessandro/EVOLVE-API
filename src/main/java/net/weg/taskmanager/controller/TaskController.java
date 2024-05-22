@@ -86,9 +86,17 @@ public class TaskController {
 
     @PatchMapping("/{taskId}/update/finalDate/{userId}/calendar")
     public GetTaskDTO updateTaskFinalDate(@PathVariable Long taskId, @PathVariable Long userId, @RequestParam String newFinalDate) {
-        System.out.println(newFinalDate);
         LocalDate localDateTime = LocalDate.parse(newFinalDate);
         return taskService.updateTaskFinalDate(taskId,userId,localDateTime);
+    }
+
+    @PatchMapping("/{taskId}/description/{userId}")
+    public ResponseEntity<GetTaskDTO> patchDescription(@PathVariable Long taskId, @PathVariable Long userId, @RequestParam String description) {
+        try {
+            return ResponseEntity.ok(taskService.patchDescription(taskId,userId,description));
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
     }
 
     @PatchMapping("/{taskId}/update/scheludeDate/{userId}/calendar")
