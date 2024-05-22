@@ -67,7 +67,6 @@ public class TeamAuthorizationManager implements AuthorizationManager<RequestAut
     }
 
     private AuthorizationDecision hasPatchPermission(User user, Map<String, String> variables, String uri){
-        System.out.println(variables.get("teamId"));
         Long teamId = Long.parseLong(variables.get("teamId"));
         return new AuthorizationDecision(permissionManager.hasPatchPermission(teamId, user, uri));
     }
@@ -80,9 +79,7 @@ public class TeamAuthorizationManager implements AuthorizationManager<RequestAut
     private User getUserFromAuthSupplier(Supplier<Authentication> supplier){
         Authentication auth = supplier.get();
         UserDetailsEntity userDetails = (UserDetailsEntity) auth.getPrincipal();
-        System.out.println("entrei nessa pira");
         User user = userDetails.getUser();
-        System.out.println("saí dessa pira");
         return userService.findUserById(user.getId());
     }
 

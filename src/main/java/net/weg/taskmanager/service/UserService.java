@@ -42,9 +42,7 @@ public class UserService {
 
 
     public User findUserById(Long userId){
-        System.out.println("Entrei em ota pira");
         Optional<User> optionalUser = userRepository.findById(userId);
-        System.out.println("passei da ota pira");
         if(optionalUser.isEmpty()) throw new NoSuchElementException();
         return optionalUser.get();
     }
@@ -119,11 +117,7 @@ public class UserService {
     }
 
     public Collection<UserTask> getAllWorkedTime(Long userId) {
-        Collection<UserTask> userTasks = new ArrayList<>();
-        userTasks = this.userTaskService.findAllByUserId(userId);
-        System.out.println("SOUT DA USERTASKS AQUIII ");
-        System.out.println(userTasks);
-        return userTasks;
+        return this.userTaskService.findAllByUserId(userId);
     }
 
 

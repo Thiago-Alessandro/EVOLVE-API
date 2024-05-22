@@ -32,7 +32,6 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public GetUserDTO findById(@PathVariable Long userId){
-//        System.out.println(userService.findById(userId).getTeamRoles().stream().findFirst().get().getTeam());
         return userService.findById(userId);
 }
 
@@ -80,7 +79,6 @@ public class UserController {
 
     @PatchMapping("/{userId}/email")
     public GetUserDTO patchEmail(@PathVariable Long userId, @RequestParam String email){
-        System.out.println("chego aqui na controler");
         return userService.patchEmail(userId, email);
     }
 
