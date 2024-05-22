@@ -101,7 +101,6 @@ public class TaskController {
 
     @PatchMapping("/{taskId}/update/scheludeDate/{userId}/calendar")
     public GetTaskDTO updateTaskScheludeDate(@PathVariable Long taskId, @PathVariable Long userId, @RequestParam String newDate) {
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA");
         LocalDate localDateTime = LocalDate.parse(newDate);
         return taskService.updateTaskScheludeDate(taskId,userId,localDateTime);
     }
