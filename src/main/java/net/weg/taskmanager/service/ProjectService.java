@@ -159,11 +159,17 @@ public class ProjectService {
         return optionalProject.get();
     }
 
+    @Transactional
     public GetProjectDTO patchName(Long projectId, String name) throws InvalidAttributeValueException {
         if(name == null) throw new InvalidAttributeValueException("Name on project cannot be null");
         Project project = findProjectById(projectId);
         project.setName(name);
-             return converter.convertOne(treatAndSave(project));
+        System.out.println("TO SETANDO O NOME");
+        System.out.println(project.getName());
+        project.updateLastTimeEdited();
+        Project savedProject = projectRepository.save(project);
+        System.out.println(savedProject.getName());
+        return converter.convertOne(savedProject);
     }
 
     public GetProjectDTO patchDescription(Long projectId, String description) {
