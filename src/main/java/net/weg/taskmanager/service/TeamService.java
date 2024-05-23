@@ -161,6 +161,12 @@ public class TeamService {
         return new GetTeamDTO(teamRepository.save(team));
     }
 
+    public GetTeamDTO patchParticipantsLeaveTeam(Long teamId,Long userId){
+        UserTeam userTeam = userTeamRepository.findByUserIdAndTeamId(userId, teamId).get();
+        userTeamRepository.delete(userTeam);
+        return converter.convertOne(teamRepository.findById(teamId).get());
+    }
+
     public GetTeamDTO patchImage(Long teamId, MultipartFile image) throws InvalidAttributeValueException {
         if (image == null) throw new InvalidAttributeValueException("Image on Team can not be null");
         Team team = findTeamById(teamId);
