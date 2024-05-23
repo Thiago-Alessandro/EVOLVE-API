@@ -75,6 +75,7 @@ public class Project {
 
     @ManyToOne
     private Role defaultRole;
+    private Double progress = 0.0;
 
 
     public void updateLastTimeEdited() {

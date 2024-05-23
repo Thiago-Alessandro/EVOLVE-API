@@ -58,6 +58,8 @@ public class GetProjectDTO {
     @JsonIgnore
     private GetProjectChatDTO chat;
     private Collection<GetTaskDTO> tasks;
+    private Double progress;
+
 
     public GetProjectDTO(Project project){
 //        Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();

@@ -1,5 +1,7 @@
 package net.weg.taskmanager.model.dto.shortDTOs;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,6 +9,7 @@ import net.weg.taskmanager.model.dto.converter.Converter;
 import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
 import net.weg.taskmanager.model.dto.get.GetFileDTO;
 import net.weg.taskmanager.model.entity.File;
+import net.weg.taskmanager.model.entity.NotificationsConfig;
 import net.weg.taskmanager.model.entity.User;
 import org.springframework.beans.BeanUtils;
 
@@ -22,6 +25,8 @@ public class ShortUserDTO {
     private String email;
     private GetFileDTO image;
     private String imageColor;
+    private boolean socialLogin = false;
+    private NotificationsConfig notificationsConfig;
 //    private Collection<ShortTaskDTO> createdTasks;
 //    private Collection<UserChat> chats;
     public ShortUserDTO(User user){

@@ -40,6 +40,8 @@ public class TeamController {
         return service.findTeamsByUserId(userId);
     }
 
+
+
     @GetMapping("/{teamId}/notifications")
     public Collection<GetTeamNotificationDTO> getAllNotifications(@PathVariable Long teamId) {
         return service.getAllNotifications(teamId);
@@ -104,6 +106,10 @@ public class TeamController {
 //        }
     }
 
+    @PutMapping("/{teamId}/leaveTeam")
+    public ResponseEntity<GetTeamDTO> patchParticipantsLeaveTeam(@PathVariable Long teamId, @RequestParam Long userId){
+        return ResponseEntity.ok(service.patchParticipantsLeaveTeam(teamId, userId));
+    }
 
     @PatchMapping("/{teamId}/roles")
     public ResponseEntity<GetTeamDTO> patchRoles(@PathVariable Long teamId, @RequestBody Collection<Role> roles){

@@ -1,6 +1,8 @@
 package net.weg.taskmanager.model.dto.get;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,6 +40,10 @@ public class GetUserDTO {
     private String primaryDarkColor;
     private String secondaryDarkColor;
     private Integer fontSize;
+
+    private boolean socialLogin = false;
+    private NotificationsConfig notificationsConfig;
+
     public GetUserDTO(User user){
         GetFileConverter fileConverter = new GetFileConverter();
         Converter<ShortTaskDTO, Task> taskConverter = new ShortTaskConverter();

@@ -29,6 +29,8 @@ public class PutProjectDTO {
     private Collection<User> members;
     //vai continuar msm?
     private Collection<User> administrators;
+    private Double progress;
+
 
 //    há uma request especifica para se atualizar um status
 //    private Collection<Status> statusList;
