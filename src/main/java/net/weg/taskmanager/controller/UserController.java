@@ -6,6 +6,7 @@ import net.weg.taskmanager.model.dto.get.GetFileDTO;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.post.PostUserDTO;
 
+import net.weg.taskmanager.model.entity.NotificationsConfig;
 import net.weg.taskmanager.model.entity.UserTask;
 
 import net.weg.taskmanager.model.entity.File;
@@ -70,6 +71,15 @@ public class UserController {
     @PatchMapping("/{userId}")
     public GetUserDTO patchImage(@PathVariable Long userId, @RequestParam MultipartFile image) {
         return userService.patchImage(userId, image);
+    }
+
+    @PatchMapping("/{userId}/notificationsConfig")
+    public ResponseEntity<GetUserDTO> patchNotificationsConfig(@PathVariable Long userId, @RequestBody NotificationsConfig notificationsConfig) {
+         try {
+             return ResponseEntity.ok(userService.patchNotificationsConfig(userId, notificationsConfig));
+         } catch (Exception e){
+             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+         }
     }
 
     @PatchMapping("/{userId}/theme")

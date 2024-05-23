@@ -58,7 +58,7 @@ public class User {
     private String secondaryDarkColor;
     private Integer fontSize = 16;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user")
     private NotificationsConfig notificationsConfig;
 
     private boolean socialLogin = false;

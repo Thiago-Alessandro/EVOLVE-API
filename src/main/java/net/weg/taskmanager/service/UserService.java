@@ -11,6 +11,7 @@ import net.weg.taskmanager.model.dto.converter.get.GetUserConverter;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.post.PostUserDTO;
+import net.weg.taskmanager.repository.NotificationConfigRepository;
 import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.repository.UserRepository;
 import net.weg.taskmanager.repository.UserTaskRepository;
@@ -24,6 +25,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.management.InvalidAttributeValueException;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +40,9 @@ public class UserService {
     private final TeamService teamService;
     private final UserTeamService userTeamService;
     private final UserTaskService userTaskService;
+
+
+    private final NotificationConfigRepository notificationConfigRepository;
     private final Converter<GetUserDTO, User> converter = new GetUserConverter();
 
 
@@ -91,9 +96,15 @@ public class UserService {
         User createdUser = userRepository.save(user);
 //        System.out.println("criei1");
         setDefaultTeam(createdUser);
+        NotificationsConfig notificationsConfig = new NotificationsConfig();
+        notificationsConfig.setUser(createdUser);
+        createdUser.setNotificationsConfig(notificationConfigRepository.save(notificationsConfig));
+
+
 //        System.out.println("criei2");
         return converter.convertOne(createdUser);
     }
+
 
     public GetUserDTO findByEmail(String email){
         User loggedUser = userRepository.findByEmail(email);
@@ -126,6 +137,14 @@ public class UserService {
         user.setTheme(theme);
         return converter.convertOne(userRepository.save(user));
     }
+
+    public GetUserDTO patchNotificationsConfig(Long userId,NotificationsConfig notificationsConfig) throws InvalidAttributeValueException {
+        if(notificationsConfig==null) throw new InvalidAttributeValueException("notificationsConfig on user cannot be null");
+        notificationConfigRepository.save(notificationsConfig);
+        User user = findUserById(userId);
+        return converter.convertOne(user);
+    }
+
 
     public GetUserDTO patchEmail(Long userId,String email){
         User user = findUserById(userId);
