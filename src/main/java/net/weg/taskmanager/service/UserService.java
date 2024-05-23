@@ -140,8 +140,9 @@ public class UserService {
 
     public GetUserDTO patchNotificationsConfig(Long userId,NotificationsConfig notificationsConfig) throws InvalidAttributeValueException {
         if(notificationsConfig==null) throw new InvalidAttributeValueException("notificationsConfig on user cannot be null");
-        notificationConfigRepository.save(notificationsConfig);
         User user = findUserById(userId);
+        notificationsConfig.setUser(user);
+        notificationConfigRepository.save(notificationsConfig);
         return converter.convertOne(user);
     }
 

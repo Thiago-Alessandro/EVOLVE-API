@@ -66,7 +66,7 @@ public class TeamNotificationService {
     public Collection<User> verifyTaskNotificatedUsers(Long taskId, NotificatioType notificatioType) {
         Task taskUpdated = taskRepository.findById(taskId).get();
         Collection<User> notificatedUsers = new ArrayList<>(taskUpdated.getAssociates());
-        notificatedUsers = notificatedUsers.stream().filter(user -> user.getNotificationsConfig().isTaskAll()).toList();
+        notificatedUsers = notificatedUsers.stream().filter(user -> user.getNotificationsConfig() != null && user.getNotificationsConfig().isTaskAll()).toList();
         return filterNotificatedUserByConfig(notificatedUsers, notificatioType);
     }
 
@@ -74,7 +74,7 @@ public class TeamNotificationService {
     public Collection<User> verifyProjectNotificatedUsers(Long projectId, NotificatioType notificatioType) {
         Project project = projectRepository.findById(projectId).get();
         Collection<User> notificatedUsers = new ArrayList<>(project.getMembers().stream().map(UserProject::getUser).toList());
-        notificatedUsers = notificatedUsers.stream().filter(user -> user.getNotificationsConfig().isProjectAll()).toList();
+        notificatedUsers = notificatedUsers.stream().filter(user -> user.getNotificationsConfig() != null && user.getNotificationsConfig().isProjectAll()).toList();
         return filterNotificatedUserByConfig(notificatedUsers, notificatioType);
     }
 
