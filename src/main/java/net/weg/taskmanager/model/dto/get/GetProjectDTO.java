@@ -37,7 +37,7 @@ public class GetProjectDTO {
     private String imageColor;
 //    private ShortUserDTO creator;
     private LocalDate finalDate;
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
     private LocalDateTime lastTimeEdited;
 
 //    private Collection<User> administrators;
@@ -57,6 +57,8 @@ public class GetProjectDTO {
     @JsonIgnore
     private GetProjectChatDTO chat;
     private Collection<GetTaskDTO> tasks;
+    private Double progress;
+
 
     public GetProjectDTO(Project project){
 //        Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
