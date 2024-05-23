@@ -37,12 +37,13 @@ public class GetProjectDTO {
     private String imageColor;
 //    private ShortUserDTO creator;
     private LocalDate finalDate;
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
     private LocalDateTime lastTimeEdited;
 
 //    private Collection<User> administrators;
     private Collection<Property> properties;
     private Collection<Status> statusList;
+    private Double progress;
 
     private Collection<UserProjectDTO> members;
 
@@ -66,6 +67,7 @@ public class GetProjectDTO {
         Converter<ShortTeamDTO, Team> teamDTOTeamConverter = new ShortTeamConverter();
 
         BeanUtils.copyProperties(project, this);
+        setCreationDate(project.getCreationDate());
         this.image = fileDTOConverter.convertOne(project.getImage(), false);
         this.team = teamDTOTeamConverter.convertOne(project.getTeam());
         this.chat = projectChatDTOConverter.convertOne(project.getChat());

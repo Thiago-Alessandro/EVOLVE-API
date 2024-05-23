@@ -37,6 +37,7 @@ public class Project {
     @OneToOne(cascade = CascadeType.ALL)
     private File image;
     private String imageColor;
+    private Double progress;
 
     @Column()
     private LocalDate finalDate;
@@ -84,7 +85,7 @@ public class Project {
         this.chat = new ProjectChat();
         this.chat.setProject(this);
 //        this.chat.setUsers(this.members);
-        this.creationDate = LocalDateTime.now();
+        setCreationDate(LocalDateTime.now());
         updateLastTimeEdited();
 //        setDefaultStatus();
 
@@ -94,7 +95,7 @@ public class Project {
 
     public Project(PostProjectDTO projectDTO) {
         BeanUtils.copyProperties(projectDTO, this);
-        this.creationDate = LocalDateTime.now();
+        setCreationDate(LocalDateTime.now());
 //        setDefaultStatus();
         updateLastTimeEdited();
     }

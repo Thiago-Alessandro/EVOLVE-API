@@ -85,8 +85,27 @@ public class ProjectService {
 
     public Collection<GetProjectDTO> findByTeamId(Long teamId) {
         Optional<Collection<Project>> optionalProjects = projectRepository.findAllByTeam_Id(teamId);
+        updateProjectProgress(optionalProjects);
         if (optionalProjects.isEmpty()) throw new NoSuchElementException();
         return converter.convertAll(optionalProjects.get());
+    }
+
+    private void updateProjectProgress(Optional<Collection<Project>> optionalProjects) {
+        optionalProjects.get().stream().forEach(project -> {
+            if(!project.getTasks().isEmpty()){
+                int cont = 0;
+                for (Task task : project.getTasks()){
+                    if(task.getCurrentStatus().getName().equals("concluido")
+                    || task.getCurrentStatus().getName().equals("completed")
+                    || task.getCurrentStatus().getName().equals("已完成")
+                    || task.getCurrentStatus().getName().equals("completado") ){
+                        cont++;
+                    }
+                }
+                project.setProgress((double) ((cont*100)/ project.getTasks().size()));
+                treatAndSave(project);
+            }
+        });
     }
 
     public GetProjectDTO patchFavorited(Long projectId, String favorited){
