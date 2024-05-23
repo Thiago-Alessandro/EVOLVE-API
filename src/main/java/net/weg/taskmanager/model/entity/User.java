@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 import net.weg.taskmanager.model.UserProject;
 import net.weg.taskmanager.security.model.entity.UserDetailsEntity;
 import net.weg.taskmanager.model.dto.converter.get.GetFileConverter;
@@ -58,6 +57,9 @@ public class User {
     private String primaryDarkColor;
     private String secondaryDarkColor;
     private Integer fontSize = 16;
+
+    @OneToOne(mappedBy = "user")
+    private NotificationsConfig notificationsConfig;
 
     private boolean socialLogin = false;
 

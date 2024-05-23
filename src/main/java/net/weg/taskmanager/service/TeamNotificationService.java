@@ -2,14 +2,9 @@ package net.weg.taskmanager.service;
 
 import lombok.AllArgsConstructor;
 import net.weg.taskmanager.model.UserProject;
-import net.weg.taskmanager.model.dto.get.GetTaskDTO;
-import net.weg.taskmanager.model.dto.get.GetUserDTO;
-import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
 import net.weg.taskmanager.model.entity.*;
 import net.weg.taskmanager.model.entity.DashBoard.Dashboard;
-import net.weg.taskmanager.model.property.Option;
 import net.weg.taskmanager.model.property.Property;
-import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.repository.*;
 import org.springframework.stereotype.Service;
 
@@ -29,17 +24,58 @@ public class TeamNotificationService {
     private final ProjectRepository projectRepository;
     private final DashboardRepository dashboardRepository;
 
+    private enum NotificatioType{
+        TASK_PROPERTIES,
+        TASK_DESCRIPTION,
+        TASK_NAME,
+        TASK_ASSOCIATES,
+        TASK_SUBTASKS,
+        TASK_COMMENTS,
+        TASK_ATTACHMENTS,
+        TASK_FINAL_DATE,
+        TASK_STATUS,
+        TASK_PRIORITY,
+        PROJECT_DASHBOARDS,
+        PROJECT_COMMENTS,
+        PROJECT_STATUS,
+        PROJECT_PARTICIPANTS,
+        PROJECT_INFOS
+    }
+
+    private Collection<User> filterNotificatedUserByConfig(Collection<User> users, NotificatioType notificatioType){
+        return switch (notificatioType){
+            case TASK_PROPERTIES -> users.stream().filter(user -> user.getNotificationsConfig().isTaskProperties()).toList();
+            case TASK_DESCRIPTION -> users.stream().filter(user -> user.getNotificationsConfig().isTaskDescription()).toList();
+            case TASK_NAME -> users.stream().filter(user -> user.getNotificationsConfig().isTaskName()).toList();
+            case TASK_ASSOCIATES -> users.stream().filter(user -> user.getNotificationsConfig().isTaskAssociates()).toList();
+            case TASK_SUBTASKS -> users.stream().filter(user -> user.getNotificationsConfig().isTaskSubtasks()).toList();
+            case TASK_COMMENTS -> users.stream().filter(user -> user.getNotificationsConfig().isTaskComments()).toList();
+            case TASK_ATTACHMENTS -> users.stream().filter(user -> user.getNotificationsConfig().isTaskAttachments()).toList();
+            case TASK_FINAL_DATE -> users.stream().filter(user -> user.getNotificationsConfig().isTaskFinalDate()).toList();
+            case TASK_STATUS -> users.stream().filter(user -> user.getNotificationsConfig().isTaskStatus()).toList();
+            case TASK_PRIORITY -> users.stream().filter(user -> user.getNotificationsConfig().isTaskPriority()).toList();
+            case PROJECT_DASHBOARDS -> users.stream().filter(user -> user.getNotificationsConfig().isProjectDashboards()).toList();
+            case PROJECT_COMMENTS -> users.stream().filter(user -> user.getNotificationsConfig().isProjectComments()).toList();
+            case PROJECT_STATUS -> users.stream().filter(user -> user.getNotificationsConfig().isProjectStatus()).toList();
+            case PROJECT_PARTICIPANTS -> users.stream().filter(user -> user.getNotificationsConfig().isProjectParticipants()).toList();
+            case PROJECT_INFOS -> users.stream().filter(user -> user.getNotificationsConfig().isProjectInfos()).toList();
+        };
+    }
+
     // Function to verify the task users that will be notificated
-    public Collection<User> verifyTaskNotificatedUsers(Long taskId) {
+    public Collection<User> verifyTaskNotificatedUsers(Long taskId, NotificatioType notificatioType) {
         Task taskUpdated = taskRepository.findById(taskId).get();
-        return new ArrayList<>(taskUpdated.getAssociates());
+        Collection<User> notificatedUsers = new ArrayList<>(taskUpdated.getAssociates());
+        notificatedUsers = notificatedUsers.stream().filter(user -> user.getNotificationsConfig() != null && user.getNotificationsConfig().isTaskAll()).toList();
+        return filterNotificatedUserByConfig(notificatedUsers, notificatioType);
     }
 
     // Function to verify the project users that will be notificated
-
-    public Collection<User> verifyProjectNotificatedUsers(Long projectId) {
+    public Collection<User> verifyProjectNotificatedUsers(Long projectId, NotificatioType notificatioType) {
         Project project = projectRepository.findById(projectId).get();
-        return new ArrayList<>(project.getMembers().stream().map(UserProject::getUser).toList());
+        Collection<User> notificatedUsers = new ArrayList<>(project.getMembers().stream().map(UserProject::getUser).toList());
+        notificatedUsers = notificatedUsers.stream().filter(user -> user.getNotificationsConfig() != null && user.getNotificationsConfig().isProjectAll()).toList();
+        return filterNotificatedUserByConfig(notificatedUsers, notificatioType);
     }
 
     // Task notifications
@@ -47,7 +83,7 @@ public class TeamNotificationService {
     public Collection<User> verifyChatNotificationsUser(Long actionUserId, Collection<User> usersChat) {
         Collection<User> newUsersChat = new ArrayList<>();
         usersChat.forEach(user -> {
-            if(user.getId() != actionUserId) {
+            if(!Objects.equals(user.getId(), actionUserId)) {
                 newUsersChat.add(user);
             }
         });
@@ -61,14 +97,15 @@ public class TeamNotificationService {
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_COMMENTS),
                 false,
                 userAction.getName()+" adicionou um novo comentário na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
                 "task"
         );
-                teamNotification.setTeam(teamOfNotification);
-this.teamNotificationRepository.save(teamNotification);
+
+        teamNotification.setTeam(teamOfNotification);
+        this.teamNotificationRepository.save(teamNotification);
         teamOfNotification.getNotifications().add(teamNotification);
         this.teamRepository.save(teamOfNotification);
     }
@@ -80,7 +117,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_COMMENTS),
                 false,
                 userAction.getName()+" deletou um comentário na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -100,7 +137,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_DESCRIPTION),
                 false,
                 userAction.getName()+" alterou a descrição da tarefa " + taskUpdated.getName() + " no projeto " + taskUpdated.getProject().getName(),
                 LocalDateTime.now(),
@@ -119,7 +156,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_PROPERTIES),
                 false,
                 userAction.getName()+" alterou o valor da propriedade "+property.getName()+" na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -139,7 +176,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_PROPERTIES),
                 false,
                 userAction.getName()+" criou uma nova opção para a propriedade "+property.getName()+" na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -159,7 +196,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_PROPERTIES),
                 false,
                 userAction.getName()+" deletou uma opção da propriedade "+property.getName()+" na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -179,7 +216,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_FINAL_DATE),
                 false,
                 userAction.getName()+" mudou a data final da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -199,7 +236,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_SUBTASKS),
                 false,
                 userAction.getName()+" adicionou uma sub-tarefa a tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -219,7 +256,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_SUBTASKS),
                 false,
                 userAction.getName()+" deletou uma sub-tarefa da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -239,7 +276,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_PROPERTIES),
                 false,
                 userAction.getName()+" adicionou uma nova propriedade a tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -259,7 +296,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_ASSOCIATES),
                 false,
                 userAction.getName()+" associou uma nova pessoa a tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -279,7 +316,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_ASSOCIATES),
                 false,
                 userAction.getName()+" desassociou "+removedAssociate.getName()+" da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -299,7 +336,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_PROPERTIES),
                 false,
                 userAction.getName()+" atualizou a opção atual da propriedade "+property.getName()+" na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -319,7 +356,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_PROPERTIES),
                 false,
                 userAction.getName()+" deletou uma propriedade da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -339,7 +376,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_ATTACHMENTS),
                 false,
                 userAction.getName()+" adicionou um arquivo a tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -359,7 +396,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_ATTACHMENTS),
                 false,
                 userAction.getName()+" deletou um arquivo da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -379,7 +416,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_PROPERTIES),
                 false,
                 userAction.getName()+" deletou uma opção atual da propriedade "+property.getName()+" na tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -399,7 +436,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_STATUS),
                 false,
                 userAction.getName()+" mudou o status da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -419,7 +456,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyTaskNotificatedUsers(taskId),
+                this.verifyTaskNotificatedUsers(taskId, NotificatioType.TASK_PRIORITY),
                 false,
                 userAction.getName()+" mudou o nível de prioridade da tarefa " + taskUpdated.getName(),
                 LocalDateTime.now(),
@@ -441,7 +478,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyProjectNotificatedUsers(projectId),
+                this.verifyProjectNotificatedUsers(projectId, NotificatioType.PROJECT_DASHBOARDS),
                 false,
                 userAction.getName()+" criou uma nova dashboard no projeto " + project.getName(),
                 LocalDateTime.now(),
@@ -461,7 +498,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyProjectNotificatedUsers(dashboardDeleted.getProject().getId()),
+                this.verifyProjectNotificatedUsers(dashboardDeleted.getProject().getId(), NotificatioType.PROJECT_DASHBOARDS),
                 false,
                 userAction.getName()+" deletou a dashboard chamada "+dashboardDeleted.getName()+" no projeto " + dashboardDeleted.getProject().getName(),
                 LocalDateTime.now(),
@@ -481,7 +518,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyProjectNotificatedUsers(projectId),
+                this.verifyProjectNotificatedUsers(projectId, NotificatioType.PROJECT_COMMENTS),
                 false,
                 userAction.getName()+" adicionou um novo comentário no projeto " + project.getName(),
                 LocalDateTime.now(),
@@ -500,7 +537,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyProjectNotificatedUsers(projectId),
+                this.verifyProjectNotificatedUsers(projectId, NotificatioType.PROJECT_STATUS),
                 false,
                 userAction.getName()+" adicionou um novo status chamado "+newStatus.getName()+" no projeto " + project.getName(),
                 LocalDateTime.now(),
@@ -519,7 +556,7 @@ this.teamNotificationRepository.save(teamNotification);
             User user = userRepository.findById(userId).get();
             TeamNotification teamNotification = new TeamNotification(
                     userAction,
-                    this.verifyProjectNotificatedUsers(projectId),
+                    this.verifyProjectNotificatedUsers(projectId, NotificatioType.PROJECT_PARTICIPANTS),
                     false,
                     userAction.getName()+" removeu "+user.getName()+" do projeto "+project.getName(),
                     LocalDateTime.now(),
@@ -538,7 +575,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyProjectNotificatedUsers(projectId),
+                this.verifyProjectNotificatedUsers(projectId, NotificatioType.PROJECT_PARTICIPANTS),
                 false,
                 userAction.getName()+" adicionou "+userAdded.getName()+" ao projeto " + project.getName(),
                 LocalDateTime.now(),
@@ -555,7 +592,7 @@ this.teamNotificationRepository.save(teamNotification);
 
         TeamNotification teamNotification = new TeamNotification(
                 userAction,
-                this.verifyProjectNotificatedUsers(projectId),
+                this.verifyProjectNotificatedUsers(projectId, NotificatioType.PROJECT_INFOS),
                 false,
                 userAction.getName()+" alterou as informações principais do projeto " + project.getName(),
                 LocalDateTime.now(),
