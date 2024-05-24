@@ -60,6 +60,12 @@ public class TaskController {
     public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
         return taskService.create(postTaskDTO);}
 
+    @PatchMapping("/{taskId}/dependencies/{userId}")
+    public ResponseEntity<GetTaskDTO> patchDependencies(@PathVariable Long taskId, @RequestBody Collection<GetTaskDTO> taskDTOS, @PathVariable Long userId){
+        return ResponseEntity.ok(taskService.patchDependencies(taskId, taskDTOS, userId));
+    }
+
+
     @PutMapping("/{taskId}/user/{userId}")
     public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO,@PathVariable Long userId){
 //        GetTaskDTO getTaskDTO = taskService.update(putTaskDTO);

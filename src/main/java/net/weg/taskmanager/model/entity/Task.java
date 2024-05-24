@@ -68,6 +68,10 @@ public class Task {
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<File> files;
 
+    @ManyToMany
+    private Collection<Task> dependencies;
+
+
     private Integer statusListIndex;
     private Double progress;
     private Boolean concluded = false;

@@ -83,6 +83,19 @@ public class TaskService {
         return commentSaved;
     }
 
+    public GetTaskDTO patchDependencies(Long taskId, Collection<GetTaskDTO> taskDTOS, Long userId){
+        Task patchingTask = findTaskById(taskId);
+        Collection<Task> tasks = new ArrayList<>();
+        taskDTOS.forEach(taskDTO -> {
+            Task task = new Task();
+            BeanUtils.copyProperties(taskDTO, task);
+            tasks.add(task);
+            System.out.println(task.getId());
+        });
+        patchingTask.setDependencies(tasks);
+        return converter.convertOne(taskRepository.save(patchingTask));
+    }
+
 
     public Collection<GetCommentDTO> deleteComment(Long commentId, Long taskId, Long userId) {
         commentRepository.deleteById(commentId);
