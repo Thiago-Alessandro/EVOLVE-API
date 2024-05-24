@@ -27,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.naming.directory.InvalidAttributesException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -61,8 +62,8 @@ public class TaskController {
         return taskService.create(postTaskDTO);}
 
     @PatchMapping("/{taskId}/dependencies/{userId}")
-    public ResponseEntity<GetTaskDTO> patchDependencies(@PathVariable Long taskId, @RequestBody Collection<GetTaskDTO> taskDTOS, @PathVariable Long userId){
-        return ResponseEntity.ok(taskService.patchDependencies(taskId, taskDTOS, userId));
+    public ResponseEntity<GetTaskDTO> patchDependencies(@PathVariable Long taskId, @RequestBody Collection<GetTaskDTO> taskDTOS, @PathVariable Long userId) throws InvalidAttributesException {
+        return ResponseEntity.ok(taskService.patchDependencies(taskId, taskDTOS));
     }
 
 
