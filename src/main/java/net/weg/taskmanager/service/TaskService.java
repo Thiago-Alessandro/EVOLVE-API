@@ -107,13 +107,13 @@ public class TaskService {
     }
 
     private boolean taskHasDependency(Task task, Task dependencyToCheck) {
-        System.out.println(task.getId());
-        System.out.println(dependencyToCheck.getId());
+//        System.out.println(task.getId());
+//        System.out.println(dependencyToCheck.getId());
         if(task.equals(dependencyToCheck)) return true;
         if (dependencyToCheck.getDependencies() == null || dependencyToCheck.getDependencies().isEmpty()) return false;
        for(Task task1 : dependencyToCheck.getDependencies()){
-           System.out.println(task1.getId());
-           System.out.println(dependencyToCheck.getId());
+//           System.out.println(task1.getId());
+//           System.out.println(dependencyToCheck.getId());
            if(taskHasDependency(task, task1)){
                return true;
            }
@@ -286,7 +286,7 @@ public class TaskService {
         });
 
         task = historicService.patchAssociateHistoric(taskId, userId, newList, currentUsersAssociates);
-
+        syncUserTaskTable(task);
         Converter<GetUserDTO, User> userConverter = new GetUserConverter();
         return userConverter.convertAll(taskRepository.save(task).getAssociates());
 
