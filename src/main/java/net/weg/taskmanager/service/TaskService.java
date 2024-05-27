@@ -25,9 +25,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.naming.directory.InvalidAttributesException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
@@ -83,17 +84,50 @@ public class TaskService {
         return commentSaved;
     }
 
-    public GetTaskDTO patchDependencies(Long taskId, Collection<GetTaskDTO> taskDTOS, Long userId){
+    public GetTaskDTO patchDependencies(Long taskId, Collection<GetTaskDTO> taskDTOS) throws InvalidAttributesException {
         Task patchingTask = findTaskById(taskId);
         Collection<Task> tasks = new ArrayList<>();
         taskDTOS.forEach(taskDTO -> {
-            Task task = new Task();
-            BeanUtils.copyProperties(taskDTO, task);
+            Task task = findTaskById(taskDTO.getId());
             tasks.add(task);
-            System.out.println(task.getId());
         });
+        if(!canPatchDependencies(patchingTask, tasks)) throw new InvalidAttributesException();
         patchingTask.setDependencies(tasks);
         return converter.convertOne(taskRepository.save(patchingTask));
+    }
+
+    private boolean canPatchDependencies(Task taskToPatch, Collection<Task> dependencies){
+        boolean result = true;
+        for(Task dependency : dependencies){
+            if(taskHasDependency(taskToPatch, dependency)){
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    private boolean taskHasDependency(Task task, Task dependencyToCheck) {
+//        System.out.println(task.getId());
+//        System.out.println(dependencyToCheck.getId());
+        if(task.equals(dependencyToCheck)) return true;
+        if (dependencyToCheck.getDependencies() == null || dependencyToCheck.getDependencies().isEmpty()) return false;
+       for(Task task1 : dependencyToCheck.getDependencies()){
+//           System.out.println(task1.getId());
+//           System.out.println(dependencyToCheck.getId());
+           if(taskHasDependency(task, task1)){
+               return true;
+           }
+       }
+       return false;
+    }
+
+    private void removeFromOthersDependency(Long taskId){
+        Task taskToRemove = findTaskById(taskId);
+        Collection<Task> taskWichContainDependency = taskRepository.findAllByDependenciesContaining(taskToRemove);
+        for(Task task : taskWichContainDependency){
+            task.getDependencies().remove(taskToRemove);
+            taskRepository.save(task);
+        }
     }
 
 
@@ -178,7 +212,6 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-
     public Property updatePropertyCurrentOptions(Collection<Option> newCurrentOptions, Long propertyId, Long taskId, Long userId) {
         Property property = propertyService.findPropertyById(propertyId);
         newCurrentOptions.forEach(newCurrentOption -> {
@@ -253,7 +286,7 @@ public class TaskService {
         });
 
         task = historicService.patchAssociateHistoric(taskId, userId, newList, currentUsersAssociates);
-
+        syncUserTaskTable(task);
         Converter<GetUserDTO, User> userConverter = new GetUserConverter();
         return userConverter.convertAll(taskRepository.save(task).getAssociates());
 
@@ -305,11 +338,27 @@ public class TaskService {
     }
 
     public void deleteAll(Collection<Task> tasks){
-        tasks.forEach(task -> delete(task.getId()));
+        tasks.forEach(task -> {
+            Collection<GetTaskDTO> taskCollection = new ArrayList<>();
+            try {
+                patchDependencies(task.getId(), taskCollection);
+            } catch (InvalidAttributesException e) {
+                throw new RuntimeException(e);
+            }
+            delete(task.getId());
+            removeFromOthersDependency(task.getId());
+        });
     }
 
     public void delete(Long id) {
+        Collection<GetTaskDTO> taskCollection = new ArrayList<>();
+        try {
+            patchDependencies(id, taskCollection);
+        } catch (InvalidAttributesException e) {
+            throw new RuntimeException(e);
+        }
         Collection<Property> properties = findTaskById(id).getProperties();
+        removeFromOthersDependency(id);
         propertyRepository.deleteAll(properties);
         taskRepository.deleteById(id);
     }
@@ -342,9 +391,16 @@ public class TaskService {
     public void deleteTask(Long taskId) {
         Task task = findTaskById(taskId);
         Project projectOfTask = projectRepository.findById(task.getProject().getId()).get();
-
+        Collection<GetTaskDTO> taskCollection = new ArrayList<>();
+        try {
+            patchDependencies(taskId, taskCollection);
+        } catch (InvalidAttributesException e) {
+            throw new RuntimeException(e);
+        }
+        Collection<Property> properties = findTaskById(taskId).getProperties();
+        removeFromOthersDependency(taskId);
+        propertyRepository.deleteAll(properties);
         taskRepository.deleteById(taskId);
-
         projectOfTask.getTasks().remove(task);
         projectRepository.save(projectOfTask);
 

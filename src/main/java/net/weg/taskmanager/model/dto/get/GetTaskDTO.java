@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.taskmanager.model.dto.converter.Converter;
+import net.weg.taskmanager.model.dto.converter.get.GetTaskConverter;
 import net.weg.taskmanager.model.dto.converter.get.PriorityRecordConverter;
 import net.weg.taskmanager.model.dto.converter.shorts.ShortProjectConverter;
 import net.weg.taskmanager.model.dto.converter.shorts.ShortUserConverter;
@@ -17,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
@@ -59,11 +61,13 @@ public class GetTaskDTO {
     private Boolean concluded;
     private String notes;
     private Collection<File> files;
+    private Collection<GetTaskDTO> dependencies;
 
     public GetTaskDTO(Task task){
         Converter<ShortUserDTO, User> shortUserConverter = new ShortUserConverter();
         Converter<ShortProjectDTO, Project> shortProjectConverter = new ShortProjectConverter();
         Converter<PriorityRecord, Priority> priorityRecordConverter = new PriorityRecordConverter();
+        Converter<GetTaskDTO, Task> taskDTOTaskConverter = new GetTaskConverter();
 
         BeanUtils.copyProperties(task, this);
         this.creator = shortUserConverter.convertOne(task.getCreator());
@@ -71,6 +75,7 @@ public class GetTaskDTO {
         this.project = shortProjectConverter.convertOne(task.getProject());
         this.priority = priorityRecordConverter.convertOne(task.getPriority());
         this.comments = task.getComments() != null ? task.getComments().stream().map(GetCommentDTO::new).toList() : null;
+        this.dependencies = task.getDependencies() != null ? taskDTOTaskConverter.convertAll(task.getDependencies()) : new ArrayList<>();
     }
 
 }
