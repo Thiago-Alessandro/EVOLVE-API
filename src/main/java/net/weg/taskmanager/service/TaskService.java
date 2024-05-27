@@ -62,9 +62,7 @@ public class TaskService {
     }
 
     public Task findTaskById(Long taskId) {
-        System.out.println(taskId);
         System.out.println(taskRepository.findAll());
-//        taskRepository.findAll().forEach(t -> System.out.println(t.getId()));
         Optional<Task> optionalTask = taskRepository.findTaskById(taskId);
         if (optionalTask.isEmpty()) throw new NoSuchElementException();
         return optionalTask.get();
