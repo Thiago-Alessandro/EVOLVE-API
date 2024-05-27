@@ -8,4 +8,5 @@ public interface LabelsDataRepository extends JpaRepository<LabelsData, Long> {
 
     @Transactional
     void deleteAllByChart_Id(Long id);
+
 }

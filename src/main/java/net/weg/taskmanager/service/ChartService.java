@@ -45,17 +45,20 @@ public class ChartService {
         Collection<Chart> charts = new HashSet<>();
 
         if(!project.getCharts().isEmpty()){
+
             for (Chart chart : project.getCharts()){
+                if(!chart.getLabels().isEmpty()){
+                    chart.getLabels().stream().forEach(labelsData -> {
+                        labelsDataRepository.deleteById(labelsData.getId());
+                    });
+                }
                 if(chart.getLabel().equals("Status das tarefas")){
-                    labelsDataRepository.deleteAll(labelsDataRepository.findAll());
                     chart.setLabels(updateLabelsValue(project, chart));
                 }
                 else if(chart.getLabel().equals("Tarefa por associado")){
-                    labelsDataRepository.deleteAll(labelsDataRepository.findAll());
                     chart.setLabels(updateTarefaAssociado(project, chart));
                 }
                 else if(chart.getLabel().equals("Prioridade das tarefas")){
-                    labelsDataRepository.deleteAll(labelsDataRepository.findAll());
                     chart.setLabels(updatePrioridadeTarefas(project, chart));
                 }
                 chartRepository.save(chart);
