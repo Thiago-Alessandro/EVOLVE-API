@@ -23,6 +23,7 @@ import net.weg.taskmanager.repository.*;
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.naming.directory.InvalidAttributesException;
@@ -61,7 +62,12 @@ public class TaskService {
     }
 
     public Task findTaskById(Long taskId) {
-        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        System.out.println("taskIDDDDDDDDDDDDDDDDDDD");
+        System.out.println(taskId);
+        System.out.println("ASDASD");
+        System.out.println(taskRepository.findAll());
+//        taskRepository.findAll().forEach(t -> System.out.println(t.getId()));
+        Optional<Task> optionalTask = taskRepository.findTaskById(taskId);
         if (optionalTask.isEmpty()) throw new NoSuchElementException();
         return optionalTask.get();
     }
@@ -122,11 +128,14 @@ public class TaskService {
     }
 
     private void removeFromOthersDependency(Long taskId){
-        Task taskToRemove = findTaskById(taskId);
-        Collection<Task> taskWichContainDependency = taskRepository.findAllByDependenciesContaining(taskToRemove);
-        for(Task task : taskWichContainDependency){
-            task.getDependencies().remove(taskToRemove);
-            taskRepository.save(task);
+        Optional<Task> optionalTask = taskRepository.findTaskById(taskId);
+        if(optionalTask.isPresent()){
+            Task taskToRemove = optionalTask.get();
+            Collection<Task> taskWichContainDependency = taskRepository.findAllByDependenciesContaining(taskToRemove);
+            for(Task task : taskWichContainDependency){
+                task.getDependencies().remove(taskToRemove);
+                taskRepository.save(task);
+            }
         }
     }
 
@@ -360,6 +369,8 @@ public class TaskService {
         Collection<Property> properties = findTaskById(id).getProperties();
         removeFromOthersDependency(id);
         propertyRepository.deleteAll(properties);
+        userTaskRepository.deleteAll(userTaskRepository.findAllByTaskId(id));
+        commentRepository.deleteAllByTask_Id(id);
         taskRepository.deleteById(id);
     }
 
@@ -400,10 +411,11 @@ public class TaskService {
         Collection<Property> properties = findTaskById(taskId).getProperties();
         removeFromOthersDependency(taskId);
         propertyRepository.deleteAll(properties);
+        userTaskRepository.deleteAll(userTaskRepository.findAllByTaskId(taskId));
+        commentRepository.deleteAllByTask_Id(taskId);
         taskRepository.deleteById(taskId);
         projectOfTask.getTasks().remove(task);
         projectRepository.save(projectOfTask);
-
     }
 
     public GetTaskDTO update(PutTaskDTO putTaskDTO, Long userId) { //kinda sus remover?!?

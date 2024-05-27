@@ -10,4 +10,5 @@ import java.util.Collection;
 public interface CommentRepository extends JpaRepository<Comment,Long> {
 
     Collection<Comment> findAllByProject_Id(Long id);
+    void deleteAllByTask_Id(Long taskId);
 }
