@@ -44,4 +44,8 @@ public class ShortTeamDTO {
                 : new ArrayList<>();
     }
 
+    public ShortTeamDTO(Long id){
+        this.id = id;
+    }
+
 }

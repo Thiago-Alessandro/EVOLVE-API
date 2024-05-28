@@ -93,6 +93,13 @@ public class Team {
         setCreatedChatBasic();
     }
 
+    public Team(String name, String imageColor, Collection<UserTeam> participants, String code) {
+        this.name = name;
+        this.imageColor = imageColor;
+        this.participants = participants;
+        this.code = code;
+    }
+
     public void setCreatedChatBasic(){
         this.chat = new TeamChat();
         this.chat.setTeam(this);

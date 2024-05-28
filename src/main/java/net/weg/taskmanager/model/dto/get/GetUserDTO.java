@@ -44,6 +44,10 @@ public class GetUserDTO {
     private boolean socialLogin = false;
     private NotificationsConfig notificationsConfig;
 
+    public GetUserDTO(Long id){
+        this.id = id;
+    }
+
     public GetUserDTO(User user){
         GetFileConverter fileConverter = new GetFileConverter();
         Converter<ShortTaskDTO, Task> taskConverter = new ShortTaskConverter();

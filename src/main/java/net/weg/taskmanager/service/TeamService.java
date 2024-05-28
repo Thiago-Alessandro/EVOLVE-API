@@ -81,7 +81,7 @@ public class TeamService {
 
         setPossibleRoles(createdTeam);
         UUID code = UUID.randomUUID();
-        team.setCode(code.toString());
+        createdTeam.setCode(code.toString());
         return teamRepository.save(createdTeam);
     }
 
@@ -106,8 +106,6 @@ public class TeamService {
         team1.setChat(teamChat);
 
         Team team2 = teamRepository.save(team1);
-
-
 
         return new GetTeamDTO(findTeamById(team2 .getId()));
     }
