@@ -19,6 +19,10 @@ public class Role {
     private String name;
     private Collection<Permission> permissions;
 
+    public Role(Long id){
+        this.id = id;
+    }
+
     public Role(String name, Collection<Permission> permissions) {
         this.name = name;
         this.permissions = permissions;

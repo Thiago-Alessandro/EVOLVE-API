@@ -80,8 +80,8 @@ public class DataBaseConfig {
 
         createThiagoTeamProject2();
         createThiagoTeamProject3();
-        createWEGTeam();
-        createWEGProject();
+//        createWEGTeam();
+//        createWEGProject();
     }
 
 
@@ -254,7 +254,7 @@ public class DataBaseConfig {
 
     private void createWEGTeam(){
         User creator = userService.findUserById(2L);
-        Team team = teamService.findTeamById(teamService.create(new Team("Equipe Evolve", "#185e77", List.of(new UserTeam(creator.getId(), null, creator, null, roleRepository.findByName("TEAM_CREATOR"), true)) , UUID.randomUUID().toString())).getId());
+        Team team = teamService.findTeamById(teamService.create2(new Team("Equipe Evolve", "#185e77", List.of(new UserTeam(creator.getId(), null, creator, null, new Role(1L), true)) , UUID.randomUUID().toString())).getId());
         addMembersToTeam(team);
     }
 

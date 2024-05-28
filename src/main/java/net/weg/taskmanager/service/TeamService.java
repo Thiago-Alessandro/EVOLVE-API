@@ -89,6 +89,10 @@ public class TeamService {
 //        return converter.convertOne(createTeam(teamDTO));
 //    }
     public GetTeamDTO create(Team team){
+        return new GetTeamDTO(create2(team));
+    }
+
+    public Team create2(Team team){
         setDefaultRole(team);
 //        updateTeamChat(createdTeam);
         setPossibleRoles(team);
@@ -107,7 +111,7 @@ public class TeamService {
 
         Team team2 = teamRepository.save(team1);
 
-        return new GetTeamDTO(findTeamById(team2 .getId()));
+        return findTeamById(team2 .getId());
     }
 
 
