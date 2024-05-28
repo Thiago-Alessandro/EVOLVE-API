@@ -20,6 +20,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 //    boolean existsByIdAndParticipantsContaining(Long teamId, User user);
 
     Collection<Team> findTeamsByParticipantsContaining(UserTeam userTeam);
+    Collection<Team> findTeamsByName(String name);
     Team findTeamByCode(String code);
 
 //    Team findByProjectsContainingAndParticipantsContaining(Project project, User user);

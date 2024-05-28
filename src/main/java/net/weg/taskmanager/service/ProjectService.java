@@ -96,6 +96,10 @@ public class ProjectService {
     }
 
     public GetProjectDTO create(PostProjectDTO projectDTO) {
+        return converter.convertOne(create2(projectDTO));
+    }
+
+    public Project create2(PostProjectDTO projectDTO) {
         Project project = new Project(projectDTO);
         project.setStatusList(statusRepository.saveAll(project.getStatusList()));
         project.setMembers(new ArrayList<>());
@@ -105,8 +109,9 @@ public class ProjectService {
         createProjectChat(projectSaved);
         setDefaultRole(projectSaved);
 
-        return converter.convertOne(treatAndSave(projectSaved));
+        return treatAndSave(projectSaved);
     }
+
 
     public GetProjectDTO removeMember(Long projectId,Long userId){
         Project project = projectRepository.findById(projectId).get();

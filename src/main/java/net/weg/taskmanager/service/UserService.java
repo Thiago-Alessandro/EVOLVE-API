@@ -76,6 +76,10 @@ public class UserService {
         userRepository.deleteById(id);}
 
     public GetUserDTO create(PostUserDTO userDTO){
+        return converter.convertOne(create2(userDTO));
+    }
+
+    public User create2(PostUserDTO userDTO){
 //        System.out.println("vou criar");
         User user = new User();
         BeanUtils.copyProperties(userDTO, user);
@@ -100,9 +104,7 @@ public class UserService {
         notificationsConfig.setUser(createdUser);
         createdUser.setNotificationsConfig(notificationConfigRepository.save(notificationsConfig));
 
-
-//        System.out.println("criei2");
-        return converter.convertOne(createdUser);
+        return createdUser;
     }
 
 
