@@ -117,7 +117,7 @@ public class UserService {
 
     private void setDefaultTeam(User user) {
         Team team = teamService.createTeam(new PostTeamDTO(user));
-        team.setName(user.getName() + "'s Team");
+        team.setName("Equipe " + user.getName());
         team.setPersonalWorkspace(true);
         team.setImage(user.getImage());
         Team savedTeam = teamService.save(team);
