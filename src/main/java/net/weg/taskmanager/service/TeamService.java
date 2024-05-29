@@ -95,8 +95,8 @@ public class TeamService {
     public Team create2(Team team){
         setDefaultRole(team);
 //        updateTeamChat(createdTeam);
-        setPossibleRoles(team);
-//        team.setChat(new TeamChat());
+//        setPossibleRoles(team);
+
         Team team1 = teamRepository.save(team);
         team1.getParticipants().forEach(userTeam -> {
             userTeam.setRole(roleService.findRoleById(userTeam.getRole().getId()));
@@ -120,7 +120,7 @@ public class TeamService {
         Role teamAdm = roleService.getRoleByName("TEAM_ADM");
         Role teamColaborator = roleService.getRoleByName("TEAM_COLABORATOR");
         Role teamViewer = roleService.getRoleByName("TEAM_VIEWER");
-        team.setRoles(new ArrayList<>(List.of(teamCreator, teamAdm, teamColaborator, teamViewer)));
+        team.setRoles(List.of(teamCreator, teamAdm, teamColaborator, teamViewer));
     }
 
     private void setCreator(User creator, Team team){

@@ -32,8 +32,10 @@ public class UserTeam {
     }
 
     @Id
+    @ToString.Include
     private Long userId;
     @Id
+    @ToString.Include
     private Long teamId;
 
     @ManyToOne()
@@ -45,6 +47,7 @@ public class UserTeam {
     private Team team;
 
     @ManyToOne
+    @ToString.Include
     private Role role;
     private boolean manager;
 

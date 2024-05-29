@@ -34,6 +34,7 @@ public class Team {
     private File image;
     private String imageColor;
 
+    @ToString.Include
     @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
     private Collection<UserTeam> participants;
 
@@ -53,9 +54,11 @@ public class Team {
     private String code;
 
     @ManyToMany(cascade = CascadeType.ALL)
+    @ToString.Include
     private Collection<Role> roles;
 
     @ManyToOne
+    @ToString.Include
     private Role defaultRole;
 
     @Override

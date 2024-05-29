@@ -80,8 +80,8 @@ public class DataBaseConfig {
 
         createThiagoTeamProject2();
         createThiagoTeamProject3();
-//        createWEGTeam();
-//        createWEGProject();
+        createWEGTeam();
+        createWEGProject();
     }
 
 
@@ -154,7 +154,7 @@ public class DataBaseConfig {
                     new ArrayList<>(),
                     getDefaultStatus());
             addMembersToProject(projectService.create2(postProjectDTO));
-            addMembersToTeam(team);it
+            addMembersToTeam(team);
         }
     }
 
