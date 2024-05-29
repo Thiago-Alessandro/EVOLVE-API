@@ -6,10 +6,14 @@ import net.weg.taskmanager.model.UserProject;
 import net.weg.taskmanager.model.dto.UserTeamDTO;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.post.PostProjectDTO;
+import net.weg.taskmanager.model.dto.post.PostTaskDTO;
 import net.weg.taskmanager.model.dto.post.PostTeamDTO;
 import net.weg.taskmanager.model.dto.post.PostUserDTO;
 import net.weg.taskmanager.model.dto.shortDTOs.ShortTeamDTO;
+import net.weg.taskmanager.model.dto.shortDTOs.ShortUserDTO;
 import net.weg.taskmanager.model.entity.*;
+import net.weg.taskmanager.model.enums.Priority;
+import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.repository.ProjectRepository;
 import net.weg.taskmanager.repository.TeamRepository;
 import net.weg.taskmanager.repository.UserRepository;
@@ -18,11 +22,13 @@ import net.weg.taskmanager.security.model.enums.Permission;
 import net.weg.taskmanager.security.repository.RoleRepository;
 import net.weg.taskmanager.security.repository.UserDetailsEntityRepository;
 import net.weg.taskmanager.service.ProjectService;
+import net.weg.taskmanager.service.TaskService;
 import net.weg.taskmanager.service.TeamService;
 import net.weg.taskmanager.service.UserService;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -312,9 +318,6 @@ public class DataBaseConfig {
             addMembersToProject(projectService.create2(postProjectDTO));
         }
     }
-
-
-
 
 
     private Collection<Status> getDefaultStatus(){
