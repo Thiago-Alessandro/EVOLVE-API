@@ -154,6 +154,7 @@ public class DataBaseConfig {
                     new ArrayList<>(),
                     getDefaultStatus());
             addMembersToProject(projectService.create2(postProjectDTO));
+            addMembersToTeam(team);it
         }
     }
 
