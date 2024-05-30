@@ -22,7 +22,7 @@ public class PutTaskDTO {
     private String name;
     private Boolean favorited;
 
-    private String finalDate;
+    private LocalDate finalDate; //tava string
     private LocalDate scheduledDate;
     private String description;
 

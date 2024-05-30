@@ -420,6 +420,10 @@ public class TaskService {
 
         BeanUtils.copyProperties(putTaskDTO, task);
 
+        Collection<User> userlist = new ArrayList<>();
+        putTaskDTO.getAssociates().forEach(user -> userlist.add(userRepository.findById(user.getId()).get()));
+        task.setAssociates(userlist); //não tinha essa lógica
+
         setStatusListIndex(task);
 
         task.setProgress(setProgress(task));
