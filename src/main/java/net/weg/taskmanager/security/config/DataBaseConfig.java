@@ -79,7 +79,7 @@ public class DataBaseConfig {
         createGorges();
         createFelipe();
 
-        createDeborahTeamProject();
+ /*       createDeborahTeamProject();
         createThiagoTeamProject();
         createGorgesTeamProject();
         createFelipeTeamProject();
@@ -87,7 +87,7 @@ public class DataBaseConfig {
         createThiagoTeamProject2();
         createThiagoTeamProject3();
         createWEGTeam();
-        createWEGProject();
+        createWEGProject();*/
     }
 
 
