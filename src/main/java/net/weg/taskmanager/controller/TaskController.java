@@ -2,6 +2,7 @@ package net.weg.taskmanager.controller;
 
 import lombok.AllArgsConstructor;
 
+import net.weg.taskmanager.Producer;
 import net.weg.taskmanager.model.dto.GetCommentDTO;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.dto.get.GetUserTaskDTO;
@@ -21,15 +22,12 @@ import net.weg.taskmanager.model.property.values.PropertyValue;
 import net.weg.taskmanager.model.record.PriorityRecord;
 import net.weg.taskmanager.service.TaskService;
 import net.weg.taskmanager.service.UserTaskService;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.naming.directory.InvalidAttributesException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,65 +39,128 @@ public class TaskController {
 
     private final TaskService taskService;
     private final UserTaskService userTaskService;
+    private final Producer topicProducer;
 
     @GetMapping("/{taskId}")//security nao implementado. Esse metodo é usado?
-    public GetTaskDTO findById(@PathVariable Long taskId) {
-        return taskService.findById(taskId);
+    public ResponseEntity<GetTaskDTO> findById(@PathVariable Long taskId) {
+        try{
+            return ResponseEntity.ok(taskService.findById(taskId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage("Não foi possível achar a tarefa de id: " + taskId, e.getMessage(), null);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @GetMapping("/{projectId}/status/{statusId}") //onde é usado? metodo semm cobertura do security
-    public Collection<GetTaskDTO> getTasksByStatus(@PathVariable Long statusId) {
-        return taskService.getTasksByStatus(statusId);
+    public ResponseEntity<Collection<GetTaskDTO>> getTasksByStatus(@PathVariable Long statusId) {
+        try{
+            return ResponseEntity.ok(taskService.getTasksByStatus(statusId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage("Falha ao procurar por tarefas com o status: " + statusId, e.getMessage(), null);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @DeleteMapping("/{taskId}")
-    public void delete(@PathVariable Long taskId) {
-        taskService.delete(taskId);
+    public ResponseEntity delete(@PathVariable Long taskId) {
+        try{
+            taskService.delete(taskId);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e){
+            topicProducer.sendErrorMessage("Falha ao tentar deletar a tarefa de id: " + taskId, e.getMessage(), null);
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        }
     }
 
     @PostMapping("/project/{projectId}")
-    public GetTaskDTO create(@RequestBody PostTaskDTO postTaskDTO){
-        return taskService.create(postTaskDTO);}
+    public ResponseEntity<GetTaskDTO> create(@RequestBody PostTaskDTO postTaskDTO, @PathVariable Long projectId){
+        try{
+            return ResponseEntity.ok(taskService.create(postTaskDTO));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage("Falha ao tentar criar tarefa no projeto de id: " + projectId, e.getMessage(), null);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
 
     @PatchMapping("/{taskId}/dependencies/{userId}")
-    public ResponseEntity<GetTaskDTO> patchDependencies(@PathVariable Long taskId, @RequestBody Collection<GetTaskDTO> taskDTOS, @PathVariable Long userId) throws InvalidAttributesException {
-        return ResponseEntity.ok(taskService.patchDependencies(taskId, taskDTOS));
+    public ResponseEntity<GetTaskDTO> patchDependencies(@PathVariable Long taskId, @RequestBody Collection<GetTaskDTO> taskDTOS, @PathVariable Long userId) {
+        try{
+            return ResponseEntity.ok(taskService.patchDependencies(taskId, taskDTOS));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage("Não foi possível atualizar as dependências da task de id: " + taskId, e.getMessage(), userId);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
 
     @PutMapping("/{taskId}/user/{userId}")
-    public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO,@PathVariable Long userId){
-//        GetTaskDTO getTaskDTO = taskService.update(putTaskDTO);
-        return taskService.update(putTaskDTO,userId);
+    public ResponseEntity<GetTaskDTO> update(@RequestBody PutTaskDTO putTaskDTO,@PathVariable Long userId, @PathVariable Long taskId){
+        try{
+            return ResponseEntity.ok(taskService.update(putTaskDTO,userId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage("Não foi possível atualizar a task de id: " + taskId, e.getMessage(), userId);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
     @PatchMapping("/{taskId}/userTask")
-    public UserTask setWorkedTime(@RequestBody UserTask userTask) {
-        return taskService.setWorkedTime(userTask);
+    public ResponseEntity<UserTask> setWorkedTime(@RequestBody UserTask userTask) {
+        try{
+            return ResponseEntity.ok(taskService.setWorkedTime(userTask));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage("Falha ao tentar atualizar o tempo trabalhado", e.getMessage(), userTask.getUserId());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
     @PatchMapping("/{taskId}/property/{userId}")
-    public GetTaskDTO patchProperty(@RequestBody Property property, @PathVariable Long taskId, @PathVariable Long userId) {
-        return taskService.patchProperty(property,taskId, userId);
+    public ResponseEntity<GetTaskDTO> patchProperty(@RequestBody Property property, @PathVariable Long taskId, @PathVariable Long userId) {
+        try{
+            return ResponseEntity.ok(taskService.patchProperty(property,taskId, userId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PatchMapping("/{taskId}/property/associates/{userId}")
-    public Collection<GetUserDTO> patchAssociate(@PathVariable Long taskId, @RequestBody Collection<ShortUserDTO> associates, @PathVariable Long userId) {
-        return taskService.patchAssociate(taskId,associates,userId);
+    public ResponseEntity<Collection<GetUserDTO>> patchAssociate(@PathVariable Long taskId, @RequestBody Collection<ShortUserDTO> associates, @PathVariable Long userId) {
+        try{
+            return ResponseEntity.ok(taskService.patchAssociate(taskId,associates,userId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PatchMapping("/{taskId}/property/associates/delete/{userId}")
-    public Collection<GetUserDTO> deleteAssociate(@PathVariable Long taskId, @PathVariable Long userId, @RequestParam Long removedAssociateId) {
-        return taskService.removeAssociate(taskId,removedAssociateId,userId);
+    public ResponseEntity<Collection<GetUserDTO>> deleteAssociate(@PathVariable Long taskId, @PathVariable Long userId, @RequestParam Long removedAssociateId) {
+        try{
+            return ResponseEntity.ok(taskService.removeAssociate(taskId,removedAssociateId,userId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PatchMapping("/{taskId}/update/finalDate/{userId}/calendar")
-    public GetTaskDTO updateTaskFinalDate(@PathVariable Long taskId, @PathVariable Long userId, @RequestParam String newFinalDate) {
-        LocalDate localDateTime = LocalDate.parse(newFinalDate);
-        return taskService.updateTaskFinalDate(taskId,userId,localDateTime);
+    public ResponseEntity<GetTaskDTO> updateTaskFinalDate(@PathVariable Long taskId, @PathVariable Long userId, @RequestParam String newFinalDate) {
+        try{
+            LocalDate localDateTime = LocalDate.parse(newFinalDate);
+            return ResponseEntity.ok(taskService.updateTaskFinalDate(taskId,userId,localDateTime));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PatchMapping("/{taskId}/notes")
-    public void setTaskNotes(@PathVariable Long taskId, @RequestParam String notes) {
-        taskService.patchNotes(taskId,notes);
+    public ResponseEntity setTaskNotes(@PathVariable Long taskId, @RequestParam String notes) {
+        try{
+            taskService.patchNotes(taskId,notes);
+             return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PatchMapping("/{taskId}/description/{userId}")
@@ -107,101 +168,168 @@ public class TaskController {
         try {
             return ResponseEntity.ok(taskService.patchDescription(taskId,userId,description));
         } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 
     @PatchMapping("/{taskId}/update/scheludeDate/{userId}/calendar")
-    public GetTaskDTO updateTaskScheludeDate(@PathVariable Long taskId, @PathVariable Long userId, @RequestParam String newDate) {
+    public ResponseEntity<GetTaskDTO> updateTaskScheludeDate(@PathVariable Long taskId, @PathVariable Long userId, @RequestParam String newDate) {
         LocalDate localDateTime = LocalDate.parse(newDate);
-        return taskService.updateTaskScheludeDate(taskId,userId,localDateTime);
+        try{
+             return ResponseEntity.ok(taskService.updateTaskScheludeDate(taskId,userId,localDateTime));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @GetMapping("/userTask/{userId}/{taskId}")
-    public UserTask getUserTask(@PathVariable Long userId, @PathVariable Long taskId){
-        return taskService.getUserTask(userId, taskId);
+    public ResponseEntity<UserTask> getUserTask(@PathVariable Long userId, @PathVariable Long taskId){
+        try{
+             return ResponseEntity.ok(taskService.getUserTask(userId, taskId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PatchMapping("/{taskId}/property/put/{propertyId}/{userId}")
-    public Property putPropertyValue(@PathVariable Long propertyId,
+    public ResponseEntity<Property> putPropertyValue(@PathVariable Long propertyId,
                                      @RequestBody PropertyValue propertyValue,
                                      @PathVariable Long userId,
                                      @PathVariable Long taskId) {
-        return taskService.putPropertyValue(propertyValue, propertyId, userId, taskId);
+        try{
+             return ResponseEntity.ok(taskService.putPropertyValue(propertyValue, propertyId, userId, taskId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PatchMapping("/{taskId}/property/put/option/{userId}/{propertyId}")
-    public Option putPropertyOption(@RequestBody Option newOption,
+    public ResponseEntity<Option> putPropertyOption(@RequestBody Option newOption,
                                     @PathVariable Long userId,
                                     @PathVariable Long taskId,
                                     @PathVariable Long propertyId) {
-        return taskService.putPropertyOption(newOption,userId, taskId, propertyId);
+        try{
+             return ResponseEntity.ok(taskService.putPropertyOption(newOption,userId, taskId, propertyId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @DeleteMapping("/{taskId}/property/delete/option/{userId}/{propertyId}/{optionId}")
-    public Property deletePropertyOption(@PathVariable Long userId,
+    public ResponseEntity<Property> deletePropertyOption(@PathVariable Long userId,
                                          @PathVariable Long taskId,
                                          @PathVariable Long propertyId,
                                          @PathVariable Long optionId) {
-        return taskService.deletePropertyOption(userId, taskId, propertyId, optionId);
+        try{
+             return ResponseEntity.ok(taskService.deletePropertyOption(userId, taskId, propertyId, optionId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PatchMapping("/{taskId}/subtask/{userId}")
-    public GetTaskDTO patchSubtask(@RequestBody Subtask subtask, @PathVariable Long taskId, @PathVariable Long userId) {
-        return taskService.patchSubtask(subtask,taskId, userId);
+    public ResponseEntity<GetTaskDTO> patchSubtask(@RequestBody Subtask subtask, @PathVariable Long taskId, @PathVariable Long userId) {
+        try{
+             return ResponseEntity.ok(taskService.patchSubtask(subtask,taskId, userId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @DeleteMapping("/{taskId}/subtask/delete/{subtaskId}/{userId}")
-    public GetTaskDTO deleteSubtask(@PathVariable Long subtaskId, @PathVariable Long taskId, @PathVariable Long userId) {
-        return taskService.deleteSubtask(subtaskId, taskId, userId);
+    public ResponseEntity<GetTaskDTO> deleteSubtask(@PathVariable Long subtaskId, @PathVariable Long taskId, @PathVariable Long userId) {
+        try{
+             return ResponseEntity.ok(taskService.deleteSubtask(subtaskId, taskId, userId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @GetMapping("/property/get/getall")
-    public Collection<Property> getAllProperties() {
-        return taskService.getAllProperties();
+    public ResponseEntity<Collection<Property>> getAllProperties() {
+        try{
+             return ResponseEntity.ok(taskService.getAllProperties());
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     } //rever a segurança disso aqui (não pode existir?)
 
     @GetMapping("/priorities")
-    public Collection<PriorityRecord> getAllPriorities() {
-        List<Priority> listTest =  List.of(Priority.values());
-       return listTest.stream().map(priority -> new PriorityRecord(priority.name(), priority.backgroundColor)).collect(Collectors.toList());
+    public ResponseEntity<Collection<PriorityRecord>> getAllPriorities() {
+        try{
+            List<Priority> listTest =  List.of(Priority.values());
+            Collection<PriorityRecord> res = listTest.stream().map(priority -> new PriorityRecord(priority.name(), priority.backgroundColor)).collect(Collectors.toList());
+            return ResponseEntity.ok(res);
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @GetMapping("/user/{userId}")
-    public Collection<GetTaskDTO> getTasksByUserId(@PathVariable Long userId){
-        return taskService.getTasksByUserId(userId);
+    public ResponseEntity<Collection<GetTaskDTO>> getTasksByUserId(@PathVariable Long userId){
+        try{
+             return ResponseEntity.ok(taskService.getTasksByUserId(userId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @GetMapping("/{taskId}/project/{projectId}")
-    public Collection<GetTaskDTO> getTasksByProjectId(@PathVariable Long projectId){
-        return taskService.getTasksByProjectId(projectId);
+    public ResponseEntity<Collection<GetTaskDTO>> getTasksByProjectId(@PathVariable Long projectId){
+        try{
+             return ResponseEntity.ok(taskService.getTasksByProjectId(projectId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
 //    @PutMapping("/{userId}")
-//    public GetTaskDTO update(@RequestBody PutTaskDTO putTaskDTO,@PathVariable Long userId){
+//    public ResponseEntity<GetTaskDTO> update(@RequestBody PutTaskDTO putTaskDTO,@PathVariable Long userId){
 //        return taskService.update(putTaskDTO,userId);
 //    } //isso aqui é para continuar existindo?
 
 
 
 //    @PostMapping("/{projectId}")
-//    public GetTaskDTO create(@PathVariable Long projectId, @RequestBody PostTaskDTO postTaskDTO) {
+//    public ResponseEntity<GetTaskDTO> create(@PathVariable Long projectId, @RequestBody PostTaskDTO postTaskDTO) {
 //        return taskService.create(postTaskDTO);
 //    }
 
 //    @PutMapping("/{projectId}")
-//    public GetTaskDTO update(@PathVariable Long projectId, @RequestBody PutTaskDTO putTaskDTO) {
+//    public ResponseEntity<GetTaskDTO> update(@PathVariable Long projectId, @RequestBody PutTaskDTO putTaskDTO) {
 //        return taskService.update(putTaskDTO);
 //    }
 
     @PatchMapping("/{taskId}/{projectId}/property")
-    public GetTaskDTO patchProperty(@PathVariable Long projectId, @RequestBody Property property, @PathVariable Long taskId) {
-        return taskService.patchProperty(property, taskId);
+    public ResponseEntity<GetTaskDTO> patchProperty(@PathVariable Long projectId, @RequestBody Property property, @PathVariable Long taskId) {
+        try{
+             return ResponseEntity.ok(taskService.patchProperty(property, taskId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     } //é usado?
 
     @GetMapping("/{taskId}/{projectId}/userTask/{userId}")
-    public UserTask getUserTask(@PathVariable Long projectId, @PathVariable Long userId, @PathVariable Long taskId) {
-        return taskService.getUserTask(userId, taskId);
+    public ResponseEntity<UserTask> getUserTask(@PathVariable Long projectId, @PathVariable Long userId, @PathVariable Long taskId) {
+        try{
+             return ResponseEntity.ok(taskService.getUserTask(userId, taskId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
 //    @PutMapping("/{projectId}/putProperty")
@@ -210,86 +338,155 @@ public class TaskController {
 //    }
 
     @GetMapping("/{projectId}/priorities")
-    public Collection<PriorityRecord> getAllPriorities(@PathVariable Long projectId) {
-        List<Priority> listTest = List.of(Priority.values());
-        return listTest.stream().map(priority -> new PriorityRecord(priority.name(), priority.backgroundColor)).collect(Collectors.toList());
+    public ResponseEntity<Collection<PriorityRecord>> getAllPriorities(@PathVariable Long projectId) {
+        try{
+            List<Priority> listTest = List.of(Priority.values());
+            Collection<PriorityRecord> res = listTest.stream().map(priority -> new PriorityRecord(priority.name(), priority.backgroundColor)).collect(Collectors.toList());
+            return ResponseEntity.ok(res);
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     } //rever a segurança disso aqui (não pode existir?)
 
     @GetMapping("/{taskId}/comments/getAll")
-    public Collection<Comment> getAllCommentsOfTask(@PathVariable Long taskId) {
-        return taskService.getAllCommentsOfTask(taskId);
+    public ResponseEntity<Collection<Comment>> getAllCommentsOfTask(@PathVariable Long taskId) {
+        try{
+             return ResponseEntity.ok(taskService.getAllCommentsOfTask(taskId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     } //rever a sugurança p isso aqui
 
     @PatchMapping("/{taskId}/comments/patch/user/{userId}")
-    public Comment patchNewComment(@PathVariable Long taskId,
+    public ResponseEntity<Comment> patchNewComment(@PathVariable Long taskId,
                                    @RequestBody Comment newComment, @PathVariable Long userId) {
-        return taskService.patchNewComment(taskId, newComment, userId);
+        try{
+             return ResponseEntity.ok(taskService.patchNewComment(taskId, newComment, userId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @DeleteMapping("/{taskId}/comments/delete/{commentId}/user/{userId}")
-    public Collection<GetCommentDTO> deleteComment(@PathVariable Long commentId,
+    public ResponseEntity<Collection<GetCommentDTO>> deleteComment(@PathVariable Long commentId,
                               @PathVariable Long taskId, @PathVariable Long userId) {
-        return taskService.deleteComment(commentId,taskId,userId);
+        try{
+             return ResponseEntity.ok(taskService.deleteComment(commentId,taskId,userId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PatchMapping("/{taskId}/update/currentStatus/user/{userId}")
-    public GetTaskDTO updateCurrentStatus(@PathVariable Long taskId,
+    public ResponseEntity<GetTaskDTO> updateCurrentStatus(@PathVariable Long taskId,
                                     @PathVariable Long userId,
                                     @RequestBody Status newCurrentStatus) {
-        return taskService.patchCurrentStatus(taskId,userId,newCurrentStatus);
+        try{
+             return ResponseEntity.ok(taskService.patchCurrentStatus(taskId,userId,newCurrentStatus));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PatchMapping("/{taskId}/update/currentOptions/user/{userId}/property/{propertyId}")
-    public Property updatePropertyOptions(@PathVariable Long taskId,
+    public ResponseEntity<Property> updatePropertyOptions(@PathVariable Long taskId,
                                           @PathVariable Long userId,
                                           @PathVariable Long propertyId,
                                           @RequestBody Collection<Option> newCurrentOptions) {
-        return taskService.updatePropertyCurrentOptions(newCurrentOptions, propertyId, taskId, userId);
+        try{
+             return ResponseEntity.ok(taskService.updatePropertyCurrentOptions(newCurrentOptions, propertyId, taskId, userId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PatchMapping("/setConcluded")
-    public void setTaskConcluded(@RequestParam Long taskId) {
-        taskService.setTaskConcluded(taskId);
+    public ResponseEntity<?> setTaskConcluded(@RequestParam Long taskId) {
+        try{
+            taskService.setTaskConcluded(taskId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PatchMapping("/{taskId}/user/{userId}/update/currentPriority")
-    public GetTaskDTO updateCurrentPriority(@PathVariable Long taskId,
+    public ResponseEntity<GetTaskDTO> updateCurrentPriority(@PathVariable Long taskId,
                                             @PathVariable Long userId,
                                             @RequestBody PriorityRecord priorityRecord) {
-        return taskService.updateCurrentPriority(taskId,userId,priorityRecord);
+        try{
+            return ResponseEntity.ok(taskService.updateCurrentPriority(taskId,userId,priorityRecord));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     } //é usado?
 
     @PatchMapping("/{taskId}/update/user/{userId}/name")
-    public GetTaskDTO updateTaskName(@PathVariable Long taskId,
+    public ResponseEntity<GetTaskDTO> updateTaskName(@PathVariable Long taskId,
                                      @PathVariable Long userId,
                                      @RequestParam String name) {
-        return taskService.updateTaskName(taskId,name);
+        try{
+             return ResponseEntity.ok(taskService.updateTaskName(taskId,name));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @DeleteMapping("/{taskId}/property/delete/user/{userId}/{propertyId}")
-    public GetTaskDTO deleteProperty(@PathVariable Long taskId,
+    public ResponseEntity<GetTaskDTO> deleteProperty(@PathVariable Long taskId,
                                      @PathVariable Long userId,
                                      @PathVariable Long propertyId) {
-        return taskService.deleteProperty(taskId,userId,propertyId);
+        try{
+             return ResponseEntity.ok(taskService.deleteProperty(taskId,userId,propertyId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @DeleteMapping("/{taskId}/delete")
-    public void deleteTask(@PathVariable Long taskId) {
-        taskService.deleteTask(taskId);
+    public ResponseEntity deleteTask(@PathVariable Long taskId) {
+        try{
+            taskService.deleteTask(taskId);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PatchMapping("/{taskId}/patch/task/file/{userId}")
-    public GetTaskDTO patchFile(@PathVariable Long taskId,
+    public ResponseEntity<GetTaskDTO> patchFile(@PathVariable Long taskId,
                                 @RequestParam MultipartFile file,
                                 @PathVariable Long userId){
-        return taskService.patchFile(taskId, file, userId);
+        try{
+             return ResponseEntity.ok(taskService.patchFile(taskId, file, userId));
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @DeleteMapping("/{taskId}/delete/file/{fileId}/{userId}")
-    public void deleteFile(@PathVariable Long taskId,
+    public ResponseEntity deleteFile(@PathVariable Long taskId,
                            @PathVariable Long fileId,
                            @PathVariable Long userId) {
-        taskService.deleteFile(taskId,fileId,userId);
+        try{
+            taskService.deleteFile(taskId,fileId,userId);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @GetMapping("/{taskId}/get/{userId}")
@@ -298,12 +495,19 @@ public class TaskController {
         try {
             return ResponseEntity.ok(userTaskService.getUserWorkedTime(userId,taskId));
         } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
 
     @PatchMapping("/{taskId}/put/workedTime")
-    public void updateUserWorkedTime(@RequestBody UserTask userTaskUpdated) {
-        userTaskService.updateWorkedTime(userTaskUpdated);
+    public ResponseEntity updateUserWorkedTime(@RequestBody UserTask userTaskUpdated) {
+        try{
+            userTaskService.updateWorkedTime(userTaskUpdated);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e){
+            topicProducer.sendErrorMessage(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 }
