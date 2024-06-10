@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.taskmanager.Producer;
 import net.weg.taskmanager.model.dto.get.GetUserDTO;
 import net.weg.taskmanager.model.entity.User;
 import net.weg.taskmanager.security.model.dto.UserLogin;
@@ -44,6 +45,9 @@ public class AuthController {
     private final SecurityContextRepository repository;
     private final UserService userService;
 
+    private final Producer topicProducer;
+
+
     @PostMapping("/login")
     public ResponseEntity<Object> authenticate(@RequestBody UserLogin user, HttpServletRequest request, HttpServletResponse response) {
         System.out.println(user);
@@ -68,6 +72,12 @@ public class AuthController {
             System.out.println("Meu parceiro eu loguei pkrl tá");
 
             GetUserDTO loggedUser = userService.findById(((UserDetailsEntity) authentication.getPrincipal()).getUser().getId());
+
+            System.out.println("VOU MANDAR O TOPIC HEIN");
+            topicProducer.sendMessage("Mensagem de teste enviada ao tópico");
+
+
+
             return ResponseEntity.ok(loggedUser);
 //            return ResponseEntity.ok("authentication");
         } catch (AuthenticationException e) {
@@ -75,6 +85,7 @@ public class AuthController {
             return new ResponseEntity<>( e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 
 
     @PostMapping("/logout")
