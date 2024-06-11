@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
                 .requestMatchers(HttpMethod.POST, "/user").permitAll()
                 .requestMatchers(HttpMethod.GET, "/user/login/{email}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/error/logs").permitAll()
 
                 //TASK
                 .requestMatchers(HttpMethod.POST, "/task/project/{projectId}").access(taskAuthorizationManager)

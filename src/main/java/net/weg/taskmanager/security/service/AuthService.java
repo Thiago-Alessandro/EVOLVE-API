@@ -22,7 +22,6 @@ public class AuthService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserDetailsEntity> userOptional = repository.findByUsername(username);
         if (userOptional.isEmpty()) throw new UsernameNotFoundException("Invalidated caches");
-        System.out.println("Eu achei o usuario sim loadUserByUser4name");
         return userOptional.get();
     }
 

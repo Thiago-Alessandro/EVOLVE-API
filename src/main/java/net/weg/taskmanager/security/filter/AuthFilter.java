@@ -33,23 +33,18 @@ public class AuthFilter extends OncePerRequestFilter {
     //executara em cada requisicao da API
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-//        System.out.println("request");
-        System.out.println(request.getMethod());
-        System.out.println(request.getRequestURI());
-//        System.out.println(!publicRoute(request));
+//        System.out.println(request.getMethod());
+//        System.out.println(request.getRequestURI());
         if (!publicRoute(request)) {
-
 
             Cookie cookie;
 
             try {
                 cookie = coookieUtil.getCookie(request, "EV");
-//                System.out.println("Ó meu nome in baixo di mim");
-//                System.out.println(cookie.getName() + "to na aufi");
             } catch (Exception e) {
                 System.out.println("Mano não achei o cookie :(");
                 System.out.println(e);
-                response.setStatus(500);
+                response.setStatus(403);
                 return;
             }
             String token = cookie.getValue();
@@ -84,6 +79,8 @@ public class AuthFilter extends OncePerRequestFilter {
     private boolean publicRoute(HttpServletRequest request) {
         return ((request.getRequestURI().equals("/auth/login") || request.getRequestURI().equals("/user")) && request.getMethod().equals("POST"))
                 || (request.getRequestURI().contains("/user/login/") && request.getMethod().equals("GET"))
-                || (request.getRequestURI().contains("/image/link") && request.getMethod().equals("PATCH"));
+                || (request.getRequestURI().contains("/image/link") && request.getMethod().equals("PATCH"))
+                || (request.getRequestURI().contains("/error/logs") && request.getMethod().equals("GET"))
+                ;
     }
 }
