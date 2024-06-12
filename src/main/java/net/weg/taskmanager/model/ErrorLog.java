@@ -38,7 +38,7 @@ public class ErrorLog {
     public String toString() {
         //cpa tem q retornar o nome do objeto antes do JSON
         return String.format(
-                "{id: %d, title: %s, error: %s, dateTime: %s, requestSenderId: %d}"
+                "id: %d, title: %s, error: %s, dateTime: %s, requestSenderId: %d"
                 ,id, title, error, dateTime, requestSenderId
         );
     }
